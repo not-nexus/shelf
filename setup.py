@@ -14,7 +14,8 @@ config = {
         'Flask',
         "gevent",
         "gunicorn",
-        "PyYAML"
+        "PyYAML",
+        'boto' 
     ],
     'tests_require': [
         'pyproctor',
