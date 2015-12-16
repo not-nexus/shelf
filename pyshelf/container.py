@@ -10,3 +10,7 @@ class Container(object):
         self.app = app
         self.request = request
         self.request_id = uuid4().hex
+
+    @property
+    def logger(self):
+        return self.app.logger
