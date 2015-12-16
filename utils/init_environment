@@ -1,0 +1,22 @@
+#!/bin/bash
+# Note : Must source this file
+dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+venvDir="$dir/../venv" 
+
+if [[ ! -d "$venvDir" ]]; then
+    if command -v pyenv; then
+        pyenv local 2.7.9
+        virtualenv -p python "$venvDir"
+    else
+        virtualenv -p python2.7 "$venvDir"
+    fi
+fi
+source "$dir/../venv/bin/activate"
+
+requirementsPath="$dir/../requirements_dev.txt"
+if [[ -f "$requirementsPath" ]]; then
+    pip install -r "$requirementsPath"
+else
+    pip install -r "$dir/../requirements.txt"
+fi
+export PYTHONPATH="$PYTHONPATH:$dir/.."
