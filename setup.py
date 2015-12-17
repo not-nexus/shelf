@@ -11,11 +11,11 @@ config = {
     'author_email': 'uilwen@gmail.com',
     'version': '0.01',
     'install_requires': [
-        'Flask',
+        "Flask",
         "gevent",
         "gunicorn",
         "PyYAML",
-        'boto' 
+        "boto"
     ],
     'tests_require': [
         'pyproctor',

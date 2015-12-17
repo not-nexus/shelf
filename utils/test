@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+curl -L -H "Authorization: supersecuretoken" localhost:8080/artifact/test-path
