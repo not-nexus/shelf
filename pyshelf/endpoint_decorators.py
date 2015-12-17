@@ -30,6 +30,16 @@ class EndpointDecorators(object):
             func = decorator(func)
         return func
 
+    def foundation(self, func):
+        wrapper = self.merge(
+            func,
+            self.injectcontainer,
+            self.logtraffic,
+            self.auth
+        )
+
+        return wrapper
+
     def logtraffic(self, func):
         """
             Requires injectcontainer to be used first.  Will log the request
@@ -69,6 +79,23 @@ class EndpointDecorators(object):
             container = utils.get_container()
             result = func(container, *args, **kwargs)
             return result
+
+        return wrapper
+
+    def auth(self, func):
+        """
+            Attempts to authenticate the request and make sure the user has
+            the proper permissions for the request that is attempted.
+        """
+        @functools.wraps(func)
+        def wrapper(container, *args, **kwargs):
+            if not container.permissions_validator.allowed():
+                response = flask.Response()
+                response.set_data("Permission Denied")
+                response.status_code = 401
+                return response
+
+            return func(container, *args, **kwargs)
 
         return wrapper
 
