@@ -10,12 +10,12 @@ class Storage(object):
         self.articlePath = os.path.expanduser('~') + '/tmp/'
 
     def get_artifact(self, bucketName, artifactName):
-         bucket = self.conn.get_bucket(bucketName)
-         key = bucket.get_key(artifactName)
-         dir = self.articlePath + artifactName
-         fp = open(dir, 'w+')
-         key.get_file(fp)
-        
+        bucket = self.conn.get_bucket(bucketName)
+        key = bucket.get_key(artifactName)
+        dir = self.articlePath + artifactName
+        fp = open(dir, 'w+')
+        key.get_file(fp)
+
 
     def upload_artifact(self, bucketName, artifactName, fp):
         bucket = self.conn.get_bucket(bucketName)           
@@ -26,5 +26,3 @@ class Storage(object):
         bucket = self.conn.get_bucket(bucketName)
         key = bucket.get_key(artifactName)
         key.delete()
-
-
