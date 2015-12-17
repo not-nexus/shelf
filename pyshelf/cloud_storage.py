@@ -2,7 +2,7 @@ from boto.s3.connection import S3Connection
 from boto.s3.key import Key
 import os
 
-class CloudStorage:
+class CloudStorage(object):
     def __init__(self, accessKey, secretKey):
         self.accessKey = accessKey     
         self.secretKey = secretKey
