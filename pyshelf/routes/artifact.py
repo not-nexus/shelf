@@ -9,5 +9,6 @@ artifact = flask.Blueprint("artifact", __name__)
 def get_path(container, path):
     # TODO : This should list artifact resource links if it is a directory
     # or get the content of the artifact.
+    storage = container.create_master_bucket_storage()
     return flask.Response("Path was " + path)
     

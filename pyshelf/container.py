@@ -1,5 +1,6 @@
 from uuid import uuid4
 from pyshelf.permissions_validator import PermissionsValidator
+from pyshelf.cloud.factory import Factory as CloudFactory
 
 
 class Container(object):
@@ -14,6 +15,7 @@ class Container(object):
         
         # services
         self._permissions_validator = None
+        self._cloud_factory = None
 
     @property
     def logger(self):
@@ -25,3 +27,14 @@ class Container(object):
             self._permissions_validator = PermissionsValidator(self)
 
         return self._permissions_validator
+
+    @property
+    def cloud_factory(self):
+        if not self._cloud_factory:
+            self._cloud_factory = CloudFactory(self.app.config)
+
+        return self._cloud_factory
+
+    def create_master_bucket_storage(self):
+        bucket_name = self.app.config["bucketName"]
+        return self.cloud_factory.create_storage(bucket_name)
