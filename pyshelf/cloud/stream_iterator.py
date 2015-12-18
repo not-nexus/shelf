@@ -9,3 +9,6 @@ class StreamIterator(object):
 
     def next(self):
         return self.key.next()
+
+    def __iter__(self):
+        return self
