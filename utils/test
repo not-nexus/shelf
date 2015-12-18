@@ -1,3 +1,4 @@
 #!/usr/bin/env bash
 
-curl -L -H "Authorization: supersecuretoken" localhost:8080/artifact/test-path
+endpoint="localhost:8080/artifact/hello-world"
+curl -i -L -H "Authorization: supersecuretoken" "$endpoint"
