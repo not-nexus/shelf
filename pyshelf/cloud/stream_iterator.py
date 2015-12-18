@@ -6,9 +6,14 @@ class StreamIterator(object):
     """
     def __init__(self, key):
         self.key = key
+        self.key.open_read()
 
     def next(self):
         return self.key.next()
 
     def __iter__(self):
         return self
+
+    @property
+    def headers(self):
+        return dict(self.key.resp.getheaders())
