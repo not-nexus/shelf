@@ -63,6 +63,7 @@ class Storage(object):
     def __enter__(self):
         """ For use in "with" syntax"""
         self.connect()
+        return self
 
     def __exit__(self, exception_type, exception, traceback):
         """ For use in "with" syntax"""
