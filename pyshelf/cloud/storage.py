@@ -2,6 +2,7 @@ from boto.s3.connection import S3Connection
 from boto.s3.key import Key
 import os
 import math
+import re
 from filechunkio import FileChunkIO
 from pyshelf.cloud.stream_iterator import StreamIterator
 from pyshelf.cloud.cloud_exceptions import ArtifactNotFoundError, BucketNotFoundError, DuplicateArtifactError, InvalidNameError
@@ -46,18 +47,18 @@ class Storage(object):
         stream = StreamIterator(key)
         return stream
 
-    def upload_artifact(self, artifact_path, artifact_name, src):
+    def upload_artifact(self, artifact_name, src):
         """
             Uploads an artifact chunking any artifacts that exceed
             100 MB using FileChunkIO.
 
             Args:
-                artifact_path(basestring): Path to upload artifact to
-                artifact_name(basestring): Desired name for new artifact
+                artifact_name(basestring): Full path to upload artifact to
                 src(basestring): Path to file that will be uploaded
 
         """
-        if artifact_name[0] == "_":
+        match = re.search('\/_', artifact_name)
+        if match:
             raise InvalidNameError(artifact_name)
         bucket = self._get_bucket(self.bucket_name)
         

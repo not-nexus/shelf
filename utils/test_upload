@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
 echo "testing file upload with a simple txt file. Woot woot!" > ./upload-test.txt
-endpoint="localhost:8080/artifact/"
-curl -i -L -H "Authorization: supersecuretoken" -F "file=@./upload-test.txt" -F "artifactname=upload-test" "$endpoint"
+endpoint="localhost:8080/artifact/test_folder/upload-test"
+curl -i -L -H "Authorization: supersecuretoken" -F "file=@./upload-test.txt" "$endpoint"
