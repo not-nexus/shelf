@@ -35,8 +35,6 @@ def create_artifact(container, path):
             fn = secure_filename(file.filename)
             an = request.form['artifactname']
             storage.upload_artifact(path, an, fn)
-            """ temporarily returning blank response """
-            response = Response()
-            return Response()
+            return response_map.create_201() 
     except (DuplicateArtifactError, BucketNotFoundError) as e:
         return response_map.create_500()
