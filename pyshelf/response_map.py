@@ -41,10 +41,10 @@ def create_500(msg=None):
 
     return vnd_error(error)
 
+
 def create_201():
     body = {
-        "message": "Creation request has been fulfilled",
-        "status_code": 201
+        "success": True
     }
     response = JsonResponse()
     response.status_code = 201
