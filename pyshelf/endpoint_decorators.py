@@ -39,6 +39,15 @@ class EndpointDecorators(object):
         )
 
         return wrapper
+    
+    def foundation_headers(self, func):
+        wrapper = self.merge(
+            func,
+            self.injectcontainer,
+            self.logheaders,
+            self.auth
+        )
+        return wrapper
 
     def logtraffic(self, func):
         """
@@ -47,6 +56,8 @@ class EndpointDecorators(object):
 
             This decorator assumes that a flask.Response object is returned
             from the route
+
+            this logs the body of the request
         """
         @functools.wraps(func)
         def wrapper(container, *args, **kwargs):
@@ -69,6 +80,25 @@ class EndpointDecorators(object):
 
         return wrapper
 
+    def logheaders(self, func):
+        """
+            this logs the request headers
+        """
+        @functools.wraps(func)
+        def wrapper(container, *args, **kwargs):
+            request = container.request
+            
+            def log(message, data):
+                container.logger.info("%s : \n %s" % (message, data))
+
+            log("REQUEST HEADERS", request.headers)
+            response = func(container, *args, **kwargs)
+            response_data = response.get_data()
+            log("RESPONSE HEADERS", response.headers)
+            return response
+
+        return wrapper
+    
     def injectcontainer(self, func):
         """
             Used to handle creating and injeceting RequrstContextContainer
