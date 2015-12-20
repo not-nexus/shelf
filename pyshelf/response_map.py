@@ -18,20 +18,24 @@ def vnd_error(error):
     return response
 
 
-def create_404():
+def create_404(msg=None):
+    if msg is None:
+        msg = "Resource not found"
     error = {
         "code": ErrorCode.RESOURCE_NOT_FOUND,
-        "message": "Not found",
+        "message": msg,
         "status_code": 404
     }
 
     return vnd_error(error)
 
 
-def create_500():
+def create_500(msg=None):
+    if msg is None:
+        msg = "Internal Server Error"
     error = {
         "code": ErrorCode.INTERNAL_SERVER_ERROR,
-        "message": "Internal Server Error",
+        "message": msg,
         "status_code": 500
     }
 

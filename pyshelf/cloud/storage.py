@@ -4,7 +4,7 @@ import os
 import math
 from filechunkio import FileChunkIO
 from pyshelf.cloud.stream_iterator import StreamIterator
-from pyshelf.cloud.cloud_exceptions import ArtifactNotFoundError, BucketNotFoundError, DuplicateArtifactError
+from pyshelf.cloud.cloud_exceptions import ArtifactNotFoundError, BucketNotFoundError, DuplicateArtifactError, InvalidNameError
 
 
 class Storage(object):
@@ -47,7 +47,20 @@ class Storage(object):
         return stream
 
     def upload_artifact(self, artifact_path, artifact_name, src):
+        """
+            Uploads an artifact chunking any artifacts that exceed
+            100 MB using FileChunkIO.
+
+            Args:
+                artifact_path(basestring): Path to upload artifact to
+                artifact_name(basestring): Desired name for new artifact
+                src(basestring): Path to file that will be uploaded
+
+        """
+        if artifact_name[0] == "_":
+            raise InvalidNameError(artifact_name)
         bucket = self._get_bucket(self.bucket_name)
+        
         if bucket.get_key(artifact_name) is not None:
             raise DuplicateArtifactError(artifact_name)
         src_size = os.stat(src).st_size
@@ -56,6 +69,7 @@ class Storage(object):
         chunk_count = int(math.ceil(src_size/float(chunk_size)))
         self.logger.debug("Initiating upload")
         mp = bucket.initiate_multipart_upload(artifact_name)
+        
         for i in range(chunk_count):
             offset = chunk_size * i
             bytes = min(chunk_size, src_size - offset)
