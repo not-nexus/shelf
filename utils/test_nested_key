@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+endpoint="localhost:8080/artifact/test_folder/hello-world"
+curl -i -L -H "Authorization: supersecuretoken" "$endpoint"
