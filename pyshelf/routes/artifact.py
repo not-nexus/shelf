@@ -14,7 +14,7 @@ def get_path(container, path):
     # or get the content of the artifact.
     try:
         with container.create_master_bucket_storage() as storage:
-            stream = storage.get_artifact_stream(path)
+            stream = storage.get_artifact(path)
             response = flask.Response(stream)
             response.headers["Content-Type"] = stream.headers["content-type"]
             return response

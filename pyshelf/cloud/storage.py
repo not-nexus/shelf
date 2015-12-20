@@ -10,7 +10,6 @@ class Storage(object):
         self.access_key = access_key
         self.secret_key = secret_key
         self.bucket_name = bucket_name
-        self.articlePath = os.path.expanduser('~') + '/tmp/'
         self.logger = logger
 
     def connect(self):
@@ -22,13 +21,6 @@ class Storage(object):
         self.conn.close()
 
     def get_artifact(self, artifact_name):
-        key = self._get_key(artifact_name)
-        dir = self.artifactPath + artifact_name
-        fp = open(dir, 'w+')
-        key.get_file(fp)
-        return True
-
-    def get_artifact_stream(self, artifact_name):
         """
             Returns an object that can be used as a generator.
             This should be used when streaming large files
