@@ -25,3 +25,12 @@ def create_404():
     }
 
     return vnd_error(error)
+
+def create_500():
+    error = {
+        "code": ErrorCode.INTERNAL_SERVER_ERROR,
+        "message": "Request could not be fulfilled",
+        "status_code": 500
+    }
+
+    return vnd_error(error)

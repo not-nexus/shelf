@@ -31,7 +31,7 @@ class Container(object):
     @property
     def cloud_factory(self):
         if not self._cloud_factory:
-            self._cloud_factory = CloudFactory(self.app.config)
+            self._cloud_factory = CloudFactory(self.app.config, self.app.logger)
 
         return self._cloud_factory
 
