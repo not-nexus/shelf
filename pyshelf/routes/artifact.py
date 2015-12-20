@@ -1,9 +1,10 @@
-import flask
+from flask import Flask, request, Blueprint, Response
 from pyshelf.endpoint_decorators import decorators
-from pyshelf.cloud.cloud_exceptions import ArtifactNotFoundError, BucketNotFoundError
+from pyshelf.cloud.cloud_exceptions import ArtifactNotFoundError, BucketNotFoundError, DuplicateArtifactError
 import pyshelf.response_map as response_map
+from werkzeug import secure_filename
 
-artifact = flask.Blueprint("artifact", __name__)
+artifact = Blueprint("artifact", __name__)
 
 
 @artifact.route("/", methods=["GET"], defaults={"path": ""})
@@ -15,7 +16,7 @@ def get_path(container, path):
     try:
         with container.create_master_bucket_storage() as storage:
             stream = storage.get_artifact(path)
-            response = flask.Response(stream)
+            response = Response(stream)
             response.headers["Content-Type"] = stream.headers["content-type"]
             return response
     except (ArtifactNotFoundError, BucketNotFoundError) as e:
@@ -23,3 +24,19 @@ def get_path(container, path):
             return response_map.create_404()
         if isinstance(e, BucketNotFoundError):
             return response_map.create_500()
+
+@artifact.route("/", methods=["POST"], defaults={"path": ""})
+@artifact.route("/<path:path>", methods=["POST"])
+@decorators.foundation_headers
+def create_artifact(container, path):
+    try:    
+        with container.create_master_bucket_storage() as storage:
+            file = request.files['file']
+            fn = secure_filename(file.filename)
+            an = request.form['artifactname']
+            storage.upload_artifact(path, an, fn)
+            """ temporarily returning blank response """
+            response = Response()
+            return Response()
+    except (DuplicateArtifactError, BucketNotFoundError) as e:
+        return response_map.create_500()
