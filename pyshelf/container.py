@@ -1,6 +1,7 @@
 from uuid import uuid4
 from pyshelf.permissions_validator import PermissionsValidator
-from pyshelf.cloud.factory import Factory as CloudFactory
+# importing this way for monkey patching
+import pyshelf.cloud.factory
 
 
 class Container(object):
@@ -12,7 +13,7 @@ class Container(object):
         self.app = app
         self.request = request
         self.request_id = uuid4().hex
-        
+
         # services
         self._permissions_validator = None
         self._cloud_factory = None
@@ -31,7 +32,7 @@ class Container(object):
     @property
     def cloud_factory(self):
         if not self._cloud_factory:
-            self._cloud_factory = CloudFactory(self.app.config, self.app.logger)
+            self._cloud_factory = pyshelf.cloud.factory.Factory(self.app.config, self.app.logger)
 
         return self._cloud_factory
 
