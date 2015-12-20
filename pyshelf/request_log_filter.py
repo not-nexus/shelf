@@ -1,5 +1,5 @@
 import logging
-import utils
+import pyshelf.utils as utils
 
 class RequestLogFilter(logging.Filter):
     def filter(self, record):
