@@ -2,9 +2,8 @@ from boto.s3.connection import S3Connection
 from boto.s3.key import Key
 import os
 from pyshelf.cloud.stream_iterator import StreamIterator
-import logging
-from pyshelf.request_log_filter import RequestLogFilter
 from pyshelf.cloud.cloud_exceptions import ArtifactNotFoundError, BucketNotFoundError
+
 
 class Storage(object):
     def __init__(self, access_key, secret_key, bucket_name, logger):
@@ -24,7 +23,7 @@ class Storage(object):
 
     def get_artifact(self, artifact_name):
         key = self._get_key(artifact_name)
-        dir = self.articlePath + artifactName
+        dir = self.artifactPath + artifact_name
         fp = open(dir, 'w+')
         key.get_file(fp)
         return True
@@ -44,8 +43,8 @@ class Storage(object):
                     to download.
 
             Returns:
-                pyshelf.cloud.stream_iterator.StreamIterator: A object that 
-                    implements a generator interface so can be passed 
+                pyshelf.cloud.stream_iterator.StreamIterator: A object that
+                    implements a generator interface so can be passed
                     directly into a response so long as the framework supports it.
         """
         key = self._get_key(artifact_name)
@@ -74,7 +73,7 @@ class Storage(object):
         return key
 
     def _get_bucket(self, bucket_name):
-        self.logger.debug("Attempting to get bucket {}".format(bucket_name)) 
+        self.logger.debug("Attempting to get bucket {}".format(bucket_name))
         bucket = self.conn.lookup(self.bucket_name)
         if bucket is None:
             self.logger.error("Bucket {} does not exist".format(bucket_name))

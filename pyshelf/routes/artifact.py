@@ -1,9 +1,10 @@
 import flask
 from pyshelf.endpoint_decorators import decorators
 from pyshelf.cloud.cloud_exceptions import ArtifactNotFoundError, BucketNotFoundError
-from pyshelf.response_map import *
+import pyshelf.response_map as response_map
 
 artifact = flask.Blueprint("artifact", __name__)
+
 
 @artifact.route("/", methods=["GET"], defaults={"path": ""})
 @artifact.route("/<path:path>", methods=["GET"])
@@ -19,8 +20,6 @@ def get_path(container, path):
             return response
     except (ArtifactNotFoundError, BucketNotFoundError) as e:
         if isinstance(e, ArtifactNotFoundError):
-            return create_404()
+            return response_map.create_404()
         if isinstance(e, BucketNotFoundError):
-            return create_500()
-
-
+            return response_map.create_500()

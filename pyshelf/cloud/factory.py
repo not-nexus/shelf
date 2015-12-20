@@ -1,5 +1,6 @@
 from pyshelf.cloud.storage import Storage
 
+
 class Factory(object):
     def __init__(self, config, logger):
         self.config = config
