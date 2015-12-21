@@ -1,6 +1,8 @@
 pyshelf
 =======
 
+[![Build Status](https://travis-ci.org/kyle-long/pyshelf.svg?branch=master)](https://travis-ci.org/kyle-long/pyshelf)
+
 A REST API for AWS S3 meant to be an interface to immutable artifact storage.
 
 It is suggested that you use [gunicorn](http://gunicorn.org/) for running in production but we provide a simple script to run it
