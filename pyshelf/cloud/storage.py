@@ -1,8 +1,8 @@
 from boto.s3.connection import S3Connection
+from boto.s3.key import Key
 import os
 import math
 import re
-from filechunkio import FileChunkIO
 from pyshelf.cloud.stream_iterator import StreamIterator
 from pyshelf.cloud.cloud_exceptions import ArtifactNotFoundError, BucketNotFoundError, DuplicateArtifactError, InvalidNameError
 
@@ -48,8 +48,7 @@ class Storage(object):
 
     def upload_artifact(self, artifact_name, src):
         """
-            Uploads an artifact chunking any artifacts that exceed
-            100 MB using FileChunkIO.
+            Uploads an artifact
 
             Args:
                 artifact_name(basestring): Full path to upload artifact to
@@ -59,21 +58,11 @@ class Storage(object):
         match = re.search('\/_', artifact_name)
         if match:
             raise InvalidNameError(artifact_name)
-        bucket = self._get_bucket(self.bucket_name)
+        bucket = self._get_bucket(self.bucket_name) 
         if bucket.get_key(artifact_name) is not None:
             raise DuplicateArtifactError(artifact_name)
-        src_size = os.stat(src).st_size
-        """ arbitrarily chunked at 100 MB """
-        chunk_size = 104857600
-        chunk_count = int(math.ceil(src_size/float(chunk_size)))
-        self.logger.debug("Initiating upload")
-        mp = bucket.initiate_multipart_upload(artifact_name)
-        for i in range(chunk_count):
-            offset = chunk_size * i
-            bytes = min(chunk_size, src_size - offset)
-            with FileChunkIO(src, 'r', offset=offset, bytes=bytes) as fp:
-                mp.upload_part_from_file(fp, part_num=i + 1)
-        mp.complete_upload()
+        key = Key(bucket, artifact_name)
+        key.set_contents_from_filename(src)
         self.logger.debug("Completed upload of {}".format(artifact_name))
 
     def delete_artifact(self, artifact_name):
