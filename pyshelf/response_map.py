@@ -1,6 +1,4 @@
 from pyshelf.json_response import JsonResponse
-from pyshelf.error_code import ErrorCode
-
 
 def vnd_error(error):
     """
@@ -17,21 +15,22 @@ def vnd_error(error):
     response.data = body
     return response
 
-def create_403(msg=None):
+def create_403(error_code, msg=None):
     if msg is None:
         msg = "Forbidden"
     error = {    
-        #temporarily defaulting this     
-        "code": ErrorCode.INVALID_ARTIFACT_NAME,
+        "code": error_code,
         "message": msg,
         "status_code": 403
     }
+    
+    return vnd_error(error)
 
-def create_404(msg=None):
+def create_404(error_code, msg=None):
     if msg is None:
         msg = "Resource not found"
     error = {
-        "code": ErrorCode.RESOURCE_NOT_FOUND,
+        "code": error_code,
         "message": msg,
         "status_code": 404
     }
@@ -39,11 +38,11 @@ def create_404(msg=None):
     return vnd_error(error)
 
 
-def create_500(msg=None):
+def create_500(error_code, msg=None):
     if msg is None:
         msg = "Internal Server Error"
     error = {
-        "code": ErrorCode.INTERNAL_SERVER_ERROR,
+        "code": error_code,
         "message": msg,
         "status_code": 500
     }

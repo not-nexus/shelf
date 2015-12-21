@@ -1,6 +1,7 @@
 import flask
 from pyshelf.routes.artifact import artifact
 import pyshelf.response_map as response_map
+from pyshelf.error_code import ErrorCode
 
 app = flask.Flask(__name__)
 app.register_blueprint(artifact, url_prefix="/artifact")
@@ -8,7 +9,7 @@ app.register_blueprint(artifact, url_prefix="/artifact")
 @app.after_request
 def format_response(response):
     if response.status_code == 404:
-        response = response_map.create_404()
+        response = response_map.create_404(ErrorCode.RESOURCE_NOT_FOUND)
 
     data = response.get_data()
     data += "\n"

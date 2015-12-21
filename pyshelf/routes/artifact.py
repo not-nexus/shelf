@@ -1,7 +1,8 @@
-from flask import Flask, request, Blueprint, Response
+from flask import request, Blueprint, Response
 from pyshelf.endpoint_decorators import decorators
 from pyshelf.cloud.cloud_exceptions import ArtifactNotFoundError, BucketNotFoundError, DuplicateArtifactError, InvalidNameError
 import pyshelf.response_map as response_map
+from pyshelf.error_code import ErrorCode
 
 artifact = Blueprint("artifact", __name__)
 
@@ -20,22 +21,23 @@ def get_path(container, path):
             return response
     except (ArtifactNotFoundError, BucketNotFoundError) as e:
         if isinstance(e, ArtifactNotFoundError):
-            return response_map.create_404(e.message)
+            return response_map.create_404(e.error_code, e.message)
         if isinstance(e, BucketNotFoundError):
-            return response_map.create_500(e.message)
+            return response_map.create_500(e.error_code, e.message)
+
 
 @artifact.route("/", methods=["POST"], defaults={"path": ""})
 @artifact.route("/<path:path>", methods=["POST"])
 @decorators.foundation_headers
 def create_artifact(container, path):
-    try:    
+    try:
         with container.create_master_bucket_storage() as storage:
             file = request.files['file']
             storage.upload_artifact(path, file.filename)
-            return response_map.create_201() 
+            return response_map.create_201()
     except (DuplicateArtifactError, BucketNotFoundError, InvalidNameError) as e:
         if isinstance(e, DuplicateArtifactError):
-            return response_map.create_403(e.message) 
+            return response_map.create_403(e.error_code, e.message)
         if isinstance(e, InvalidNameError):
-            return response_map.create_403(e.message)
-        return response_map.create_500(e.message)
+            return response_map.create_403(e.error_code, e.message)
+        return response_map.create_500(e.error_code, e.message)
