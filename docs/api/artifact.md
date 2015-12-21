@@ -55,6 +55,16 @@ To get the same artifact back you can use get on the same path.
      Server: Werkzeug/0.11.2 Python/2.7.9
      Date: Sun, 20 Dec 2015 23:12:21 GMT
 
+If the artifact can not be found you will receive a 404 NOT FOUND
+
+     HTTP/1.0 404 NOT FOUND
+     Content-Type: application/json
+     
+     {
+        "message": "Resource not found",
+        "code": "resource_not_found"
+     }
+
 In curl:
 
      curl -i -L -H "Authorization: supersecuretoken" localhost:8080/artifact/hello-world > hello-world.txt
