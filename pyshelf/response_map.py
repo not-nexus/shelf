@@ -17,6 +17,15 @@ def vnd_error(error):
     response.data = body
     return response
 
+def create_403(msg=None):
+    if msg is None:
+        msg = "Forbidden"
+    error = {    
+        #temporarily defaulting this     
+        "code": ErrorCode.INVALID_ARTIFACT_NAME,
+        "message": msg,
+        "status_code": 403
+    }
 
 def create_404(msg=None):
     if msg is None:

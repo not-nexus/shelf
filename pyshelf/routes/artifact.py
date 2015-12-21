@@ -34,4 +34,8 @@ def create_artifact(container, path):
             storage.upload_artifact(path, file.filename)
             return response_map.create_201() 
     except (DuplicateArtifactError, BucketNotFoundError, InvalidNameError) as e:
+        if isinstance(e, DuplicateArtifactError):
+            return response_map.create_403(e.message) 
+        if isinstance(e, InvalidNameError):
+            return response_map.create_403(e.message)
         return response_map.create_500(e.message)
