@@ -1,6 +1,8 @@
 from tests.cloud_stubs import CloudFactoryStub
 import pyproctor
 import pyshelf.configure as configure
+import os
+from StringIO import StringIO
 
 
 class FunctionalTest(pyproctor.TestBase):
@@ -40,8 +42,9 @@ class FunctionalTest(pyproctor.TestBase):
             )
         )
 
-    def upload_artifact(self, path, fp, status_code=201, body=None):
-        response = self.test_client.post("/artifact/test", headers={"Authorization": "supersecuretoken"}, body={'file':fp})
+    def upload_artifact(self, path, status_code=201, body=None):
+        response = self.test_client.post("/artifact/test", data={'file':(StringIO('file contents'), 'test.txt')}, 
+                headers={"Authorization": "supersecuretoken", "Content-Type":"multipart/form-data"})
         data = response.get_data()
 
         if body:
@@ -56,3 +59,6 @@ class FunctionalTest(pyproctor.TestBase):
 
     def test_artifact_get_path(self):
         self.get_artifact_path("test", 200, "hello world")
+    
+    def test_artifact_upload(self):
+        self.upload_artifact("test", 201)
