@@ -49,7 +49,7 @@ class FunctionalTest(pyproctor.TestBase):
         response = self.test_client.post(
             path,
             data={'file': (StringIO('file contents'), 'test.txt')},
-            headers={"Authorization": "supersecuretoken", "Content-Type": "multipart/form-data"})
+            headers={"Authorization": "supersecuretoken"})
 
         self.assert_response(status_code, response, body)
 
