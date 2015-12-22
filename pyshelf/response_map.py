@@ -1,5 +1,6 @@
 from pyshelf.json_response import JsonResponse
 
+
 def vnd_error(error):
     """
         Creates vnd.error type error responses
@@ -15,16 +16,17 @@ def vnd_error(error):
     response.data = body
     return response
 
+
 def create_403(error_code, msg=None):
     if msg is None:
         msg = "Forbidden"
-    error = {    
+    error = {
         "code": error_code,
         "message": msg,
         "status_code": 403
     }
-    
     return vnd_error(error)
+
 
 def create_404(error_code, msg=None):
     if msg is None:
