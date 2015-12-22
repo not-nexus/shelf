@@ -25,40 +25,36 @@ class FunctionalTest(pyproctor.TestBase):
 
     def get_artifact_path(self, path, status_code=200, body=None):
         artifact = self.test_client.get("/artifact/test", headers={"Authorization": "supersecuretoken"})
-        data = artifact.get_data()
+        self.assert_response(status_code, artifact, body)
 
-        if body:
-            data = data.strip()
-            self.assertEqual(body, data)
-
-        self.assertEqual(
-            status_code,
-            artifact.status_code,
-            "Expected status code %s did not match %s.  Body: %s" %
-            (
-                status_code,
-                artifact.status_code,
-                data
-            )
-        )
-
-    def upload_artifact(self, path, status_code=201, body=None):
-        response = self.test_client.post("/artifact/test", data={'file':(StringIO('file contents'), 'test.txt')}, 
-                headers={"Authorization": "supersecuretoken", "Content-Type":"multipart/form-data"})
+    def assert_response(self, status_code, response, body=None):
         data = response.get_data()
 
         if body:
             data = data.strip()
             self.assertEqual(body, data)
-        
+
         self.assertEqual(
             status_code,
             response.status_code,
-            "Expected status code {} did not match {}".format(status_code, response.status_code)
+            "Expected status code %s did not match %s.  Body: %s" %
+            (
+                status_code,
+                response.status_code,
+                data
+            )
         )
+
+    def upload_artifact(self, path, status_code=201, body=None):
+        response = self.test_client.post(
+            "/artifact/test",
+            data={'file': (StringIO('file contents'), 'test.txt')},
+            headers={"Authorization": "supersecuretoken", "Content-Type": "multipart/form-data"})
+
+        self.assert_response(status_code, response, body)
 
     def test_artifact_get_path(self):
         self.get_artifact_path("test", 200, "hello world")
-    
+
     def test_artifact_upload(self):
         self.upload_artifact("test", 201)
