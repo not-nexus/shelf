@@ -2,7 +2,6 @@ from flask import request, Blueprint, Response
 from pyshelf.endpoint_decorators import decorators
 from pyshelf.cloud.cloud_exceptions import ArtifactNotFoundError, BucketNotFoundError, DuplicateArtifactError, InvalidNameError
 import pyshelf.response_map as response_map
-from pyshelf.error_code import ErrorCode
 
 artifact = Blueprint("artifact", __name__)
 
