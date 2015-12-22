@@ -62,6 +62,7 @@ class Storage(object):
         if bucket.get_key(artifact_name) is not None:
             raise DuplicateArtifactError(artifact_name)
         key = Key(bucket, artifact_name)
+        self.logger.debug("Commencing upload of {}".format(artifact_name))
         key.set_contents_from_file(fp)
         self.logger.debug("Completed upload of {}".format(artifact_name))
 

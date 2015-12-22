@@ -40,5 +40,19 @@ class FunctionalTest(pyproctor.TestBase):
             )
         )
 
+    def upload_artifact(self, path, fp, status_code=201, body=None):
+        response = self.test_client.post("/artifact/test", headers={"Authorization": "supersecuretoken"}, body={'file':fp})
+        data = response.get_data()
+
+        if body:
+            data = data.strip()
+            self.assertEqual(body, data)
+        
+        self.assertEqual(
+            status_code,
+            response.status_code,
+            "Expected status code {} did not match {}".format(status_code, response.status_code)
+        )
+
     def test_artifact_get_path(self):
         self.get_artifact_path("test", 200, "hello world")
