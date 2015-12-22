@@ -1,6 +1,6 @@
 from flask import request, Blueprint, Response
 from pyshelf.endpoint_decorators import decorators
-from pyshelf.cloud.cloud_exceptions import ArtifactNotFoundError, BucketNotFoundError, DuplicateArtifactError, InvalidNameError
+from pyshelf.cloud.cloud_exceptions import CloudStorageException
 import pyshelf.response_map as response_map
 
 artifact = Blueprint("artifact", __name__)
@@ -18,11 +18,8 @@ def get_path(container, path):
             response = Response(stream)
             response.headers["Content-Type"] = stream.headers["content-type"]
             return response
-    except (ArtifactNotFoundError, BucketNotFoundError) as e:
-        if isinstance(e, ArtifactNotFoundError):
-            return response_map.create_404(e.error_code, e.message)
-        if isinstance(e, BucketNotFoundError):
-            return response_map.create_500(e.error_code, e.message)
+    except CloudStorageException as e:
+        return response_map.map_exception(e)
 
 
 @artifact.route("/", methods=["POST"], defaults={"path": ""})
@@ -34,9 +31,5 @@ def create_artifact(container, path):
             file = request.files['file']
             storage.upload_artifact(path, file)
             return response_map.create_201()
-    except (DuplicateArtifactError, BucketNotFoundError, InvalidNameError) as e:
-        if isinstance(e, DuplicateArtifactError):
-            return response_map.create_403(e.error_code, e.message)
-        if isinstance(e, InvalidNameError):
-            return response_map.create_403(e.error_code, e.message)
-        return response_map.create_500(e.error_code, e.message)
+    except CloudStorageException as e:
+        return response_map.map_exception(e)

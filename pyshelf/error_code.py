@@ -3,3 +3,4 @@ class ErrorCode(object):
     INTERNAL_SERVER_ERROR = "internal_server_error"
     DUPLICATE_ARTIFACT = "duplicate_artifact"
     INVALID_ARTIFACT_NAME = "invalid_artifact_name"
+    FORBIDDEN = "forbidden"

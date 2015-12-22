@@ -46,7 +46,7 @@ class Storage(object):
 
     def upload_artifact(self, artifact_name, fp):
         """
-            Uploads an artifact
+            Uploads an artifact. If directory does not exist in path it will be created.
 
             Args:
                 artifact_name(basestring): Full path to upload artifact to
