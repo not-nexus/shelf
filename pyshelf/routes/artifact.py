@@ -33,7 +33,7 @@ def create_artifact(container, path):
     try:
         with container.create_master_bucket_storage() as storage:
             file = request.files['file']
-            storage.upload_artifact(path, file.filename)
+            storage.upload_artifact(path, file)
             return response_map.create_201()
     except (DuplicateArtifactError, BucketNotFoundError, InvalidNameError) as e:
         if isinstance(e, DuplicateArtifactError):

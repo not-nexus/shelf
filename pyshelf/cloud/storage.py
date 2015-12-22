@@ -46,13 +46,13 @@ class Storage(object):
         stream = StreamIterator(key)
         return stream
 
-    def upload_artifact(self, artifact_name, src):
+    def upload_artifact(self, artifact_name, fp):
         """
             Uploads an artifact
 
             Args:
                 artifact_name(basestring): Full path to upload artifact to
-                src(basestring): Path to file that will be uploaded
+                fp(file): File to be uploaded 
 
         """
         match = re.search('\/_', artifact_name)
@@ -62,7 +62,7 @@ class Storage(object):
         if bucket.get_key(artifact_name) is not None:
             raise DuplicateArtifactError(artifact_name)
         key = Key(bucket, artifact_name)
-        key.set_contents_from_filename(src)
+        key.set_contents_from_file(fp)
         self.logger.debug("Completed upload of {}".format(artifact_name))
 
     def delete_artifact(self, artifact_name):
