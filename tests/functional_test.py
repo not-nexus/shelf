@@ -19,7 +19,6 @@ class FunctionalTest(pyproctor.TestBase):
         self.app.config.update(config)
         configure.logger(app.logger, "DEBUG")
         self.test_client = app.test_client()
-        self.auth = {"Authorization": "190a64931e6e49ccb9917c7f32a29d19"}
 
     def configure_moto(self):
         self.moto_s3 = mock_s3()
@@ -30,6 +29,20 @@ class FunctionalTest(pyproctor.TestBase):
         key = Key(self.test_bucket)
         key.key = "test"
         key.set_contents_from_string("hello world")
+        self.create_auth_key()
+
+    def create_auth_key(self):
+        self.auth = {"Authorization": "190a64931e6e49ccb9917c7f32a29d19"}
+        key_name = "_keys/{}".format(self.auth['Authorization'])
+        auth_key = Key(self.test_bucket, key_name)
+        auth_key.set_contents_from_string("""
+                    name: 'Andy Gertjejansen'
+                    token: '190a64931e6e49ccb9917c7f32a29d19'
+                    write:
+                      - 'andy_gertjejansen/**'
+                      - 'kyle_long/andy_upload_access/*'
+                    read:
+                      - '/**'""")
 
     def tearDown(self):
         self.moto_s3.stop()
