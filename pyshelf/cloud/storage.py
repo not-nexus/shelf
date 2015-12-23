@@ -70,6 +70,14 @@ class Storage(object):
             raise ArtifactNotFoundError(artifact_name)
         key.delete()
 
+    def get_permissions_key(self, token):
+        """
+            Gets string contents of key with bucket permissions.
+        """
+        token_path = "_keys/" + token
+        key = self._get_key(token_path)
+        return key.get_contents_as_string()
+
     def _get_key(self, artifact_name):
         bucket = self._get_bucket(self.bucket_name)
         self.logger.debug("Attempting to get artifact {}".format(artifact_name))

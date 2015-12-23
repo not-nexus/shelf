@@ -1,3 +1,6 @@
+import yaml
+
+
 class PermissionsValidator(object):
     def __init__(self, container):
         self.container = container
@@ -9,7 +12,11 @@ class PermissionsValidator(object):
             # TODO : Fix this to actually auth against a real
             # token stored in S3
             # Super fake auth right now.
-            if authorization.lower() == "supersecuretoken":
-                allowed = True
+            with self.container.create_master_bucket_storage() as storage:
+                raw_permissions = storage.get_permissions_key(authorization)
+                if raw_permissions:
+                    permissions = yaml.load(raw_permissions)    
+                    if authorization.lower() == permissions.get("token"):
+                        allowed = True
 
         return allowed
