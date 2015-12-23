@@ -1,9 +1,10 @@
-import pyproctor
-import pyshelf.configure as configure
 from StringIO import StringIO
+from boto.s3.key import Key
 from moto import mock_s3
 import boto
-from boto.s3.key import Key
+import json
+import pyproctor
+import pyshelf.configure as configure
 
 
 class FunctionalTest(pyproctor.TestBase):
@@ -53,9 +54,14 @@ class FunctionalTest(pyproctor.TestBase):
 
     def assert_response(self, status_code, response, body=None):
         data = response.get_data()
-
         if body:
             data = data.strip()
+            try:
+                data = json.loads(data)
+            except ValueError:
+                # This is expected if it is just a string.
+                pass
+
             self.assertEqual(body, data)
 
         self.assertEqual(
@@ -82,12 +88,19 @@ class FunctionalTest(pyproctor.TestBase):
 
     def test_artifact_get_none(self):
         self.get_artifact_path("/artifact/nothing", 404)
-    
-    def test_artifact_upload(self):
-        self.upload_artifact("/artifact/test-2", 201)
 
-    def test_duplicate_artifact_upload(self):
-        self.upload_artifact("/artifact/test", 403)
+    def test_artifact_upload(self):
+        self.upload_artifact("/artifact/test-2", 201, {"success": True})
+
+    def test_artifact_upload_existing_artifact(self):
+        self.upload_artifact(
+            "/artifact/test",
+            403,
+            {
+                "message": "Artifact by name test already exists in current directory",
+                "code": "duplicate_artifact"
+            }
+        )
 
     def test_illegal_artifact_upload(self):
         self.upload_artifact("/artifact/_test", 403)
