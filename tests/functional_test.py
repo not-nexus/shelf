@@ -1,8 +1,9 @@
-from tests.cloud_stubs import CloudFactoryStub
 import pyproctor
 import pyshelf.configure as configure
-import os
 from StringIO import StringIO
+from moto import mock_s3
+import boto
+from boto.s3.key import Key
 
 
 class FunctionalTest(pyproctor.TestBase):
@@ -12,16 +13,25 @@ class FunctionalTest(pyproctor.TestBase):
             "secretKey": "test",
             "bucketName": "test"
         }
-        import pyshelf.cloud.storage
-        pyproctor.MonkeyPatcher.patch(pyshelf.cloud.factory, "Factory", CloudFactoryStub)
+        self.configure_moto()
         from pyshelf.app import app
         self.app = app
         self.app.config.update(config)
         configure.logger(app.logger, "DEBUG")
         self.test_client = app.test_client()
 
+    def configure_moto(self):
+        self.moto_s3 = mock_s3()
+        self.moto_s3.start()
+        self.boto_connection = boto.connect_s3()
+        self.boto_connection.create_bucket("test")
+        self.test_bucket = self.boto_connection.get_bucket("test")
+        key = Key(self.test_bucket)
+        key.key = "test"
+        key.set_contents_from_string("hello world")
+
     def tearDown(self):
-        CloudFactoryStub.reset()
+        self.moto_s3.stop()
 
     def get_artifact_path(self, path, status_code=200, body=None):
         artifact = self.test_client.get(path, headers={"Authorization": "supersecuretoken"})
@@ -57,4 +67,4 @@ class FunctionalTest(pyproctor.TestBase):
         self.get_artifact_path("/artifact/test", 200, "hello world")
 
     def test_artifact_upload(self):
-        self.upload_artifact("/artifact/test", 201)
+        self.upload_artifact("/artifact/test-2", 201)
