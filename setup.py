@@ -19,7 +19,8 @@ config = {
     ],
     'tests_require': [
         'pyproctor',
-        'mock'
+        'mock',
+        "moto",
     ],
     'packages': ['pyshelf'],
     'scripts': [],
