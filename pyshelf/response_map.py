@@ -15,7 +15,7 @@ def vnd_error(error):
     status_code = error.get("status_code", 500)
     response = JsonResponse()
     response.status_code = status_code
-    response.data = body
+    response.set_data(body)
     return response
 
 
