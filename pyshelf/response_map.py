@@ -99,7 +99,7 @@ def create_201():
     }
     response = JsonResponse()
     response.status_code = 201
-    response.data = body
+    response.set_data(body)
     return response
 
 
