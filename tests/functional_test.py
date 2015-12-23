@@ -35,11 +35,7 @@ class FunctionalTest(pyproctor.TestBase):
         self.moto_s3.stop()
 
     def get_artifact_path(self, path, status_code=200, body=None):
-<<<<<<< HEAD
-        artifact = self.test_client.get("/artifact/test", headers=self.auth)
-=======
         artifact = self.test_client.get(path, headers=self.auth)
->>>>>>> 61c3d3b622ddff0fecbde3301a8d45fd00d9e320
         self.assert_response(status_code, artifact, body)
 
     def assert_response(self, status_code, response, body=None):
