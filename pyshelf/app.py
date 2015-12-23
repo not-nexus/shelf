@@ -5,6 +5,7 @@ import pyshelf.response_map as response_map
 app = flask.Flask(__name__)
 app.register_blueprint(artifact, url_prefix="/artifact")
 
+
 @app.after_request
 def format_response(response):
     if response.status_code == 404:
