@@ -53,7 +53,8 @@ class Storage(object):
                 fp(file): File to be uploaded
 
         """
-        match = re.search('\/_', artifact_name)
+        a = "/{}".format(artifact_name)
+        match = re.search('\/_', a)
         if match:
             raise InvalidNameError(artifact_name)
         bucket = self._get_bucket(self.bucket_name)

@@ -80,5 +80,14 @@ class FunctionalTest(pyproctor.TestBase):
     def test_artifact_get_path(self):
         self.get_artifact_path("/artifact/test", 200, "hello world")
 
+    def test_artifact_get_none(self):
+        self.get_artifact_path("/artifact/nothing", 404)
+    
     def test_artifact_upload(self):
         self.upload_artifact("/artifact/test-2", 201)
+
+    def test_duplicate_artifact_upload(self):
+        self.upload_artifact("/artifact/test", 403)
+
+    def test_illegal_artifact_upload(self):
+        self.upload_artifact("/artifact/_test", 403)

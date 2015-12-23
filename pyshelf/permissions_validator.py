@@ -9,14 +9,17 @@ class PermissionsValidator(object):
         allowed = False
         authorization = self.container.request.headers.get("Authorization")
         if authorization:
-            # TODO : Fix this to actually auth against a real
-            # token stored in S3
-            # Super fake auth right now.
+            # TODO : Parse permissions 
             with self.container.create_master_bucket_storage() as storage:
                 raw_permissions = storage.get_permissions_key(authorization)
                 if raw_permissions:
                     permissions = yaml.load(raw_permissions)    
-                    if authorization.lower() == permissions.get("token"):
+                    token = permissions.get("token")
+                    write = permissions.get("write")
+                    read = permissions.get("read")
+                    if authorization.lower() == token:
                         allowed = True
 
         return allowed
+    
+
