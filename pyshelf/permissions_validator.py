@@ -15,11 +15,22 @@ class PermissionsValidator(object):
                 if raw_permissions:
                     permissions = yaml.load(raw_permissions)    
                     token = permissions.get("token")
-                    write = permissions.get("write")
-                    read = permissions.get("read")
                     if authorization.lower() == token:
-                        allowed = True
+                        allowed = self._get_access(permissions) 
 
         return allowed
     
+    def _get_access(self, permissions):
+        method = self.container.request.method 
+        path = self.container.request.path
+        allowed = True
+        if method == "POST":
+            write = permissions.get("write")
+            allowed = self._parse_glob(write)
+        if method == "GET":
+            read = permissions.get("read")
+            allowed = self._parse_glob(read)
+        return allowed
 
+    def _parse_glob(self, glob):
+        return True
