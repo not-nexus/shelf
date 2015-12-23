@@ -19,12 +19,13 @@ class FunctionalTest(pyproctor.TestBase):
         self.app.config.update(config)
         configure.logger(app.logger, "DEBUG")
         self.test_client = app.test_client()
+        self.auth = {"Authorization": "190a64931e6e49ccb9917c7f32a29d19"}
 
     def tearDown(self):
         CloudFactoryStub.reset()
 
     def get_artifact_path(self, path, status_code=200, body=None):
-        artifact = self.test_client.get("/artifact/test", headers={"Authorization": "supersecuretoken"})
+        artifact = self.test_client.get("/artifact/test", headers=self.auth)
         self.assert_response(status_code, artifact, body)
 
     def assert_response(self, status_code, response, body=None):
@@ -49,7 +50,7 @@ class FunctionalTest(pyproctor.TestBase):
         response = self.test_client.post(
             "/artifact/test",
             data={'file': (StringIO('file contents'), 'test.txt')},
-            headers={"Authorization": "supersecuretoken"})
+            headers=self.auth)
 
         self.assert_response(status_code, response, body)
 

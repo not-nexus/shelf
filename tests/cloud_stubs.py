@@ -86,7 +86,19 @@ class CloudStorageStub(object):
 
     def upload_artifact(self, artifact_name, fp):
         return True
-
+    
+    def get_permissions_key(self, token):
+        yaml = """
+        name: 'Andy Gertjejansen'
+        token: '190a64931e6e49ccb9917c7f32a29d19'
+        write:
+          - 'andy_gertjejansen/**'
+          - 'kyle_long/andy_upload_access/*'
+        read:
+          - '/**'"""
+               
+        return yaml
+                
     def delete_artifact(self, artifact_name):
         return True
 
