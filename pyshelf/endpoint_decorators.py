@@ -39,7 +39,7 @@ class EndpointDecorators(object):
         )
 
         return wrapper
-    
+
     def foundation_headers(self, func):
         wrapper = self.merge(
             func,
@@ -65,7 +65,7 @@ class EndpointDecorators(object):
             request_data = request.get_data()
 
             def log(message, data):
-                container.logger.info("%s : \n %s" % (message, data))
+                container.logger.info("{} : \n {}".format(message, data))
 
             # To pretty print the request
             # TODO : Is this worth it?
@@ -74,8 +74,9 @@ class EndpointDecorators(object):
             log("REQUEST HEADERS", request.headers)
             log("REQUEST BODY", request_data)
             response = func(container, *args, **kwargs)
-            response_data = response.get_data()
             log("RESPONSE HEADERS", response.headers)
+            if response.headers["content-type"] == "application/json":
+                log("RESPONSE DATA", response.data)
             return response
 
         return wrapper
@@ -87,18 +88,17 @@ class EndpointDecorators(object):
         @functools.wraps(func)
         def wrapper(container, *args, **kwargs):
             request = container.request
-            
+
             def log(message, data):
-                container.logger.info("%s : \n %s" % (message, data))
+                container.logger.info("{} : \n {}".format(message, data))
 
             log("REQUEST HEADERS", request.headers)
             response = func(container, *args, **kwargs)
-            response_data = response.get_data()
             log("RESPONSE HEADERS", response.headers)
             return response
 
         return wrapper
-    
+
     def injectcontainer(self, func):
         """
             Used to handle creating and injeceting RequrstContextContainer
