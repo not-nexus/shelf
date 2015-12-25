@@ -91,7 +91,14 @@ class FunctionalTest(pyproctor.TestBase):
         self.get_artifact_path("/artifact/test", 200, "hello world")
 
     def test_artifact_get_none(self):
-        self.get_artifact_path("/artifact/nothing", 404)
+        self.get_artifact_path(
+                "/artifact/nothing", 
+                404, 
+                {
+                    "message": "Resource not found",
+                    "code": "resource_not_found"
+                }
+            )
 
     def test_artifact_upload(self):
         self.upload_artifact("/artifact/test-2", 201, {"success": True})
@@ -115,4 +122,11 @@ class FunctionalTest(pyproctor.TestBase):
         )
 
     def test_illegal_artifact_upload(self):
-        self.upload_artifact("/artifact/_test", 403)
+        self.upload_artifact(
+                "/artifact/_test", 
+                403,
+                {
+                    "message": "The artifact name provided is not an allowable name. Please remove leading underscores.",
+                    "code": "invalid_artifact_name"
+                }
+            )
