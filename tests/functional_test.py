@@ -27,8 +27,8 @@ class FunctionalTest(pyproctor.TestBase):
         self.boto_connection = boto.connect_s3()
         self.boto_connection.create_bucket("test")
         self.test_bucket = self.boto_connection.get_bucket("test")
-        key = Key(self.test_bucket)
-        key.key = "test"
+        key = Key(self.test_bucket, "test")
+        nested_key = Key(self.test_bucket, "/dir/dir2/dir3/nest-test")
         key.set_contents_from_string("hello world")
         self.create_auth_key()
 
@@ -40,10 +40,11 @@ class FunctionalTest(pyproctor.TestBase):
                     name: 'Andy Gertjejansen'
                     token: '190a64931e6e49ccb9917c7f32a29d19'
                     write:
-                      - 'andy_gertjejansen/**'
-                      - 'kyle_long/andy_upload_access/*'
+                      - '/'
+                      - '/dir/dir2'
                     read:
-                      - '/**'""")
+                      - '/'
+                      - '/dir/dir2'""")
 
     def tearDown(self):
         self.moto_s3.stop()
@@ -91,6 +92,13 @@ class FunctionalTest(pyproctor.TestBase):
 
     def test_artifact_upload(self):
         self.upload_artifact("/artifact/test-2", 201, {"success": True})
+
+    def test_artifact_upload_permissions(self):
+        self.upload_artifact("/artifact/dir/nest-test", 401, "Permission Denied")
+        self.upload_artifact("/artifact/dir/dir2/nest-test", 201, {"success": True})
+        self.upload_artifact("/artifact/dir/dir2/dir3/nest-test", 401, "Permission Denied")
+        self.get_artifact_path("/artifact/dir/test", 401, "Permission Denied")
+        self.get_artifact_path("/artifact/dir/dir2/nest-test", 200, "file contents")
 
     def test_artifact_upload_existing_artifact(self):
         self.upload_artifact(
