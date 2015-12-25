@@ -2,7 +2,8 @@ from boto.s3.connection import S3Connection
 from boto.s3.key import Key
 import re
 from pyshelf.cloud.stream_iterator import StreamIterator
-from pyshelf.cloud.cloud_exceptions import ArtifactNotFoundError, BucketNotFoundError, DuplicateArtifactError, InvalidNameError
+from pyshelf.cloud.cloud_exceptions import \
+    ArtifactNotFoundError, BucketNotFoundError, DuplicateArtifactError, InvalidNameError
 
 
 class Storage(object):
@@ -29,8 +30,6 @@ class Storage(object):
             http://technology.jana.com/2015/03/12/using-flask-and-boto-to-create-a-proxy-to-s3/
 
             Args:
-                bucketName(basestring): The name of the cloud storage bucket
-                    (S3 right now) that we want to connect to
                 artifactName(basestring): Full path to an object that you wish
                     to download.
 
@@ -40,7 +39,8 @@ class Storage(object):
                     directly into a response so long as the framework supports it.
         """
         key = self._get_key(artifact_name)
-        self.logger.debug("Creating instance of pyshelf.cloud.stream_iterator.StreamIterator. Artifact {}".format(artifact_name))
+        self.logger.debug(
+            "Creating instance of pyshelf.cloud.stream_iterator.StreamIterator. Artifact {}".format(artifact_name))
         stream = StreamIterator(key)
         return stream
 
@@ -71,12 +71,17 @@ class Storage(object):
             raise ArtifactNotFoundError(artifact_name)
         key.delete()
 
-    def get_permissions_key(self, token):
+    def get_artifact_as_string(self, path):
         """
-            Gets string contents of key with bucket permissions.
+            Just gets the content of the artifact instead of
+            streaming it to a file pointer.  This shouldn't
+            be used unless artifact is small enough to easily
+            fit into memory
+
+            Arguments:
+                path(basestring): The path to the artifact you want to get.
         """
-        token_path = "_keys/" + token
-        key = self._get_key(token_path)
+        key = self._get_key(path)
         return key.get_contents_as_string()
 
     def _get_key(self, artifact_name):
