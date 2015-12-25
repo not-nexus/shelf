@@ -89,7 +89,7 @@ class Storage(object):
         self.logger.debug("Attempting to get artifact {}".format(artifact_name))
         key = bucket.get_key(artifact_name)
         if key is None:
-            self.logger.error("Artifact {}  does not exist in bucket {}".format(artifact_name, self.bucket_name))
+            self.logger.error("Artifact {} does not exist in bucket {}".format(artifact_name, self.bucket_name))
             raise ArtifactNotFoundError(artifact_name)
         return key
 
