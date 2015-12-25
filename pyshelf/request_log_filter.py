@@ -1,6 +1,7 @@
 import logging
 import pyshelf.utils as utils
 
+
 class RequestLogFilter(logging.Filter):
     def filter(self, record):
         container = utils.get_container()
@@ -8,7 +9,7 @@ class RequestLogFilter(logging.Filter):
         record.request_id = ""
 
         if container:
-            record.url = "- %s " % container.request.url
-            record.request_id = "- %s " % container.request_id
+            record.url = "- {} ".format(container.request.url)
+            record.request_id = "- {} ".format(container.request_id)
 
         return True
