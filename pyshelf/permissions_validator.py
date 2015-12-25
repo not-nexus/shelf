@@ -32,12 +32,19 @@ class PermissionsValidator(object):
         return allowed
 
     def _get_access(self, permissions):
+        """
+            Parses permissions and compares it to request path to ensure user
+            has proper access. To allow for read access to only specific files
+            in a directory two paths are compared using fnmatch. The full path
+            of the artifact and the directory of the artifact.
+        """
         access = False
         path = self.container.request.path
         path = re.sub("/artifact", "", path)
-        path = os.path.dirname(path)
+        dir_path = os.path.dirname(path)
+        dir_path = os.path.join(dir_path, '')
         self.container.logger.debug("Path: {} - Permissions: {}".format(path, permissions))
         for p in permissions:
-            if fnmatch.fnmatch(path, p):
+            if fnmatch.fnmatch(path, p) or fnmatch.fnmatch(dir_path, p):
                 return True
         return access

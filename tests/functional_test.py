@@ -30,6 +30,7 @@ class FunctionalTest(pyproctor.TestBase):
         key = Key(self.test_bucket, "test")
         nested_key = Key(self.test_bucket, "/dir/dir2/dir3/nest-test")
         key.set_contents_from_string("hello world")
+        nested_key.set_contents_from_string("hello world")
         self.create_auth_key()
 
     def create_auth_key(self):
@@ -41,10 +42,11 @@ class FunctionalTest(pyproctor.TestBase):
                     token: '190a64931e6e49ccb9917c7f32a29d19'
                     write:
                       - '/'
-                      - '/dir/dir2'
+                      - '/dir/dir2/'
                     read:
                       - '/'
-                      - '/dir/dir2'""")
+                      - '/dir/dir2/'
+                      - '/dir/dir2/dir3/nest-test'""")
 
     def tearDown(self):
         self.moto_s3.stop()
@@ -99,6 +101,7 @@ class FunctionalTest(pyproctor.TestBase):
         self.upload_artifact("/artifact/dir/dir2/dir3/nest-test", 401, "Permission Denied")
         self.get_artifact_path("/artifact/dir/test", 401, "Permission Denied")
         self.get_artifact_path("/artifact/dir/dir2/nest-test", 200, "file contents")
+        self.get_artifact_path("/artifact/dir/dir2/dir3/nest-test", 200, "hello world")
 
     def test_artifact_upload_existing_artifact(self):
         self.upload_artifact(
