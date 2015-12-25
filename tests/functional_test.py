@@ -43,6 +43,7 @@ class FunctionalTest(pyproctor.TestBase):
                     write:
                       - '/'
                       - '/dir/dir2/'
+                      - '/dir/dir2/dir3/*'
                     read:
                       - '/'
                       - '/dir/dir2/'
@@ -98,7 +99,7 @@ class FunctionalTest(pyproctor.TestBase):
     def test_artifact_upload_permissions(self):
         self.upload_artifact("/artifact/dir/nest-test", 401, "Permission Denied")
         self.upload_artifact("/artifact/dir/dir2/nest-test", 201, {"success": True})
-        self.upload_artifact("/artifact/dir/dir2/dir3/nest-test", 401, "Permission Denied")
+        self.upload_artifact("/artifact/dir/dir2/dir3/dir4/test", 201, {"success": True})
         self.get_artifact_path("/artifact/dir/test", 401, "Permission Denied")
         self.get_artifact_path("/artifact/dir/dir2/nest-test", 200, "file contents")
         self.get_artifact_path("/artifact/dir/dir2/dir3/nest-test", 200, "hello world")
