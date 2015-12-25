@@ -59,6 +59,19 @@ class EndpointDecorators(object):
 
             this logs the body of the request
         """
+        wrapper = self.merge(
+            func,
+            self.logheaders,
+            self.logbodies
+        )
+
+        return wrapper
+
+    def logbodies(self, func):
+        """
+            Used to log the request and response
+            bodies.
+        """
         @functools.wraps(func)
         def wrapper(container, *args, **kwargs):
             request = container.request
@@ -67,14 +80,17 @@ class EndpointDecorators(object):
             def log(message, data):
                 container.logger.info("{} : \n {}".format(message, data))
 
-            # To pretty print the request
-            # TODO : Is this worth it?
             if request_data:
-                request_data = json.dumps(json.loads(request_data), indent=4, separators=(',', ': '))
-            log("REQUEST HEADERS", request.headers)
+                request_data = json.dumps(
+                    json.loads(
+                        request_data
+                    ),
+                    indent=4,
+                    separators=(',', ': ')
+                )
+
             log("REQUEST BODY", request_data)
             response = func(container, *args, **kwargs)
-            log("RESPONSE HEADERS", response.headers)
             if response.headers["content-type"] == "application/json":
                 log("RESPONSE DATA", response.data)
             return response
