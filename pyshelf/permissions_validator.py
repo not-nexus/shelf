@@ -16,17 +16,15 @@ class PermissionsValidator(object):
                 raw_permissions = storage.get_artifact_as_string("_keys/" + authorization)
                 if raw_permissions:
                     permissions = yaml.load(raw_permissions)
-                    token = permissions.get("token")
-                    if authorization.lower() == token:
-                        method = self.container.request.method
-                        path = self.container.request.path
-                        key_req = re.search('^\/artifact\/*', path)
-                        if method == "POST" and key_req:
-                            write = permissions.get("write")
-                            allowed = self._get_access(write)
-                        if method == "GET" and key_req:
-                            read = permissions.get("read")
-                            allowed = self._get_access(read)
+                    method = self.container.request.method
+                    path = self.container.request.path
+                    key_req = re.search('^\/artifact\/*', path)
+                    if method == "POST" and key_req:
+                        write = permissions.get("write")
+                        allowed = self._get_access(write)
+                    if method == "GET" and key_req:
+                        read = permissions.get("read")
+                        allowed = self._get_access(read)
 
         return allowed
 

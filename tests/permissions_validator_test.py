@@ -13,7 +13,14 @@ class PermissionsUnitTest(pyproctor.TestBase):
         container = mock.Mock()
         container.request = request
         storage = mock.Mock()
-        storage.get_artifact_as_string = mock.MagicMock(return_value=permissions)
+        storage.get_artifact_as_string = mock.MagicMock()
+
+        def get_artifact(key):
+            if key == "_keys/" + utils.VALID_KEY:
+                return permissions
+            return None
+
+        storage.get_artifact_as_string.side_effect = get_artifact
         storage.__exit__ = mock.MagicMock(return_value=False)
         storage.__enter__ = mock.MagicMock(return_value=storage)
         container.create_master_bucket_storage = mock.MagicMock(return_value=storage)
