@@ -5,7 +5,7 @@ import boto
 import json
 import pyproctor
 import pyshelf.configure as configure
-import permission_utils as utils 
+import permission_utils as utils
 
 
 class FunctionalTest(pyproctor.TestBase):
@@ -83,13 +83,13 @@ class FunctionalTest(pyproctor.TestBase):
 
     def test_artifact_get_none(self):
         self.get_artifact_path(
-                "/artifact/nothing", 
-                404, 
-                {
-                    "message": "Resource not found",
-                    "code": "resource_not_found"
-                }
-            )
+            "/artifact/nothing",
+            404,
+            {
+                "message": "Resource not found",
+                "code": "resource_not_found"
+            }
+        )
 
     def test_artifact_upload(self):
         self.upload_artifact("/artifact/test-2", 201, {"success": True})
@@ -114,10 +114,10 @@ class FunctionalTest(pyproctor.TestBase):
 
     def test_illegal_artifact_upload(self):
         self.upload_artifact(
-                "/artifact/_test", 
-                403,
-                {
-                    "message": "The artifact name provided is not an allowable name. Please remove leading underscores.",
-                    "code": "invalid_artifact_name"
-                }
-            )
+            "/artifact/_test",
+            403,
+            {
+                "message": "The artifact name provided is not an allowable name. Please remove leading underscores.",
+                "code": "invalid_artifact_name"
+            }
+        )
