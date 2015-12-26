@@ -18,7 +18,7 @@ class PermissionsUnitTest(pyproctor.TestBase):
         storage.__enter__ = mock.MagicMock(return_value=storage)
         container.create_master_bucket_storage = mock.MagicMock(return_value=storage)
         self.validator = PermissionsValidator(container)
-    
+
     def test_allowed_upload_with_full_access(self):
         self.mock_dependencies(utils.get_permissions_all(), "/artifact/upload-test", "POST", utils.auth_header())
         self.assertTrue(self.validator.allowed())
@@ -32,7 +32,8 @@ class PermissionsUnitTest(pyproctor.TestBase):
         self.assertFalse(self.validator.allowed())
 
     def test_allowed_read_with_full_access(self):
-        self.mock_dependencies(utils.get_permissions_all(), "/artifact/dir/dir2/dir3/nest-test", "GET", utils.auth_header())
+        self.mock_dependencies(
+            utils.get_permissions_all(), "/artifact/dir/dir2/dir3/nest-test", "GET", utils.auth_header())
         self.assertTrue(self.validator.allowed())
 
     def test_allowed_read_no_access(self):

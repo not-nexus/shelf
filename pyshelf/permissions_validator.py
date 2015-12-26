@@ -12,7 +12,6 @@ class PermissionsValidator(object):
         allowed = False
         authorization = self.container.request.headers.get("Authorization")
         if authorization:
-            # TODO : Parse permissions
             with self.container.create_master_bucket_storage() as storage:
                 raw_permissions = storage.get_artifact_as_string("_keys/" + authorization)
                 if raw_permissions:
