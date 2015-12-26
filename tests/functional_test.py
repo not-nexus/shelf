@@ -5,6 +5,7 @@ import boto
 import json
 import pyproctor
 import pyshelf.configure as configure
+import test_utils as utils 
 
 
 class FunctionalTest(pyproctor.TestBase):
@@ -34,20 +35,10 @@ class FunctionalTest(pyproctor.TestBase):
         self.create_auth_key()
 
     def create_auth_key(self):
-        self.auth = {"Authorization": "190a64931e6e49ccb9917c7f32a29d19"}
+        self.auth = utils.auth_header()
         key_name = "_keys/{}".format(self.auth['Authorization'])
         auth_key = Key(self.test_bucket, key_name)
-        auth_key.set_contents_from_string("""
-                    name: 'Andy Gertjejansen'
-                    token: '190a64931e6e49ccb9917c7f32a29d19'
-                    write:
-                      - '/'
-                      - '/dir/dir2/'
-                      - '/dir/dir2/dir3/*'
-                    read:
-                      - '/'
-                      - '/dir/dir2/'
-                      - '/dir/dir2/dir3/nest-test'""")
+        auth_key.set_contents_from_string(utils.get_permissions_func_test())
 
     def tearDown(self):
         self.moto_s3.stop()
