@@ -5,7 +5,7 @@ import boto
 import json
 import pyproctor
 import pyshelf.configure as configure
-import test_utils as utils 
+import permission_utils as utils 
 
 
 class FunctionalTest(pyproctor.TestBase):

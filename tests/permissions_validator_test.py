@@ -1,7 +1,7 @@
 import pyproctor
 from pyshelf.permissions_validator import PermissionsValidator
 import mock
-import test_utils as utils
+import permission_utils as utils
 
 
 class PermissionsUnitTest(pyproctor.TestBase):
