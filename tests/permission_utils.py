@@ -35,9 +35,34 @@ def get_permissions_func_test():
           - '/dir/dir2/dir3/*'""".format(VALID_KEY)
 
 
-def get_meta(immutable=False):
-    return {"key": "value", "key1": "value", "immutable": immutable}
+def get_meta():
+    return { 
+            "tag":{
+                    "name": "tag", 
+                    "value": "test", 
+                    "immutable": False 
+                },
+            "tag1":{
+                    "name": "tag1", 
+                    "value": "test1", 
+                    "immutable": True 
+                }
+            }
 
+
+def get_meta_body():
+    return [ 
+               {
+                    "name": "tag", 
+                    "value": "test", 
+                    "immutable": False 
+               },
+               {
+                    "name": "tag1", 
+                    "value": "test1", 
+                    "immutable": True 
+               }
+           ] 
 
 def auth_header(is_valid=True):
     if is_valid:

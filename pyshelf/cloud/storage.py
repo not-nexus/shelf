@@ -2,6 +2,7 @@ from boto.s3.connection import S3Connection
 from boto.s3.key import Key
 import re
 from pyshelf.cloud.stream_iterator import StreamIterator
+from pyshelf.cloud.metadata_mapper import MetadataMapper
 from pyshelf.cloud.cloud_exceptions import \
     ArtifactNotFoundError, BucketNotFoundError, DuplicateArtifactError, InvalidNameError, ImmutableMetaError
 
@@ -91,10 +92,11 @@ class Storage(object):
             Args:
                 path(basestring): Full path to artifact.
             Returns:
-                metadata(dict) of artifact.
+                list: returns a list of metadata that is parsed by MetadataMapper.
         """
         key = self._get_key(path)
-        return key.metadata
+        meta_mapper = MetadataMapper()
+        return meta_mapper.format_for_client(key.metadata)
 
     def set_artifact_meta(self, path, meta):
         """
@@ -102,12 +104,10 @@ class Storage(object):
 
             Args:
                 path(basestring): Full path to artifact.
-                meta(dict): Dictionary of metadata to set on artifact.
+                meta(list): List of metadata to set on artifact.
         """
-        key = self._get_key(path)
-        immutable = key.get_metadata("immutable")
-        if immutable.to_lower() == "true":
-            raise ImmutableMetaError()
+        meta_mapper = MetadataMapper()
+        meta = meta_mapper.format_for_boto(meta)
         key.update_metadata(meta)
 
     def _get_key(self, artifact_name):

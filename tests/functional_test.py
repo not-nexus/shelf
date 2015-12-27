@@ -132,9 +132,5 @@ class FunctionalTest(pyproctor.TestBase):
         self.get_artifact_metadata(
             "/artifact/test/_meta",
             200,
-            {
-                "immutable": "False",
-                "key1": "value",
-                "key": "value"
-            }
+            utils.get_meta_body()  
         )
