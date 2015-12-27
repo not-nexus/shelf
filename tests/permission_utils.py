@@ -35,6 +35,10 @@ def get_permissions_func_test():
           - '/dir/dir2/dir3/*'""".format(VALID_KEY)
 
 
+def get_meta(immutable=False):
+    return {"key": "value", "key1": "value", "immutable": immutable}
+
+
 def auth_header(is_valid=True):
     if is_valid:
         auth = VALID_KEY

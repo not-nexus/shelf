@@ -33,3 +33,14 @@ def create_artifact(container, path):
             return response_map.create_201()
     except CloudStorageException as e:
         return response_map.map_exception(e)
+
+
+@artifact.route("/<path:path>/_meta", methods=["GET"])
+@decorators.foundation
+def get_artifact_meta(container, path):
+    try:
+        with container.create_master_bucket_storage() as storage:
+            meta = storage.get_artifact_metadata(path)
+            return response_map.create_200(meta)
+    except CloudStorageException as e:
+        return response_map.map_exception(e)

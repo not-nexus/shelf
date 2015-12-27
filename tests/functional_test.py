@@ -29,8 +29,9 @@ class FunctionalTest(pyproctor.TestBase):
         self.boto_connection.create_bucket("test")
         self.test_bucket = self.boto_connection.get_bucket("test")
         key = Key(self.test_bucket, "test")
-        nested_key = Key(self.test_bucket, "/dir/dir2/dir3/nest-test")
+        key.metadata = utils.get_meta()
         key.set_contents_from_string("hello world")
+        nested_key = Key(self.test_bucket, "/dir/dir2/dir3/nest-test")
         nested_key.set_contents_from_string("hello world")
         self.create_auth_key()
 
@@ -78,6 +79,11 @@ class FunctionalTest(pyproctor.TestBase):
 
         self.assert_response(status_code, response, body)
 
+    def get_artifact_metadata(self, path, status_code=200, body=None):
+        response = self.test_client.get(path, headers=self.auth)
+        
+        self.assert_response(status_code, response, body)
+    
     def test_artifact_get_path(self):
         self.get_artifact_path("/artifact/test", 200, "hello world")
 
@@ -119,5 +125,16 @@ class FunctionalTest(pyproctor.TestBase):
             {
                 "message": "The artifact name provided is not an allowable name. Please remove leading underscores.",
                 "code": "invalid_artifact_name"
+            }
+        )
+    
+    def test_get_metadata(self):
+        self.get_artifact_metadata(
+            "/artifact/test/_meta",
+            200,
+            {
+                "immutable": "False",
+                "key1": "value",
+                "key": "value"
             }
         )

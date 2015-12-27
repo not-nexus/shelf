@@ -3,7 +3,7 @@ from boto.s3.key import Key
 import re
 from pyshelf.cloud.stream_iterator import StreamIterator
 from pyshelf.cloud.cloud_exceptions import \
-    ArtifactNotFoundError, BucketNotFoundError, DuplicateArtifactError, InvalidNameError
+    ArtifactNotFoundError, BucketNotFoundError, DuplicateArtifactError, InvalidNameError, ImmutableMetaError
 
 
 class Storage(object):
@@ -83,6 +83,32 @@ class Storage(object):
         """
         key = self._get_key(path)
         return key.get_contents_as_string()
+
+    def get_artifact_metadata(self, path):
+        """
+            Gets artifact metadata.
+
+            Args:
+                path(basestring): Full path to artifact.
+            Returns:
+                metadata(dict) of artifact.
+        """
+        key = self._get_key(path)
+        return key.metadata
+
+    def set_artifact_meta(self, path, meta):
+        """
+            Sets artifact metadata.
+
+            Args:
+                path(basestring): Full path to artifact.
+                meta(dict): Dictionary of metadata to set on artifact.
+        """
+        key = self._get_key(path)
+        immutable = key.get_metadata("immutable")
+        if immutable.to_lower() == "true":
+            raise ImmutableMetaError()
+        key.update_metadata(meta)
 
     def _get_key(self, artifact_name):
         bucket = self._get_bucket(self.bucket_name)
