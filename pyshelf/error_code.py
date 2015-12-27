@@ -4,3 +4,4 @@ class ErrorCode(object):
     DUPLICATE_ARTIFACT = "duplicate_artifact"
     INVALID_ARTIFACT_NAME = "invalid_artifact_name"
     FORBIDDEN = "forbidden"
+    IMMUTABLE_META = "immutable_meta"

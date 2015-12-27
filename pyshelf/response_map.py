@@ -1,5 +1,6 @@
 from pyshelf.json_response import JsonResponse
-from pyshelf.cloud.cloud_exceptions import ArtifactNotFoundError, BucketNotFoundError, DuplicateArtifactError, InvalidNameError
+from pyshelf.cloud.cloud_exceptions import \
+    ArtifactNotFoundError, BucketNotFoundError, DuplicateArtifactError, InvalidNameError, ImmutableMetaError
 from pyshelf.error_code import ErrorCode
 
 
@@ -103,6 +104,19 @@ def create_201():
     return response
 
 
+def create_200(body):
+    """
+        Creates a 200 response
+
+        Args:
+            body(dict): body of response.
+    """
+    response = JsonResponse()
+    response.status_code = 200
+    response.set_data(body)
+    return response
+
+
 def map_exception(e):
     """
         Maps exception to a response. This way you can catch a generic
@@ -116,7 +130,8 @@ def map_exception(e):
     """
     if isinstance(e, ArtifactNotFoundError):
         return create_404(e.error_code, e.message)
-    if isinstance(e, DuplicateArtifactError) or isinstance(e, InvalidNameError):
+    if (isinstance(e, DuplicateArtifactError) or isinstance(e, InvalidNameError) or
+            isinstance(e, ImmutableMetaError)):
         return create_403(e.error_code, e.message)
     if isinstance(e, BucketNotFoundError):
         return create_500(e.error_code, e.message)

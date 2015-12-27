@@ -29,3 +29,9 @@ class InvalidNameError(CloudStorageException):
     def __init__(self, name):
         message = "The artifact name provided is not an allowable name. Please remove leading underscores."
         super(InvalidNameError, self).__init__(message, ErrorCode.INVALID_ARTIFACT_NAME)
+
+
+class ImmutableMetaError(CloudStorageException):
+    def __init__(self):
+        message = "The metadata for this artifact is immutable."
+        super(ImmutableMetaError, self).__init__(message, ErrorCode.IMMUTABLE_META)
