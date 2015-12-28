@@ -140,9 +140,23 @@ class FunctionalTest(pyproctor.TestBase):
             utils.get_meta_body()
         )
 
+    def test_get_metadata_permission(self):
+        self.get_artifact_metadata(
+            "/artifact/dir/test/_meta",
+            401,
+            "Permission Denied"
+        )
+
     def test_set_metadata(self):
         self.set_artifact_metadata(
             "/artifact/test/_meta",
             201,
             {"success": True}
+        )
+
+    def test_set_metadata_permissions(self):
+        self.set_artifact_metadata(
+            "/artifact/dir/test/_meta",
+            401,
+            "Permission Denied"
         )
