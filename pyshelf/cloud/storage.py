@@ -108,7 +108,11 @@ class Storage(object):
         """
         meta_mapper = MetadataMapper()
         meta = meta_mapper.format_for_boto(meta)
-        key.update_metadata(meta)
+        key = self._get_key(path)
+        key.metadata.update(meta)
+        key2 = key.copy(self.bucket_name, key.name, meta, preserve_acl=True)
+        key2.metadata = key.metadata
+        key = key2
 
     def _get_key(self, artifact_name):
         bucket = self._get_bucket(self.bucket_name)

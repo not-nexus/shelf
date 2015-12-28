@@ -84,6 +84,11 @@ class FunctionalTest(pyproctor.TestBase):
         
         self.assert_response(status_code, response, body)
     
+    def set_artifact_metadata(self, path, status_code=201, body=None):
+        response = self.test_client.put(path, data=utils.send_meta(), headers=self.auth)
+
+        self.assert_response(status_code, response, body)
+
     def test_artifact_get_path(self):
         self.get_artifact_path("/artifact/test", 200, "hello world")
 
@@ -132,5 +137,12 @@ class FunctionalTest(pyproctor.TestBase):
         self.get_artifact_metadata(
             "/artifact/test/_meta",
             200,
-            utils.get_meta_body()  
+            utils.get_meta_body()
+        )
+
+    def test_set_metadata(self):
+        self.set_artifact_metadata(
+            "/artifact/test/_meta",
+            201,
+            {"success": True}
         )

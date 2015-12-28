@@ -1,3 +1,6 @@
+import json
+
+
 VALID_KEY = "190a64931e6e49ccb9917c7f32a29d19"
 
 
@@ -62,7 +65,10 @@ def get_meta_body():
                     "value": "test1", 
                     "immutable": True 
                }
-           ] 
+           ]
+
+def send_meta():
+    return json.dumps(get_meta())
 
 def auth_header(is_valid=True):
     if is_valid:

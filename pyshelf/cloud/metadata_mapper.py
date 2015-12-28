@@ -1,13 +1,11 @@
 import ast
+import json
 
 
 class MetadataMapper(object):
     
     def format_for_boto(self, meta):
-        formatted_meta = {}
-        for i in meta:
-            name = i['name']
-            formatted_meta[name] = i
+        formatted_meta = json.loads(meta)
         return formatted_meta
 
     def format_for_client(self, meta):

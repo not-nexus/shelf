@@ -47,11 +47,11 @@ def get_artifact_meta(container, path):
 
 
 @artifact.route("/<path:path>/_meta", methods=["PUT"])
-@decorators.foundation
+@decorators.foundation_headers
 def update_artifact_meta(container, path):
     try:
         with container.create_master_bucket_storage() as storage:
+            storage.set_artifact_meta(path, request.data)
             return response_map.create_201() 
     except CloudStorageException as e:
         return response_map.map_exception(e)
-
