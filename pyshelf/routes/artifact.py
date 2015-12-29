@@ -51,7 +51,7 @@ def get_artifact_meta(container, path):
 def update_artifact_meta(container, path):
     try:
         with container.create_master_bucket_storage() as storage:
-            storage.set_artifact_meta(path, request.data)
+            storage.set_artifact_metadata(path, request.data)
             return response_map.create_201() 
     except CloudStorageException as e:
         return response_map.map_exception(e)

@@ -42,7 +42,6 @@ class PermissionsValidator(object):
         path = re.sub("/artifact", "", path)
         dir_path = os.path.dirname(path)
         dir_path = os.path.join(dir_path, '')
-        self.container.logger.debug("Path: {} - Permissions: {}".format(path, permissions))
         for p in permissions:
             if fnmatch.fnmatch(path, p) or fnmatch.fnmatch(dir_path, p):
                 return True

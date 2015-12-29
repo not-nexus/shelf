@@ -84,8 +84,8 @@ class FunctionalTest(pyproctor.TestBase):
         
         self.assert_response(status_code, response, body)
     
-    def set_artifact_metadata(self, path, status_code=201, body=None):
-        response = self.test_client.put(path, data=utils.send_meta(), headers=self.auth)
+    def set_artifact_metadata(self, path, status_code=201, body=None, data=utils.send_meta()):
+        response = self.test_client.put(path, data=data, headers=self.auth)
 
         self.assert_response(status_code, response, body)
 
@@ -140,7 +140,7 @@ class FunctionalTest(pyproctor.TestBase):
             utils.get_meta_body()
         )
 
-    def test_get_metadata_permission(self):
+    def test_get_metadata_permissions(self):
         self.get_artifact_metadata(
             "/artifact/dir/test/_meta",
             401,
@@ -149,7 +149,7 @@ class FunctionalTest(pyproctor.TestBase):
 
     def test_set_metadata(self):
         self.set_artifact_metadata(
-            "/artifact/test/_meta",
+            "/artifact/dir/dir2/dir3/nest-test/_meta",
             201,
             {"success": True}
         )
@@ -159,4 +159,17 @@ class FunctionalTest(pyproctor.TestBase):
             "/artifact/dir/test/_meta",
             401,
             "Permission Denied"
+        )
+        
+    def test_set_metadata_immutable(self):
+        self.set_artifact_metadata(
+            "/artifact/test/_meta",
+            201,
+            {"success": True},
+            utils.send_meta_changed()
+        )
+        self.get_artifact_metadata(
+            "/artifact/test/_meta",
+            200,
+            utils.get_meta_body()
         )

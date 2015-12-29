@@ -70,6 +70,11 @@ def get_meta_body():
 def send_meta():
     return json.dumps(get_meta())
 
+def send_meta_changed():
+    dic = get_meta()
+    dic["tag1"]["value"] = "changed value"
+    return json.dumps(dic)
+
 def auth_header(is_valid=True):
     if is_valid:
         auth = VALID_KEY

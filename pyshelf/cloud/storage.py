@@ -64,7 +64,6 @@ class Storage(object):
         key = Key(bucket, artifact_name)
         self.logger.debug("Commencing upload of {}".format(artifact_name))
         key.set_contents_from_file(fp)
-        self.logger.debug("Completed upload of {}".format(artifact_name))
 
     def delete_artifact(self, artifact_name):
         key = self._get_key(artifact_name)
@@ -98,7 +97,7 @@ class Storage(object):
         meta_mapper = MetadataMapper()
         return meta_mapper.format_for_client(key.metadata)
 
-    def set_artifact_meta(self, path, meta):
+    def set_artifact_metadata(self, path, meta):
         """
             Sets artifact metadata.
 
@@ -109,6 +108,7 @@ class Storage(object):
         meta_mapper = MetadataMapper()
         meta = meta_mapper.format_for_boto(meta)
         key = self._get_key(path)
+        meta = meta_mapper.update_meta(meta, key.metadata)
         key.metadata.update(meta)
         key2 = key.copy(self.bucket_name, key.name, meta, preserve_acl=True)
         key2.metadata = key.metadata
@@ -138,7 +138,5 @@ class Storage(object):
 
     def __exit__(self, exception_type, exception, traceback):
         """ For use in "with" syntax"""
-        # TODO : Properly handle exceptions.  For now they will
-        # fly
         self.close()
         return False
