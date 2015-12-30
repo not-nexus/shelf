@@ -113,15 +113,29 @@ class Storage(object):
                 path(basestring): Full path to artifact.
                 meta(list): List of metadata to set on artifact.
         """
+        key = self._get_key(path)
+        self._update_meta(key, meta)
+
+    def set_metadata_item(self, path, item, meta, overwrite):
+        key = self._get_key(path)
+        meta_item = key.get_metadata(item) 
+        create = meta_item is None
+        if overwrite:
+            self._update_meta(key, meta)
+        else:
+            if create:
+                self._update_meta(key, meta)
+        return create 
+
+    def _update_meta(self, key, meta):
         meta_mapper = MetadataMapper()
         meta = meta_mapper.format_for_boto(meta)
-        key = self._get_key(path)
         meta = meta_mapper.update_meta(meta, key.metadata)
         key.metadata.update(meta)
         key2 = key.copy(self.bucket_name, key.name, meta, preserve_acl=True)
         key2.metadata = key.metadata
         key = key2
-
+    
     def _get_key(self, artifact_name):
         bucket = self._get_bucket(self.bucket_name)
         self.logger.debug("Attempting to get artifact {}".format(artifact_name))

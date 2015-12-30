@@ -104,13 +104,15 @@ def create_201():
     return response
 
 
-def create_200(body):
+def create_200(body=None):
     """
         Creates a 200 response
 
         Args:
             body(dict): body of response.
     """
+    if body is None:
+        body = {"success": True}
     response = JsonResponse()
     response.status_code = 200
     response.set_data(body)

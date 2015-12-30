@@ -37,6 +37,14 @@ def get_permissions_func_test():
           - '/dir/dir2/'
           - '/dir/dir2/dir3/*'""".format(VALID_KEY)
 
+def get_meta_item():
+    return {
+            "tag2":{
+                    "name": "tag2", 
+                    "value": "test", 
+                    "immutable": False 
+                }
+           }
 
 def get_meta():
     return { 
@@ -69,6 +77,9 @@ def get_meta_body():
 
 def send_meta():
     return json.dumps(get_meta())
+
+def send_meta_item():
+    return json.dumps(get_meta_item())
 
 def send_meta_changed():
     dic = get_meta()

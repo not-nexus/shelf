@@ -22,7 +22,7 @@ class MetadataMapper(object):
             value = dict(ast.literal_eval(value))
             if value['immutable']:
                 meta[key] = value
-            if not value['immutable'] and new_meta[key]:
+            if not value['immutable'] and new_meta.get(key) is not None:
                 meta[key] = new_meta[key]
         for key in new_meta:
             if key not in meta:
