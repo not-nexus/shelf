@@ -3,7 +3,6 @@ import json
 
 
 class MetadataMapper(object):
-    
     def format_for_boto(self, meta):
         formatted_meta = json.loads(meta)
         return formatted_meta
@@ -26,6 +25,6 @@ class MetadataMapper(object):
             if not value['immutable'] and new_meta[key]:
                 meta[key] = new_meta[key]
         for key in new_meta:
-            if not key in meta:
+            if key not in meta:
                 meta[key] = new_meta[key]
-        return meta 
+        return meta

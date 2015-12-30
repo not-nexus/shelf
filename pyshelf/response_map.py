@@ -130,8 +130,7 @@ def map_exception(e):
     """
     if isinstance(e, ArtifactNotFoundError) or isinstance(e, MetadataNotFoundError):
         return create_404(e.error_code, e.message)
-    if (isinstance(e, DuplicateArtifactError) or isinstance(e, InvalidNameError) or
-            isinstance(e, ImmutableMetaError)):
+    if isinstance(e, DuplicateArtifactError) or isinstance(e, InvalidNameError):
         return create_403(e.error_code, e.message)
     if isinstance(e, BucketNotFoundError):
         return create_500(e.error_code, e.message)

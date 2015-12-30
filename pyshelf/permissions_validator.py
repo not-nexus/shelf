@@ -64,7 +64,6 @@ class PermissionsValidator(object):
         path = self.container.request.path
         if path.endswith('/_meta'):
             path = re.sub('/_meta', '', path)
-        
         if re.search('\/_meta\/', path):
             ar = path.split('/_meta/')
             path = ar[0]

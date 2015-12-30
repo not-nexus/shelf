@@ -81,17 +81,14 @@ class FunctionalTest(pyproctor.TestBase):
 
     def get_artifact_metadata(self, path, status_code=200, body=None):
         response = self.test_client.get(path, headers=self.auth)
-        
         self.assert_response(status_code, response, body)
     
     def set_artifact_metadata(self, path, status_code=201, body=None, data=utils.send_meta()):
         response = self.test_client.put(path, data=data, headers=self.auth)
-
         self.assert_response(status_code, response, body)
 
     def get_artifact_metadata_item(self, path, status_code=200, body=None):
         response = self.test_client.get(path, headers=self.auth)
-        
         self.assert_response(status_code, response, body)
 
     def test_artifact_get_path(self):
