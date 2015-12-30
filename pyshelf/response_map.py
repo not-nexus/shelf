@@ -1,6 +1,6 @@
 from pyshelf.json_response import JsonResponse
 from pyshelf.cloud.cloud_exceptions import \
-    ArtifactNotFoundError, BucketNotFoundError, DuplicateArtifactError, InvalidNameError, ImmutableMetaError
+    ArtifactNotFoundError, BucketNotFoundError, DuplicateArtifactError, InvalidNameError, MetadataNotFoundError
 from pyshelf.error_code import ErrorCode
 
 
@@ -128,7 +128,7 @@ def map_exception(e):
         Returns:
             vnd.error formatted error response
     """
-    if isinstance(e, ArtifactNotFoundError):
+    if isinstance(e, ArtifactNotFoundError) or isinstance(e, MetadataNotFoundError):
         return create_404(e.error_code, e.message)
     if (isinstance(e, DuplicateArtifactError) or isinstance(e, InvalidNameError) or
             isinstance(e, ImmutableMetaError)):

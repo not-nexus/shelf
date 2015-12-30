@@ -31,7 +31,7 @@ class InvalidNameError(CloudStorageException):
         super(InvalidNameError, self).__init__(message, ErrorCode.INVALID_ARTIFACT_NAME)
 
 
-class ImmutableMetaError(CloudStorageException):
-    def __init__(self):
-        message = "The metadata for this artifact is immutable."
-        super(ImmutableMetaError, self).__init__(message, ErrorCode.IMMUTABLE_META)
+class MetadataNotFoundError(CloudStorageException):
+    def __init__(self, item):
+        message = "The requested metadata {} does not exist.".format(item)
+        super(MetadataNotFoundError, self).__init__(message, ErrorCode.RESOURCE_NOT_FOUND)
