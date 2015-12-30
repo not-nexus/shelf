@@ -7,24 +7,41 @@ import re
 class PermissionsValidator(object):
     def __init__(self, container):
         self.container = container
+        self._permissions = None
+        self._permissions_loaded = False
+
+    @property
+    def permissions(self):
+        """
+            Returns:
+                permissions(dict|None) -    A dictionary of the data in the key file if it
+                                            was found to exist
+        """
+        if not self._permissions and not self._permissions_loaded:
+            # No point in trying multiple times in a single request
+            self._permissions_loaded = True
+            authorization = self.container.request.headers.get("Authorization")
+            if authorization:
+                with self.container.create_master_bucket_storage() as storage:
+                    raw_permissions = storage.get_artifact_as_string("_keys/" + authorization)
+
+                if raw_permissions:
+                    self._permissions = yaml.load(raw_permissions)
+
+        return self._permissions
 
     def allowed(self):
         allowed = False
-        authorization = self.container.request.headers.get("Authorization")
-        if authorization:
-            with self.container.create_master_bucket_storage() as storage:
-                raw_permissions = storage.get_artifact_as_string("_keys/" + authorization)
-                if raw_permissions:
-                    permissions = yaml.load(raw_permissions)
-                    method = self.container.request.method
-                    path = self.container.request.path
-                    key_req = re.search('^\/artifact\/*', path)
-                    if method == "POST" or method == "PUT" and key_req:
-                        write = permissions.get("write")
-                        allowed = self._get_access(write)
-                    if method == "GET" and key_req:
-                        read = permissions.get("read")
-                        allowed = self._get_access(read)
+        if self.permissions:
+            method = self.container.request.method
+            path = self.container.request.path
+            key_req = re.search('^\/artifact\/*', path)
+            if method == "POST" or method == "PUT" and key_req:
+                write = self.permissions.get("write")
+                allowed = self._get_access(write)
+            if method == "GET" and key_req:
+                read = self.permissions.get("read")
+                allowed = self._get_access(read)
 
         return allowed
 
