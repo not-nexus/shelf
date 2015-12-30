@@ -9,6 +9,7 @@ class PermissionsValidator(object):
         self.container = container
         self._permissions = None
         self._permissions_loaded = False
+        self.authorization_token = None
 
     @property
     def permissions(self):
@@ -21,6 +22,7 @@ class PermissionsValidator(object):
             # No point in trying multiple times in a single request
             self._permissions_loaded = True
             authorization = self.container.request.headers.get("Authorization")
+            self.authorization_token = authorization
             if authorization:
                 with self.container.create_master_bucket_storage() as storage:
                     raw_permissions = storage.get_artifact_as_string("_keys/" + authorization)
