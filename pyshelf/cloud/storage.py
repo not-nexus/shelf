@@ -103,7 +103,7 @@ class Storage(object):
         meta = key.get_metadata(item)
         if meta is None:
             raise MetadataNotFoundError(item) 
-        return meta_mapper.format_for_client(key.metadata) 
+        return meta_mapper.format_for_client(meta) 
 
     def set_artifact_metadata(self, path, meta):
         """

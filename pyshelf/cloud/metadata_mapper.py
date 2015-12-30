@@ -10,8 +10,11 @@ class MetadataMapper(object):
 
     def format_for_client(self, meta):
         formatted_meta = []
-        for key, value in meta.iteritems():
-            formatted_meta.append(ast.literal_eval(value))
+        if isinstance(meta, dict):
+            for key, value in meta.iteritems():
+                formatted_meta.append(ast.literal_eval(value))
+        else:
+            formatted_meta = ast.literal_eval(meta)
         return formatted_meta
 
     def update_meta(self, new_meta, old_meta):

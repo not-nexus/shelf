@@ -64,6 +64,11 @@ class PermissionsValidator(object):
         path = self.container.request.path
         if path.endswith('/_meta'):
             path = re.sub('/_meta', '', path)
+        
+        if re.search('\/_meta\/', path):
+            ar = path.split('/_meta/')
+            path = ar[0]
+
         path = re.sub("/artifact", "", path)
         dir_path = os.path.dirname(path)
         dir_path = os.path.join(dir_path, '')
