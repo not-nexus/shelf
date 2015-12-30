@@ -10,6 +10,7 @@ class PermissionsValidator(object):
         self._permissions = None
         self._permissions_loaded = False
         self.authorization_token = None
+        self.name = "UNKNOWN"
 
     @property
     def permissions(self):
@@ -29,6 +30,11 @@ class PermissionsValidator(object):
 
                 if raw_permissions:
                     self._permissions = yaml.load(raw_permissions)
+
+                    if self._permissions.get("name"):
+                        self.name = self._permissions["name"]
+                    else:
+                        self.container.logger.warning("Name was not set in authorization token.")
 
         return self._permissions
 

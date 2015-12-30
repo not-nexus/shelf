@@ -26,7 +26,7 @@ def logger(logger, log_level_name):
     log_level = logging.getLevelName(log_level_name)
     handler = logging.StreamHandler(sys.stdout)
     handler.setLevel(log_level)
-    formatter = logging.Formatter("%(asctime)s - %(levelname)s %(request_id)s%(url)s- %(message)s")
+    formatter = logging.Formatter("%(asctime)s - %(levelname)s %(user)s%(request_id)s%(url)s- %(message)s")
     handler.setFormatter(formatter)
     handler.addFilter(RequestLogFilter())
     logger.addHandler(handler)
