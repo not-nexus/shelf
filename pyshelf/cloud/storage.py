@@ -4,7 +4,7 @@ import re
 from pyshelf.cloud.stream_iterator import StreamIterator
 from pyshelf.cloud.metadata_mapper import MetadataMapper
 from pyshelf.cloud.cloud_exceptions import \
-    ArtifactNotFoundError, BucketNotFoundError, DuplicateArtifactError, InvalidNameError, ImmutableMetaError
+    ArtifactNotFoundError, BucketNotFoundError, DuplicateArtifactError, InvalidNameError, MetadataNotFoundError
 
 
 class Storage(object):
@@ -96,6 +96,14 @@ class Storage(object):
         key = self._get_key(path)
         meta_mapper = MetadataMapper()
         return meta_mapper.format_for_client(key.metadata)
+
+    def get_artifact_metadata_item(self, path, item):
+        key = self._get_key(path)
+        meta_mapper = MetadataMapper()
+        meta = key.get_metadata(item)
+        if meta is None:
+            raise MetadataNotFoundError(item) 
+        return meta_mapper.format_for_client(key.metadata) 
 
     def set_artifact_metadata(self, path, meta):
         """
