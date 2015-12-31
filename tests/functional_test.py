@@ -207,6 +207,14 @@ class FunctionalTest(pyproctor.TestBase):
             200,
             {"success": True}
         )
+        self.get_artifact_metadata_item(
+            "/artifact/test/_meta/tag",
+            404,
+            {
+                "message": "Resource not found",
+                "code": "resource_not_found"
+            }
+        )            
         
     def test_delete_metadata_immutable(self):
         self.delete_meta_item(
