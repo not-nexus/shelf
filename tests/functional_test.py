@@ -99,6 +99,10 @@ class FunctionalTest(pyproctor.TestBase):
         response = self.test_client.put(path, data=utils.send_meta_item(), headers=self.auth)
         self.assert_response(status_code, response, body)
 
+    def delete_meta_item(self, path, status_code=200, body=None):
+        response = self.test_client.delete(path, headers=self.auth)
+        self.assert_response(status_code, response, body)
+
     def test_artifact_get_path(self):
         self.get_artifact_path("/artifact/test", 200, "hello world")
 
@@ -196,3 +200,20 @@ class FunctionalTest(pyproctor.TestBase):
             200,
             {"success": True}
         )
+
+    def test_delete_metadata_item(self):
+        self.delete_meta_item(
+            "/artifact/test/_meta/tag",
+            200,
+            {"success": True}
+        )
+        
+    def test_delete_metadata_immutable(self):
+        self.delete_meta_item(
+            "/artifact/test/_meta/tag1",
+            200,
+            {"success": True}
+        )
+        self.test_get_metadata_item()
+
+

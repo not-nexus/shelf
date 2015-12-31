@@ -44,7 +44,7 @@ class PermissionsValidator(object):
             method = self.container.request.method
             path = self.container.request.path
             key_req = re.search('^\/artifact\/*', path)
-            if method == "POST" or method == "PUT" and key_req:
+            if method == "POST" or method == "PUT" or method == "DELETE" and key_req:
                 write = self.permissions.get("write")
                 allowed = self._get_access(write)
             if method == "GET" and key_req:

@@ -1,6 +1,7 @@
 from boto.s3.connection import S3Connection
 from boto.s3.key import Key
 import re
+import ast
 from pyshelf.cloud.stream_iterator import StreamIterator
 from pyshelf.cloud.metadata_mapper import MetadataMapper
 from pyshelf.cloud.cloud_exceptions import \
@@ -127,6 +128,24 @@ class Storage(object):
                 self._update_meta(key, meta)
         return create 
 
+    def delete_metadata_item(self, path, item):
+        key = self._get_key(path)
+        meta_item = key.get_metadata(item)
+        if meta_item is None:
+            raise MetadataNotFoundError(item)
+        else:
+            meta_item = ast.literal_eval(meta_item)
+            immutable =  meta_item.get("immutable")
+            if not immutable:
+                meta = key.metadata
+                del meta[item]
+                self._set_meta(key, meta)
+
+    def _set_meta(self, key, meta):
+        key.metadata.update(meta)
+        key2 = key.copy(self.bucket_name, key.name, meta, preserve_acl=True)
+        key = key2
+                
     def _update_meta(self, key, meta):
         meta_mapper = MetadataMapper()
         meta = meta_mapper.format_for_boto(meta)

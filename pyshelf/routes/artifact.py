@@ -80,3 +80,13 @@ def create_metadata_item(container, path, item):
                 return response_map.create_200()
     except CloudStorageException as e:
         return response_map.map_exception(e)
+
+@artifact.route("/<path:path>/_meta/<item>", methods=["DELETE"])
+@decorators.foundation
+def delete_metadata_item(container, path, item):
+    try:
+        with container.create_master_bucket_storage() as storage:
+            storage.delete_metadata_item(path, item)
+            return response_map.create_200()
+    except CloudStorageException as e:
+        return response_map.map_exception(e)
