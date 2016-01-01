@@ -68,8 +68,6 @@ class Storage(object):
 
     def delete_artifact(self, artifact_name):
         key = self._get_key(artifact_name)
-        if key is None:
-            raise ArtifactNotFoundError(artifact_name)
         key.delete()
 
     def get_artifact_as_string(self, path):
@@ -141,6 +139,11 @@ class Storage(object):
                 del meta[item]
                 self._set_meta(key, meta)
 
+    def _get_etag(self, key):
+        meta_mapper = MetadataMapper()
+        meta = meta_mapper.get_hash(key.etag[1:-1])
+        return meta
+    
     def _set_meta(self, key, meta):
         key.metadata.update(meta)
         key2 = key.copy(self.bucket_name, key.name, meta, preserve_acl=True)

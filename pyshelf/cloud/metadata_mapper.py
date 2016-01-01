@@ -23,3 +23,11 @@ class MetadataMapper(object):
             if key not in meta:
                 meta[key] = new_meta[key]
         return meta
+
+    def format_hash(self, etag):
+        meta = {
+                    "name": "md5Hash",
+                    "value": etag,
+                    "immutable": True
+               }
+        return meta
