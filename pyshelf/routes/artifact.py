@@ -2,6 +2,7 @@ from flask import request, Blueprint, Response
 from pyshelf.endpoint_decorators import decorators
 from pyshelf.cloud.cloud_exceptions import CloudStorageException
 import pyshelf.response_map as response_map
+import json
 
 artifact = Blueprint("artifact", __name__)
 
@@ -51,7 +52,8 @@ def get_artifact_meta(container, path):
 def update_artifact_meta(container, path):
     try:
         with container.create_master_bucket_storage() as storage:
-            storage.set_artifact_metadata(path, request.data)
+            data = json.loads(request.data)
+            storage.set_artifact_metadata(path, data)
             return response_map.create_201()
     except CloudStorageException as e:
         return response_map.map_exception(e)
@@ -73,7 +75,8 @@ def create_metadata_item(container, path, item):
     try:
         with container.create_master_bucket_storage() as storage:
             overwrite = request.method == "PUT"
-            created = storage.set_metadata_item(path, item, request.data, overwrite)
+            data = json.loads(request.data)
+            created = storage.set_metadata_item(path, item, data, overwrite)
             if created:
                 return response_map.create_201()
             else:

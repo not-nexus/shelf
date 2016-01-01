@@ -148,7 +148,6 @@ class Storage(object):
                 
     def _update_meta(self, key, meta):
         meta_mapper = MetadataMapper()
-        meta = meta_mapper.format_for_boto(meta)
         meta = meta_mapper.update_meta(meta, key.metadata)
         key.metadata.update(meta)
         key2 = key.copy(self.bucket_name, key.name, meta, preserve_acl=True)
