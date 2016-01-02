@@ -97,6 +97,15 @@ class Storage(object):
         return meta_mapper.format_for_client(key.metadata)
 
     def get_artifact_metadata_item(self, path, item):
+        """
+            Gets item from artifact metadata.
+
+            Args:
+                path(basestring): Full path to artifact.
+                item(basestring): Key of the metadata item.
+            Returns:
+                list: returns metadata item.
+        """
         key = self._get_key(path)
         meta_mapper = MetadataMapper()
         meta = key.get_metadata(item)
@@ -116,6 +125,19 @@ class Storage(object):
         self._update_meta(key, meta)
 
     def set_metadata_item(self, path, item, meta, overwrite):
+        """
+            Sets an item in artifact metadata.
+
+            Args:
+                path(basestring): Full path to artifact.
+                item(basestring): Key of the metadata item.
+                meta(dict): Metadata
+                overwrite(boolean): Whether or not to overwrite 
+                                    metadata if it is not immutable.
+            Returns:
+                Boolean value which denotes whether the item was created
+                or not.
+        """
         key = self._get_key(path)
         meta_item = key.get_metadata(item) 
         create = meta_item is None
@@ -127,6 +149,13 @@ class Storage(object):
         return create 
 
     def delete_metadata_item(self, path, item):
+         """
+            Deletes an item from artifact metadata.
+
+            Args:
+                path(basestring): Full path to artifact.
+                item(basestring): Key of the metadata item.
+        """
         key = self._get_key(path)
         meta_item = key.get_metadata(item)
         if meta_item is None:
