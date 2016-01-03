@@ -132,24 +132,24 @@ class Storage(object):
                 path(basestring): Full path to artifact.
                 item(basestring): Key of the metadata item.
                 meta(dict): Metadata
-                overwrite(boolean): Whether or not to overwrite 
+                overwrite(boolean): Whether or not to overwrite
                                     metadata if it is not immutable.
             Returns:
                 Boolean value which denotes whether the item was created
                 or not.
         """
         key = self._get_key(path)
-        meta_item = key.get_metadata(item) 
+        meta_item = key.get_metadata(item)
         create = meta_item is None
         if overwrite:
             self._update_meta(key, meta)
         else:
             if create:
                 self._update_meta(key, meta)
-        return create 
+        return create
 
     def delete_metadata_item(self, path, item):
-         """
+        """
             Deletes an item from artifact metadata.
 
             Args:
@@ -162,7 +162,7 @@ class Storage(object):
             raise MetadataNotFoundError(item)
         else:
             meta_item = ast.literal_eval(meta_item)
-            immutable =  meta_item.get("immutable")
+            immutable = meta_item.get("immutable")
             if not immutable:
                 meta = key.metadata
                 del meta[item]
