@@ -122,7 +122,8 @@ class Storage(object):
                 meta(list): List of metadata to set on artifact.
         """
         key = self._get_key(path)
-        self._update_meta(key, meta)
+        meta = meta_mapper.update_meta(meta, key.metadata)
+        key.copy(self.bucket_name, key.name, meta, preserve_acl=True)
 
     def put_metadata_item(self, path, item, meta):
         """
@@ -139,7 +140,8 @@ class Storage(object):
         key = self._get_key(path)
         meta_item = key.get_metadata(item)
         create = meta_item is None
-        self._update_meta(key, meta)
+        meta = meta_mapper.update_meta(meta, key.metadata)
+        key.copy(self.bucket_name, key.name, meta, preserve_acl=True)
         return create
 
     def post_metadata_item(self, path, item, meta):
@@ -156,7 +158,8 @@ class Storage(object):
         key = self._get_key(path)
         meta_item = key.get_metadata(item)
         if meta_item is None:
-            self._update_meta(key, meta)
+            meta = meta_mapper.update_meta(meta, key.metadata)
+            key.copy(self.bucket_name, key.name, meta, preserve_acl=True)
             return True    
     
     def delete_metadata_item(self, path, item):
@@ -177,25 +180,13 @@ class Storage(object):
             if not immutable:
                 meta = key.metadata
                 del meta[item]
-                self._set_meta(key, meta)
+                key.copy(self.bucket_name, key.name, meta, preserve_acl=True)
 
     def _get_meta(self, key):
         meta = key.metadata 
         meta["md5Hash"] = meta_mapper.format_hash(key.etag[1:-1])
         return meta
 
-    def _set_meta(self, key, meta):
-        key.metadata.update(meta)
-        key2 = key.copy(self.bucket_name, key.name, meta, preserve_acl=True)
-        key = key2
-                
-    def _update_meta(self, key, meta):
-        meta = meta_mapper.update_meta(meta, key.metadata)
-        key.metadata.update(meta)
-        key2 = key.copy(self.bucket_name, key.name, meta, preserve_acl=True)
-        key2.metadata = key.metadata
-        key = key2
-    
     def _get_key(self, artifact_name):
         bucket = self._get_bucket(self.bucket_name)
         self.logger.debug("Attempting to get artifact {}".format(artifact_name))
