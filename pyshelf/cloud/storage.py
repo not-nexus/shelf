@@ -3,7 +3,7 @@ from boto.s3.key import Key
 import re
 import ast
 from pyshelf.cloud.stream_iterator import StreamIterator
-import pyshelf.cloud.metadata_mapper as meta_mapper 
+import pyshelf.cloud.metadata_mapper as meta_mapper
 from pyshelf.cloud.cloud_exceptions import \
     ArtifactNotFoundError, BucketNotFoundError, DuplicateArtifactError, InvalidNameError, MetadataNotFoundError
 
@@ -93,7 +93,7 @@ class Storage(object):
                 list: returns a list of metadata that is parsed by MetadataMapper.
         """
         key = self._get_key(path)
-        return meta_mapper.format_list(key.metadata)
+        return meta_mapper.format_all(key.metadata, key.etag[1:-1])
 
     def get_artifact_metadata_item(self, path, item):
         """
@@ -108,6 +108,8 @@ class Storage(object):
         key = self._get_key(path)
         meta = key.get_metadata(item)
         if meta is None:
+            if item.lower() == "md5hash":
+                return meta_mapper.format_hash(key.etag[1:-1])
             raise MetadataNotFoundError(item)
         return ast.literal_eval(meta)
 
@@ -125,7 +127,7 @@ class Storage(object):
     def put_metadata_item(self, path, item, meta):
         """
             Creates metadata item if it doesn't exist and overwrites
-            it if it does and isn't immutable. 
+            it if it does and isn't immutable.
 
             Args:
                 path(basestring): Full path to artifact.
@@ -142,7 +144,7 @@ class Storage(object):
 
     def post_metadata_item(self, path, item, meta):
         """
-            Creates metadata item if it doesn't exist. 
+            Creates metadata item if it doesn't exist.
 
             Args:
                 path(basestring): Full path to artifact.
@@ -155,7 +157,7 @@ class Storage(object):
         meta_item = key.get_metadata(item)
         if meta_item is None:
             self._update_meta(key, meta)
-            return True
+            return True    
     
     def delete_metadata_item(self, path, item):
         """
@@ -177,10 +179,11 @@ class Storage(object):
                 del meta[item]
                 self._set_meta(key, meta)
 
-    def _get_etag(self, key):
-        meta = meta_mapper.get_hash(key.etag[1:-1])
+    def _get_meta(self, key):
+        meta = key.metadata 
+        meta["md5Hash"] = meta_mapper.format_hash(key.etag[1:-1])
         return meta
-    
+
     def _set_meta(self, key, meta):
         key.metadata.update(meta)
         key2 = key.copy(self.bucket_name, key.name, meta, preserve_acl=True)

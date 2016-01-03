@@ -69,6 +69,7 @@ def get_metadata_item(container, path, item):
     except CloudStorageException as e:
         return response_map.map_exception(e)
 
+
 @artifact.route("/<path:path>/_meta/<item>", methods=["POST", "PUT"])
 @decorators.foundation_headers
 def create_metadata_item(container, path, item):
@@ -86,6 +87,7 @@ def create_metadata_item(container, path, item):
                 return response_map.create_200()
     except CloudStorageException as e:
         return response_map.map_exception(e)
+
 
 @artifact.route("/<path:path>/_meta/<item>", methods=["DELETE"])
 @decorators.foundation

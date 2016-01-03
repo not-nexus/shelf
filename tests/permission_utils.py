@@ -2,7 +2,7 @@ import json
 
 
 VALID_KEY = "190a64931e6e49ccb9917c7f32a29d19"
-
+MD5 = "5eb63bbbe01eeed093cb22bb8f5acdc3"
 
 def get_permissions_all():
     return """
@@ -63,16 +63,21 @@ def get_meta():
 
 def get_meta_body():
     return [ 
-               {
+                {
+                    "name": "md5Hash", 
+                    "value": MD5, 
+                    "immutable": True 
+                },
+                {
                     "name": "tag", 
                     "value": "test", 
                     "immutable": False 
-               },
-               {
+                },
+                {
                     "name": "tag1", 
                     "value": "test1", 
                     "immutable": True 
-               }
+                }
            ]
 
 def send_meta():

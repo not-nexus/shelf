@@ -1,14 +1,12 @@
 import ast
 
 
-def format_list(meta):
-    formatted_meta = []
-    if isinstance(meta, dict):
-        for key, value in meta.iteritems():
-            formatted_meta.append(ast.literal_eval(value))
-    else:
-        formatted_meta = ast.literal_eval(meta)
+def format_all(meta, etag):
+    formatted_meta = [format_hash(etag)]
+    for key, value in meta.iteritems():
+        formatted_meta.append(ast.literal_eval(value))
     return formatted_meta
+
 
 def update_meta(new_meta, old_meta):
     meta = {}
@@ -23,10 +21,11 @@ def update_meta(new_meta, old_meta):
             meta[key] = new_meta[key]
     return meta
 
+
 def format_hash(etag):
     meta = {
-                "name": "md5Hash",
-                "value": etag,
-                "immutable": True
+               "name": "md5Hash",
+               "value": etag,
+               "immutable": True
            }
     return meta
