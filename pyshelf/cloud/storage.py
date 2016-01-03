@@ -3,7 +3,7 @@ from boto.s3.key import Key
 import re
 import ast
 from pyshelf.cloud.stream_iterator import StreamIterator
-from pyshelf.cloud.metadata_mapper import MetadataMapper
+import pyshelf.cloud.metadata_mapper as meta_mapper 
 from pyshelf.cloud.cloud_exceptions import \
     ArtifactNotFoundError, BucketNotFoundError, DuplicateArtifactError, InvalidNameError, MetadataNotFoundError
 
@@ -93,7 +93,6 @@ class Storage(object):
                 list: returns a list of metadata that is parsed by MetadataMapper.
         """
         key = self._get_key(path)
-        meta_mapper = MetadataMapper()
         return meta_mapper.format_for_client(key.metadata)
 
     def get_artifact_metadata_item(self, path, item):
@@ -107,7 +106,6 @@ class Storage(object):
                 list: returns metadata item.
         """
         key = self._get_key(path)
-        meta_mapper = MetadataMapper()
         meta = key.get_metadata(item)
         if meta is None:
             raise MetadataNotFoundError(item)
@@ -169,7 +167,6 @@ class Storage(object):
                 self._set_meta(key, meta)
 
     def _get_etag(self, key):
-        meta_mapper = MetadataMapper()
         meta = meta_mapper.get_hash(key.etag[1:-1])
         return meta
     
@@ -179,7 +176,6 @@ class Storage(object):
         key = key2
                 
     def _update_meta(self, key, meta):
-        meta_mapper = MetadataMapper()
         meta = meta_mapper.update_meta(meta, key.metadata)
         key.metadata.update(meta)
         key2 = key.copy(self.bucket_name, key.name, meta, preserve_acl=True)
