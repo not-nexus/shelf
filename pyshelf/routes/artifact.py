@@ -74,9 +74,12 @@ def get_metadata_item(container, path, item):
 def create_metadata_item(container, path, item):
     try:
         with container.create_master_bucket_storage() as storage:
-            overwrite = request.method == "PUT"
+            created = False
             data = json.loads(request.data)
-            created = storage.set_metadata_item(path, item, data, overwrite)
+            if request.method == "PUT":
+                created = storage.put_metadata_item(path, item, data)
+            else:
+                created = storage.post_metadata_item(path, item, data)
             if created:
                 return response_map.create_201()
             else:

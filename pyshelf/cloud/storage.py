@@ -122,30 +122,41 @@ class Storage(object):
         key = self._get_key(path)
         self._update_meta(key, meta)
 
-    def set_metadata_item(self, path, item, meta, overwrite):
+    def put_metadata_item(self, path, item, meta):
         """
-            Sets an item in artifact metadata.
+            Creates metadata item if it doesn't exist and overwrites
+            it if it does and isn't immutable. 
 
             Args:
                 path(basestring): Full path to artifact.
                 item(basestring): Key of the metadata item.
                 meta(dict): Metadata
-                overwrite(boolean): Whether or not to overwrite
-                                    metadata if it is not immutable.
             Returns:
-                Boolean value which denotes whether the item was created
-                or not.
+                Boolean: whether the item was created or not.
         """
         key = self._get_key(path)
         meta_item = key.get_metadata(item)
         create = meta_item is None
-        if overwrite:
-            self._update_meta(key, meta)
-        else:
-            if create:
-                self._update_meta(key, meta)
+        self._update_meta(key, meta)
         return create
 
+    def post_metadata_item(self, path, item, meta):
+        """
+            Creates metadata item if it doesn't exist. 
+
+            Args:
+                path(basestring): Full path to artifact.
+                item(basestring): Key of the metadata item.
+                meta(dict): Metadata
+            Returns:
+                Boolean: whether the item was created or not.
+        """
+        key = self._get_key(path)
+        meta_item = key.get_metadata(item)
+        if meta_item is None:
+            self._update_meta(key, meta)
+            return True
+    
     def delete_metadata_item(self, path, item):
         """
             Deletes an item from artifact metadata.
