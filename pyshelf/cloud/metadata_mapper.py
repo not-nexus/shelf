@@ -1,7 +1,7 @@
 import ast
 
 
-def format_for_client(meta):
+def format_list(meta):
     formatted_meta = []
     if isinstance(meta, dict):
         for key, value in meta.iteritems():

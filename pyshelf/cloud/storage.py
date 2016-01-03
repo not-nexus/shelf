@@ -93,7 +93,7 @@ class Storage(object):
                 list: returns a list of metadata that is parsed by MetadataMapper.
         """
         key = self._get_key(path)
-        return meta_mapper.format_for_client(key.metadata)
+        return meta_mapper.format_list(key.metadata)
 
     def get_artifact_metadata_item(self, path, item):
         """
@@ -103,13 +103,13 @@ class Storage(object):
                 path(basestring): Full path to artifact.
                 item(basestring): Key of the metadata item.
             Returns:
-                list: returns metadata item.
+                dict: returns metadata item.
         """
         key = self._get_key(path)
         meta = key.get_metadata(item)
         if meta is None:
             raise MetadataNotFoundError(item)
-        return meta_mapper.format_for_client(meta)
+        return ast.literal_eval(meta)
 
     def set_artifact_metadata(self, path, meta):
         """
