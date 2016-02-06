@@ -10,7 +10,7 @@ You can upload an artifact to S3 provided you are authorized for that particular
 
 If successful, you will get back a 201 CREATED.
 
-     HTTP/1.0 201 CREATED
+     HTTP/1.1 201 CREATED
      Content-Type: application/json
 
      {"success": true}
@@ -18,7 +18,7 @@ If successful, you will get back a 201 CREATED.
 If the artifact already exists, you will not be allowed to upload over it.  Instead you will be returned a
 403 FORBIDDEN.
 
-     HTTP/1.0 403 FORBIDDEN
+     HTTP/1.1 403 FORBIDDEN
      Content-Type: application/json
 
      {
@@ -28,7 +28,7 @@ If the artifact already exists, you will not be allowed to upload over it.  Inst
 
 If an artifact has an invalid name or begins with an underscore (reserved).
 
-     HTTP/1.0 403 FORBIDDEN
+     HTTP/1.1 403 FORBIDDEN
      Content-Type: application/json
 
      {
@@ -57,7 +57,7 @@ To get the same artifact back you can use get on the same path.
 
 If the artifact can not be found you will receive a 404 NOT FOUND
 
-     HTTP/1.0 404 NOT FOUND
+     HTTP/1.1 404 NOT FOUND
      Content-Type: application/json
      
      {
