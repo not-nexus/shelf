@@ -1,6 +1,7 @@
 from flask import request, Blueprint, Response
 from pyshelf.endpoint_decorators import decorators
 from pyshelf.cloud.cloud_exceptions import CloudStorageException
+from pyshelf.cloud.metadata_mapper import MetadataMapper
 import pyshelf.response_map as response_map
 import json
 
@@ -40,9 +41,8 @@ def create_artifact(container, path):
 @decorators.foundation
 def get_artifact_meta(container, path):
     try:
-        with container.create_master_bucket_storage() as storage:
-            meta = storage.get_artifact_metadata(path)
-            return response_map.create_200(meta)
+        meta_mapper = MetadataMapper(container, path)
+        return response_map.create_200(meta_mapper.get_metadata())
     except CloudStorageException as e:
         return response_map.map_exception(e)
 
@@ -51,10 +51,10 @@ def get_artifact_meta(container, path):
 @decorators.foundation_headers
 def update_artifact_meta(container, path):
     try:
-        with container.create_master_bucket_storage() as storage:
-            data = json.loads(request.data)
-            storage.set_artifact_metadata(path, data)
-            return response_map.create_201()
+        meta_mapper = MetadataMapper(container, path)
+        data = json.loads(request.data)
+        meta_mapper.set_metadata(data)
+        return response_map.create_201()
     except CloudStorageException as e:
         return response_map.map_exception(e)
 
@@ -63,9 +63,9 @@ def update_artifact_meta(container, path):
 @decorators.foundation
 def get_metadata_item(container, path, item):
     try:
-        with container.create_master_bucket_storage() as storage:
-            meta = storage.get_artifact_metadata_item(path, item)
-            return response_map.create_200(meta)
+        meta_mapper = MetadataMapper(container, path)
+        metadata = meta_mapper.metadata[item]
+        return response_map.create_200(metadata)
     except CloudStorageException as e:
         return response_map.map_exception(e)
 
@@ -74,17 +74,15 @@ def get_metadata_item(container, path, item):
 @decorators.foundation_headers
 def create_metadata_item(container, path, item):
     try:
-        with container.create_master_bucket_storage() as storage:
-            created = False
-            data = json.loads(request.data)
-            if request.method == "PUT":
-                created = storage.put_metadata_item(path, item, data)
-            else:
-                created = storage.post_metadata_item(path, item, data)
-            if created:
-                return response_map.create_201()
-            else:
-                return response_map.create_200()
+        data = json.loads(request.data)
+        meta_mapper = MetadataMapper(container, path)
+
+        if request.method == "PUT":
+            meta_mapper.set_metadata(data, item)
+        else:
+            meta_mapper.create_metadata_item(data, item)
+
+        return response_map.create_201()
     except CloudStorageException as e:
         return response_map.map_exception(e)
 
@@ -93,8 +91,8 @@ def create_metadata_item(container, path, item):
 @decorators.foundation
 def delete_metadata_item(container, path, item):
     try:
-        with container.create_master_bucket_storage() as storage:
-            storage.delete_metadata_item(path, item)
-            return response_map.create_200()
+        meta_mapper = MetadataMapper(container, path)
+        meta_mapper.remove_metadata(item)
+        return response_map.create_200()
     except CloudStorageException as e:
         return response_map.map_exception(e)

@@ -1,11 +1,9 @@
 from boto.s3.connection import S3Connection
 from boto.s3.key import Key
 import re
-import ast
 from pyshelf.cloud.stream_iterator import StreamIterator
-import pyshelf.cloud.metadata_mapper as meta_mapper
 from pyshelf.cloud.cloud_exceptions import \
-    ArtifactNotFoundError, BucketNotFoundError, DuplicateArtifactError, InvalidNameError, MetadataNotFoundError
+    ArtifactNotFoundError, BucketNotFoundError, DuplicateArtifactError, InvalidNameError
 
 
 class Storage(object):
@@ -83,109 +81,32 @@ class Storage(object):
         key = self._get_key(path)
         return key.get_contents_as_string()
 
-    def get_artifact_metadata(self, path):
+    def set_artifact_from_string(self, path, data):
         """
-            Gets artifact metadata.
+            Creates or updates artifact from a string.
 
             Args:
-                path(basestring): Full path to artifact.
+                path(basestring): The path to the artifact to update/create.
+                data(basestring): Data to set contents of artifact from.
+        """
+        try:
+            key = self._get_key(path)
+        except ArtifactNotFoundError:
+            key = Key(self.bucket, path)
+        key.set_contents_from_string(data)
+
+    def get_etag(self, path):
+        """
+            Gets md5Hash of file.
+
+            Args:
+                path(basestring): The path to the artifact.
+
             Returns:
-                list: returns a list of metadata that is parsed by MetadataMapper.
+                basestring: md5Hash of artifact.
         """
         key = self._get_key(path)
-        return meta_mapper.format_all(key.metadata, key.etag[1:-1])
-
-    def get_artifact_metadata_item(self, path, item):
-        """
-            Gets item from artifact metadata.
-
-            Args:
-                path(basestring): Full path to artifact.
-                item(basestring): Key of the metadata item.
-            Returns:
-                dict: returns metadata item.
-        """
-        key = self._get_key(path)
-        meta = key.get_metadata(item)
-        if meta is None:
-            if item.lower() == "md5hash":
-                return meta_mapper.format_hash(key.etag[1:-1])
-            raise MetadataNotFoundError(item)
-        return ast.literal_eval(meta)
-
-    def set_artifact_metadata(self, path, meta):
-        """
-            Sets artifact metadata.
-
-            Args:
-                path(basestring): Full path to artifact.
-                meta(list): List of metadata to set on artifact.
-        """
-        key = self._get_key(path)
-        meta = meta_mapper.update_meta(meta, key.metadata)
-        key.copy(self.bucket_name, key.name, meta, preserve_acl=True)
-
-    def put_metadata_item(self, path, item, meta):
-        """
-            Creates metadata item if it doesn't exist and overwrites
-            it if it does and isn't immutable.
-
-            Args:
-                path(basestring): Full path to artifact.
-                item(basestring): Key of the metadata item.
-                meta(dict): Metadata
-            Returns:
-                Boolean: whether the item was created or not.
-        """
-        key = self._get_key(path)
-        meta_item = key.get_metadata(item)
-        create = meta_item is None
-        meta = meta_mapper.update_meta(meta, key.metadata)
-        key.copy(self.bucket_name, key.name, meta, preserve_acl=True)
-        return create
-
-    def post_metadata_item(self, path, item, meta):
-        """
-            Creates metadata item if it doesn't exist.
-
-            Args:
-                path(basestring): Full path to artifact.
-                item(basestring): Key of the metadata item.
-                meta(dict): Metadata
-            Returns:
-                Boolean: whether the item was created or not.
-        """
-        key = self._get_key(path)
-        meta_item = key.get_metadata(item)
-        if meta_item is None:
-            meta = meta_mapper.update_meta(meta, key.metadata)
-            key.copy(self.bucket_name, key.name, meta, preserve_acl=True)
-            return True
-
-    def delete_metadata_item(self, path, item):
-        """
-            Deletes an item from artifact metadata.
-
-            Args:
-                path(basestring): Full path to artifact.
-                item(basestring): Key of the metadata item.
-        """
-        key = self._get_key(path)
-        meta_item = key.get_metadata(item)
-        if meta_item is None:
-            raise MetadataNotFoundError(item)
-        else:
-            meta_item = ast.literal_eval(meta_item)
-            immutable = meta_item.get("immutable")
-            if not immutable:
-                meta = key.metadata
-                del meta[item]
-                key.copy(self.bucket_name, key.name, meta, preserve_acl=True)
-
-    def _get_meta(self, key):
-        meta = key.metadata
-        meta["md5Hash"] = meta_mapper.format_hash(key.etag[1:-1])
-        return meta
+        return key.etag[1:-1]
 
     def _get_key(self, artifact_name):
         bucket = self._get_bucket(self.bucket_name)
