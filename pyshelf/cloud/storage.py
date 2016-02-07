@@ -160,8 +160,8 @@ class Storage(object):
         if meta_item is None:
             meta = meta_mapper.update_meta(meta, key.metadata)
             key.copy(self.bucket_name, key.name, meta, preserve_acl=True)
-            return True    
-    
+            return True
+
     def delete_metadata_item(self, path, item):
         """
             Deletes an item from artifact metadata.
@@ -183,7 +183,7 @@ class Storage(object):
                 key.copy(self.bucket_name, key.name, meta, preserve_acl=True)
 
     def _get_meta(self, key):
-        meta = key.metadata 
+        meta = key.metadata
         meta["md5Hash"] = meta_mapper.format_hash(key.etag[1:-1])
         return meta
 
