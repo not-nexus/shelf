@@ -1,9 +1,7 @@
 from uuid import uuid4
 from pyshelf.permissions_validator import PermissionsValidator
-from pyshelf.cloud.metadata_manager import MetadataManager
-# importing this way for monkey patching
-import pyshelf.cloud.factory
-import pyshelf.artifact_list_manager
+from pyshelf.cloud.factory import Factory
+from pyshelf.artifact_list_manager import ArtifactListManager
 
 
 class Container(object):
@@ -20,7 +18,6 @@ class Container(object):
         self._permissions_validator = None
         self._cloud_factory = None
         self._artifact_list_manager = None
-        self._metadata_manager = None
 
     @property
     def logger(self):
@@ -36,24 +33,16 @@ class Container(object):
     @property
     def cloud_factory(self):
         if not self._cloud_factory:
-            self._cloud_factory = pyshelf.cloud.factory.Factory(self.app.config, self.app.logger)
+            self._cloud_factory = Factory(self.app.config, self.app.logger)
 
         return self._cloud_factory
 
     @property
     def artifact_list_manager(self):
         if not self._artifact_list_manager:
-            self._artifact_list_manager = pyshelf.artifact_list_manager.ArtifactListManager(self)
+            self._artifact_list_manager = ArtifactListManager(self)
 
         return self._artifact_list_manager
-
-    @property
-    def metadata_manager(self):
-        if not self._metadata_manager:
-            self._metadata_manager = MetadataManager(self)
-
-        return self._metadata_manager
-
 
     def create_master_bucket_storage(self):
         bucket_name = self.app.config["bucketName"]
