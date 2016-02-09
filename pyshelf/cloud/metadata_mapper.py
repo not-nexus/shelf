@@ -66,7 +66,7 @@ class MetadataMapper(object):
         if not self._is_immutable(key):
             del self._metadata[key]
 
-    def _update_meta(self, data):
+    def _update_metadata(self, data):
         """
             Updates mutable metadata and ignores immutable.
         """
@@ -74,13 +74,18 @@ class MetadataMapper(object):
             new_meta = data.get(key)
 
             if new_meta:
-                self.set_metadata(new_meta, key)
+                if not self._is_immutable(key):
+                    self._metadata[key] = new_meta
+                data.pop(key)
             else:
                 self.remove_metadata(key)
 
+        if len(data) > 0:
+            self._metadata.update(data)
+
     def _write_metadata(self):
         with self.container.create_master_bucket_storage() as storage:
-            storage.set_artifact_from_string(self.path, self.metadata)
+            storage.set_artifact_from_string(self.path, yaml.dump(self._metadata))
 
 
     def _load_metadata(self, artifact):
@@ -91,16 +96,21 @@ class MetadataMapper(object):
         """
         path, artifact_name = os.path.split(artifact)
         meta_name = self._format_name(artifact_name)
-        self.path = meta_name
+        self.path = "{}/{}".format(path, meta_name)
 
         with self.container.create_master_bucket_storage() as storage:
             raw_meta = storage.get_artifact_as_string(self.path)
             if raw_meta:
                 meta = yaml.load(raw_meta)
                 meta["md5Hash"] = self._format_hash(storage.get_etag(artifact))
-                return meta
+                self.container.logger.debug("Loading metadata: {}".format(meta))
+            else:
+                meta = {}
+                meta["md5Hash"] = self._format_hash(storage.get_etag(artifact))
+                self.container.logger.debug("Metadata is empty. Adding file hash")
+            return meta
 
-    def _format_hash(etag):
+    def _format_hash(self, etag):
         meta = {
                    "name": "md5Hash",
                    "value": etag,
