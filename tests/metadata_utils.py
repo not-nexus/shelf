@@ -51,4 +51,4 @@ def send_meta_item():
 def send_meta_changed():
     d = get_meta()
     d["tag1"]["value"] = "changed value"
-    return json.dumps(dic)
+    return json.dumps(d)

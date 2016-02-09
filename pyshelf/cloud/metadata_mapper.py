@@ -84,8 +84,11 @@ class MetadataMapper(object):
             self._metadata.update(data)
 
     def _write_metadata(self):
-        with self.container.create_master_bucket_storage() as storage:
-            storage.set_artifact_from_string(self.path, yaml.dump(self._metadata))
+        if self._metadata:
+            if self._metadata.get("md5Hash"):
+                self._metadata.pop("md5Hash")
+            with self.container.create_master_bucket_storage() as storage:
+                storage.set_artifact_from_string(self.path, yaml.dump(self._metadata))
 
 
     def _load_metadata(self, artifact):
@@ -100,8 +103,8 @@ class MetadataMapper(object):
 
         with self.container.create_master_bucket_storage() as storage:
             raw_meta = storage.get_artifact_as_string(self.path)
-            if raw_meta:
-                meta = yaml.load(raw_meta)
+            meta = yaml.load(raw_meta)
+            if meta:
                 meta["md5Hash"] = self._format_hash(storage.get_etag(artifact))
                 self.container.logger.debug("Loading metadata: {}".format(meta))
             else:
