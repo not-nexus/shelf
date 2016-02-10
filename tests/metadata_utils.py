@@ -6,12 +6,10 @@ MD5 = "5eb63bbbe01eeed093cb22bb8f5acdc3"
 
 def get_meta_item():
     return {
-            "tag2": {
-                    "name": "tag2",
-                    "value": "test",
-                    "immutable": False
-                    }
-           }
+                "name": "tag2",
+                "value": "test",
+                "immutable": False
+            }
 
 
 def get_meta():

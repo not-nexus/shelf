@@ -192,7 +192,7 @@ class FunctionalTest(pyproctor.TestBase):
             meta_utils.get_meta()["md5Hash"]
         )
 
-    """def test_post_metadata_item(self):
+    def test_post_metadata_item(self):
         self.update_metadata_item_post(
             "/artifact/test/_meta/tag2",
             201,
@@ -237,4 +237,4 @@ class FunctionalTest(pyproctor.TestBase):
             200,
             {"success": True}
         )
-        self.test_get_metadata_item()"""
+        self.test_get_metadata_item()

@@ -35,6 +35,16 @@ class MetadataMapper(object):
         """
         if not self._metadata.get(key):
             self._metadata[key] = data
+            self._write_metadata()
+
+    def item_exists(self, key):
+        """
+            Checks if item is in metadata.
+
+            Args:
+                key(basestring): Key of item.
+        """
+        return key in self._metadata
 
     def get_metadata(self, key=None):
         """
@@ -65,6 +75,7 @@ class MetadataMapper(object):
         """
         if not self._is_immutable(key):
             del self._metadata[key]
+        self._write_metadata()
 
     def _update_metadata(self, data):
         """
@@ -78,7 +89,8 @@ class MetadataMapper(object):
                     self._metadata[key] = new_meta
                 data.pop(key)
             else:
-                self.remove_metadata(key)
+                if not self._is_immutable(key):
+                    del self._metadata[key]
 
         if len(data) > 0:
             self._metadata.update(data)
@@ -122,8 +134,11 @@ class MetadataMapper(object):
         return meta
 
     def _is_immutable(self, key):
-        item = self.get_metadata(key)
-        immutable = item["immutable"]
+        item = self._metadata.get(key)
+        if item:
+            immutable = item["immutable"]
+        else:
+            immutable = False
         return immutable
 
     def _format_name(self, name):

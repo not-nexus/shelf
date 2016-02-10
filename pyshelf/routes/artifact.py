@@ -76,13 +76,18 @@ def create_metadata_item(container, path, item):
     try:
         data = json.loads(request.data)
         meta_mapper = MetadataMapper(container, path)
+        exists = meta_mapper.item_exists(item)
 
         if request.method == "PUT":
             meta_mapper.set_metadata(data, item)
         else:
             meta_mapper.create_metadata_item(data, item)
 
-        return response_map.create_201()
+        if exists:
+            return response_map.create_200()
+        else:
+            return response_map.create_201()
+
     except CloudStorageException as e:
         return response_map.map_exception(e)
 
