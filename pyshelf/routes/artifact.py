@@ -64,7 +64,7 @@ def update_artifact_meta(container, path):
 def get_metadata_item(container, path, item):
     try:
         meta_mapper = MetadataMapper(container, path)
-        metadata = meta_mapper.metadata[item]
+        metadata = meta_mapper.get_metadata(item)
         return response_map.create_200(metadata)
     except CloudStorageException as e:
         return response_map.map_exception(e)
