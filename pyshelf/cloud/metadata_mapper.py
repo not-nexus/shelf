@@ -143,7 +143,7 @@ class MetadataMapper(object):
 
     def _format_name(self, name):
         """ Central spot for metadata file name format. """
-        return "_metadata_{}".format(name)
+        return "_metadata_{}.yaml".format(name)
 
     def __getattr__(self, key):
         """ Not sure that this makes sense for this object. """
