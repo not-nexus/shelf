@@ -39,9 +39,9 @@ class FunctionalTest(pyproctor.TestBase):
         nested_key = Key(self.test_bucket, "/dir/dir2/dir3/nest-test")
         nested_key.set_contents_from_string("hello world")
         #Metadata for artifacts
-        meta_key = Key(self.test_bucket, "_metadata_test")
+        meta_key = Key(self.test_bucket, "_metadata_test.yaml")
         meta_key.set_contents_from_string(yaml.dump(meta_utils.get_meta()))
-        nest_meta_key = Key(self.test_bucket, "/dir/dir2/dir3/_metadata_nest-test")
+        nest_meta_key = Key(self.test_bucket, "/dir/dir2/dir3/_metadata_nest-test.yaml")
         nest_meta_key.set_contents_from_string("")
 
     def create_auth_key(self):
