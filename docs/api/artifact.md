@@ -59,7 +59,7 @@ If the artifact can not be found you will receive a 404 NOT FOUND
 
      HTTP/1.1 404 NOT FOUND
      Content-Type: application/json
-     
+
      {
         "message": "Resource not found",
         "code": "resource_not_found"

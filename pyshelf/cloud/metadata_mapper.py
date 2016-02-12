@@ -105,7 +105,6 @@ class MetadataMapper(object):
                 yaml.add_representer(unicode, lambda dumper, value: dumper.represent_scalar(u'tag:yaml.org,2002:str', value))
                 storage.set_artifact_from_string(self.path, yaml.dump(self._metadata, default_flow_style=False))
 
-
     def _load_metadata(self, artifact):
         """
             Loads entirety of metadata for an artifact which can be accessed
@@ -130,10 +129,10 @@ class MetadataMapper(object):
 
     def _format_hash(self, etag):
         meta = {
-                   "name": "md5Hash",
-                   "value": etag,
-                   "immutable": True
-               }
+            "name": "md5Hash",
+            "value": etag,
+            "immutable": True
+        }
         return meta
 
     def _is_immutable(self, key):
