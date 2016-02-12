@@ -1,6 +1,7 @@
 from pyshelf.cloud.cloud_exceptions import MetadataNotFoundError
 import os
 import yaml
+import copy
 
 
 class MetadataMapper(object):
@@ -22,7 +23,7 @@ class MetadataMapper(object):
             if not self._is_immutable(key):
                 self._metadata[key] = data
         else:
-            self._metadata = self._update_metadata(data)
+            self._update_metadata(data)
         self._write_metadata()
 
     def create_metadata_item(self, data, key):
@@ -81,7 +82,8 @@ class MetadataMapper(object):
         """
             Updates mutable metadata and ignores immutable.
         """
-        for key, val in self._metadata.iteritems():
+        old_meta = copy.deepcopy(self._metadata)
+        for key, val in old_meta.iteritems():
             new_meta = data.get(key)
 
             if new_meta:
@@ -100,7 +102,8 @@ class MetadataMapper(object):
             if self._metadata.get("md5Hash"):
                 self._metadata.pop("md5Hash")
             with self.container.create_master_bucket_storage() as storage:
-                storage.set_artifact_from_string(self.path, yaml.dump(self._metadata))
+                yaml.add_representer(unicode, lambda dumper, value: dumper.represent_scalar(u'tag:yaml.org,2002:str', value))
+                storage.set_artifact_from_string(self.path, yaml.dump(self._metadata, default_flow_style=False))
 
 
     def _load_metadata(self, artifact):
