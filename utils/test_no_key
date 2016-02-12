@@ -1,4 +1,0 @@
-#!/usr/bin/env bash
-
-endpoint="localhost:8080/artifact/testing-poo"
-curl -i -L -H "Authorization: supersecuretoken" "$endpoint"
