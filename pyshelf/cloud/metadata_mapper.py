@@ -114,17 +114,17 @@ class MetadataMapper(object):
         path, artifact_name = os.path.split(artifact)
         meta_name = self._format_name(artifact_name)
         self.path = "{}/{}".format(path, meta_name)
+        meta = None
 
         with self.container.create_master_bucket_storage() as storage:
-            raw_meta = storage.get_artifact_as_string(self.path)
-            meta = yaml.load(raw_meta)
-            if meta:
-                meta["md5Hash"] = self._format_hash(storage.get_etag(artifact))
-                self.container.logger.debug("Loading metadata: {}".format(meta))
-            else:
+            if storage.artifact_exists(self.path):
+                raw_meta = storage.get_artifact_as_string(self.path)
+                meta = yaml.load(raw_meta)
+
+            if not meta:
                 meta = {}
-                meta["md5Hash"] = self._format_hash(storage.get_etag(artifact))
-                self.container.logger.debug("Metadata is empty. Adding file hash")
+
+            meta["md5Hash"] = self._format_hash(storage.get_etag(artifact))
             return meta
 
     def _format_hash(self, etag):

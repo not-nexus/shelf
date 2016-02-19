@@ -92,7 +92,8 @@ class Storage(object):
         try:
             key = self._get_key(path)
         except ArtifactNotFoundError:
-            key = Key(self.bucket, path)
+            bucket = self._get_bucket(self.bucket_name)
+            key = Key(bucket, path)
         key.set_contents_from_string(data)
 
     def get_etag(self, path):
@@ -107,6 +108,23 @@ class Storage(object):
         """
         key = self._get_key(path)
         return key.etag[1:-1]
+
+    def artifact_exists(self, artifact_name):
+        """
+            Checks if artifact exists.
+
+            Args:
+                artifact_name(basestring): Name of artifact to check for.
+
+            Returns:
+                boolean: whether artifact exists
+        """
+        try:
+            key = self._get_key(artifact_name)
+        except ArtifactNotFoundError:
+            return False
+        if key:
+            return True
 
     def _get_key(self, artifact_name):
         bucket = self._get_bucket(self.bucket_name)
