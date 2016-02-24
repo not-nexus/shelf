@@ -30,7 +30,7 @@ class Storage(object):
             http://technology.jana.com/2015/03/12/using-flask-and-boto-to-create-a-proxy-to-s3/
 
             Args:
-                artifactName(basestring): Full path to an object that you wish
+                artifactName(string): Full path to an object that you wish
                     to download.
 
             Returns:
@@ -49,7 +49,7 @@ class Storage(object):
             Uploads an artifact. If directory does not exist in path it will be created.
 
             Args:
-                artifact_name(basestring): Full path to upload artifact to
+                artifact_name(string): Full path to upload artifact to
                 fp(file): File to be uploaded
 
         """
@@ -76,7 +76,7 @@ class Storage(object):
             fit into memory
 
             Arguments:
-                path(basestring): The path to the artifact you want to get.
+                path(string): The path to the artifact you want to get.
         """
         key = self._get_key(path)
         return key.get_contents_as_string()
@@ -86,8 +86,8 @@ class Storage(object):
             Creates or updates artifact from a string.
 
             Args:
-                path(basestring): The path to the artifact to update/create.
-                data(basestring): Data to set contents of artifact from.
+                path(string): The path to the artifact to update/create.
+                data(string): Data to set contents of artifact from.
         """
         try:
             key = self._get_key(path)
@@ -101,10 +101,10 @@ class Storage(object):
             Gets md5Hash of file.
 
             Args:
-                path(basestring): The path to the artifact.
+                path(string): The path to the artifact.
 
             Returns:
-                basestring: md5Hash of artifact.
+                string: md5Hash of artifact.
         """
         key = self._get_key(path)
         return key.etag[1:-1]
@@ -114,7 +114,7 @@ class Storage(object):
             Checks if artifact exists.
 
             Args:
-                artifact_name(basestring): Name of artifact to check for.
+                artifact_name(string): Name of artifact to check for.
 
             Returns:
                 boolean: whether artifact exists
@@ -125,6 +125,20 @@ class Storage(object):
             return False
         if key:
             return True
+
+    def get_directory_contents(self, path):
+        """
+            Gets the contents of a directory.
+
+            Args:
+                path(string): The path of the directory.
+
+            Returns:
+                list of s3.boto.key.Key
+        """
+        result_list = self._get_bucket(self.bucket_name).list(prefix=path)
+        keys = list(result_list)
+        return keys
 
     def _get_key(self, artifact_name):
         bucket = self._get_bucket(self.bucket_name)

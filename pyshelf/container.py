@@ -1,7 +1,6 @@
 from uuid import uuid4
 from pyshelf.permissions_validator import PermissionsValidator
 from pyshelf.cloud.factory import Factory
-from pyshelf.artifact_list_manager import ArtifactListManager
 
 
 class Container(object):
@@ -36,13 +35,6 @@ class Container(object):
             self._cloud_factory = Factory(self.app.config, self.app.logger)
 
         return self._cloud_factory
-
-    @property
-    def artifact_list_manager(self):
-        if not self._artifact_list_manager:
-            self._artifact_list_manager = ArtifactListManager(self)
-
-        return self._artifact_list_manager
 
     def create_master_bucket_storage(self):
         bucket_name = self.app.config["bucketName"]
