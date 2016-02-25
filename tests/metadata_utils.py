@@ -39,14 +39,10 @@ def get_md5Hash():
 def send_meta():
     d = get_meta()
     d.pop("md5Hash")
-    return json.dumps(d)
-
-
-def send_meta_item():
-    return json.dumps(get_meta_item())
+    return d
 
 
 def send_meta_changed():
     d = get_meta()
     d["tag1"]["value"] = "changed value"
-    return json.dumps(d)
+    return d

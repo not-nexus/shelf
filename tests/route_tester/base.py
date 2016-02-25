@@ -87,7 +87,7 @@ class Base(object):
                 data(None or dict): data for DELETE request.
         """
         data = self._encode(data)
-        response = self.test_client.delete(self.endpoint, data=data, headers=None)
+        response = self.test_client.delete(self.endpoint, data=data, headers=headers)
         self._assert(response)
 
     def _assert(self, actual_response):
@@ -105,5 +105,8 @@ class Base(object):
 
     def _encode(self, data):
         if data is not None:
-            data = json.dumps(data)
+            try:
+                data = json.dumps(data)
+            except TypeError:
+                pass
         return data
