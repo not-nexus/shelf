@@ -23,11 +23,11 @@ class ArtifactListManager(object):
                 links = []
                 for child in child_list:
                     title = child.name
-                    path = "/artifact/" + title
+                    url = "/artifact/" + title
                     rel = "child"
                     if child.name == path:
                         rel = "self"
-                    links.append(self._format_link(path=path, rel=rel, title=title))
+                    links.append(self._format_link(url=url, rel=rel, title=title))
                 response = Response()
                 response.headers["Link"] = ",".join(links)
                 response.status_code = 204
@@ -40,5 +40,5 @@ class ArtifactListManager(object):
         return response
 
     def _format_link(self, **kwargs):
-        link = "<{path}>; rel={rel}; title={title}".format(**kwargs)
+        link = "<{url}>; rel={rel}; title={title}".format(**kwargs)
         return link
