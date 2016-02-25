@@ -3,7 +3,7 @@ import os
 from flask import Response
 
 
-class ArtifactMapper(object):
+class ArtifactListManager(object):
     def __init__(self, container):
         self.container = container
 
@@ -35,5 +35,6 @@ class ArtifactMapper(object):
         return response
 
     # Currently not used. Will be when I know the link format.
-    def _format_link(self, url):
-        return url
+    def _format_link(self, path):
+        form = "<{path}>; rel={ref}; title={title},"
+        return link

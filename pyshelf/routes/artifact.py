@@ -2,7 +2,6 @@ from flask import request, Blueprint, Response
 from pyshelf.endpoint_decorators import decorators
 from pyshelf.cloud.cloud_exceptions import CloudStorageException
 from pyshelf.cloud.metadata_mapper import MetadataMapper
-from pyshelf.cloud.artifact_mapper import ArtifactMapper
 import pyshelf.response_map as response_map
 import json
 
@@ -14,8 +13,7 @@ artifact = Blueprint("artifact", __name__)
 @decorators.foundation
 def get_path(container, path):
     try:
-        artifact_mapper = ArtifactMapper(container)
-        response = artifact_mapper.get_artifact(path)
+        response = container.artifact_list_manager.get_artifact(path)
         return response
     except CloudStorageException as e:
         return response_map.map_exception(e)
