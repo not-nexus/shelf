@@ -8,9 +8,14 @@ import pyshelf.configure as configure
 import permission_utils as utils
 import metadata_utils as meta_utils
 import yaml
+from tests.route_tester.tester import Tester
 
 
 class FunctionalTest(pyproctor.TestBase):
+    RESPONSE_404 = {
+        "message": "Resource not found",
+        "code": "resource_not_found"
+    }
     def setUp(self):
         config = {
             "accessKey": "test",
@@ -23,6 +28,7 @@ class FunctionalTest(pyproctor.TestBase):
         self.app.config.update(config)
         configure.logger(app.logger, "DEBUG")
         self.test_client = app.test_client()
+        self._route_tester = None
 
     def configure_moto(self):
         self.moto_s3 = mock_s3()
@@ -38,7 +44,7 @@ class FunctionalTest(pyproctor.TestBase):
         key.set_contents_from_string("hello world")
         nested_key = Key(self.test_bucket, "/dir/dir2/dir3/nest-test")
         nested_key.set_contents_from_string("hello world")
-        #Metadata for artifacts
+        # Metadata for artifacts
         meta_key = Key(self.test_bucket, "_metadata_test.yaml")
         meta_key.set_contents_from_string(yaml.dump(meta_utils.get_meta()))
         nest_meta_key = Key(self.test_bucket, "/dir/dir2/dir3/_metadata_nest-test.yaml")
@@ -52,6 +58,13 @@ class FunctionalTest(pyproctor.TestBase):
 
     def tearDown(self):
         self.moto_s3.stop()
+
+    @property
+    def route_tester(self):
+        if not self._route_tester:
+            self._route_tester = Tester(self, self.test_client)
+
+        return self._route_tester
 
     def get_artifact_path(self, path, status_code=200, body=None):
         artifact = self.test_client.get(path, headers=self.auth)
@@ -113,17 +126,10 @@ class FunctionalTest(pyproctor.TestBase):
         self.assert_response(status_code, response, body)
 
     def test_artifact_get_path(self):
-        self.get_artifact_path("/artifact/test", 200, "hello world")
+        self.route_tester.artifact().route_params(path="test").expect(200, "hello world\n").get(headers=self.auth)
 
     def test_artifact_get_none(self):
-        self.get_artifact_path(
-            "/artifact/nothing",
-            404,
-            {
-                "message": "Resource not found",
-                "code": "resource_not_found"
-            }
-        )
+        self.route_tester.artifact().route_params(path="nada").expect(404, self.RESPONSE_404).get(headers=self.auth)
 
     def test_artifact_upload(self):
         self.upload_artifact("/artifact/test-2", 201, {"success": True})
@@ -185,7 +191,7 @@ class FunctionalTest(pyproctor.TestBase):
             200,
             meta_utils.get_meta()["tag"]
         )
-        #test get hash
+        # test get hash
         self.get_artifact_metadata(
             "/artifact/test/_meta/md5Hash",
             200,
