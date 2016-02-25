@@ -1,5 +1,4 @@
 from pyshelf.cloud.stream_iterator import StreamIterator
-import os
 from flask import Response
 
 
@@ -18,13 +17,19 @@ class ArtifactListManager(object):
                 flask.Response
         """
         with self.container.create_master_bucket_storage() as storage:
-            if os.path.isdir(path):
+            if path[-1] == "/":
+                self.container.logger.debug("Artifact with path {} is a directory.".format(path))
                 child_list = storage.get_directory_contents(path)
                 links = []
                 for child in child_list:
-                    links.append(self._format_link(str(child)))
+                    title = child.name
+                    path = "/artifact/" + title
+                    rel = "child"
+                    if child.name == path:
+                        rel = "self"
+                    links.append(self._format_link(path=path, rel=rel, title=title))
                 response = Response()
-                response.headers["Link"] = links
+                response.headers["Link"] = ",".join(links)
                 response.status_code = 204
 
             else:
@@ -34,7 +39,6 @@ class ArtifactListManager(object):
 
         return response
 
-    # Currently not used. Will be when I know the link format.
-    def _format_link(self, path):
-        form = "<{path}>; rel={ref}; title={title},"
+    def _format_link(self, **kwargs):
+        link = "<{path}>; rel={rel}; title={title}".format(**kwargs)
         return link
