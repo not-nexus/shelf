@@ -104,6 +104,14 @@ def create_201():
     response.set_data(body)
     return response
 
+def create_204():
+    """
+        Creates a 204 response
+    """
+    response = JsonResponse()
+    response.status_code = 204
+    return response
+
 
 def create_200(body=None):
     """

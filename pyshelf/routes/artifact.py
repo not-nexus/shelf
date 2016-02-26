@@ -49,7 +49,9 @@ def update_artifact_meta(container, path):
         meta_mapper = MetadataMapper(container, path)
         data = json.loads(request.data)
         meta_mapper.set_metadata(data)
-        return response_map.create_201()
+        response = get_artifact_meta(path)
+        response.status_code = 201
+        return response
     except CloudStorageException as e:
         return response_map.map_exception(e)
 
@@ -95,6 +97,6 @@ def delete_metadata_item(container, path, item):
     try:
         meta_mapper = MetadataMapper(container, path)
         meta_mapper.remove_metadata(item)
-        return response_map.create_200()
+        return response_map.create_204()
     except CloudStorageException as e:
         return response_map.map_exception(e)
