@@ -91,6 +91,16 @@ class FunctionalTest(pyproctor.TestBase):
             .expect(204, headers={"Link": "/artifact/dir/dir2/dir3/dir4/test5; rel=child; title=dir/dir2/dir3/dir4/test5"}) \
             .get(headers=self.auth)
 
+    def test_artifact_get_artifact_list(self):
+        self.route_tester \
+            .artifact() \
+            .route_params(path="") \
+            .expect(204, headers={"Link": "/artifact/dir/dir2/dir3/_metadata_nest-test.yaml; rel=child;"
+                " title=dir/dir2/dir3/_metadata_nest-test.yaml, /artifact/dir/dir2/dir3/dir4/test5; rel=child;"
+                " title=dir/dir2/dir3/dir4/test5, /artifact/dir/dir2/dir3/nest-test; rel=child;"
+                " title=dir/dir2/dir3/nest-test, /artifact/test; rel=child; title=test"}) \
+            .get(headers=self.auth)
+
     def test_artifact_upload(self):
         self.route_tester.artifact().route_params(path="test-2")\
             .expect(201, {"success": True})\

@@ -8,7 +8,7 @@ import json
 artifact = Blueprint("artifact", __name__)
 
 
-@artifact.route("/", methods=["GET"], defaults={"path": ""})
+@artifact.route("/", methods=["GET"], defaults={"path": "/"})
 @artifact.route("/<path:path>", methods=["GET"])
 @decorators.foundation
 def get_path(container, path):

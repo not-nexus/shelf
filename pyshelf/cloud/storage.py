@@ -136,6 +136,9 @@ class Storage(object):
             Returns:
                 list of s3.boto.key.Key
         """
+        if path == "/":
+            path = ""
+
         result_list = self._get_bucket(self.bucket_name).list(prefix=path)
         keys = list(result_list)
         return keys

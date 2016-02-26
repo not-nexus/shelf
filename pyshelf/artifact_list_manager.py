@@ -1,4 +1,5 @@
 from flask import Response
+import re
 
 
 class ArtifactListManager(object):
@@ -18,9 +19,10 @@ class ArtifactListManager(object):
         with self.container.create_master_bucket_storage() as storage:
             if path[-1] == "/":
                 self.container.logger.debug("Artifact with path {} is a directory.".format(path))
-                child_list = storage.get_directory_contents(path)
+                artifact_list = storage.get_directory_contents(path)
+                artifact_list = self._remove_private_artifacts(list(artifact_list))
                 response = Response()
-                response.headers["Link"] = self._format_link_list(list(child_list), path)
+                response.headers["Link"] = self._format_link_list(artifact_list, path)
                 response.status_code = 204
 
             else:
@@ -32,6 +34,14 @@ class ArtifactListManager(object):
                 response.headers["Content-Type"] = stream.headers["content-type"]
 
         return response
+
+    def _remove_private_artifacts(self, artifact_list):
+        refined_list = []
+        for artifact in artifact_list:
+            match = re.search("^_", artifact.name)
+            if not match:
+                refined_list.append(artifact)
+        return refined_list
 
     def _format_link(self, artifact, child=False):
         title = artifact.name
