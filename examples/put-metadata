@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+endpoint="localhost:8080/artifact/hello-world/_meta"
+curl -i -L -H "Content-Type: application/json" -H "Authorization: 190a64931e6e49ccb9917c7f32a29d19" -X PUT \
+-d '{"tag":{"value": "test", "immutable": false}, "tag1":{"value": "test","immutable": true}}' "$endpoint"
