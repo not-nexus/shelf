@@ -1,4 +1,3 @@
-import flask
 import json
 
 
@@ -10,6 +9,7 @@ class Base(object):
         self.params = None
         self.status_code = None
         self.response = None
+        self.headers = None
         self.route = None
 
     @property
@@ -31,7 +31,7 @@ class Base(object):
         self.params = params
         return self
 
-    def expect(self, status_code, response=None):
+    def expect(self, status_code, response=None, headers=None):
         """
             Sets the expected status_code and response. To be asserted.
 
@@ -44,6 +44,7 @@ class Base(object):
         """
         self.status_code = status_code
         self.response = response
+        self.headers = headers
         return self
 
     def get(self, data=None, headers=None):
@@ -91,9 +92,9 @@ class Base(object):
         self._assert(response)
 
     def _assert(self, actual_response):
-        if self.status_code is not None:
+        if self.status_code:
             self.test.assertEqual(self.status_code, actual_response.status_code)
-        if self.response is not None:
+        if self.response:
             data = actual_response.get_data()
             try:
                 actual = json.loads(data)
@@ -102,6 +103,9 @@ class Base(object):
                 actual = data
 
             self.test.assertEqual(self.response, actual)
+        if self.headers:
+            for key, value in self.headers.iteritems():
+                self.test.assertEqual(value, actual_response.headers.get(key))
 
     def _encode(self, data):
         if data is not None:

@@ -1,4 +1,3 @@
-from pyshelf.cloud.stream_iterator import StreamIterator
 from flask import Response
 
 
