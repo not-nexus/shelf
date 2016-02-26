@@ -35,3 +35,8 @@ class MetadataNotFoundError(CloudStorageException):
     def __init__(self, item):
         message = "The requested metadata {} does not exist.".format(item)
         super(MetadataNotFoundError, self).__init__(message, ErrorCode.RESOURCE_NOT_FOUND)
+
+class ImmutableMetadataError(CloudStorageException):
+    def __init__(self, item):
+        message = "The metadata item {} is immutable.".format(item)
+        super(ImmutableMetadataError, self).__init__(message, ErrorCode.FORBIDDEN)

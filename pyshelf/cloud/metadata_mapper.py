@@ -1,4 +1,4 @@
-from pyshelf.cloud.cloud_exceptions import MetadataNotFoundError
+from pyshelf.cloud.cloud_exceptions import MetadataNotFoundError, ImmutableMetadataError
 import os
 import yaml
 import copy
@@ -33,10 +33,16 @@ class MetadataMapper(object):
             Args:
                 data(dict): Metadata to set.
                 key(basestring): Key of item to set.
+
+            Return:
+                boolean: Whether created or not
         """
         if not self._metadata.get(key):
             self._metadata[key] = data
             self._write_metadata()
+            return True
+
+        return False
 
     def item_exists(self, key):
         """
@@ -87,11 +93,11 @@ class MetadataMapper(object):
             new_meta = data.get(key)
 
             if new_meta:
-                if not self._is_immutable(key):
+                if not self._is_immutable(key, quiet=True):
                     self._metadata[key] = new_meta
                 data.pop(key)
             else:
-                if not self._is_immutable(key):
+                if not self._is_immutable(key, quiet=True):
                     del self._metadata[key]
 
         if len(data) > 0:
@@ -102,7 +108,8 @@ class MetadataMapper(object):
             if self._metadata.get("md5Hash"):
                 self._metadata.pop("md5Hash")
             with self.container.create_master_bucket_storage() as storage:
-                yaml.add_representer(unicode, lambda dumper, value: dumper.represent_scalar(u'tag:yaml.org,2002:str', value))
+                yaml.add_representer(unicode, lambda dumper,
+                        value: dumper.represent_scalar(u'tag:yaml.org,2002:str', value))
                 storage.set_artifact_from_string(self.path, yaml.dump(self._metadata, default_flow_style=False))
 
     def _load_metadata(self, artifact):
@@ -135,13 +142,14 @@ class MetadataMapper(object):
         }
         return meta
 
-    def _is_immutable(self, key):
+    def _is_immutable(self, key, quiet=False):
         item = self._metadata.get(key)
-        if item:
-            immutable = item["immutable"]
+        if item and item["immutable"]:
+            if quiet:
+                return True
+            raise ImmutableMetadataError(key)
         else:
-            immutable = False
-        return immutable
+            return False
 
     def _format_name(self, name):
         """ Central spot for metadata file name format. """

@@ -73,15 +73,17 @@ def create_metadata_item(container, path, item):
         meta_mapper = MetadataMapper(container, path)
         exists = meta_mapper.item_exists(item)
 
-        if request.method == "PUT":
+        if not exists:
             meta_mapper.set_metadata(data, item)
+            response = get_metadata_item(path, item)
+            response.status_code = 201
+        elif exists and request.method == "PUT":
+            success = meta_mapper.set_metadata_item(data, item)
+            response = get_metadata_item(path, item)
+            response.status_code = 200
         else:
-            meta_mapper.create_metadata_item(data, item)
-
-        if exists:
-            return response_map.create_200()
-        else:
-            return response_map.create_201()
+            response = response_map.create_403()
+        return response
 
     except CloudStorageException as e:
         return response_map.map_exception(e)

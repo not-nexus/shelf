@@ -55,7 +55,7 @@ class FunctionalTest(pyproctor.TestBase):
 
     def create_auth_key(self):
         self.auth = utils.auth_header()
-        key_name = "_keys/{}".format(self.auth['Authorization'])
+        key_name = "_keys/{}".format(self.auth["Authorization"])
         auth_key = Key(self.test_bucket, key_name)
         auth_key.set_contents_from_string(utils.get_permissions_func_test())
 
@@ -91,7 +91,7 @@ class FunctionalTest(pyproctor.TestBase):
             .expect(204, headers={"Link": "/artifact/dir/dir2/dir3/dir4/test5; rel=child; title=dir/dir2/dir3/dir4/test5"}) \
             .get(headers=self.auth)
 
-    def test_artifact_get_artifact_list(self):
+    def test_artifact_get_artifact_list_all(self):
         self.route_tester \
             .artifact() \
             .route_params(path="") \
@@ -104,12 +104,12 @@ class FunctionalTest(pyproctor.TestBase):
     def test_artifact_upload(self):
         self.route_tester.artifact().route_params(path="test-2")\
             .expect(201, {"success": True})\
-            .post(data={'file': (StringIO('file contents'), 'test.txt')}, headers=self.auth)
+            .post(data={"file": (StringIO("file contents"), "test.txt")}, headers=self.auth)
 
     def test_artifact_upload_no_permissions(self):
         self.route_tester.artifact().route_params(path="dir/test")\
             .expect(401, "Permission Denied\n")\
-            .post(data={'file': (StringIO('file contents'), 'test.txt')}, headers=self.auth)
+            .post(data={"file": (StringIO("file contents"), "test.txt")}, headers=self.auth)
 
     def test_artifact_upload_existing_artifact(self):
         self.route_tester.artifact().route_params(path="test")\
@@ -118,29 +118,44 @@ class FunctionalTest(pyproctor.TestBase):
                     "message": "Artifact by name test already exists in current directory",
                     "code": "duplicate_artifact"
                 })\
-            .post(data={'file': (StringIO('file contents'), 'test.txt')}, headers=self.auth)
+            .post(data={"file": (StringIO("file contents"), "test.txt")}, headers=self.auth)
 
     def test_illegal_artifact_upload(self):
-        self.route_tester.artifact().route_params(path="_test")\
+        self.route_tester \
+            .artifact() \
+            .route_params(path="_test")\
             .expect(403,
                 {
                     "message": "The artifact name provided is not allowable. Please remove leading underscores.",
                     "code": "invalid_artifact_name"
                 })\
-            .post(data={'file': (StringIO('file contents'), 'test.txt')}, headers=self.auth)
+            .post(data={"file": (StringIO("file contents"), "test.txt")}, headers=self.auth)
 
     def test_get_metadata(self):
-        self.route_tester.metadata().route_params(path="test").expect(200, meta_utils.get_meta()).get(headers=self.auth)
+        self.route_tester \
+            .metadata() \
+            .route_params(path="test") \
+            .expect(200, meta_utils.get_meta()) \
+            .get(headers=self.auth)
 
     def test_put_metadata(self):
-        self.route_tester.metadata().route_params(path="dir/dir2/dir3/nest-test")\
+        self.route_tester \
+            .metadata() \
+            .route_params(path="dir/dir2/dir3/nest-test")\
             .expect(201, {"success": True})\
             .put(data=meta_utils.send_meta(), headers=self.auth)
 
     def test_put_metadata_immutable(self):
-        self.route_tester.metadata().route_params(path="test")\
-            .expect(201, {"success": True})\
+        self.route_tester \
+            .metadata() \
+            .route_params(path="test") \
+            .expect(201, {"success": True}) \
             .put(data=meta_utils.send_meta_changed(), headers=self.auth)
+        self.route_tester \
+            .metadata() \
+            .route_params(path="test") \
+            .expect(200, meta_utils.get_meta()) \
+            .get(headers=self.auth)
 
     def test_get_metadata_item(self):
         self.route_tester.metadata_item().route_params(path="test", item="tag")\
@@ -153,18 +168,26 @@ class FunctionalTest(pyproctor.TestBase):
             .get(headers=self.auth)
 
     def test_post_metadata_item(self):
-        self.route_tester.metadata_item().route_params(path="test", item="tag2")\
-            .expect(201, {"success": True})\
+        self.route_tester \
+            .metadata_item() \
+            .route_params(path="test", item="tag2") \
+            .expect(201, {"immutable": False, "name": "tag2", "value": "test"}) \
             .post(data=meta_utils.get_meta_item(), headers=self.auth)
 
-    def test_post_ignore_metadata_item(self):
-        self.route_tester.metadata_item().route_params(path="test", item="tag2")\
-            .expect(201, {"success": True})\
+    def test_post_existing_metadata_item(self):
+        self.route_tester \
+            .metadata_item() \
+            .route_params(path="test", item="tag1") \
+            .expect(403,
+                {
+                    "code": "forbidden",
+                    "message": "Forbidden"
+                }) \
             .post(data=meta_utils.get_meta_item(), headers=self.auth)
 
     def test_put_metadata_item(self):
         self.route_tester.metadata_item().route_params(path="test", item="tag2")\
-            .expect(201, {"success": True})\
+            .expect(201, {"immutable": False, "name": "tag2", "value": "test"})\
             .put(data=meta_utils.get_meta_item(), headers=self.auth)
 
     def test_delete_metadata_item(self):
@@ -174,6 +197,10 @@ class FunctionalTest(pyproctor.TestBase):
 
     def test_delete_metadata_immutable(self):
         self.route_tester.metadata_item().route_params(path="test", item="tag1")\
-            .expect(200, {"success": True})\
+            .expect(403,
+                    {
+                        "code": "forbidden",
+                        "message": "The metadata item tag1 is immutable."
+                    })\
             .delete(headers=self.auth)
         self.test_get_metadata_item()
