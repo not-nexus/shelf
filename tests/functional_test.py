@@ -181,9 +181,18 @@ class FunctionalTest(pyproctor.TestBase):
             .post(data=meta_utils.get_meta_item(), headers=self.auth)
 
     def test_put_metadata_item(self):
-        self.route_tester.metadata_item().route_params(path="test", item="tag2")\
-            .expect(201, {"immutable": False, "name": "tag2", "value": "test"})\
+        self.route_tester \
+            .metadata_item() \
+            .route_params(path="test", item="tag2") \
+            .expect(201, {"immutable": False, "name": "tag2", "value": "test"}) \
             .put(data=meta_utils.get_meta_item(), headers=self.auth)
+
+    def test_put_metadata_existing_item(self):
+        self.route_tester \
+            .metadata_item() \
+            .route_params(path="test", item="tag") \
+            .expect(200, meta_utils.get_meta()["tag"]) \
+            .put(data=meta_utils.get_meta()["tag"], headers=self.auth)
 
     def test_delete_metadata_item(self):
         self.route_tester.metadata_item().route_params(path="test", item="tag")\

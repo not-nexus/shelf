@@ -73,16 +73,14 @@ def create_metadata_item(container, path, item):
     try:
         data = json.loads(request.data)
         meta_mapper = MetadataMapper(container, path)
-        exists = meta_mapper.item_exists(item)
 
-        if not exists:
+        if not meta_mapper.item_exists(item):
             meta_mapper.set_metadata(data, item)
             response = get_metadata_item(path, item)
             response.status_code = 201
-        elif exists and request.method == "PUT":
-            success = meta_mapper.set_metadata_item(data, item)
+        elif meta_mapper.item_exists(item) and request.method == "PUT":
+            success = meta_mapper.set_metadata(data, item)
             response = get_metadata_item(path, item)
-            response.status_code = 200
         else:
             response = response_map.create_403()
         return response
