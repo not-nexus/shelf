@@ -4,6 +4,7 @@ from moto import mock_s3
 import boto
 import pyproctor
 import pyshelf.configure as configure
+from pyshelf.app import app
 import permission_utils as utils
 import metadata_utils as meta_utils
 import yaml
@@ -17,18 +18,21 @@ class FunctionalTest(pyproctor.TestBase):
     }
 
     def setUp(self):
+        self.app = app
+        self.configure_moto()
+        self.test_client = app.test_client()
+        self._route_tester = None
+
+    @classmethod
+    def setUpClass(cls):
         config = {
             "accessKey": "test",
             "secretKey": "test",
             "bucketName": "test"
         }
-        self.configure_moto()
-        from pyshelf.app import app
-        self.app = app
-        self.app.config.update(config)
         configure.logger(app.logger, "DEBUG")
-        self.test_client = app.test_client()
-        self._route_tester = None
+        app.config.update(config)
+
 
     def configure_moto(self):
         self.moto_s3 = mock_s3()
