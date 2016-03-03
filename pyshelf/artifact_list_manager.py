@@ -19,7 +19,7 @@ class ArtifactListManager(object):
         with self.container.create_master_bucket_storage() as storage:
             if path[-1] == "/":
                 self.container.logger.debug("Artifact with path {} is a directory.".format(path))
-                artifact_list = storage.get_directory_contents(path)
+                artifact_list = storage.get_directory_contents(path, recursive=False)
                 artifact_list = self._remove_private_artifacts(list(artifact_list))
                 response = Response()
                 response.headers["Link"] = self._format_link_list(artifact_list, path)

@@ -126,12 +126,13 @@ class Storage(object):
         if key:
             return True
 
-    def get_directory_contents(self, path):
+    def get_directory_contents(self, path, recursive):
         """
             Gets the contents of a directory.
 
             Args:
                 path(string): The path of the directory.
+                recursive(boolean):
 
             Returns:
                 list of s3.boto.key.Key
@@ -139,8 +140,13 @@ class Storage(object):
         if path == "/":
             path = ""
 
-        result_list = self._get_bucket(self.bucket_name).list(prefix=path)
+        if recursive:
+            result_list = self._get_bucket(self.bucket_name).list(prefix=path)
+        else:
+            result_list = self._get_bucket(self.bucket_name).list(prefix=path, delimiter="/")
+
         keys = list(result_list)
+        print keys
         return keys
 
     def _get_key(self, artifact_name):
