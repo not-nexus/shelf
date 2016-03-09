@@ -1,30 +1,23 @@
-import pyproctor
+from unit_test_base import UnitTestBase
 from pyshelf.permissions_validator import PermissionsValidator
-import mock
+from mock import MagicMock
 import permission_utils as utils
 
 
-class PermissionsUnitTest(pyproctor.TestBase):
+class PermissionsUnitTest(UnitTestBase):
     def mock_dependencies(self, permissions, path, method, headers):
-        request = mock.Mock()
-        request.path = path
-        request.method = method
-        request.headers = headers
-        container = mock.Mock()
-        container.request = request
-        storage = mock.Mock()
-        storage.get_artifact_as_string = mock.MagicMock()
+        self.container.request.path = path
+        self.container.request.method = method
+        self.container.request.headers = headers
+        self.storage.get_artifact_as_string = MagicMock()
 
         def get_artifact(key):
             if key == "_keys/" + utils.VALID_KEY:
                 return permissions
             return None
 
-        storage.get_artifact_as_string.side_effect = get_artifact
-        storage.__exit__ = mock.MagicMock(return_value=False)
-        storage.__enter__ = mock.MagicMock(return_value=storage)
-        container.create_master_bucket_storage = mock.MagicMock(return_value=storage)
-        self.validator = PermissionsValidator(container)
+        self.storage.get_artifact_as_string.side_effect = get_artifact
+        self.validator = PermissionsValidator(self.container)
 
     def test_allowed_upload_with_full_access(self):
         self.mock_dependencies(utils.get_permissions_all(), "/artifact/upload-test", "POST", utils.auth_header())

@@ -5,11 +5,10 @@ import copy
 
 
 class MetadataMapper(object):
-    def __init__(self, container, artifact):
+    def __init__(self, container, artifact_path):
         self.container = container
-        self.artifact = artifact
         self.path = None
-        self._metadata = self._load_metadata(self.artifact)
+        self._metadata = self._load_metadata(artifact_path)
 
     def set_metadata(self, data, key=None):
         """
@@ -112,13 +111,13 @@ class MetadataMapper(object):
                         value: dumper.represent_scalar(u'tag:yaml.org,2002:str', value))
                 storage.set_artifact_from_string(self.path, yaml.dump(self._metadata, default_flow_style=False))
 
-    def _load_metadata(self, artifact):
+    def _load_metadata(self, artifact_path):
         """
             Loads entirety of metadata for an artifact which can be accessed
             via MetadataMapper.get_metadata(). To access a particular part of
             the metadata MetadataMapper.get_metadata(<key>).
         """
-        path, artifact_name = os.path.split(artifact)
+        path, artifact_name = os.path.split(artifact_path)
         meta_name = self._format_name(artifact_name)
         self.path = "{}/{}".format(path, meta_name)
         meta = None
@@ -131,7 +130,7 @@ class MetadataMapper(object):
             if not meta:
                 meta = {}
 
-            meta["md5Hash"] = self._format_hash(storage.get_etag(artifact))
+            meta["md5Hash"] = self._format_hash(storage.get_etag(artifact_path))
             return meta
 
     def _format_hash(self, etag):
