@@ -26,7 +26,11 @@ class PermissionsValidator(object):
             self.authorization_token = authorization
             if authorization:
                 with self.container.create_master_bucket_storage() as storage:
-                    raw_permissions = storage.get_artifact_as_string("_keys/" + authorization)
+                    try:
+                        raw_permissions = storage.get_artifact_as_string("_keys/" + authorization)
+                    except:
+                        raw_permissions = None
+                        self._permissions_loaded = True
 
                 if raw_permissions:
                     self._permissions = yaml.load(raw_permissions)
