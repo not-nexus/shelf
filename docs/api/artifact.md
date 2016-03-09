@@ -38,7 +38,7 @@ If an artifact has an invalid name or begins with an underscore (reserved).
 
 
 
-Here is an example using curl
+Here is an example using curl (examples directory has some great curl examples)
 
      curl -v -i -L -H "Authorization: supersecuretoken" -F "file=@./upload-test.txt" localhost:8080/artifact/upload-test.txt
 
@@ -51,6 +51,7 @@ To get the same artifact back you can use get on the same path.
 
      HTTP/1.0 200 OK
      Content-Type: application/octet-stream
+     Link: /artifact/hello-world; rel=self; title=hello-world, /artifact/hello-world/_meta; rel=metadata; title=metadata
      Content-Length: 74
      Server: Werkzeug/0.11.2 Python/2.7.9
      Date: Sun, 20 Dec 2015 23:12:21 GMT
@@ -68,3 +69,21 @@ If the artifact can not be found you will receive a 404 NOT FOUND
 In curl:
 
      curl -i -L -H "Authorization: supersecuretoken" localhost:8080/artifact/hello-world > hello-world.txt
+
+---
+
+### Artifact Links
+
+When you request an artifact a Link header is included. For artifacts that represent a file you will received a self and metadata link back (see above example).
+
+If you make a request on a directory you will receive back header links for artifacts in that directory. Note the trailing forward slash.
+
+    GET /artifact/hello-world-dir/ HTTP/1.1
+    Authorization: supersecuretoken
+
+    HTTP/1.0 204 NO CONTENT
+    Content-Type: text/html; charset=utf-8
+    Link: /artifact/hello-world; rel=child; title=hello-world, /artifact/hello-world-dir/; rel=self; title=hello-world-dir/
+    Content-Length: 0
+    Server: Werkzeug/0.11.3 Python/2.7.10
+    Date: Wed, 09 Mar 2016 21:51:40 GMT
