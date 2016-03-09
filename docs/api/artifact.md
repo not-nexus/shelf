@@ -69,21 +69,3 @@ If the artifact can not be found you will receive a 404 NOT FOUND
 In curl:
 
      curl -i -L -H "Authorization: supersecuretoken" localhost:8080/artifact/hello-world > hello-world.txt
-
----
-
-### Artifact Links
-
-When you request an artifact a Link header is included. For artifacts that represent a file you will received a self and metadata link back (see above example).
-
-If you make a request on a directory you will receive back header links for artifacts in that directory. Note the trailing forward slash.
-
-    GET /artifact/hello-world-dir/ HTTP/1.1
-    Authorization: supersecuretoken
-
-    HTTP/1.0 204 NO CONTENT
-    Content-Type: text/html; charset=utf-8
-    Link: /artifact/hello-world; rel=child; title=hello-world, /artifact/hello-world-dir/; rel=self; title=hello-world-dir/
-    Content-Length: 0
-    Server: Werkzeug/0.11.3 Python/2.7.10
-    Date: Wed, 09 Mar 2016 21:51:40 GMT
