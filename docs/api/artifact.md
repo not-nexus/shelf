@@ -38,7 +38,7 @@ If an artifact has an invalid name or begins with an underscore (reserved).
 
 
 
-Here is an example using curl
+Here is an example using curl (examples directory has some great curl examples)
 
      curl -v -i -L -H "Authorization: supersecuretoken" -F "file=@./upload-test.txt" localhost:8080/artifact/upload-test.txt
 
@@ -51,6 +51,7 @@ To get the same artifact back you can use get on the same path.
 
      HTTP/1.0 200 OK
      Content-Type: application/octet-stream
+     Link: /artifact/hello-world; rel=self; title=hello-world, /artifact/hello-world/_meta; rel=metadata; title=metadata
      Content-Length: 74
      Server: Werkzeug/0.11.2 Python/2.7.9
      Date: Sun, 20 Dec 2015 23:12:21 GMT
