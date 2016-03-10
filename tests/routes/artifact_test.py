@@ -1,6 +1,5 @@
 from StringIO import StringIO
 from functional_test_base import FunctionalTestBase
-from pyshelf import configure
 
 
 class ArtifactTest(FunctionalTestBase):
@@ -32,35 +31,30 @@ class ArtifactTest(FunctionalTestBase):
             .route_params(path="") \
             .expect(204, headers={
                 "Link": "/artifact/test; rel=child; title=test, /artifact/dir/; rel=child; title=dir/"
-            })\
+            }) \
             .get(headers=self.auth)
 
     def test_artifact_upload(self):
-        self.route_tester.artifact().route_params(path="test-2")\
-            .expect(201, {"success": True})\
+        self.route_tester.artifact() \
+            .route_params(path="test-2") \
+            .expect(201, {"success": True}) \
             .post(data={"file": (StringIO("file contents"), "test.txt")}, headers=self.auth)
 
     def test_artifact_upload_no_permissions(self):
-        self.route_tester.artifact().route_params(path="dir/test")\
-            .expect(401, "Permission Denied\n")\
+        self.route_tester.artifact() \
+            .route_params(path="dir/test") \
+            .expect(401, "Permission Denied\n") \
             .post(data={"file": (StringIO("file contents"), "test.txt")}, headers=self.auth)
 
     def test_artifact_upload_existing_artifact(self):
-        self.route_tester.artifact().route_params(path="test")\
-            .expect(403,
-                {
-                    "message": "Artifact by name test already exists in current directory",
-                    "code": "duplicate_artifact"
-                })\
+        self.route_tester.artifact() \
+            .route_params(path="test") \
+            .expect(403, self.RESPONSE_DUPLICATE) \
             .post(data={"file": (StringIO("file contents"), "test.txt")}, headers=self.auth)
 
     def test_illegal_artifact_upload(self):
         self.route_tester \
             .artifact() \
-            .route_params(path="_test")\
-            .expect(403,
-                {
-                    "message": "The artifact name provided is not allowable. Please remove leading underscores.",
-                    "code": "invalid_artifact_name"
-                })\
+            .route_params(path="_test") \
+            .expect(403, self.RESPONSE_INVALID_NAME) \
             .post(data={"file": (StringIO("file contents"), "test.txt")}, headers=self.auth)

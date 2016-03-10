@@ -23,7 +23,6 @@ class MetadataUnitTest(UnitTestBase):
         self._setup_metadata("test")
         meta_mapper = MetadataMapper(self.container, "test")
         meta = {
-            "name": "metaItem",
             "value": "this is most certainly new",
             "immutable": True
         }
@@ -33,7 +32,29 @@ class MetadataUnitTest(UnitTestBase):
         success = meta_mapper.create_metadata_item(meta, "metaItem")
         self.assertFalse(success)
 
-    def test_update_metadata(self):
+    def test_set_metadata(self):
         self._setup_metadata("non_existant")
         meta_mapper = MetadataMapper(self.container, "non-existant")
-        # at this point meta_mapper._metadata should exist
+        meta = {
+            "metaItem": {
+                "value": "this is most certainly new",
+                "immutable": False
+            }
+        }
+        expected_meta = {
+            "metaItem": {
+                "value": "lolol",
+                "immutable": True
+            },
+            "md5Hash": {
+                "name": "md5Hash",
+                "value": "md5HashIsForNoobs",
+                "immutable": True
+            }
+        }
+        meta_mapper.set_metadata(meta)
+        item = meta_mapper.get_metadata("metaItem")
+        self.assertEqual(item, {"value": "this is most certainly new", "immutable": False})
+        meta_mapper.set_metadata({"value": "lolol", "immutable": True}, "metaItem")
+        act_meta = meta_mapper.get_metadata()
+        self.assertEqual(expected_meta, act_meta)

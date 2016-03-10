@@ -13,8 +13,8 @@ class MetadataTest(FunctionalTestBase):
     def test_put_metadata(self):
         self.route_tester \
             .metadata() \
-            .route_params(path="dir/dir2/dir3/nest-test")\
-            .expect(201, meta_utils.get_meta())\
+            .route_params(path="dir/dir2/dir3/nest-test") \
+            .expect(201, meta_utils.get_meta()) \
             .put(data=meta_utils.send_meta(), headers=self.auth)
 
     def test_put_metadata_immutable(self):
@@ -25,13 +25,15 @@ class MetadataTest(FunctionalTestBase):
             .put(data=meta_utils.send_meta_changed(), headers=self.auth)
 
     def test_get_metadata_item(self):
-        self.route_tester.metadata_item().route_params(path="test", item="tag")\
-            .expect(200, meta_utils.get_meta()["tag"])\
+        self.route_tester.metadata_item() \
+            .route_params(path="test", item="tag") \
+            .expect(200, meta_utils.get_meta()["tag"]) \
             .get(headers=self.auth)
 
     def test_get_hash(self):
-        self.route_tester.metadata_item().route_params(path="test", item="md5Hash")\
-            .expect(200, meta_utils.get_meta()["md5Hash"])\
+        self.route_tester.metadata_item() \
+            .route_params(path="test", item="md5Hash") \
+            .expect(200, meta_utils.get_meta()["md5Hash"]) \
             .get(headers=self.auth)
 
     def test_post_metadata_item(self):
@@ -45,11 +47,7 @@ class MetadataTest(FunctionalTestBase):
         self.route_tester \
             .metadata_item() \
             .route_params(path="test", item="tag1") \
-            .expect(403,
-                {
-                    "code": "forbidden",
-                    "message": "Forbidden"
-                }) \
+            .expect(403, self.RESPONSE_403) \
             .post(data=meta_utils.get_meta_item(), headers=self.auth)
 
     def test_put_metadata_item(self):
@@ -67,16 +65,18 @@ class MetadataTest(FunctionalTestBase):
             .put(data=meta_utils.get_meta()["tag"], headers=self.auth)
 
     def test_delete_metadata_item(self):
-        self.route_tester.metadata_item().route_params(path="test", item="tag")\
-            .expect(204)\
+        self.route_tester.metadata_item() \
+            .route_params(path="test", item="tag") \
+            .expect(204) \
             .delete(headers=self.auth)
 
     def test_delete_metadata_immutable(self):
-        self.route_tester.metadata_item().route_params(path="test", item="tag1")\
+        self.route_tester.metadata_item() \
+            .route_params(path="test", item="tag1") \
             .expect(403,
                     {
                         "code": "forbidden",
                         "message": "The metadata item tag1 is immutable."
-                    })\
+                    }) \
             .delete(headers=self.auth)
         self.test_get_metadata_item()

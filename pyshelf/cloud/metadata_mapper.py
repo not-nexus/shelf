@@ -104,8 +104,8 @@ class MetadataMapper(object):
 
     def _write_metadata(self):
         if self._metadata:
-            if self._metadata.get("md5Hash"):
-                self._metadata.pop("md5Hash")
+            meta = copy.deepcopy(self._metadata)
+            meta.pop("md5Hash", None)
             with self.container.create_master_bucket_storage() as storage:
                 yaml.add_representer(unicode, lambda dumper,
                         value: dumper.represent_scalar(u'tag:yaml.org,2002:str', value))

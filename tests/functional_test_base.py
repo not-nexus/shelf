@@ -16,6 +16,21 @@ class FunctionalTestBase(pyproctor.TestBase):
         "code": "resource_not_found"
     }
 
+    RESPONSE_403 = {
+        "code": "forbidden",
+        "message": "Forbidden"
+    }
+
+    RESPONSE_INVALID_NAME = {
+        "message": "The artifact name provided is not allowable. Please remove leading underscores.",
+        "code": "invalid_artifact_name"
+    }
+
+    RESPONSE_DUPLICATE = {
+        "code": "duplicate_artifact",
+        "message": "Artifact by name test already exists in current directory"
+    }
+
     def setUp(self):
         self.app = app
         self.configure_moto()
