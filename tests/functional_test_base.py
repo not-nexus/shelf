@@ -91,5 +91,5 @@ class FunctionalTestBase(pyproctor.TestBase):
 
         return {
             "message": message,
-            "code": "internal_server"
+            "code": "internal_server_error"
         }

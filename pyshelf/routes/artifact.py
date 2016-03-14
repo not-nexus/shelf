@@ -1,4 +1,4 @@
-from flask import request, Blueprint, Response
+from flask import request, Blueprint
 from pyshelf.endpoint_decorators import decorators
 from pyshelf.cloud.cloud_exceptions import CloudStorageException
 from pyshelf.cloud.metadata_mapper import MetadataMapper
@@ -82,7 +82,7 @@ def create_metadata_item(container, bucket_name, path, item):
             response.set_data(meta)
             response.status_code = 201
         elif meta_mapper.item_exists(item) and request.method == "PUT":
-            success = meta_mapper.set_metadata(data, item)
+            meta_mapper.set_metadata(data, item)
             meta = meta_mapper.get_metadata(item)
             response = response_map.create_200(meta)
         else:

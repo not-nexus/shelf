@@ -18,6 +18,13 @@ class ArtifactTest(FunctionalTestBase):
             .expect(404, self.RESPONSE_404) \
             .get(headers=self.auth)
 
+    def test_no_bucket(self):
+        self.route_tester \
+            .artifact() \
+            .route_params(bucket_name="ufo", path="john-travolta") \
+            .expect(500, self.response_500("Bucket ufo not found")) \
+            .get(headers=self.auth)
+
     def test_artifact_get_artifact_list(self):
         self.route_tester \
             .artifact() \

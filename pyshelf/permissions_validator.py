@@ -2,6 +2,7 @@ import yaml
 import fnmatch
 import os
 import re
+from pyshelf.cloud.cloud_exceptions import ArtifactNotFoundError
 
 
 class PermissionsValidator(object):
@@ -28,7 +29,7 @@ class PermissionsValidator(object):
                 with self.container.create_master_bucket_storage() as storage:
                     try:
                         raw_permissions = storage.get_artifact_as_string("_keys/" + authorization)
-                    except:
+                    except ArtifactNotFoundError:
                         raw_permissions = None
                         self._permissions_loaded = True
 
