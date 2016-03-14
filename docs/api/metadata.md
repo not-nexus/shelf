@@ -5,7 +5,7 @@ Metadata
 
 The following is an example of updating all metadata for an artifact. This will only overwrite mutable items. The response to this request is identical to doing a GET on the same route.
 
-    PUT /artifact/hello-world/_meta
+    PUT /bucket-name/artifact/hello-world/_meta
     Authorization: supersecrettoken
 
     {
@@ -46,7 +46,7 @@ The following is the response from this endpoint. Again, immutable items can onl
 
 The following is a request and response for all metadata for a particular artifact.
 
-    GET /artifact/hello-world/_meta HTTP/1.1
+    GET /bucket-name/artifact/hello-world/_meta HTTP/1.1
     Authorization: supersecuretoken=
 
     HTTP/1.0 200 OK
@@ -74,7 +74,7 @@ The following is a request and response for all metadata for a particular artifa
 
 You can request particular metadata items for an artifact.
 
-    GET /artifact/hello-world/_meta/md5Hash HTTP/1.1
+    GET /bucket-name/artifact/hello-world/_meta/md5Hash HTTP/1.1
     Authorization: supersecuretoken=
 
     HTTP/1.0 200 OK
@@ -93,7 +93,7 @@ You can request particular metadata items for an artifact.
 
 The following is an example of a PUT/POST request for a particular metadata item. The only difference between a POST and a PUT is that the latter will update existing mutable items.
 
-    POST /artifact/hello-world/_meta/tag2 HTTP/1.1
+    POST /bucket-name/artifact/hello-world/_meta/tag2 HTTP/1.1
     Authorization: supersecuretoken=
 
     {"immutable": false, "value": "edit this stuff"}
@@ -110,7 +110,7 @@ And the response..
 
 Since this is mutable, you are able to update this item with a PUT request.
 
-    PUT /artifact/hello-world/_meta/md5Hash HTTP/1.1
+    PUT /bucket-name/artifact/hello-world/_meta/md5Hash HTTP/1.1
     Authorization: supersecuretoken=
 
     HTTP/1.0 201 CREATED

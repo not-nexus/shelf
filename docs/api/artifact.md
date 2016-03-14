@@ -3,7 +3,7 @@ Artifact
 
 You can upload an artifact to S3 provided you are authorized for that particular location.
 
-     POST /artifact/hello-world HTTP/1.1
+     POST /bucket-name/artifact/hello-world HTTP/1.1
      Authorization: supersecuretoken
      Expect: 100-continue
      Content-Type: multipart/form-data; boundary=------------------------b1ba732d480278ab
@@ -40,18 +40,18 @@ If an artifact has an invalid name or begins with an underscore (reserved).
 
 Here is an example using curl (examples directory has some great curl examples)
 
-     curl -v -i -L -H "Authorization: supersecuretoken" -F "file=@./upload-test.txt" localhost:8080/artifact/upload-test.txt
+     curl -v -i -L -H "Authorization: supersecuretoken" -F "file=@./upload-test.txt" localhost:8080/bucket-name/artifact/upload-test.txt
 
 ---
 
 To get the same artifact back you can use get on the same path.
 
-     GET /artifact/hello-world HTTP/1.1
+     GET /bucket-name/artifact/hello-world HTTP/1.1
      Authorization: supersecuretoken
 
      HTTP/1.0 200 OK
      Content-Type: application/octet-stream
-     Link: /artifact/hello-world; rel=self; title=hello-world, /artifact/hello-world/_meta; rel=metadata; title=metadata
+     Link: /bucket-name/artifact/hello-world; rel=self; title=hello-world, /bucket-name/artifact/hello-world/_meta; rel=metadata; title=metadata
      Content-Length: 74
      Server: Werkzeug/0.11.2 Python/2.7.9
      Date: Sun, 20 Dec 2015 23:12:21 GMT
