@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
 echo "testing file upload with a simple txt file. Woot woot!" > ./upload-test.txt
-endpoint="localhost:8080/artifact/upload_test"
+endpoint="localhost:8080/kyle-long/artifact/upload_test20"
 curl -i -L -H "Authorization: 190a64931e6e49ccb9917c7f32a29d19" -F "file=@./upload-test.txt" "$endpoint"
 rm ./upload-test.txt

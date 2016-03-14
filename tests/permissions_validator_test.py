@@ -21,24 +21,24 @@ class PermissionsUnitTest(UnitTestBase):
         self.validator = PermissionsValidator(self.container)
 
     def test_allowed_upload_with_full_access(self):
-        self.mock_dependencies(utils.get_permissions_all(), "/artifact/upload-test", "POST", utils.auth_header())
+        self.mock_dependencies(utils.get_permissions_all(), "/test/artifact/upload-test", "POST", utils.auth_header())
         self.assertTrue(self.validator.allowed())
 
     def test_allowed_upload_with_readonly(self):
-        self.mock_dependencies(utils.get_permissions_readonly(), "/artifact/upload-test", "POST", utils.auth_header())
+        self.mock_dependencies(utils.get_permissions_readonly(), "/test/artifact/upload-test", "POST", utils.auth_header())
         self.assertFalse(self.validator.allowed())
 
     def test_allowed_with_bad_key(self):
-        self.mock_dependencies(utils.get_permissions_all(), "/artifact/upload-test", "POST", utils.auth_header(False))
+        self.mock_dependencies(utils.get_permissions_all(), "/test/artifact/upload-test", "POST", utils.auth_header(False))
         self.assertFalse(self.validator.allowed())
 
     def test_allowed_read_with_full_access(self):
         self.mock_dependencies(
-            utils.get_permissions_all(), "/artifact/dir/dir2/dir3/nest-test", "GET", utils.auth_header())
+            utils.get_permissions_all(), "/test/artifact/dir/dir2/dir3/nest-test", "GET", utils.auth_header())
         self.assertTrue(self.validator.allowed())
 
     def test_allowed_read_no_access(self):
-        self.mock_dependencies(utils.get_permissions_func_test(), "/artifact/dir/test", "GET", utils.auth_header())
+        self.mock_dependencies(utils.get_permissions_func_test(), "/test/artifact/dir/test", "GET", utils.auth_header())
         self.assertFalse(self.validator.allowed())
 
     def test_invalid_key(self):

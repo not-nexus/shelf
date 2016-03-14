@@ -123,6 +123,7 @@ class EndpointDecorators(object):
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
             container = utils.get_container()
+            container.bucket_name = kwargs.get("bucket_name")
             result = func(container, *args, **kwargs)
             return result
 

@@ -11,8 +11,7 @@ def app(app):
 
     required = {
         "accessKey": config.get("accessKey"),
-        "secretKey": config.get("secretKey"),
-        "bucketName": config.get("bucketName")
+        "secretKey": config.get("secretKey")
     }
 
     if not all(required.values()):

@@ -41,8 +41,7 @@ class FunctionalTestBase(pyproctor.TestBase):
     def setUpClass(cls):
         config = {
             "accessKey": "test",
-            "secretKey": "test",
-            "bucketName": "test"
+            "secretKey": "test"
         }
         configure.logger(app.logger, "DEBUG")
         app.config.update(config)

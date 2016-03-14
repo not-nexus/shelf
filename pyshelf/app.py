@@ -3,7 +3,7 @@ from pyshelf.routes.artifact import artifact
 import pyshelf.response_map as response_map
 
 app = flask.Flask(__name__)
-app.register_blueprint(artifact, url_prefix="/artifact")
+app.register_blueprint(artifact)
 
 
 @app.after_request
