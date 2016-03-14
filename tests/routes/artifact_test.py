@@ -4,7 +4,7 @@ from functional_test_base import FunctionalTestBase
 
 class ArtifactTest(FunctionalTestBase):
     def test_artifact_get_path(self):
-        link = "/artifact/test; rel=self; title=test, /artifact/test/_meta; rel=metadata; title=metadata"
+        link = "/test/artifact/test; rel=self; title=test, /test/artifact/test/_meta; rel=metadata; title=metadata"
         self.route_tester \
             .artifact() \
             .route_params(bucket_name="test", path="test") \
@@ -29,7 +29,7 @@ class ArtifactTest(FunctionalTestBase):
         self.route_tester \
             .artifact() \
             .route_params(bucket_name="test", path="dir/dir2/dir3/dir4/") \
-            .expect(204, headers={"Link": "/artifact/dir/dir2/dir3/dir4/test5; rel=child; title=dir/dir2/dir3/dir4/test5"}) \
+            .expect(204, headers={"Link": "/test/artifact/dir/dir2/dir3/dir4/test5; rel=child; title=dir/dir2/dir3/dir4/test5"}) \
             .get(headers=self.auth)
 
     def test_artifact_get_artifact_list_all(self):
@@ -37,7 +37,7 @@ class ArtifactTest(FunctionalTestBase):
             .artifact() \
             .route_params(bucket_name="test", path="") \
             .expect(204, headers={
-                "Link": "/artifact/test; rel=child; title=test, /artifact/dir/; rel=child; title=dir/"
+                "Link": "/test/artifact/test; rel=child; title=test, /test/artifact/dir/; rel=child; title=dir/"
             }) \
             .get(headers=self.auth)
 
