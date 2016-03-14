@@ -27,7 +27,9 @@ def create_artifact(container, bucket_name, path):
         with container.create_master_bucket_storage() as storage:
             file = request.files['file']
             storage.upload_artifact(path, file)
-            return response_map.create_201()
+            response = response_map.create_201()
+            response.headers["Location"] = container.request.path
+            return response
     except CloudStorageException as e:
         return response_map.map_exception(e)
 
@@ -52,6 +54,7 @@ def update_artifact_meta(container, bucket_name, path):
         response = JsonResponse()
         response.set_data(meta_mapper.metadata)
         response.status_code = 201
+        response.headers["Location"] = container.request.path
         return response
     except CloudStorageException as e:
         return response_map.map_exception(e)
@@ -75,16 +78,11 @@ def create_metadata_item(container, bucket_name, path, item):
         data = json.loads(request.data)
         meta_mapper = MetadataMapper(container, path)
 
-        if not meta_mapper.item_exists(item):
-            meta_mapper.set_metadata(data, item)
-            meta = meta_mapper.get_metadata(item)
-            response = JsonResponse()
-            response.set_data(meta)
-            response.status_code = 201
-        elif meta_mapper.item_exists(item) and request.method == "PUT":
+        if not meta_mapper.item_exists(item) or request.method == "PUT":
             meta_mapper.set_metadata(data, item)
             meta = meta_mapper.get_metadata(item)
             response = response_map.create_200(meta)
+            response.headers["Location"] = container.request.path
         else:
             response = response_map.create_403()
         return response

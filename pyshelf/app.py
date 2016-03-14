@@ -15,19 +15,3 @@ def format_response(response):
     data += "\n"
     response.set_data(data)
     return response
-
-
-@app.route("/r")
-def get_routes():
-    """
-        Debug route for finding out which routes are available.
-    """
-    route_list = []
-    for key, rule_list in app.url_map._rules_by_endpoint.iteritems():
-        rule = rule_list[0]
-        methods = "(" + ", ".join(rule.methods) + ")"
-        route_list.append(rule.rule + " " + methods)
-
-    route_list.sort()
-
-    return "\n".join(route_list)

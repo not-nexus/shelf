@@ -45,6 +45,5 @@ class Container(object):
 
         return self._artifact_list_manager
 
-
     def create_master_bucket_storage(self):
         return self.cloud_factory.create_storage(self.bucket_name)

@@ -44,7 +44,7 @@ class ArtifactTest(FunctionalTestBase):
     def test_artifact_upload(self):
         self.route_tester.artifact() \
             .route_params(bucket_name="test", path="test-2") \
-            .expect(201, {"success": True}) \
+            .expect(201, {"success": True}, headers={"Location": "http://localhost/test/artifact/test-2"}) \
             .post(data={"file": (StringIO("file contents"), "test.txt")}, headers=self.auth)
 
     def test_artifact_upload_no_permissions(self):

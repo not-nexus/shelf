@@ -14,7 +14,7 @@ class MetadataTest(FunctionalTestBase):
         self.route_tester \
             .metadata() \
             .route_params(bucket_name="test", path="dir/dir2/dir3/nest-test") \
-            .expect(201, meta_utils.get_meta()) \
+            .expect(201, meta_utils.get_meta(), headers={"Location": "http://localhost/test/artifact/dir/dir2/dir3/nest-test/_meta"}) \
             .put(data=meta_utils.send_meta(), headers=self.auth)
 
     def test_put_metadata_immutable(self):
@@ -40,7 +40,7 @@ class MetadataTest(FunctionalTestBase):
         self.route_tester \
             .metadata_item() \
             .route_params(bucket_name="test", path="test", item="tag2") \
-            .expect(201, {"immutable": False, "name": "tag2", "value": "test"}) \
+            .expect(200, {"immutable": False, "name": "tag2", "value": "test"}) \
             .post(data=meta_utils.get_meta_item(), headers=self.auth)
 
     def test_post_existing_metadata_item(self):
@@ -54,7 +54,7 @@ class MetadataTest(FunctionalTestBase):
         self.route_tester \
             .metadata_item() \
             .route_params(bucket_name="test", path="test", item="tag2") \
-            .expect(201, {"immutable": False, "name": "tag2", "value": "test"}) \
+            .expect(200, {"immutable": False, "name": "tag2", "value": "test"}) \
             .put(data=meta_utils.get_meta_item(), headers=self.auth)
 
     def test_put_metadata_existing_item(self):
