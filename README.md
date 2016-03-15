@@ -21,12 +21,11 @@ It is required that a config.yaml exist in the root of the repository.  This wil
 
      accessKey: XXXXXXXXXXXXXXXXXXXX
      secretKey: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-     bucketName: your-master-bucket-name-here
 
 Development
 -----------
 
-Clone the repository.  Then source utils/init_environment
+Clone the repository.  Then source utils/init-environment
 
      source utils/init_environment
 

@@ -12,6 +12,7 @@ If successful, you will get back a 201 CREATED.
 
      HTTP/1.1 201 CREATED
      Content-Type: application/json
+     Location: http://localhost:8080/kyle-long/artifact/upload_tests
 
      {"success": true}
 
@@ -68,4 +69,4 @@ If the artifact can not be found you will receive a 404 NOT FOUND
 
 In curl:
 
-     curl -i -L -H "Authorization: supersecuretoken" localhost:8080/artifact/hello-world > hello-world.txt
+     curl -i -L -H "Authorization: supersecuretoken" localhost:8080/bucket-name/artifact/hello-world > hello-world.txt
