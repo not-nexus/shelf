@@ -19,8 +19,12 @@ Configuration
 
 It is required that a config.yaml exist in the root of the repository.  This will provide information for connecting to AWS.
 
-     accessKey: XXXXXXXXXXXXXXXXXXXX
-     secretKey: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+    bucket_name:
+        accessKey: XXXXXXXXXXXXXXXXXXXX
+        secretKey: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+    bucket_name_2:
+        accessKey: XXXXXXXXXXXXXXXXXXXX
+        secretKey: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 Development
 -----------
