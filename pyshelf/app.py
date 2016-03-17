@@ -5,6 +5,9 @@ import pyshelf.response_map as response_map
 app = flask.Flask(__name__)
 app.register_blueprint(artifact)
 
+@app.errorhandler(Exception)
+def generic_exception_handler(error):
+    return response_map.create_500(msg=error.message)
 
 @app.after_request
 def format_response(response):

@@ -22,7 +22,7 @@ class ArtifactTest(FunctionalTestBase):
         self.route_tester \
             .artifact() \
             .route_params(bucket_name="ufo", path="john-travolta") \
-            .expect(500, self.response_500("Bucket ufo not found")) \
+            .expect(500, self.response_500("Access keys for ufo are not in your config.")) \
             .get(headers=self.auth)
 
     def test_artifact_get_artifact_list(self):
