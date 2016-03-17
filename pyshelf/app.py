@@ -7,6 +7,8 @@ app.register_blueprint(artifact)
 
 @app.errorhandler(Exception)
 def generic_exception_handler(error):
+    if not error.message:
+        error.message = "Internal Server Error"
     return response_map.create_500(msg=error.message)
 
 @app.after_request
