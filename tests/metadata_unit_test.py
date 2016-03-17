@@ -32,7 +32,7 @@ class MetadataUnitTest(UnitTestBase):
         self.assertFalse(success)
 
     def test_set_metadata(self):
-        self._setup_metadata("non_existant")
+        self._setup_metadata("non-existant")
         meta_mapper = MetadataMapper(self.container, "non-existant")
         meta = {
             "metaItem": {
@@ -48,6 +48,16 @@ class MetadataUnitTest(UnitTestBase):
             "md5Hash": {
                 "name": "md5Hash",
                 "value": "md5HashIsForNoobs",
+                "immutable": True
+            },
+            "artifactPath": {
+                "name": "artifactPath",
+                "value": "non-existant",
+                "immutable": True
+            },
+            "artifactName": {
+                "name": "artifactName",
+                "value": "non-existant",
                 "immutable": True
             }
         }

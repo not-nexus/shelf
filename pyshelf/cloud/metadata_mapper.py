@@ -3,6 +3,10 @@ import os
 import yaml
 import copy
 
+MD5_KEY = "md5Hash"
+PATH_KEY = "artifactPath"
+NAME_KEY = "artifactName"
+
 
 class MetadataMapper(object):
     def __init__(self, container, artifact_path):
@@ -118,7 +122,7 @@ class MetadataMapper(object):
     def _write_metadata(self):
         if self.metadata:
             meta = copy.deepcopy(self.metadata)
-            meta.pop("md5Hash", None)
+            meta.pop(MD5_KEY, None)
             with self.container.create_master_bucket_storage() as storage:
                 yaml.add_representer(unicode, lambda dumper,
                         value: dumper.represent_scalar(u'tag:yaml.org,2002:str', value))
@@ -143,16 +147,28 @@ class MetadataMapper(object):
             if not meta:
                 meta = {}
 
-            meta["md5Hash"] = self._format_hash(storage.get_etag(self.artifact_path))
+            meta[MD5_KEY] = self._format_hash(storage.get_etag(self.artifact_path))
+
+            if PATH_KEY not in meta:
+                meta[PATH_KEY] = self._format(PATH_KEY, self.artifact_path, True)
+
+            if NAME_KEY not in meta:
+                meta[NAME_KEY] = self._format(NAME_KEY, artifact_name, True)
+
             return meta
 
     def _format_hash(self, etag):
-        meta = {
-            "name": "md5Hash",
-            "value": etag,
-            "immutable": True
+        return self._format(MD5_KEY, etag, True)
+
+    def _format(self, key, value, immutable):
+        """
+            Formats a metadata item.
+        """
+        return {
+            "name": key,
+            "value": value,
+            "immutable": immutable
         }
-        return meta
 
     def _is_immutable(self, key, quiet=False):
         item = self.metadata.get(key)
