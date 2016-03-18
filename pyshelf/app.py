@@ -12,11 +12,8 @@ def generic_exception_handler(error):
     """
         Prevents Exceptions flying all around the place.
     """
-    logger = logging.getLogger(__name__)
-    logger.debug("Exception was caught by the generic exception handler, {0} - {1}".format(type(error), error))
-    if not error.message:
-        error.message = "Internal Server Error"
-    return response_map.create_500(msg=error.message)
+    app.logger.exception(error)
+    return response_map.create_500(msg="Internal server error")
 
 
 @app.after_request
