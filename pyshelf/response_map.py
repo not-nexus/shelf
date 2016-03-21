@@ -104,6 +104,7 @@ def create_201():
     response.set_data(body)
     return response
 
+
 def create_204():
     """
         Creates a 204 response

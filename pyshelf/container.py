@@ -13,6 +13,7 @@ class Container(object):
         self.app = app
         self.request = request
         self.request_id = uuid4().hex
+        self.bucket_name = None
 
         # services
         self._permissions_validator = None
@@ -44,7 +45,5 @@ class Container(object):
 
         return self._artifact_list_manager
 
-
     def create_master_bucket_storage(self):
-        bucket_name = self.app.config["bucketName"]
-        return self.cloud_factory.create_storage(bucket_name)
+        return self.cloud_factory.create_storage(self.bucket_name)

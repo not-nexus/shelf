@@ -2,6 +2,7 @@ import yaml
 import fnmatch
 import os
 import re
+from pyshelf.cloud.cloud_exceptions import ArtifactNotFoundError
 
 
 class PermissionsValidator(object):
@@ -28,7 +29,7 @@ class PermissionsValidator(object):
                 with self.container.create_master_bucket_storage() as storage:
                     try:
                         raw_permissions = storage.get_artifact_as_string("_keys/" + authorization)
-                    except:
+                    except ArtifactNotFoundError:
                         raw_permissions = None
                         self._permissions_loaded = True
 
@@ -47,11 +48,10 @@ class PermissionsValidator(object):
         if self.permissions:
             method = self.container.request.method
             path = self.container.request.path
-            key_req = re.search('^\/artifact\/*', path)
-            if method == "POST" or method == "PUT" or method == "DELETE" and key_req:
+            if method == "POST" or method == "PUT" or method == "DELETE" and "/artifact/" in path:
                 write = self.permissions.get("write")
                 allowed = self._get_access(write)
-            if method == "GET" and key_req:
+            if method == "GET" and "/artifact/" in path:
                 read = self.permissions.get("read")
                 allowed = self._get_access(read)
 
@@ -72,7 +72,8 @@ class PermissionsValidator(object):
             ar = path.split('/_meta/')
             path = ar[0]
 
-        path = re.sub("/artifact", "", path)
+        prefix = "/{0}/artifact".format(self.container.bucket_name)
+        path = re.sub(prefix, "", path)
         dir_path = os.path.dirname(path)
         dir_path = os.path.join(dir_path, '')
         for p in permissions:

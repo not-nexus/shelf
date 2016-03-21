@@ -19,16 +19,19 @@ Configuration
 
 It is required that a config.yaml exist in the root of the repository.  This will provide information for connecting to AWS.
 
-     accessKey: XXXXXXXXXXXXXXXXXXXX
-     secretKey: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-     bucketName: your-master-bucket-name-here
+    bucket_name:
+        accessKey: XXXXXXXXXXXXXXXXXXXX
+        secretKey: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+    bucket_name_2:
+        accessKey: XXXXXXXXXXXXXXXXXXXX
+        secretKey: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 Development
 -----------
 
-Clone the repository.  Then source utils/init_environment
+Clone the repository.  Then source utils/init-environment
 
-     source utils/init_environment
+     source utils/init-environment
 
 This will install a virtualenv in `venv` and install all required dependencies.  It will also add the root of the repository to $PYTHONPATH
 enabling you to run commands from there.

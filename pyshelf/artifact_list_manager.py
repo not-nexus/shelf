@@ -29,7 +29,8 @@ class ArtifactListManager(object):
                 stream = storage.get_artifact(path)
                 response = Response(stream)
                 link = self._format_link(stream.key)
-                link = link + ", " + self._build_link("/artifact/" + path + "/_meta", "metadata", "metadata")
+                url = "/{0}/artifact/{1}/_meta".format(self.container.bucket_name, path)
+                link = link + ", " + self._build_link(url, "metadata", "metadata")
                 response.headers["Link"] = link
                 response.headers["Content-Type"] = stream.headers["content-type"]
 
@@ -45,7 +46,7 @@ class ArtifactListManager(object):
 
     def _format_link(self, artifact, child=False):
         title = artifact.name
-        url = "/artifact/" + title
+        url = "/{0}/artifact/{1}".format(self.container.bucket_name, title)
         rel = "self"
         if child:
             rel = "child"

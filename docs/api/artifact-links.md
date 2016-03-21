@@ -5,12 +5,12 @@ Note: this feature is a newly added feature with very basic linking and will be 
 
 When you request an artifact links are included. For artifacts that represent a file you will receive a self and metadata link back.
 
-    GET /artifact/hello-world HTTP/1.1
+    GET /bucket-name/artifact/hello-world HTTP/1.1
     Authorization: supersecuretoken
 
     HTTP/1.0 200 OK
     Content-Type: application/octet-stream
-    Link: /artifact/hello-world; rel=self; title=hello-world, /artifact/hello-world/_meta; rel=metadata; title=metadata
+    Link: /bucket-name/artifact/hello-world; rel=self; title=hello-world, /bucket-name/artifact/hello-world/_meta; rel=metadata; title=metadata
     Content-Length: 74
     Server: Werkzeug/0.11.2 Python/2.7.9
     Date: Sun, 20 Dec 2015 23:12:21 GMT
@@ -18,13 +18,12 @@ When you request an artifact links are included. For artifacts that represent a 
 
 For an artifact that represents a directory you will receive back header links for artifacts in that directory. Note the trailing forward slash.
 
-    GET /artifact/hello-world-dir/ HTTP/1.1
+    GET /bucket-name/artifact/hello-world-dir/ HTTP/1.1
     Authorization: supersecuretoken
 
     HTTP/1.0 204 NO CONTENT
     Content-Type: text/html; charset=utf-8
-    Link: /artifact/hello-world; rel=child; title=hello-world, /artifact/hello-world-dir/; rel=self; title=hello-world-dir/
+    Link: /bucket-name/artifact/hello-world; rel=child; title=hello-world, /bucket-name/artifact/hello-world-dir/; rel=self; title=hello-world-dir/
     Content-Length: 0
     Server: Werkzeug/0.11.3 Python/2.7.10
     Date: Wed, 09 Mar 2016 21:51:40 GMT
-

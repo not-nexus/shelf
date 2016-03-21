@@ -1,9 +1,19 @@
 import flask
 from pyshelf.routes.artifact import artifact
 import pyshelf.response_map as response_map
+import logging
 
 app = flask.Flask(__name__)
-app.register_blueprint(artifact, url_prefix="/artifact")
+app.register_blueprint(artifact)
+
+
+@app.errorhandler(Exception)
+def generic_exception_handler(error):
+    """
+        Prevents Exceptions flying all around the place.
+    """
+    app.logger.exception(error)
+    return response_map.create_500(msg="Internal server error")
 
 
 @app.after_request
@@ -15,19 +25,3 @@ def format_response(response):
     data += "\n"
     response.set_data(data)
     return response
-
-
-@app.route("/r")
-def get_routes():
-    """
-        Debug route for finding out which routes are available.
-    """
-    route_list = []
-    for key, rule_list in app.url_map._rules_by_endpoint.iteritems():
-        rule = rule_list[0]
-        methods = "(" + ", ".join(rule.methods) + ")"
-        route_list.append(rule.rule + " " + methods)
-
-    route_list.sort()
-
-    return "\n".join(route_list)

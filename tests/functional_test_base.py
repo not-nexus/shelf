@@ -40,9 +40,14 @@ class FunctionalTestBase(pyproctor.TestBase):
     @classmethod
     def setUpClass(cls):
         config = {
-            "accessKey": "test",
-            "secretKey": "test",
-            "bucketName": "test"
+            "test": {
+                "accessKey": "test",
+                "secretKey": "test"
+            },
+            "bucket2": {
+                "accessKey": "test",
+                "secretKey": "test"
+            }
         }
         configure.logger(app.logger, "DEBUG")
         app.config.update(config)
@@ -52,6 +57,7 @@ class FunctionalTestBase(pyproctor.TestBase):
         self.moto_s3.start()
         self.boto_connection = boto.connect_s3()
         self.boto_connection.create_bucket("test")
+        self.boto_connection.create_bucket("bucket2")
         self.test_bucket = self.boto_connection.get_bucket("test")
         self.configure_artifacts()
         self.create_auth_key()
@@ -75,6 +81,8 @@ class FunctionalTestBase(pyproctor.TestBase):
         key_name = "_keys/{}".format(self.auth["Authorization"])
         auth_key = Key(self.test_bucket, key_name)
         auth_key.set_contents_from_string(utils.get_permissions_func_test())
+        auth_bucket2 = Key(self.boto_connection.get_bucket("bucket2"), key_name)
+        auth_bucket2.set_contents_from_string(utils.get_permissions_func_test())
 
     @property
     def route_tester(self):
@@ -92,5 +100,5 @@ class FunctionalTestBase(pyproctor.TestBase):
 
         return {
             "message": message,
-            "code": "internal_server"
+            "code": "internal_server_error"
         }

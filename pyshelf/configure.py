@@ -9,14 +9,13 @@ def app(app):
         content = f.read()
         config = yaml.load(content)
 
-    required = {
-        "accessKey": config.get("accessKey"),
-        "secretKey": config.get("secretKey"),
-        "bucketName": config.get("bucketName")
-    }
-
-    if not all(required.values()):
-        raise ValueError("config.yaml did not have all required settings: " + ", ".join(required.keys()))
+    for key, val in config.iteritems():
+        required = {
+            "accessKey": val.get("accessKey"),
+            "secretKey": val.get("secretKey")
+        }
+        if not all(required.values()):
+            raise ValueError("config.yaml did not have all required settings: " + ", ".join(required.keys()))
 
     app.config.update(config)
 

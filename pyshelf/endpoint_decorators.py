@@ -2,6 +2,8 @@ import functools
 import flask
 import json
 import utils
+import pyshelf.response_map as response_map
+from pyshelf.cloud.cloud_exceptions import BucketNotFoundError
 
 """
     This module contains decorator functions that are commonly
@@ -123,6 +125,7 @@ class EndpointDecorators(object):
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
             container = utils.get_container()
+            container.bucket_name = kwargs.get("bucket_name")
             result = func(container, *args, **kwargs)
             return result
 
@@ -135,11 +138,14 @@ class EndpointDecorators(object):
         """
         @functools.wraps(func)
         def wrapper(container, *args, **kwargs):
-            if not container.permissions_validator.allowed():
-                response = flask.Response()
-                response.set_data("Permission Denied")
-                response.status_code = 401
-                return response
+            try:
+                if not container.permissions_validator.allowed():
+                    response = flask.Response()
+                    response.set_data("Permission Denied")
+                    response.status_code = 401
+                    return response
+            except BucketNotFoundError as e:
+                return response_map.map_exception(e)
 
             return func(container, *args, **kwargs)
 

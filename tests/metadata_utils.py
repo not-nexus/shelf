@@ -1,35 +1,42 @@
-import json
-
-
 MD5 = "5eb63bbbe01eeed093cb22bb8f5acdc3"
 
 
 def get_meta_item():
     return {
-                "name": "tag2",
-                "value": "test",
-                "immutable": False
-            }
+        "name": "tag2",
+        "value": "test",
+        "immutable": False
+    }
 
 
-def get_meta():
+def get_meta(name="test", path="test"):
     return {
-            "tag": {
-                    "name": "tag",
-                    "value": "test",
-                    "immutable": False
-                    },
-            "tag1": {
-                    "name": "tag1",
-                    "value": "test1",
-                    "immutable": True
-                    },
-            "md5Hash": {
-                    "name": "md5Hash",
-                    "value": MD5,
-                    "immutable": True
-                    }
-            }
+        "tag": {
+            "name": "tag",
+            "value": "test",
+            "immutable": False
+        },
+        "tag1": {
+            "name": "tag1",
+            "value": "test1",
+            "immutable": True
+        },
+        "md5Hash": {
+            "name": "md5Hash",
+            "value": MD5,
+            "immutable": True
+        },
+        "artifactName": {
+            "name": "artifactName",
+            "value": name,
+            "immutable": True
+        },
+        "artifactPath": {
+            "name": "artifactPath",
+            "value": path,
+            "immutable": True
+        }
+    }
 
 
 def get_md5Hash():
@@ -39,6 +46,8 @@ def get_md5Hash():
 def send_meta():
     d = get_meta()
     d.pop("md5Hash")
+    d.pop("artifactName")
+    d.pop("artifactPath")
     return d
 
 
