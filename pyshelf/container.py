@@ -2,7 +2,7 @@ from uuid import uuid4
 from pyshelf.permissions_validator import PermissionsValidator
 from pyshelf.cloud.factory import Factory
 from pyshelf.artifact_list_manager import ArtifactListManager
-
+from pyshelf.search.services import Services as SearchServices
 
 class Container(object):
     def __init__(self, app, request=None):
@@ -19,6 +19,7 @@ class Container(object):
         self._permissions_validator = None
         self._cloud_factory = None
         self._artifact_list_manager = None
+        self._search = None
 
     @property
     def logger(self):
@@ -44,6 +45,13 @@ class Container(object):
             self._artifact_list_manager = ArtifactListManager(self)
 
         return self._artifact_list_manager
+
+    @property
+    def search(self):
+        if not self._search:
+            self._search = SearchServices(self)
+
+        return self._search
 
     def create_master_bucket_storage(self):
         return self.cloud_factory.create_storage(self.bucket_name)
