@@ -6,10 +6,10 @@ class UpdateManager(object):
     def __init__(self, search_container):
         self.search_container = search_container
 
-    def init(self):
+    def init(self, index):
         self._connect()
         self.search_container.logger.debug("Initializing metadata document in ElasticSearch")
-        Metadata.init()
+        Metadata.init(index)
 
     def update(self, key, metadata):
         """
