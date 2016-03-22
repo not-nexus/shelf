@@ -22,7 +22,9 @@ class ArtifactListManager(object):
                 artifact_list = storage.get_directory_contents(path, recursive=False)
                 artifact_list = self._remove_private_artifacts(list(artifact_list))
                 response = Response()
-                response.headers["Link"] = self._format_link_list(artifact_list, path)
+                link_list = self._format_link_list(artifact_list, path)
+                for link in link_list:
+                    response.headers.add("Link", link)
                 response.status_code = 204
 
             else:
@@ -61,4 +63,4 @@ class ArtifactListManager(object):
             child = parent_path != artifact.name
             link_list.append(self._format_link(artifact, child))
 
-        return ", ".join(link_list)
+        return link_list
