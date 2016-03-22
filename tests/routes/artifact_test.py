@@ -37,7 +37,7 @@ class ArtifactTest(FunctionalTestBase):
             .artifact() \
             .route_params(bucket_name="test", path="") \
             .expect(204, headers={
-                "Link": "/test/artifact/test; rel=child; title=test, /test/artifact/dir/; rel=child; title=dir/"
+                "Link": ["/test/artifact/test; rel=child; title=test", "/test/artifact/dir/; rel=child; title=dir/"]
             }) \
             .get(headers=self.auth)
 
