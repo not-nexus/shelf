@@ -146,7 +146,6 @@ class Storage(object):
             result_list = self._get_bucket(self.bucket_name).list(prefix=path, delimiter="/")
 
         keys = list(result_list)
-        print keys
         return keys
 
     def _get_key(self, artifact_name):
