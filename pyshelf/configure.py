@@ -14,8 +14,12 @@ def app(app):
             "accessKey": val.get("accessKey"),
             "secretKey": val.get("secretKey")
         }
-        if not all(required.values()):
-            raise ValueError("config.yaml did not have all required settings: " + ", ".join(required.keys()))
+
+
+    required["elasticSearchHost"] = config.get("elasticSearchHost")
+
+    if not all(required.values()):
+        raise ValueError("config.yaml did not have all required settings: " + ", ".join(required.keys()))
 
     app.config.update(config)
 

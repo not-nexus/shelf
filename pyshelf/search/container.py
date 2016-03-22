@@ -1,3 +1,4 @@
 class Container(object):
-    def __init__(self):
-        pass
+    def __init__(self, logger, config):
+        self.logger = logger
+        self.config = confg
