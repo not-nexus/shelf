@@ -4,7 +4,10 @@ from tests.functional_test_base import FunctionalTestBase
 
 class ArtifactTest(FunctionalTestBase):
     def test_artifact_get_path(self):
-        link = "/test/artifact/test; rel=self; title=test, /test/artifact/test/_meta; rel=metadata; title=metadata"
+        link = [
+            "/test/artifact/test; rel=self; title=test",
+            "/test/artifact/test/_meta; rel=metadata; title=metadata"
+        ]
         self.route_tester \
             .artifact() \
             .route_params(bucket_name="test", path="test") \

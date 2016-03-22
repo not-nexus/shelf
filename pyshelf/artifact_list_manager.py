@@ -32,8 +32,9 @@ class ArtifactListManager(object):
                 response = Response(stream)
                 link = self._format_link(stream.key)
                 url = "/{0}/artifact/{1}/_meta".format(self.container.bucket_name, path)
-                link = link + ", " + self._build_link(url, "metadata", "metadata")
-                response.headers["Link"] = link
+                link_list = [link, self._build_link(url, "metadata", "metadata")]
+                for link in link_list:
+                    response.headers.add("Link", link)
                 response.headers["Content-Type"] = stream.headers["content-type"]
 
         return response
