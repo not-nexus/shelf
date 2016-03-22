@@ -1,5 +1,5 @@
-from functional_test_base import FunctionalTestBase
-import metadata_utils as meta_utils
+from tests.functional_test_base import FunctionalTestBase
+import tests.metadata_utils as meta_utils
 
 
 class MetadataTest(FunctionalTestBase):

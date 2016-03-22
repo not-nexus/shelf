@@ -5,9 +5,9 @@ import pyshelf.configure as configure
 import boto
 from boto.s3.key import Key
 import yaml
-import metadata_utils as meta_utils
-import permission_utils as utils
-from route_tester.tester import Tester
+import tests.metadata_utils as meta_utils
+import tests.permission_utils as utils
+from tests.route_tester.tester import Tester
 
 
 class FunctionalTestBase(pyproctor.TestBase):

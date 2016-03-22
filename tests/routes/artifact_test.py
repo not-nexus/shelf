@@ -1,5 +1,5 @@
 from StringIO import StringIO
-from functional_test_base import FunctionalTestBase
+from tests.functional_test_base import FunctionalTestBase
 
 
 class ArtifactTest(FunctionalTestBase):
