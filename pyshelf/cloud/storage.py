@@ -123,8 +123,11 @@ class Storage(object):
             key = self._get_key(artifact_name)
         except ArtifactNotFoundError:
             return False
-        if key:
+
+        if key.exists():
             return True
+
+        return False
 
     def get_directory_contents(self, path, recursive):
         """

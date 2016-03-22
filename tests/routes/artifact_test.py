@@ -44,6 +44,15 @@ class ArtifactTest(FunctionalTestBase):
             }) \
             .get(headers=self.auth)
 
+    def test_artifact_get_artifact_list_no_trailing_slash(self):
+        self.route_tester \
+            .artifact() \
+            .route_params(bucket_name="test", path="/dir/dir2/dir3/dir4") \
+            .expect(204, headers={
+                "Link": "/test/artifact/dir/dir2/dir3/dir4/test5; rel=child; title=dir/"
+            }) \
+            .get(headers=self.auth)
+
     def test_artifact_upload(self):
         self.route_tester.artifact() \
             .route_params(bucket_name="test", path="test-2") \

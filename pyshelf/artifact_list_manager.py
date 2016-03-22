@@ -17,16 +17,20 @@ class ArtifactListManager(object):
                 flask.Response
         """
         with self.container.create_master_bucket_storage() as storage:
-            if path[-1] == "/":
-                self.container.logger.debug("Artifact with path {} is a directory.".format(path))
-                artifact_list = storage.get_directory_contents(path, recursive=False)
+            if path[-1] != "/":
+                directory_path = path + "/"
+            else:
+                directory_path = path
+
+            if storage.artifact_exists(directory_path):
+                self.container.logger.debug("Resource {0} is assumed to be a directory.".format(directory_path))
+                artifact_list = storage.get_directory_contents(directory_path, recursive=False)
                 artifact_list = self._remove_private_artifacts(list(artifact_list))
                 response = Response()
                 link_list = self._format_link_list(artifact_list, path)
                 for link in link_list:
                     response.headers.add("Link", link)
                 response.status_code = 204
-
             else:
                 stream = storage.get_artifact(path)
                 response = Response(stream)
