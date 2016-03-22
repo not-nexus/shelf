@@ -1,6 +1,6 @@
 class Manager(object):
-    def __init__(self, container):
-        self.container = container
+    def __init__(self, search_container):
+        self.search_container = search_container
 
     def search(self, criteria, key_list=None):
         """

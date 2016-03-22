@@ -3,9 +3,9 @@ from pyshelf.search.metadata import Metadata
 
 
 class Portal(object):
-    def __init__(self, container):
-        self.container = container
-        self.search_manager = self.container.search.manager
+    def __init__(self, search_container):
+        self.search_container = search_container
+        self.search_manager = SearchManager(self.search_container)
 
     def search(self, criteria):
         """
@@ -13,6 +13,8 @@ class Portal(object):
 
             Args:
                 criteria(dict): Criteria to use to initiate search.
+
+            Format of criteria:
         """
         results = self.search_manager.search(criteria)
         # Here is where I would use the refactored artifact list manager to store links on context
