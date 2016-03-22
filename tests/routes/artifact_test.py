@@ -28,12 +28,17 @@ class ArtifactTest(FunctionalTestBase):
             .expect(500, self.response_500()) \
             .get(headers=self.auth)
 
-    def test_artifact_get_artifact_list(self):
+    def artifact_get_list(self, path):
         self.route_tester \
             .artifact() \
-            .route_params(bucket_name="test", path="dir/dir2/dir3/dir4/") \
-            .expect(204, headers={"Link": "/test/artifact/dir/dir2/dir3/dir4/test5; rel=child; title=dir/dir2/dir3/dir4/test5"}) \
+            .route_params(bucket_name="test", path=path) \
+            .expect(204, headers={
+                "Link": "/test/artifact/dir/dir2/dir3/dir4/test5; rel=child; title=dir/dir2/dir3/dir4/test5"
+            }) \
             .get(headers=self.auth)
+
+    def test_artifact_get_artifact_list(self):
+        self.artifact_get_list("dir/dir2/dir3/dir4/")
 
     def test_artifact_get_artifact_list_all(self):
         self.route_tester \
@@ -45,13 +50,8 @@ class ArtifactTest(FunctionalTestBase):
             .get(headers=self.auth)
 
     def test_artifact_get_artifact_list_no_trailing_slash(self):
-        self.route_tester \
-            .artifact() \
-            .route_params(bucket_name="test", path="/dir/dir2/dir3/dir4") \
-            .expect(204, headers={
-                "Link": "/test/artifact/dir/dir2/dir3/dir4/test5; rel=child; title=dir/"
-            }) \
-            .get(headers=self.auth)
+        self.artifact_get_list("dir/dir2/dir3/dir4")
+
 
     def test_artifact_upload(self):
         self.route_tester.artifact() \

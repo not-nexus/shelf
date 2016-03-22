@@ -22,9 +22,9 @@ class ArtifactListManager(object):
             else:
                 directory_path = path
 
-            if storage.artifact_exists(directory_path):
+            artifact_list = storage.get_directory_contents(directory_path, recursive=False)
+            if len(artifact_list) > 0:
                 self.container.logger.debug("Resource {0} is assumed to be a directory.".format(directory_path))
-                artifact_list = storage.get_directory_contents(directory_path, recursive=False)
                 artifact_list = self._remove_private_artifacts(list(artifact_list))
                 response = Response()
                 link_list = self._format_link_list(artifact_list, path)
