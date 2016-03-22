@@ -2,6 +2,7 @@ from uuid import uuid4
 from pyshelf.permissions_validator import PermissionsValidator
 from pyshelf.cloud.factory import Factory
 from pyshelf.artifact_list_manager import ArtifactListManager
+from pyshelf.link_mapper import LinkMapper
 
 
 class Container(object):
@@ -19,6 +20,7 @@ class Container(object):
         self._permissions_validator = None
         self._cloud_factory = None
         self._artifact_list_manager = None
+        self._link_mapper = None
 
     @property
     def logger(self):
@@ -47,3 +49,10 @@ class Container(object):
 
     def create_master_bucket_storage(self):
         return self.cloud_factory.create_storage(self.bucket_name)
+
+    @property
+    def link_mapper(self):
+        if not self._link_mapper:
+            self._link_mapper = LinkMapper(self.bucket_name)
+
+        return self._link_mapper
