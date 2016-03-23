@@ -25,7 +25,7 @@ def get_path(container, bucket_name, path):
 @decorators.foundation_headers
 def create_artifact(container, bucket_name, path):
     response = None
-    with container.create_master_bucket_storage() as storage:
+    with container.create_bucket_storage() as storage:
         file = request.files['file']
         storage.upload_artifact(path, file)
         response = response_map.create_201()

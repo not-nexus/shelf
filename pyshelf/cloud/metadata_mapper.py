@@ -123,7 +123,7 @@ class MetadataMapper(object):
         if self.metadata:
             meta = copy.deepcopy(self.metadata)
             meta.pop(MD5_KEY, None)
-            with self.container.create_master_bucket_storage() as storage:
+            with self.container.create_bucket_storage() as storage:
                 yaml.add_representer(unicode, lambda dumper,
                         value: dumper.represent_scalar(u'tag:yaml.org,2002:str', value))
                 storage.set_artifact_from_string(self.path, yaml.dump(self.metadata, default_flow_style=False))
@@ -139,7 +139,7 @@ class MetadataMapper(object):
         self.path = "{}/{}".format(path, meta_name)
         meta = None
 
-        with self.container.create_master_bucket_storage() as storage:
+        with self.container.create_bucket_storage() as storage:
             if storage.artifact_exists(self.path):
                 raw_meta = storage.get_artifact_as_string(self.path)
                 meta = yaml.load(raw_meta)

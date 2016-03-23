@@ -14,7 +14,7 @@ class ArtifactListManager(object):
                 pyshelf.cloud.StreamIterator|None
         """
         content = None
-        with self.container.create_master_bucket_storage() as storage:
+        with self.container.create_bucket_storage() as storage:
             if path[-1] != "/":
                 directory_path = path + "/"
             else:
