@@ -1,3 +1,6 @@
+import os.path
+
+
 class LinkManager(object):
     def __init__(self, container):
         self.container = container
@@ -27,7 +30,7 @@ class LinkManager(object):
                 "type": "self"
             },
             {
-                "path": artifact.key.name + "/_meta",
+                "path": os.path.join(artifact.key.name, "_meta"),
                 "type": "metadata",
                 "title": "metadata"
             }
