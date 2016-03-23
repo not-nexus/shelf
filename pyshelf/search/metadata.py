@@ -22,6 +22,7 @@ class Metadata(DocType):
         """
         value_list = metadata.values()
         self.items = value_list
+        self.save()
 
     def update_item(self, item):
         """
@@ -34,3 +35,4 @@ class Metadata(DocType):
             if item["name"] == ex_item["name"]:
                 self.items.remove(ex_item)
         self.items.append(item)
+        self.save()

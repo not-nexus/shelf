@@ -17,7 +17,6 @@ class UpdateManager(object):
         self.search_container.logger.debug("Attempting update of metadata: {0} in ES".format(key))
         meta_doc = self.get_metadata(key)
         meta_doc.update_all(metadata)
-        meta_doc.save()
         self.search_container.logger.debug("Updated metadata document {0} in ES".format(key))
 
     def update_item(self, key, item):
@@ -31,7 +30,6 @@ class UpdateManager(object):
         self.search_container.logger.debug("Attempting to update metadata {0} in ES".format(key))
         meta_doc = self.get_metadata(key)
         meta_doc.update_item(item)
-        meta_doc.save()
         self.search_container.logger.debug("Updated metadata {0} in ES".format(key))
 
     def get_metadata(self, key):
