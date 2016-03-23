@@ -10,13 +10,19 @@ class ManagerTest(UnitTestBase):
         self.test_wrapper = SearchTestWrapper()
         self.search_manager = self.test_wrapper.search_manager
         self.test_wrapper.setup_metadata("test")
+        self.test_wrapper.setup_metadata("other", "other", "/this/that/other")
 
-    def test_equality_test(self):
+    def test_equality_search(self):
         results = self.search_manager.search({
-            "tag1": {
+            "artifactName": {
                 "searchType": SearchType.MATCH,
-                "value": "test1"
+                "value": "test"
+            },
+            "artifactPath": {
+                "searchType": SearchType.WILDCARD,
+                "value": "te*"
             }
         })
         for hit in results.hits:
             self.assertEqual(hit.items, utils.get_meta_elastic()["items"])
+        self.assertEqual(len(results.hits), 1)

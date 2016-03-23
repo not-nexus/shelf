@@ -20,9 +20,9 @@ class SearchTestWrapper(object):
         self._search_manager = None
         self._search_container = None
 
-    def setup_metadata(self, key):
+    def setup_metadata(self, key, name="test", path="test"):
         Metadata.init()
-        self.update_manager.update(key, utils.get_meta())
+        self.update_manager.update(key, utils.get_meta(path, name))
 
     def teardown_metadata(self, key):
         meta = self.update_manager.get_metadata(key)
