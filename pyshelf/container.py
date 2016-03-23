@@ -3,6 +3,7 @@ from pyshelf.permissions_validator import PermissionsValidator
 from pyshelf.cloud.factory import Factory
 from pyshelf.artifact_list_manager import ArtifactListManager
 from pyshelf.link_mapper import LinkMapper
+from pyshelf.context import Context
 
 
 class Container(object):
@@ -21,6 +22,7 @@ class Container(object):
         self._cloud_factory = None
         self._artifact_list_manager = None
         self._link_mapper = None
+        self._context = None
 
     @property
     def logger(self):
@@ -56,3 +58,10 @@ class Container(object):
             self._link_mapper = LinkMapper(self.bucket_name)
 
         return self._link_mapper
+
+    @property
+    def context(self):
+        if not self._context:
+            self._context = Context()
+
+        return self._context
