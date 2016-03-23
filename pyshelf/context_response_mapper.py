@@ -8,7 +8,7 @@ class ContextResponseMapper(object):
         self.context = context
 
     def to_response(self, body=None, status_code=None):
-        response = Response()
+        response = None
         content_type = self.determine_content_type(body)
         # This looks like stupid logic (and it still may
         # be).  If the body is a stream I need to instantiate
