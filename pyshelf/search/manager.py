@@ -36,10 +36,10 @@ class Manager(object):
         for key, val in criteria.iteritems():
             search_type = val["searchType"]
             if search_type == SearchType.TILDE:
-                val["value"] += ".*"
+                val["value"] = ".".join(val["value"].split(".")[:-1]) + ".?"
                 search_type = SearchType.WILDCARD
 
-            nested_query = Q(SearchType.MATCH, items__name=key) & Q(val["searchType"], items__value=val["value"])
+            nested_query = Q(SearchType.MATCH, items__name=key) & Q(search_type, items__value=val["value"])
             query &= Q("nested", path="items", query=nested_query)
 
         results = Search().index(Metadata._doc_type.index).query(query).execute()

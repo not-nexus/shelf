@@ -2,7 +2,6 @@ from tests.unit_test_base import UnitTestBase
 from tests.search.search_test_wrapper import SearchTestWrapper
 from pyshelf.search.type import Type as SearchType
 import tests.metadata_utils as utils
-import json
 
 
 class ManagerTest(UnitTestBase):
@@ -10,7 +9,7 @@ class ManagerTest(UnitTestBase):
         self.test_wrapper = SearchTestWrapper()
         self.search_manager = self.test_wrapper.search_manager
         self.test_wrapper.setup_metadata("test")
-        self.test_wrapper.setup_metadata("other", "other", "/this/that/other")
+        self.test_wrapper.setup_metadata("other", "other", "/this/that/other", "1.1")
 
     def test_equality_search(self):
         results = self.search_manager.search({
@@ -20,9 +19,18 @@ class ManagerTest(UnitTestBase):
             },
             "artifactPath": {
                 "searchType": SearchType.WILDCARD,
-                "value": "te*"
+                "value": "tes?"
             }
         })
-        for hit in results.hits:
-            self.assertEqual(hit.items, utils.get_meta_elastic()["items"])
+        self.assertEqual(len(results.hits), 1)
+        self.assertEqual(results.hits[0].items, utils.get_meta_elastic()["items"])
+
+    def test_tilde_search(self):
+        results = self.search_manager.search({
+            "version": {
+                "searchType": SearchType.TILDE,
+                "value": "1.1"
+            }
+        })
+        self.assertEqual(results.hits[0].items, utils.get_meta_elastic("other", "/this/that/other", "1.1")["items"])
         self.assertEqual(len(results.hits), 1)
