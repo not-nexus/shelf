@@ -38,6 +38,10 @@ def get_meta(name="test", path="test"):
         }
     }
 
+def get_meta_elastic(name="test", path="test"):
+    values = get_meta(name, path).values()
+    return {"items": values}
+
 
 def get_md5Hash():
     return get_meta()["md5Hash"]

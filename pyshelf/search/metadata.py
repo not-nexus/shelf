@@ -10,14 +10,29 @@ class Metadata(DocType):
         }
     )
 
-    def add_item(self, item_key, item):
+    class Meta:
+        index="metadata"
+
+    def update_all(self, metadata):
         """
-            Adds or updates an item in the metadata doc distinguished by the unique key.
+            Updates all metadata related to an artifact.
 
             Args
-                item_key(string): key of metadata item.
+                item(string): value to set the metdata item to.
+        """
+        for value in metadata.itervalues():
+            self.update_item(value)
+
+    def update_item(self, item):
+        """
+            Adds or updates an item in the metadata document distinguished by the unique key.
+
+            Args
                 item(string): value to set the metdata item to.
         """
         # Seems like this is pointless but I can imagine the functionality of this
         # function growing... but perhaps not
-        self.items.update({item_key: item})
+        for ex_item in self.items:
+            if item["name"] == ex_item["name"]:
+                self.items.remove(ex_item)
+        self.items.append(item)

@@ -3,4 +3,4 @@ class Type(object):
     TILDE = "tilde"
     EQUAL = "equal"
     WILDCARD_TILDE = "wildcard_tilde"
-    WILDCARD_EQUALITY = "wildcard_equality"
+    WILDCARD_EQUAL = "wildcard_equality"

@@ -21,9 +21,6 @@ It is required that a config.yaml exist in the root of the repository.  This wil
 
     elasticSearchHost:
         - localhost:9200
-    elasticSearchHostDev:
-        - localhost:9200
-    dev: True
     bucket_name:
         accessKey: XXXXXXXXXXXXXXXXXXXX
         secretKey: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
