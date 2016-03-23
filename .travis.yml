@@ -1,12 +1,12 @@
 language: python
 python:
     - 2.7
-    - 2.6
+    - 2.6.6
 install:
     - source utils/init-environment
 script: pyproctor
 services:
-    - elasticsearch
+    - elasticsearch 1.5.2
 # This is required for elasticsearch
 before_script:
     - sleep 10
