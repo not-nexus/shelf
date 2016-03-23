@@ -2,8 +2,12 @@ import re
 
 
 class LinkMapper(object):
-    def __init__(self, bucket_name):
-        self.bucket_name = bucket_name
+    def __init__(self, artifact_path_builder):
+        """
+            Args:
+                artifact_path_builder(pyshelf.artifact_path_builder.ArtifactPathBuilder)
+        """
+        self.builder = artifact_path_builder
 
     def to_response(self, link_list):
         link_list = self._remove_private_artifacts(link_list)
@@ -20,7 +24,7 @@ class LinkMapper(object):
 
     def _format_link(self, link):
         title = link.get("title", link["path"])
-        url = "/{0}/artifact/{1}".format(self.bucket_name, link["path"])
+        url = self.builder.build(link["path"])
         rel = link.get("type")
         return self._build_link(url, rel, title)
 

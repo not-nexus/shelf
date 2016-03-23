@@ -12,7 +12,12 @@ artifact = Blueprint("artifact", __name__)
 @artifact.route("/<bucket_name>/artifact/<path:path>", methods=["GET"])
 @decorators.foundation
 def get_path(container, bucket_name, path):
-    response = container.artifact_list_manager.get_artifact(path)
+    stream = container.artifact_list_manager.get_artifact(path)
+    status_code = 204
+    if stream:
+        status_code = 200
+
+    response = container.context_response_mapper.to_response(stream, status_code)
     return response
 
 

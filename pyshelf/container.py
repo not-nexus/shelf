@@ -4,6 +4,9 @@ from pyshelf.cloud.factory import Factory
 from pyshelf.artifact_list_manager import ArtifactListManager
 from pyshelf.link_mapper import LinkMapper
 from pyshelf.context import Context
+from pyshelf.context_response_mapper import ContextResponseMapper
+from pyshelf.link_manager import LinkManager
+from pyshelf.artifact_path_builder import ArtifactPathBuilder
 
 
 class Container(object):
@@ -23,6 +26,9 @@ class Container(object):
         self._artifact_list_manager = None
         self._link_mapper = None
         self._context = None
+        self._context_response_mapper = None
+        self._link_manager = None
+        self._artifact_path_builder = None
 
     @property
     def logger(self):
@@ -55,7 +61,7 @@ class Container(object):
     @property
     def link_mapper(self):
         if not self._link_mapper:
-            self._link_mapper = LinkMapper(self.bucket_name)
+            self._link_mapper = LinkMapper(self.artifact_path_builder)
 
         return self._link_mapper
 
@@ -65,3 +71,24 @@ class Container(object):
             self._context = Context()
 
         return self._context
+
+    @property
+    def context_response_mapper(self):
+        if not self._context_response_mapper:
+            self._context_response_mapper = ContextResponseMapper(self.link_mapper, self._context)
+
+        return self._context_response_mapper
+
+    @property
+    def link_manager(self):
+        if not self._link_manager:
+            self._link_manager = LinkManager(self)
+
+        return self._link_manager
+
+    @property
+    def artifact_path_builder(self):
+        if not self._artifact_path_builder:
+            self._artifact_path_builder = ArtifactPathBuilder(self.bucket_name)
+
+        return self._artifact_path_builder
