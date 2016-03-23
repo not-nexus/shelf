@@ -13,4 +13,4 @@ class UnitTestBase(pyproctor.TestBase):
         self.storage = Mock()
         self.storage.__exit__ = MagicMock(return_value=False)
         self.storage.__enter__ = MagicMock(return_value=self.storage)
-        self.container.create_master_bucket_storage = MagicMock(return_value=self.storage)
+        self.container.create_bucket_storage = MagicMock(return_value=self.storage)

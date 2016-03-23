@@ -72,7 +72,6 @@ class FunctionalTestBase(pyproctor.TestBase):
         meta_key.set_contents_from_string(yaml.dump(meta_utils.get_meta()))
         nest_meta_key = Key(self.test_bucket, "/dir/dir2/dir3/_metadata_nest-test.yaml")
         nest_meta_key.set_contents_from_string("")
-        Key(self.test_bucket, "/dir/dir2/dir3/dir4/")
         artifact_list = Key(self.test_bucket, "/dir/dir2/dir3/dir4/test5")
         artifact_list.set_contents_from_string("")
 

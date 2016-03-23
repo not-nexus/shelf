@@ -123,8 +123,11 @@ class Storage(object):
             key = self._get_key(artifact_name)
         except ArtifactNotFoundError:
             return False
-        if key:
+
+        if key.exists():
             return True
+
+        return False
 
     def get_directory_contents(self, path, recursive):
         """
@@ -146,7 +149,6 @@ class Storage(object):
             result_list = self._get_bucket(self.bucket_name).list(prefix=path, delimiter="/")
 
         keys = list(result_list)
-        print keys
         return keys
 
     def _get_key(self, artifact_name):
