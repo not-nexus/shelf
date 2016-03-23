@@ -13,7 +13,7 @@ class ManagerTest(UnitTestBase):
         self.test_wrapper.setup_metadata("other", "/this/that/other", "1.1")
         self.test_wrapper.setup_metadata("thing", "/thing", "1.2")
         # temp fix
-        time.sleep(.75)
+        time.sleep(1)
 
     def tearDown(self):
         self.test_wrapper.teardown_metadata("test")
