@@ -1,6 +1,6 @@
 from tests.unit_test_base import UnitTestBase
 import tests.metadata_utils as utils
-from tests.search.search_test_wrapper import SearchTestWrapper
+from tests.search.test_wrapper import TestWrapper as SearchTestWrapper
 from pyshelf.search.update_manager import UpdateManager
 from pyshelf.search.manager import Manager as SearchManager
 from pyshelf.search.metadata import Metadata

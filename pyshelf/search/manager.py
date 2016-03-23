@@ -35,7 +35,7 @@ class Manager(object):
         query = Q()
         for key, val in criteria.iteritems():
             search_type = val["searchType"]
-            if search_type == SearchType.TILDE:
+            if search_type == SearchType.TILDE or search_type == SearchType.WILDCARD_TILDE:
                 val["value"] = ".".join(val["value"].split(".")[:-1]) + ".?"
                 search_type = SearchType.WILDCARD
 
