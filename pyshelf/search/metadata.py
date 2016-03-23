@@ -20,8 +20,8 @@ class Metadata(DocType):
             Args
                 item(string): value to set the metdata item to.
         """
-        for value in metadata.itervalues():
-            self.update_item(value)
+        value_list = metadata.values()
+        self.items = value_list
 
     def update_item(self, item):
         """
@@ -30,8 +30,6 @@ class Metadata(DocType):
             Args
                 item(string): value to set the metdata item to.
         """
-        # Seems like this is pointless but I can imagine the functionality of this
-        # function growing... but perhaps not
         for ex_item in self.items:
             if item["name"] == ex_item["name"]:
                 self.items.remove(ex_item)

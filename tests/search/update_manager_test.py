@@ -2,21 +2,21 @@ from tests.unit_test_base import UnitTestBase
 import tests.metadata_utils as utils
 from tests.search.search_test_wrapper import SearchTestWrapper
 from pyshelf.search.update_manager import UpdateManager
+from pyshelf.search.manager import Manager as SearchManager
 from pyshelf.search.metadata import Metadata
+from pyshelf.search.type import Type as SearchType
 
 
 class UpdateManagerTest(UnitTestBase):
     def setUp(self):
         self.test_wrapper = SearchTestWrapper()
-        self.update_manager = UpdateManager(self.test_wrapper.search_container)
-        Metadata.init()
+        self.update_manager = self.test_wrapper.update_manager
+        self.test_wrapper.setup_metadata("test_key")
 
     def tearDown(self):
-        meta = self.update_manager.get_metadata("test_key")
-        meta.delete()
+        self.test_wrapper.teardown_metadata("test_key")
 
     def test_metadata_update(self):
-        self.maxDiff = None
         self.update_manager.update("test_key", utils.get_meta())
         metadata = self.update_manager.get_metadata("test_key")
         self.assertEqual(metadata.to_dict(), utils.get_meta_elastic())

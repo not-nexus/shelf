@@ -1,4 +1,5 @@
 from elasticsearch import Elasticsearch
+from elasticsearch_dsl.connections import connections
 
 
 class Container(object):
@@ -6,6 +7,7 @@ class Container(object):
         self.logger = logger
         self.config = config
         self._hosts = None
+        self.default_elastic_connection()
 
     @property
     def hosts(self):
@@ -13,3 +15,6 @@ class Container(object):
             self._hosts = self.config.get("elasticSearchHost")
 
         return self._hosts
+
+    def default_elastic_connection(self):
+        connections.create_connection("default", hosts=self.hosts)

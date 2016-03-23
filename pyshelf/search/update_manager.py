@@ -5,7 +5,6 @@ from pyshelf.search.metadata import Metadata
 class UpdateManager(object):
     def __init__(self, search_container):
         self.search_container = search_container
-        connections.create_connection("default", hosts=self.search_container.hosts)
 
     def update(self, key, metadata):
         """
