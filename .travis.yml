@@ -5,3 +5,8 @@ python:
 install:
     - source utils/init-environment
 script: pyproctor
+services:
+    - elasticsearch
+# This is required for elasticsearch
+before_script:
+    - sleep 10
