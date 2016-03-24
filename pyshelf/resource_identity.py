@@ -13,6 +13,7 @@ class ResourceIdentity(object):
         self._path = path
         self._part_list = self.resource_url.split("/")
         self._search = None
+        self._cloud_metadata = None
 
     @property
     def bucket_name(self):
@@ -38,3 +39,10 @@ class ResourceIdentity(object):
             self._search = hashlib.sha256(self.bucket_name + ":" + self.path).hexdigest()
 
         return self._search
+
+    @property
+    def cloud_metadata(self):
+        if not self._cloud_metadata:
+            self._cloud_metadata = os.path.join(self.path, "_meta")
+
+        return self._cloud_metadata
