@@ -27,6 +27,11 @@ class UpdateManagerTest(UnitTestBase):
                     "name": "name",
                     "value": "value",
                     "immutable": False
+                },
+                "die": {
+                    "name": "die",
+                    "value": "no one reads this anyway",
+                    "immutable": True
                 }
             }
         }
