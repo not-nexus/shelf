@@ -28,10 +28,6 @@ class Manager(object):
                 }
            }
         """
-        # Does an empty list represent a request for all keys??
-        if not key_list:
-            key_list = []
-
         query = Q()
         for key, val in criteria.iteritems():
             search_type = val["searchType"]
@@ -43,4 +39,18 @@ class Manager(object):
             query &= Q("nested", path="items", query=nested_query)
 
         results = Search().index(Metadata._doc_type.index).query(query).execute()
-        return results
+
+        wrapper = {}
+        for hit in results.hits:
+            filtered = []
+
+            for item in hit.items:
+                if key_list:
+                    if item["name"] in key_list:
+                        filtered.append(item)
+                else:
+                    filtered.append(item)
+
+            wrapper[hit.meta.id] = filtered
+
+        return wrapper

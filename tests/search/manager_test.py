@@ -31,8 +31,8 @@ class ManagerTest(UnitTestBase):
                 "value": "tes?"
             }
         })
-        self.assertEqual(len(results.hits), 1)
-        self.assertEqual(results.hits[0].items, utils.get_meta_elastic()["items"])
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results["test"], utils.get_meta_elastic())
 
     def test_tilde_search(self):
         results = self.search_manager.search({
@@ -41,9 +41,9 @@ class ManagerTest(UnitTestBase):
                 "value": "1.1"
             }
         })
-        self.assertEqual(len(results.hits), 2)
-        self.assertEqual(results.hits[0].items, utils.get_meta_elastic("other", "/this/that/other", "1.1")["items"])
-        self.assertEqual(results.hits[1].items, utils.get_meta_elastic("thing", "/thing", "1.2")["items"])
+        self.assertEqual(len(results), 2)
+        self.assertEqual(results["other"], utils.get_meta_elastic("other", "/this/that/other", "1.1"))
+        self.assertEqual(results["thing"], utils.get_meta_elastic("thing", "/thing", "1.2"))
 
     def test_tilde_wildcard(self):
         results = self.search_manager.search({
@@ -52,6 +52,16 @@ class ManagerTest(UnitTestBase):
                 "value": "*.1"
             }
         })
-        self.assertEqual(len(results.hits), 2)
-        self.assertEqual(results.hits[0].items, utils.get_meta_elastic("other", "/this/that/other", "1.1")["items"])
-        self.assertEqual(results.hits[1].items, utils.get_meta_elastic("thing", "/thing", "1.2")["items"])
+        self.assertEqual(len(results), 2)
+        self.assertEqual(results["other"], utils.get_meta_elastic("other", "/this/that/other", "1.1"))
+        self.assertEqual(results["thing"], utils.get_meta_elastic("thing", "/thing", "1.2"))
+
+    def test_select_fields(self):
+        results = self.search_manager.search({
+            "artifactName": {
+                "searchType": SearchType.MATCH,
+                "value": "test"
+            }
+        }, ["artifactPath"])
+        print results["test"]
+        self.assertEqual(results, {"test": [{"name": "artifactPath", "value": "test", "immutable": True}]})

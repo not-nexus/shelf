@@ -19,7 +19,7 @@ class UpdateManagerTest(UnitTestBase):
     def test_metadata_update(self):
         self.update_manager.update("test_key", utils.get_meta())
         metadata = self.update_manager.get_metadata("test_key")
-        self.assertEqual(metadata.to_dict(), utils.get_meta_elastic())
+        self.assertEqual(metadata.to_dict(), {"items": utils.get_meta_elastic()})
 
     def test_metadata_update_item(self):
         self.update_manager.update_item("test_key", utils.get_meta_item())
