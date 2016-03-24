@@ -3,9 +3,9 @@ from pyshelf.search.metadata import Metadata
 
 
 class SearchPortal(object):
-    def __init__(self, search_container):
-        self.search_container = search_container
-        self.search_manager = SearchManager(self.search_container)
+    def __init__(self, container):
+        self.container = container
+        self.search_manager = self.container.search.search_manager
 
     def search(self, criteria):
         """
