@@ -3,6 +3,7 @@ from pyshelf.permissions_validator import PermissionsValidator
 from pyshelf.cloud.factory import Factory
 from pyshelf.artifact_list_manager import ArtifactListManager
 from pyshelf.search.services import Services as SearchServices
+from pyshelf.search_portal import SearchPortal
 from pyshelf.link_mapper import LinkMapper
 from pyshelf.context import Context
 from pyshelf.context_response_mapper import ContextResponseMapper
@@ -31,6 +32,7 @@ class Container(object):
         self._context_response_mapper = None
         self._link_manager = None
         self._artifact_path_builder = None
+        self._search_portal = None
 
     @property
     def logger(self):
@@ -101,3 +103,10 @@ class Container(object):
             self._artifact_path_builder = ArtifactPathBuilder(self.bucket_name)
 
         return self._artifact_path_builder
+
+    @property
+    def search_portal(self):
+        if not self._search_portal:
+            self._search_portal = SearchPortal(self)
+
+        return self._search_portal

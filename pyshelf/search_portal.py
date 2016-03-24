@@ -2,7 +2,7 @@ from pyshelf.search.type import Type as SearchType
 from pyshelf.search.metadata import Metadata
 
 
-class Portal(object):
+class SearchPortal(object):
     def __init__(self, search_container):
         self.search_container = search_container
         self.search_manager = SearchManager(self.search_container)
