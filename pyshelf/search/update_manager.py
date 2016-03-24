@@ -6,6 +6,29 @@ class UpdateManager(object):
     def __init__(self, search_container):
         self.search_container = search_container
 
+    def bulk_update(self, data):
+        """
+            This provides bulk updating functionality. It has the ability to update multiple documents.
+
+            Args:
+                data(dict): This contains metadata and the associated document key. Example below:
+
+            Example of data format:
+            {
+                "key_of_doc": {
+                    "artifactPath": {
+                        "name": "artifactPath",
+                        "value": "/wibble/wobble",
+                        "immutable": False
+                    },
+                    ....
+                },
+                ....
+            }
+        """
+        for key, val in data.iteritems():
+            self.update(key, val)
+
     def update(self, key, metadata):
         """
             Updates the metadata in the ElasticSearch collection denoted by the supplied unique key.

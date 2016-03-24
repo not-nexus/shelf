@@ -1,10 +1,6 @@
 from tests.unit_test_base import UnitTestBase
 import tests.metadata_utils as utils
 from tests.search.test_wrapper import TestWrapper as SearchTestWrapper
-from pyshelf.search.update_manager import UpdateManager
-from pyshelf.search.manager import Manager as SearchManager
-from pyshelf.search.metadata import Metadata
-from pyshelf.search.type import Type as SearchType
 
 
 class UpdateManagerTest(UnitTestBase):
@@ -15,6 +11,32 @@ class UpdateManagerTest(UnitTestBase):
 
     def tearDown(self):
         self.test_wrapper.teardown_metadata("test_key")
+        self.test_wrapper.teardown_metadata("test")
+
+    def test_bulk_update(self):
+        data = {
+            "test_key": {
+                "name": {
+                    "name": "name",
+                    "value": "value",
+                    "immutable": True
+                }
+            },
+            "test": {
+                "name": {
+                    "name": "name",
+                    "value": "value",
+                    "immutable": False
+                }
+            }
+        }
+        self.update_manager.bulk_update(data)
+        first = self.update_manager.get_metadata("test_key").to_dict()
+        second = self.update_manager.get_metadata("test").to_dict()
+        expect_first = data["test_key"].values()
+        expect_second = data["test"].values()
+        self.assertEqual(first["items"], expect_first)
+        self.assertEqual(second["items"], expect_second)
 
     def test_metadata_update(self):
         self.update_manager.update("test_key", utils.get_meta())

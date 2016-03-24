@@ -20,8 +20,7 @@ class Metadata(DocType):
             Args
                 item(string): value to set the metdata item to.
         """
-        value_list = metadata.values()
-        self.items = value_list
+        self.items = metadata.values()
         self.save()
 
     def update_item(self, item):
