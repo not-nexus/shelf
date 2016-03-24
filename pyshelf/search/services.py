@@ -1,5 +1,4 @@
 from pyshelf.search.manager import Manager
-from pyshelf.search.portal import Portal
 from pyshelf.search.container import Container as SearchContainer
 
 

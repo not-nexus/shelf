@@ -28,19 +28,11 @@ class Manager(object):
                 }
            }
         """
-        query = Q()
-        for key, val in criteria.iteritems():
-            search_type = val["searchType"]
-            if search_type == SearchType.TILDE or search_type == SearchType.WILDCARD_TILDE:
-                val["value"] = ".".join(val["value"].split(".")[:-1]) + ".?"
-                search_type = SearchType.WILDCARD
-
-            nested_query = Q(SearchType.MATCH, items__name=key) & Q(search_type, items__value=val["value"])
-            query &= Q("nested", path="items", query=nested_query)
-
-        results = Search().index(Metadata._doc_type.index).query(query).execute()
+        query = Search().index(Metadata._doc_type.index).query(self._build_query(criteria))
+        results = query.execute()
 
         wrapper = {}
+
         for hit in results.hits:
             filtered = []
 
@@ -54,3 +46,19 @@ class Manager(object):
             wrapper[hit.meta.id] = filtered
 
         return wrapper
+
+    def _build_query(self, criteria):
+        query = Q()
+
+        for key, val in criteria.iteritems():
+            nested_query = Q(SearchType.MATCH, items__name=key)
+
+            if val["searchType"] == SearchType.TILDE:
+                minor_versions = val["value"] + ".*"
+                nested_query &= Q(SearchType.WILDCARD, items__value=minor_versions) | Q(SearchType.MATCH, items__value=val["value"])
+            else:
+                nested_query &= Q(val["searchType"], items__value=val["value"])
+
+            query &= Q("nested", path="items", query=nested_query)
+
+        return query
