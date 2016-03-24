@@ -63,5 +63,4 @@ class ManagerTest(UnitTestBase):
                 "value": "test"
             }
         }, ["artifactPath"])
-        print results["test"]
         self.assertEqual(results, {"test": [{"name": "artifactPath", "value": "test", "immutable": True}]})

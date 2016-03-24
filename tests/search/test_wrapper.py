@@ -4,9 +4,12 @@ import tests.metadata_utils as utils
 from pyshelf.search.metadata import Metadata
 from pyshelf.search.manager import Manager as SearchManager
 from pyshelf.search.update_manager import UpdateManager
+import time
 
 
 class TestWrapper(object):
+    INIT = False
+
     def __init__(self):
         self.config = {
             "elasticSearchHost": ["localhost:9200"],
@@ -21,7 +24,11 @@ class TestWrapper(object):
         self._search_container = None
 
     def setup_metadata(self, name="test", path="test", version="1"):
-        Metadata.init()
+        if not TestWrapper.INIT:
+            Metadata.init()
+            # Again temp fix for the above init request
+            time.sleep(1)
+            TestWrapper.INIT = True
         self.update_manager.update(name, utils.get_meta(name, path, version))
 
     def teardown_metadata(self, key):

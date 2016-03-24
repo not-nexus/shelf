@@ -17,7 +17,7 @@ class Manager(object):
                 key_list(list): List of keys to receive back from a search.
 
             Returns:
-                list(dict): each dict represents a search "hit" with the keys specified in key_list.
+                dict: each element in the outer dict represents a search "hit" with the returned keys specified in key_list.
 
         Example of criteria:
 
