@@ -22,13 +22,15 @@ class ManagerTest(UnitTestBase):
 
     def test_equality_search(self):
         results = self.search_manager.search({
-            "artifactName": {
-                "searchType": SearchType.MATCH,
-                "value": "test"
-            },
-            "artifactPath": {
-                "searchType": SearchType.WILDCARD,
-                "value": "tes?"
+            "search": {
+                "artifactName": {
+                    "searchType": SearchType.MATCH,
+                    "value": "test"
+                },
+                "artifactPath": {
+                    "searchType": SearchType.WILDCARD,
+                    "value": "tes?"
+                }
             }
         })
         self.assertEqual(len(results), 1)
@@ -36,20 +38,25 @@ class ManagerTest(UnitTestBase):
 
     def test_tilde_search(self):
         results = self.search_manager.search({
-            "version": {
-                "searchType": SearchType.TILDE,
-                "value": "1"
+            "search": {
+                "version": {
+                    "searchType": SearchType.TILDE,
+                    "value": "1.1"
+                }
             }
         })
         # Filtering not implemented yet.
-        self.assertEqual(len(results), 3)
+        self.assertEqual(len(results), 2)
         self.assertEqual(results["thing"], utils.get_meta_elastic("thing", "/thing", "1.2"))
+        self.assertEqual(results["other"], utils.get_meta_elastic("other", "/this/that/other", "1.1"))
 
     def test_select_fields(self):
         results = self.search_manager.search({
-            "artifactName": {
-                "searchType": SearchType.MATCH,
-                "value": "test"
+            "search": {
+                "artifactName": {
+                    "searchType": SearchType.MATCH,
+                    "value": "test"
+                }
             }
         }, ["artifactPath"])
         self.assertEqual(results, {"test": [{"name": "artifactPath", "value": "test", "immutable": True}]})
