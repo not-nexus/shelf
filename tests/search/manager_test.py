@@ -1,6 +1,7 @@
 from tests.unit_test_base import UnitTestBase
 from tests.search.test_wrapper import TestWrapper as SearchTestWrapper
 from pyshelf.search.type import Type as SearchType
+from pyshelf.search.sort_type import SortType
 import tests.metadata_utils as utils
 import time
 
@@ -12,6 +13,7 @@ class ManagerTest(UnitTestBase):
         self.test_wrapper.setup_metadata()
         self.test_wrapper.setup_metadata("other", "/this/that/other", "1.1")
         self.test_wrapper.setup_metadata("thing", "/thing", "1.2")
+        self.test_wrapper.setup_metadata("blah", "/blah", "1.19")
         # temp fix
         time.sleep(1)
 
@@ -24,39 +26,69 @@ class ManagerTest(UnitTestBase):
         results = self.search_manager.search({
             "search": {
                 "artifactName": {
-                    "searchType": SearchType.MATCH,
+                    "search_type": SearchType.MATCH,
                     "value": "test"
                 },
                 "artifactPath": {
-                    "searchType": SearchType.WILDCARD,
+                    "search_type": SearchType.WILDCARD,
                     "value": "tes?"
                 }
             }
         })
         self.assertEqual(len(results), 1)
-        self.assertEqual(results["test"], utils.get_meta_elastic())
+        self.assertEqual(results[0], utils.get_meta())
 
-    def test_tilde_search(self):
+    def test_tilde_search_and_sort(self):
         results = self.search_manager.search({
             "search": {
                 "version": {
-                    "searchType": SearchType.TILDE,
+                    "search_type": SearchType.TILDE,
                     "value": "1.1"
                 }
+            },
+            "sort": {
+                "version": {
+                    "sort_type": SortType.VERSION,
+                    "flag_list": [
+                        SortType.ASC
+                    ]
+                },
             }
         })
-        # Filtering not implemented yet.
-        self.assertEqual(len(results), 2)
-        self.assertEqual(results["thing"], utils.get_meta_elastic("thing", "/thing", "1.2"))
-        self.assertEqual(results["other"], utils.get_meta_elastic("other", "/this/that/other", "1.1"))
+        self.assertEqual(len(results), 3)
+        self.assertEqual(results[0], utils.get_meta("other", "/this/that/other", "1.1"))
+        self.assertEqual(results[1], utils.get_meta("thing", "/thing", "1.2"))
+        self.assertEqual(results[2], utils.get_meta("blah", "/blah", "1.19"))
 
     def test_select_fields(self):
         results = self.search_manager.search({
             "search": {
                 "artifactName": {
-                    "searchType": SearchType.MATCH,
+                    "search_type": SearchType.MATCH,
                     "value": "test"
                 }
             }
         }, ["artifactPath"])
-        self.assertEqual(results, {"test": [{"name": "artifactPath", "value": "test", "immutable": True}]})
+        self.assertEqual(results[0], {"artifactPath":{"name": "artifactPath", "value": "test", "immutable": True}})
+
+    def test_sorted_desc(self):
+        results = self.search_manager.search({
+            "search": {
+                "version": {
+                    "search_type": SearchType.TILDE,
+                    "value": "1.1"
+                }
+            },
+            "sort": {
+                "version": {
+                    "sort_type": SortType.VERSION,
+                    "flag_list": [
+                        SortType.DESC
+                    ]
+                },
+            }
+        })
+        self.assertEqual(len(results), 3)
+        self.assertEqual(results[0], utils.get_meta("blah", "/blah", "1.19"))
+        self.assertEqual(results[1], utils.get_meta("thing", "/thing", "1.2"))
+        self.assertEqual(results[2], utils.get_meta("other", "/this/that/other", "1.1"))

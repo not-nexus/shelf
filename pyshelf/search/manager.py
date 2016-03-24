@@ -1,6 +1,7 @@
 from elasticsearch_dsl.query import Q
 from elasticsearch_dsl import Search
 from pyshelf.search.type import Type as SearchType
+from pyshelf.search.sort_type import SortType
 from pyshelf.search.metadata import Metadata
 from distutils.version import LooseVersion
 
@@ -26,39 +27,66 @@ class Manager(object):
                 "search": {
                     "version": {
                         "value": "1.1",
-                        "searchType": SearchType.TILDE
+                        "search_type": SearchType.TILDE
                     }
                 },
                 "sort": {
                     "version": {
-                        "sortType": [SortType.VERSION, SortType.ASC]
+                        "sort_type": SortType.VERSION
+                        "flag_list": [
+                            SortType.ASC
+                        ]
                     }
-                },
-                "limit": 1
+                }
             }
         """
         query = Search().index(Metadata._doc_type.index).query(self._build_query(criteria["search"]))
         results = query.execute()
 
-        formated_results = self._filter_results(results.hits, key_list, criteria.get("sort"), criteria.get("limit"))
+        filtered_results = self._filter_results(results.hits, key_list)
+        formated_results = self._sort_results(filtered_results, criteria.get("sort"))
+
         return formated_results
 
-    def _filter_results(self, hits, key_list=None, sort_criteria=None, limit=None):
+    def _sort_results(self, filtered_results, sort_criteria=None):
         """
-            Sorts results based on sorting criteria.
+            Sorts results based on sort criteria.
         """
-        wrapper = {}
+        if not sort_criteria:
+            return filtered_results
+
+        fields = sort_criteria.keys()
+
+        for field in fields:
+            if SortType.DESC in sort_criteria[field]["flag_list"]:
+                if sort_criteria[field].get("sort_type") == SortType.VERSION:
+                    newlist = sorted(filtered_results, key=lambda k: LooseVersion(k[field]["value"]), reverse=True)
+                else:
+                    newlist = sorted(filtered_results, key=lambda k: k[field]["value"], reverse=True)
+
+            else:
+                if sort_criteria[field].get("sort_type") == SortType.VERSION:
+                    newlist = sorted(filtered_results, key=lambda k: LooseVersion(k[field]["value"]))
+                else:
+                    newlist = sorted(filtered_results, key=lambda k: k[field]["value"])
+        return newlist
+
+    def _filter_results(self, hits, key_list=None):
+        """
+            Filters results into a consumable format.
+        """
+        wrapper = []
         for hit in hits:
-            filtered = []
+            filtered = {}
 
             for item in hit.items:
                 if key_list:
                     if item["name"] in key_list:
-                        filtered.append(item)
+                        filtered.update({item["name"]: item})
                 else:
-                    filtered.append(item)
+                    filtered.update({item["name"]: item})
 
-            wrapper[hit.meta.id] = filtered
+            wrapper.append(filtered)
 
         return wrapper
 
@@ -71,7 +99,7 @@ class Manager(object):
         for key, val in search_criteria.iteritems():
             nested_query = Q(SearchType.MATCH, items__name=key)
 
-            if val["searchType"] == SearchType.TILDE:
+            if val["search_type"] == SearchType.TILDE:
                 formatted = ".".join(val["value"].split(".")[:-1])
 
                 if formatted:
@@ -80,7 +108,7 @@ class Manager(object):
 
                 nested_query &= Q(SearchType.WILDCARD, items__value=formatted)
             else:
-                nested_query &= Q(val["searchType"], items__value=val["value"])
+                nested_query &= Q(val["search_type"], items__value=val["value"])
 
             query &= Q("nested", path="items", query=nested_query)
 
