@@ -1,4 +1,5 @@
 import os.path
+import hashlib
 
 
 class ResourceIdentity(object):
@@ -11,6 +12,7 @@ class ResourceIdentity(object):
         self._bucket_name = bucket_name
         self._path = path
         self._part_list = self.resource_url.split("/")
+        self._search = None
 
     @property
     def bucket_name(self):
@@ -25,3 +27,14 @@ class ResourceIdentity(object):
             self._path = "/" + os.path.join(*self._part_list[3:])
 
         return self._path
+
+    @property
+    def cloud(self):
+        return self.path
+
+    @property
+    def search(self):
+        if not self._search:
+            self._search = hashlib.sha256(self.bucket_name + ":" + self.path).hexdigest()
+
+        return self._search
