@@ -8,6 +8,7 @@ from pyshelf.context_response_mapper import ContextResponseMapper
 from pyshelf.link_manager import LinkManager
 from pyshelf.artifact_path_builder import ArtifactPathBuilder
 from pyshelf.resource_identity import ResourceIdentity
+from pyshelf.metadata.container import Container as MetadataContainer
 
 
 class Container(object):
@@ -31,6 +32,7 @@ class Container(object):
         self._link_manager = None
         self._artifact_path_builder = None
         self._resource_identity = None
+        self._metadata = None
 
     @property
     def logger(self):
@@ -101,3 +103,17 @@ class Container(object):
             self._resource_identity = ResourceIdentity(self.request.path)
 
         return self._resource_identity
+
+    @property
+    def metadata(self):
+        if not self._metadata:
+            if not self.bucket_name:
+                raise Exception("bucket_name must exist to create pyshelf.metadata.container.Container")
+
+            self._metadata = MetadataContainer(
+                self.bucket_name,
+                self.cloud_factory,
+                self.resource_identity
+            )
+
+        return self._metadata
