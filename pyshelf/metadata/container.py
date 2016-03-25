@@ -1,6 +1,7 @@
 from pyshelf.metadata.mapper import Mapper
 from pyshelf.metadata.wrapper import Wrapper
 from pyshelf.metadata.manager import Manager
+from pyshelf.metadata.yaml_codec import YamlCodec
 
 
 class Container(object):
@@ -10,6 +11,7 @@ class Container(object):
         self.resource_identity = resource_identity
         self._mapper = None
         self._manager = None
+        self._yaml_codec = None
 
     def create_cloud_storage(self):
         return self.cloud_factory.create_storage(self.bucket_name)
@@ -30,3 +32,10 @@ class Container(object):
             self._manager = Manager(self)
 
         return self._manager
+
+    @property
+    def yaml_codec(self):
+        if not self._yaml_codec:
+            self._yaml_codec = YamlCodec()
+
+        return self._yaml_codec
