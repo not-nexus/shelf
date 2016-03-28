@@ -1,4 +1,6 @@
 from pyshelf.metadata.wrapper import Wrapper
+from pyshelf.metadata.result import Result
+from pyshelf.error_code import ErrorCode
 
 
 class Manager(object):
@@ -44,3 +46,55 @@ class Manager(object):
             self.cloud_portal.update(self.identity.cloud_metadata, data)
 
         return data
+
+    def write(self):
+        self.cloud_portal.update(self.identity.cloud_metadata, self.metadata)
+
+    def try_update_item(self, key, value):
+        """
+            Args:
+                key(string)
+                value(mixed)
+
+            Returns:
+                pyshelf.metadata.result.Result
+        """
+        result = Result()
+        result = self._try_update_item_with_result(key, value, result)
+
+    def try_create_item(self, key, value):
+        """
+            Args:
+                key(string)
+                value(mixed)
+
+            Returns:
+                pyshelf.metadata.result.Result
+        """
+        result = Result()
+        if self.metadata.get(key):
+            result.add_error(ErrorCode.DUPLICATE)
+        else:
+            result = self._try_update_item_with_result(key, value, result)
+
+        return result
+
+    def try_delete_item(self, key):
+        result = Result()
+        if self.metadata.is_immutable(key):
+            result.add_error(ErrorCode.IMMUTABLE)
+        else:
+            del self.metadata[key]
+            self.write()
+
+        return result
+
+    def _try_update_item_with_result(self, key, value, result):
+        if not self.metadata.is_immutable(key):
+            self.metadata[value]
+            self.write()
+            result.value = value
+        else:
+            result.add_error(ErrorCode.IMMUTABLE)
+
+        return result
