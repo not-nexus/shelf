@@ -29,3 +29,6 @@ class ResourceIdentityTest(pyproctor.TestBase):
         identity = ResourceIdentity("lol-test//artifact///blah1//blah2")
         self.assertEqual("/blah1/blah2", identity.path)
         self.assertEqual("lol-test", identity.bucket_name)
+
+    def test_name(self):
+        self.assertEqual("blah3", self.create().name)

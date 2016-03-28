@@ -14,6 +14,7 @@ class ResourceIdentity(object):
         self._part_list = self.resource_url.split("/")
         self._search = None
         self._cloud_metadata = None
+        self._name = None
 
     @property
     def bucket_name(self):
@@ -28,6 +29,13 @@ class ResourceIdentity(object):
             self._path = "/" + os.path.join(*self._part_list[3:])
 
         return self._path
+
+    @property
+    def name(self):
+        if not self._name:
+            self._name = self._part_list[-1]
+
+        return self._name
 
     @property
     def cloud(self):
