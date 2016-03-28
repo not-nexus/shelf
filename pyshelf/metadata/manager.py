@@ -15,9 +15,8 @@ class Manager(object):
         # TODO: Use this line when we have it
         # self.update_manager = self.container.search.update_manager
         self.identity = self.container.resource_identity
-        self.mapper = self.container.mapper
+        self.portal = self.container.cloud_portal
         self._metadata = None
-        self.codec = self.container.yaml_codec
 
     @property
     def metadata(self):
@@ -27,7 +26,8 @@ class Manager(object):
             Returns pyshelf.metadata.wrapper.Wrapper
         """
         if not self._metadata:
-            self._metadata = Wrapper(self.load())
+            data = self.load()
+            self._metadata = Wrapper(data)
 
         return self._metadata
 
@@ -38,14 +38,9 @@ class Manager(object):
             Returns
                 dict
         """
-        with self.container.create_cloud_storage as storage:
-            metadata_id = self.identity.cloud_metadata
-            raw_meta = storage.get_artifact_as_string(metadata_id)
-            meta = self.codec.deserialize(raw_meta)
+        data = self.portal.load(self.identity.cloud_metadata)
+        if self.initializer.needs_update(data):
+            data = self.initializer.update(data)
+            self.cloud_portal.update(self.identity.cloud_metadata, data)
 
-            if not meta:
-                meta = {}
-
-            meta = self.mapper.to_response(meta)
-
-        return meta
+        return data
