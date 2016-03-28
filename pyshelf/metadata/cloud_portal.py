@@ -26,7 +26,7 @@ class CloudPortal(object):
             Returns
                 dict
         """
-        with self.container.create_cloud_storage as storage:
+        with self.container.create_cloud_storage() as storage:
             raw_meta = storage.get_artifact_as_string(cloud_identifier)
             meta = self.codec.deserialize(raw_meta)
 
