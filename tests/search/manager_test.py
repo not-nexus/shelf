@@ -14,6 +14,8 @@ class ManagerTest(UnitTestBase):
         self.test_wrapper.setup_metadata("other", "/this/that/other", "1.1")
         self.test_wrapper.setup_metadata("thing", "/thing", "1.2")
         self.test_wrapper.setup_metadata("blah", "/blah", "1.19")
+        self.test_wrapper.setup_metadata("a", "/a", "1.19")
+        self.test_wrapper.setup_metadata("zzzz", "/zzzz", "1.19")
         # temp fix
         time.sleep(1)
 
@@ -55,10 +57,12 @@ class ManagerTest(UnitTestBase):
                 },
             }
         })
-        self.assertEqual(len(results), 3)
+        self.assertEqual(len(results), 5)
         self.assertEqual(results[0], utils.get_meta("other", "/this/that/other", "1.1"))
         self.assertEqual(results[1], utils.get_meta("thing", "/thing", "1.2"))
-        self.assertEqual(results[2], utils.get_meta("blah", "/blah", "1.19"))
+        self.assertEqual(results[2], utils.get_meta("a", "/a", "1.19"))
+        self.assertEqual(results[3], utils.get_meta("zzzz", "/zzzz", "1.19"))
+        self.assertEqual(results[4], utils.get_meta("blah", "/blah", "1.19"))
 
     def test_select_fields(self):
         results = self.search_manager.search({
@@ -71,7 +75,7 @@ class ManagerTest(UnitTestBase):
         }, ["artifactPath"])
         self.assertEqual(results[0], {"artifactPath":{"name": "artifactPath", "value": "test", "immutable": True}})
 
-    def test_sorted_desc(self):
+    def test_sorted_desc_and_asc(self):
         results = self.search_manager.search({
             "search": {
                 "version": {
@@ -86,9 +90,17 @@ class ManagerTest(UnitTestBase):
                         SortType.DESC
                     ]
                 },
+                "artifactName": {
+                    "flag_list": [
+                        SortType.ASC
+                    ]
+                }
             }
         })
-        self.assertEqual(len(results), 3)
-        self.assertEqual(results[0], utils.get_meta("blah", "/blah", "1.19"))
-        self.assertEqual(results[1], utils.get_meta("thing", "/thing", "1.2"))
+        self.maxDiff = None
+        self.assertEqual(len(results), 5)
+        self.assertEqual(results[0], utils.get_meta("a", "/a", "1.19"))
+        self.assertEqual(results[1], utils.get_meta("blah", "/blah", "1.19"))
+        self.assertEqual(results[4], utils.get_meta("zzzz", "/zzzz", "1.19"))
+        self.assertEqual(results[3], utils.get_meta("thing", "/thing", "1.2"))
         self.assertEqual(results[2], utils.get_meta("other", "/this/that/other", "1.1"))

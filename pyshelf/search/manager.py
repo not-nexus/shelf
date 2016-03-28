@@ -19,9 +19,11 @@ class Manager(object):
                 key_list(list): List of keys to receive back from a search.
 
             Returns:
-                dict: each element in the outer dict represents a search "hit" with the returned keys specified in key_list.
+                dict: each element in the outer dict represents a search "hit"
+                      with the returned keys specified in key_list.
 
         Example of criteria:
+        NOTE: Sort criteria is run in a specific order.
 
             {
                 "search": {
@@ -42,7 +44,6 @@ class Manager(object):
         """
         query = Search().index(Metadata._doc_type.index).query(self._build_query(criteria["search"]))
         results = query.execute()
-
         filtered_results = self._filter_results(results.hits, key_list)
         formated_results = self._sort_results(filtered_results, criteria.get("sort"))
 
@@ -55,37 +56,41 @@ class Manager(object):
         if not sort_criteria:
             return filtered_results
 
-        fields = sort_criteria.keys()
+        for key, val in sort_criteria.iteritems():
+            kwargs = {}
+            if SortType.DESC in val["flag_list"]:
+                kwargs.update({"reverse": True})
 
-        for field in fields:
-            if SortType.DESC in sort_criteria[field]["flag_list"]:
-                if sort_criteria[field].get("sort_type") == SortType.VERSION:
-                    newlist = sorted(filtered_results, key=lambda k: LooseVersion(k[field]["value"]), reverse=True)
-                else:
-                    newlist = sorted(filtered_results, key=lambda k: k[field]["value"], reverse=True)
-
+            if val.get("sort_type") == SortType.VERSION:
+                filtered_results.sort(key=lambda k: LooseVersion(k[key]["value"]), **kwargs)
             else:
-                if sort_criteria[field].get("sort_type") == SortType.VERSION:
-                    newlist = sorted(filtered_results, key=lambda k: LooseVersion(k[field]["value"]))
-                else:
-                    newlist = sorted(filtered_results, key=lambda k: k[field]["value"])
-        return newlist
+                filtered_results.sort(key=lambda k: k[key]["value"], **kwargs)
+
+        return filtered_results
 
     def _filter_results(self, hits, key_list=None):
         """
             Filters results into a consumable format.
+
+            Args:
+                hits(list(elasticsearch_dsl.Result): List of result objects as returned from Response.hits
+                key_list(list): List of keys to return. None assumes all keys are requeired
+
+            Returns:
+                list(dict): Formats result list to a list of dictionaries. Each element of the list representing a hit.
         """
         wrapper = []
+
         for hit in hits:
             filtered = {}
 
             for item in hit.items:
                 if key_list:
+
                     if item["name"] in key_list:
                         filtered.update({item["name"]: item})
                 else:
                     filtered.update({item["name"]: item})
-
             wrapper.append(filtered)
 
         return wrapper
@@ -95,21 +100,17 @@ class Manager(object):
             Builds query based on search criteria.
         """
         query = Q()
-
         for key, val in search_criteria.iteritems():
             nested_query = Q(SearchType.MATCH, items__name=key)
 
             if val["search_type"] == SearchType.TILDE:
                 formatted = ".".join(val["value"].split(".")[:-1])
-
                 if formatted:
                     formatted += ".*"
                 formatted += "*"
-
                 nested_query &= Q(SearchType.WILDCARD, items__value=formatted)
             else:
                 nested_query &= Q(val["search_type"], items__value=val["value"])
-
             query &= Q("nested", path="items", query=nested_query)
 
         return query
