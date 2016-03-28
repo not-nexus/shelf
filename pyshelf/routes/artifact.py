@@ -1,9 +1,7 @@
 from flask import request, Blueprint
 from pyshelf.endpoint_decorators import decorators
-from pyshelf.cloud.metadata_mapper import MetadataMapper
 import pyshelf.response_map as response_map
 import json
-from pyshelf.json_response import JsonResponse
 
 artifact = Blueprint("artifact", __name__)
 
@@ -36,51 +34,76 @@ def create_artifact(container, bucket_name, path):
 
 @artifact.route("/<bucket_name>/artifact/<path:path>/_meta", methods=["GET"])
 @decorators.foundation
+def get_artifact_meta_route(container, bucket_name, path):
+    return get_artifact_meta(container, bucket_name, path)
+
+
 def get_artifact_meta(container, bucket_name, path):
-    meta_mapper = MetadataMapper(container, path)
-    return response_map.create_200(meta_mapper.get_metadata())
+    return response_map.create_200(container.metadata.manager.metadata)
 
 
 @artifact.route("/<bucket_name>/artifact/<path:path>/_meta", methods=["PUT"])
 @decorators.foundation_headers
 def update_artifact_meta(container, bucket_name, path):
-    meta_mapper = MetadataMapper(container, path)
     data = json.loads(request.data)
-    meta_mapper.set_metadata(data)
-    response = JsonResponse()
-    response.set_data(meta_mapper.metadata)
-    response.status_code = 201
+    manager = container.metadata.manager
+    manager.try_update(data)
+    response = get_artifact_meta(container, bucket_name, path)
     response.headers["Location"] = container.request.path
     return response
 
 
 @artifact.route("/<bucket_name>/artifact/<path:path>/_meta/<item>", methods=["GET"])
 @decorators.foundation
+def get_metadata_item_route(container, bucket_name, path, item):
+    return get_metadata_item(container, bucket_name, path, item)
+
+
 def get_metadata_item(container, bucket_name, path, item):
-    meta_mapper = MetadataMapper(container, path)
-    metadata = meta_mapper.get_metadata(item)
-    return response_map.create_200(metadata)
+    manager = container.metadata.manager
+    data = manager.metadata.get(item)
+    if None is data:
+        response = response_map.create_404()
+    else:
+        response = response_map.create_200(data)
+
+    return response
 
 
 @artifact.route("/<bucket_name>/artifact/<path:path>/_meta/<item>", methods=["POST", "PUT"])
 @decorators.foundation_headers
 def create_metadata_item(container, bucket_name, path, item):
     data = json.loads(request.data)
-    meta_mapper = MetadataMapper(container, path)
+    manager = container.metadata.manager
+    exists = (item in manager.metadata)
+    result = None
 
-    if not meta_mapper.item_exists(item) or request.method == "PUT":
-        meta_mapper.set_metadata(data, item)
-        meta = meta_mapper.get_metadata(item)
-        response = response_map.create_200(meta)
+    if request.method == "PUT":
+        result = manager.try_update_item(item, data)
+    else:
+        result = manager.try_create_item(item, data)
+
+    if result.success:
+        response = get_metadata_item(container, bucket_name, path, item)
+        if not exists:
+            response.status_code = 201
+
         response.headers["Location"] = container.request.path
     else:
-        response = response_map.create_403()
+        response = response_map.map_metadata_result_errors(result)
+
     return response
 
 
 @artifact.route("/<bucket_name>/artifact/<path:path>/_meta/<item>", methods=["DELETE"])
 @decorators.foundation
 def delete_metadata_item(container, bucket_name, path, item):
-    meta_mapper = MetadataMapper(container, path)
-    meta_mapper.remove_metadata(item)
-    return response_map.create_204()
+    manager = container.metadata.manager
+    result = manager.try_delete_item(item)
+    response = None
+    if result.success:
+        response = response_map.create_204()
+    else:
+        response = response_map.map_metadata_result_errors(result)
+
+    return response
