@@ -9,6 +9,7 @@ from distutils.version import LooseVersion
 class Manager(object):
     def __init__(self, search_container):
         self.search_container = search_container
+        self.tilde_search = None
 
     def search(self, criteria, key_list=None):
         """
@@ -90,15 +91,22 @@ class Manager(object):
 
         for hit in hits:
             filtered = {}
+            add = True
 
             for item in hit.items:
+                if item.name in self.tilde_search.keys() and LooseVersion(item.value) < \
+                        LooseVersion(self.tilde_search[item.name]):
+                    add = False
+
                 if key_list:
 
                     if item["name"] in key_list:
                         filtered.update({item["name"]: item})
                 else:
                     filtered.update({item["name"]: item})
-            wrapper.append(filtered)
+
+            if add:
+                wrapper.append(filtered)
 
         return wrapper
 
@@ -112,6 +120,7 @@ class Manager(object):
             Returns:
                 elasticsearch_dsl.query.Q: This object represents an Elasticsearch query.
         """
+        self.tilde_search = {}
         query = Q()
         for criteria in search_criteria:
             nested_query = Q(SearchType.MATCH, items__name=criteria["field"])
@@ -120,6 +129,7 @@ class Manager(object):
                 formatted = ".".join(criteria["value"].split(".")[:-1])
                 if formatted:
                     formatted += ".*"
+                    self.tilde_search[criteria["field"]] = criteria["value"]
                     nested_query &= Q(SearchType.WILDCARD, items__value=formatted)
                 else:
                     nested_query &= Q("range", items__value={"gte": criteria["value"]})

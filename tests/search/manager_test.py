@@ -80,6 +80,24 @@ class ManagerTest(UnitTestBase):
         }, ["artifactPath"])
         self.assertEqual(results[0], {"artifactPath": {"name": "artifactPath", "value": "test", "immutable": True}})
 
+    def test_dumb_tilde_search(self):
+        results = self.search_manager.search({
+            "search": [
+                {
+                    "field": "artifactName",
+                    "search_type": SearchType.TILDE,
+                    "value": "test"
+                }
+            ],
+            "sort": [
+            ]
+        })
+        # Very unlikely this type of search would be used but if it was it would
+        # be consistent with what we agreed a ~= search should do.
+        self.assertEqual(results[0], utils.get_meta("zzzz", "/zzzz", "1.19"))
+        self.assertEqual(results[1], utils.get_meta())
+        self.assertEqual(results[2], utils.get_meta("thing", "/thing", "1.2"))
+
     def test_sorted_desc_and_asc(self):
         results = self.search_manager.search({
             "search": [
