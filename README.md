@@ -2,6 +2,7 @@ pyshelf
 =======
 
 [![Build Status](https://travis-ci.org/kyle-long/pyshelf.svg?branch=master)](https://travis-ci.org/kyle-long/pyshelf)
+[![codecov.io](https://codecov.io/github/kyle-long/pyshelf/coverage.svg?branch=master)](https://codecov.io/github/kyle-long/pyshelf?branch=develop)
 
 A REST API for AWS S3 meant to be an interface to immutable artifact storage.
 
