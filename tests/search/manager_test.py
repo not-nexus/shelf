@@ -78,7 +78,6 @@ class ManagerTest(UnitTestBase):
                 }
             ]
         }, ["artifactPath"])
-        print results
         self.assertEqual(results[0], {"artifactPath": {"name": "artifactPath", "value": "test", "immutable": True}})
 
     def test_sorted_desc_and_asc(self):
@@ -87,29 +86,27 @@ class ManagerTest(UnitTestBase):
                 {
                     "field": "version",
                     "search_type": SearchType.TILDE,
-                    "value": "1.1"
+                    "value": "1.2"
                 }
             ],
             "sort": [
+                {
+                    "field": "artifactName",
+                    "flag_list": [
+                        SortType.ASC
+                    ]
+                },
                 {
                     "field": "version",
                     "sort_type": SortType.VERSION,
                     "flag_list": [
                         SortType.DESC
                     ]
-                },
-                {
-                    "field": "artifactName",
-                    "flag_list": [
-                        SortType.ASC
-                    ]
                 }
             ]
         })
-        self.maxDiff = None
-        self.assertEqual(len(results), 5)
+        self.assertEqual(len(results), 4)
         self.assertEqual(results[0], utils.get_meta("a", "/a", "1.19"))
         self.assertEqual(results[1], utils.get_meta("blah", "/blah", "1.19"))
-        self.assertEqual(results[4], utils.get_meta("zzzz", "/zzzz", "1.19"))
+        self.assertEqual(results[2], utils.get_meta("zzzz", "/zzzz", "1.19"))
         self.assertEqual(results[3], utils.get_meta("thing", "/thing", "1.2"))
-        self.assertEqual(results[2], utils.get_meta("other", "/this/that/other", "1.1"))

@@ -53,6 +53,12 @@ class Manager(object):
     def _sort_results(self, filtered_results, sort_criteria=None):
         """
             Sorts results based on sort criteria.
+
+            Args:
+                filtered_results(list(dict)): list of dictionaries representing hits from Elasticsearch.
+
+            Returns:
+                list(dict): Sorts the filtered results that are passed in.
         """
         if not sort_criteria:
             return filtered_results
@@ -60,7 +66,7 @@ class Manager(object):
         for criteria in sort_criteria:
             kwargs = {}
             if SortType.DESC in criteria["flag_list"]:
-                kwargs.update({"reverse": True})
+                kwargs["reverse"] = True
 
             if criteria.get("sort_type") == SortType.VERSION:
                 filtered_results.sort(key=lambda k: LooseVersion(k[criteria["field"]]["value"]), **kwargs)
@@ -99,6 +105,12 @@ class Manager(object):
     def _build_query(self, search_criteria):
         """
             Builds query based on search criteria.
+
+            Args:
+                search_criteria(list(dict)): each dictionary represents a search. Formatted as above.
+
+            Returns:
+                elasticsearch_dsl.query.Q: This object represents an Elasticsearch query.
         """
         query = Q()
         for criteria in search_criteria:
@@ -108,8 +120,9 @@ class Manager(object):
                 formatted = ".".join(criteria["value"].split(".")[:-1])
                 if formatted:
                     formatted += ".*"
-                formatted += "*"
-                nested_query &= Q(SearchType.WILDCARD, items__value=formatted)
+                    nested_query &= Q(SearchType.WILDCARD, items__value=formatted)
+                else:
+                    nested_query &= Q("range", items__value={"gt": criteria["value"]})
             else:
                 nested_query &= Q(criteria["search_type"], items__value=criteria["value"])
             query &= Q("nested", path="items", query=nested_query)

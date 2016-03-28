@@ -1,4 +1,3 @@
-from elasticsearch_dsl.connections import connections
 from pyshelf.search.metadata import Metadata
 
 
