@@ -103,7 +103,10 @@ class Base(object):
             except ValueError:
                 actual = data
 
-            self.test.assertEqual(self.response, actual)
+            if isinstance(actual, basestring):
+                self.test.assertEqual(self.response, actual)
+            else:
+                self.test.asserts.json_equals(self.response, actual)
         if self.headers:
             self._assert_headers(actual_response.headers)
 
