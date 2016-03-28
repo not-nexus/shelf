@@ -20,7 +20,7 @@ class ResourceIdentityTest(pyproctor.TestBase):
         self.assertEqual("/blah1/blah2/blah3", self.create().cloud)
 
     def test_search(self):
-        self.assertEqual("f860572c7caf3b1d8d66da65ab0107f9465a26125937e523601eddc1c57f35f0", self.create().search)
+        self.assertEqual("5a61d333034c1bde88bf01f7380796a40cc4b2ad9d7358e826bc414bfa75c3ad", self.create().search)
 
     def test_cloud_metatdata(self):
         self.assertEquals("/blah1/blah2/_metadata_blah3.yaml", self.create().cloud_metadata)

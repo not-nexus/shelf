@@ -51,7 +51,9 @@ class ResourceIdentity(object):
     @property
     def search(self):
         if not self._search:
-            self._search = hashlib.sha256(self.bucket_name + ":" + self.artifact_path).hexdigest()
+            self._search = hashlib.sha256(
+                self.bucket_name + ":" + self.artifact_path + ":" + self.artifact_name
+            ).hexdigest()
 
         return self._search
 
