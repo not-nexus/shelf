@@ -9,6 +9,7 @@ from pyshelf.context import Context
 from pyshelf.context_response_mapper import ContextResponseMapper
 from pyshelf.link_manager import LinkManager
 from pyshelf.artifact_path_builder import ArtifactPathBuilder
+from pyshelf.search_parser import SearchParser
 
 
 class Container(object):
@@ -33,6 +34,7 @@ class Container(object):
         self._link_manager = None
         self._artifact_path_builder = None
         self._search_portal = None
+        self._search_parser = None
 
     @property
     def logger(self):
@@ -110,3 +112,10 @@ class Container(object):
             self._search_portal = SearchPortal(self)
 
         return self._search_portal
+
+    @property
+    def search_parser(self):
+        if not self._search_parser:
+            self._search_parser = SearchParser()
+
+        return self._search_parser

@@ -1,4 +1,4 @@
 class SortType(object):
-    VERSION = "version"
-    ASC = "ascending"
-    DESC = "descending"
+    VERSION = "VERSION"
+    ASC = "ASC"
+    DESC = "DESC"

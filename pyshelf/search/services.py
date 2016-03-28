@@ -7,6 +7,7 @@ class Services(object):
         self.search_container = SearchContainer(logger, config)
         self._update_manager = None
         self._search_manager = None
+        self._search_parser = None
 
     @property
     def update_manager(self):
