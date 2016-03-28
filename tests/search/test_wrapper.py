@@ -39,7 +39,7 @@ class TestWrapper(object):
     @property
     def update_manager(self):
         if not self._update_manager:
-            self._update_manager = UpdateManager(self.search_container)
+            self._update_manager = UpdateManager(self.search_container.logger)
 
         return self._update_manager
 
