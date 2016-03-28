@@ -1,6 +1,7 @@
 from pyshelf.metadata.wrapper import Wrapper
 from pyshelf.metadata.result import Result
 from pyshelf.metadata.error_code import ErrorCode
+import copy
 
 
 class Manager(object):
@@ -50,6 +51,25 @@ class Manager(object):
 
     def write(self):
         self.portal.update(self.identity.cloud_metadata, self.metadata)
+
+    def try_update(self, data):
+        old_meta = copy.deepcopy(self.metadata)
+        for key, val in old_meta.iteritems():
+            new_meta = data.get(key)
+
+            if new_meta:
+                if not self.metadata.is_immutable(key):
+                    self.metadata[key] = new_meta
+                data.pop(key)
+            else:
+                if not self.metadata.is_immutable(key):
+                    del self.metadata[key]
+
+        if len(data) > 0:
+            self.metadata.update(data)
+
+        # assuming success if it hasn't thrown an exception
+        return Result()
 
     def try_update_item(self, key, value):
         """

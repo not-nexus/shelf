@@ -15,7 +15,7 @@ class MetadataTest(FunctionalTestBase):
         self.route_tester \
             .metadata() \
             .route_params(bucket_name="test", path="dir/dir2/dir3/nest-test") \
-            .expect(201, meta_utils.get_meta(name="nest-test", path="dir/dir2/dir3/nest-test"),
+            .expect(200, meta_utils.get_meta(name="nest-test", path="/dir/dir2/dir3"),
                     headers={"Location": "http://localhost/test/artifact/dir/dir2/dir3/nest-test/_meta"}) \
             .put(data=meta_utils.send_meta(), headers=self.auth)
 
@@ -23,7 +23,7 @@ class MetadataTest(FunctionalTestBase):
         self.route_tester \
             .metadata() \
             .route_params(bucket_name="test", path="test") \
-            .expect(201, meta_utils.get_meta()) \
+            .expect(200, meta_utils.get_meta()) \
             .put(data=meta_utils.send_meta_changed(), headers=self.auth)
 
     def test_get_metadata_item(self):

@@ -1,9 +1,7 @@
 from flask import request, Blueprint
 from pyshelf.endpoint_decorators import decorators
-from pyshelf.cloud.metadata_mapper import MetadataMapper
 import pyshelf.response_map as response_map
 import json
-from pyshelf.json_response import JsonResponse
 
 artifact = Blueprint("artifact", __name__)
 
@@ -36,20 +34,21 @@ def create_artifact(container, bucket_name, path):
 
 @artifact.route("/<bucket_name>/artifact/<path:path>/_meta", methods=["GET"])
 @decorators.foundation
+def get_artifact_meta_route(container, bucket_name, path):
+    return get_artifact_meta(container, bucket_name, path)
+
+
 def get_artifact_meta(container, bucket_name, path):
-    meta_mapper = MetadataMapper(container, path)
-    return response_map.create_200(meta_mapper.get_metadata())
+    return response_map.create_200(container.metadata.manager.metadata)
 
 
 @artifact.route("/<bucket_name>/artifact/<path:path>/_meta", methods=["PUT"])
 @decorators.foundation_headers
 def update_artifact_meta(container, bucket_name, path):
-    meta_mapper = MetadataMapper(container, path)
     data = json.loads(request.data)
-    meta_mapper.set_metadata(data)
-    response = JsonResponse()
-    response.set_data(meta_mapper.metadata)
-    response.status_code = 201
+    manager = container.metadata.manager
+    manager.try_update(data)
+    response = get_artifact_meta(container, bucket_name, path)
     response.headers["Location"] = container.request.path
     return response
 
