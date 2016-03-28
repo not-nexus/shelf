@@ -5,3 +5,7 @@ python:
 install:
     - source utils/init-environment
 script: pyproctor
+before_install:
+    - pip install codecov
+after_success:
+    - codecov
