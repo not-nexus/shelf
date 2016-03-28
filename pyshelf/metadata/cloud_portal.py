@@ -14,9 +14,10 @@ class CloudPortal(object):
     def update(self, cloud_identifier, metadata):
         # So that we don't get unintended side effects
         contents = copy.deepcopy(metadata)
-        contents = self.codec.serialize(contents)
+        contents = dict(contents)
         contents = self.mapper.to_cloud(contents)
-        with self.container.create_bucket_storage() as storage:
+        contents = self.codec.serialize(contents)
+        with self.container.create_cloud_storage() as storage:
             storage.set_artifact_from_string(cloud_identifier, contents)
 
     def load(self, cloud_identifier):
