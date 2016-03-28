@@ -14,30 +14,30 @@ class ResourceIdentityTest(pyproctor.TestBase):
 
     def test_artifact_path(self):
         identity = self.create()
-        self.assertEqual("/blah1/blah2/blah3", identity.artifact_path)
+        self.assertEqual("/blah1/blah2", identity.artifact_path)
 
     def test_cloud(self):
         self.assertEqual("/blah1/blah2/blah3", self.create().cloud)
 
     def test_search(self):
-        self.assertEqual("abc0068b8b6cdd87550a4fc0cb5b7dc538c51c9ca50d5e5f9f4f2f08fc80e24e", self.create().search)
+        self.assertEqual("f860572c7caf3b1d8d66da65ab0107f9465a26125937e523601eddc1c57f35f0", self.create().search)
 
     def test_cloud_metatdata(self):
-        self.assertEquals("/blah1/blah2/blah3/_meta", self.create().cloud_metadata)
+        self.assertEquals("/blah1/blah2/_metadata_blah3.yaml", self.create().cloud_metadata)
 
     def test_cloud_metadata_special_type(self):
         url = ResourceIdentityTest.TEST_PATH + "/_meta"
         identity = ResourceIdentity(url)
-        self.assertEqual("/blah1/blah2/blah3/_meta", identity.cloud_metadata)
+        self.assertEqual("/blah1/blah2/_metadata_blah3.yaml", identity.cloud_metadata)
 
     def test_cloud_metadata_special_type_with_item(self):
         url = ResourceIdentityTest.TEST_PATH + "/_meta/item_lol"
         identity = ResourceIdentity(url)
-        self.assertEqual("/blah1/blah2/blah3/_meta", identity.cloud_metadata)
+        self.assertEqual("/blah1/blah2/_metadata_blah3.yaml", identity.cloud_metadata)
 
     def test_multiple_separators_and_no_leading_slash(self):
         identity = ResourceIdentity("lol-test//artifact///blah1//blah2")
-        self.assertEqual("/blah1/blah2", identity.artifact_path)
+        self.assertEqual("/blah1", identity.artifact_path)
         self.assertEqual("lol-test", identity.bucket_name)
 
     def test_artifact_name(self):

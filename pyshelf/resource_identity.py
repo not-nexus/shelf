@@ -27,8 +27,13 @@ class ResourceIdentity(object):
     @property
     def artifact_path(self):
         if not self._artifact_path:
-            # removes /<bucket>/artifact
-            self._artifact_path = "/" + os.path.join(*self._part_list[3:])
+            # removes /<bucket>/artifact and removes the artifact_name at the end
+            artifact_path_part_list = []
+            if len(self._part_list) > 4:
+                artifact_path_part_list = self._part_list[3:-1]
+                self._artifact_path = "/" + os.path.join(*artifact_path_part_list)
+            else:
+                self._artifact_path = "/"
 
         return self._artifact_path
 
@@ -41,7 +46,7 @@ class ResourceIdentity(object):
 
     @property
     def cloud(self):
-        return self.artifact_path
+        return os.path.join(self.artifact_path, self.artifact_name)
 
     @property
     def search(self):
@@ -53,7 +58,7 @@ class ResourceIdentity(object):
     @property
     def cloud_metadata(self):
         if not self._cloud_metadata:
-            self._cloud_metadata = os.path.join(self.artifact_path, "_meta")
+            self._cloud_metadata = os.path.join(self.artifact_path, "_metadata_{0}.yaml".format(self.artifact_name))
 
         return self._cloud_metadata
 
