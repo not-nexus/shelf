@@ -1,10 +1,9 @@
-from elasticsearch_dsl.connections import connections
 from pyshelf.search.metadata import Metadata
 
 
 class UpdateManager(object):
-    def __init__(self, search_container):
-        self.search_container = search_container
+    def __init__(self, logger):
+        self.logger = logger
 
     def bulk_update(self, data):
         """
@@ -37,10 +36,10 @@ class UpdateManager(object):
                 key(string): Unique key that is associated with the metadata document to update.
                 metadata(dict): Updated metadata to store in ElasticSearch.
         """
-        self.search_container.logger.debug("Attempting update of metadata: {0} in ES".format(key))
+        self.logger.debug("Attempting update of metadata: {0} in ES".format(key))
         meta_doc = self.get_metadata(key)
         meta_doc.update_all(metadata)
-        self.search_container.logger.debug("Updated metadata document {0} in ES".format(key))
+        self.logger.debug("Updated metadata document {0} in ES".format(key))
 
     def update_item(self, key, item):
         """
@@ -50,10 +49,10 @@ class UpdateManager(object):
                 key(string): Unique key that is associated with the metadata document to update.
                 item(dict): Updated metadata to store in ElasticSearch.
         """
-        self.search_container.logger.debug("Attempting to update metadata {0} in ES".format(key))
+        self.logger.debug("Attempting to update metadata {0} in ES".format(key))
         meta_doc = self.get_metadata(key)
         meta_doc.update_item(item)
-        self.search_container.logger.debug("Updated metadata {0} in ES".format(key))
+        self.logger.debug("Updated metadata {0} in ES".format(key))
 
     def get_metadata(self, key):
         """
