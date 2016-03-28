@@ -1,6 +1,6 @@
 from pyshelf.metadata.wrapper import Wrapper
 from pyshelf.metadata.result import Result
-from pyshelf.error_code import ErrorCode
+from pyshelf.metadata.error_code import ErrorCode
 
 
 class Manager(object):
