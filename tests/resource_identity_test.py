@@ -53,3 +53,8 @@ class ResourceIdentityTest(pyproctor.TestBase):
         path = ResourceIdentityTest.TEST_PATH + "/" + suffix
         identity = ResourceIdentity(path)
         self.assertEqual("blah3", identity.artifact_name)
+
+    def test_multiple_meta(self):
+        path = "_meta/lol/_meta"
+        identity = ResourceIdentity(path)
+        self.assertEqual([''], identity._part_list)

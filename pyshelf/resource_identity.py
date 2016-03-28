@@ -83,7 +83,7 @@ class ResourceIdentity(object):
             except ValueError:
                 pass
 
-            if index:
+            if None is not index:
                 break
 
         return index
