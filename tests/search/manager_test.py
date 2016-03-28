@@ -26,36 +26,40 @@ class ManagerTest(UnitTestBase):
 
     def test_equality_search(self):
         results = self.search_manager.search({
-            "search": {
-                "artifactName": {
+            "search": [
+                {
+                    "field": "artifactName",
                     "search_type": SearchType.MATCH,
                     "value": "test"
                 },
-                "artifactPath": {
+                {
+                    "field": "artifactPath",
                     "search_type": SearchType.WILDCARD,
                     "value": "tes?"
                 }
-            }
+            ]
         })
         self.assertEqual(len(results), 1)
         self.assertEqual(results[0], utils.get_meta())
 
     def test_tilde_search_and_sort(self):
         results = self.search_manager.search({
-            "search": {
-                "version": {
+            "search": [
+                {
+                    "field": "version",
                     "search_type": SearchType.TILDE,
                     "value": "1.1"
                 }
-            },
-            "sort": {
-                "version": {
+            ],
+            "sort": [
+                {
+                    "field": "version",
                     "sort_type": SortType.VERSION,
                     "flag_list": [
                         SortType.ASC
                     ]
                 },
-            }
+            ]
         })
         self.assertEqual(len(results), 5)
         self.assertEqual(results[0], utils.get_meta("other", "/this/that/other", "1.1"))
@@ -66,36 +70,41 @@ class ManagerTest(UnitTestBase):
 
     def test_select_fields(self):
         results = self.search_manager.search({
-            "search": {
-                "artifactName": {
+            "search": [
+                {
+                    "field": "artifactName",
                     "search_type": SearchType.MATCH,
                     "value": "test"
                 }
-            }
+            ]
         }, ["artifactPath"])
-        self.assertEqual(results[0], {"artifactPath":{"name": "artifactPath", "value": "test", "immutable": True}})
+        print results
+        self.assertEqual(results[0], {"artifactPath": {"name": "artifactPath", "value": "test", "immutable": True}})
 
     def test_sorted_desc_and_asc(self):
         results = self.search_manager.search({
-            "search": {
-                "version": {
+            "search": [
+                {
+                    "field": "version",
                     "search_type": SearchType.TILDE,
                     "value": "1.1"
                 }
-            },
-            "sort": {
-                "version": {
+            ],
+            "sort": [
+                {
+                    "field": "version",
                     "sort_type": SortType.VERSION,
                     "flag_list": [
                         SortType.DESC
                     ]
                 },
-                "artifactName": {
+                {
+                    "field": "artifactName",
                     "flag_list": [
                         SortType.ASC
                     ]
                 }
-            }
+            ]
         })
         self.maxDiff = None
         self.assertEqual(len(results), 5)

@@ -23,23 +23,24 @@ class Manager(object):
                       with the returned keys specified in key_list.
 
         Example of criteria:
-        NOTE: Sort criteria is run in a specific order.
 
             {
-                "search": {
-                    "version": {
+                "search": [
+                    {
+                        "field": "version",
                         "value": "1.1",
                         "search_type": SearchType.TILDE
                     }
-                },
-                "sort": {
-                    "version": {
-                        "sort_type": SortType.VERSION
+                ],
+                "sort": [
+                    {
+                        "field": "version",
+                        "sort_type": SortType.VERSION,
                         "flag_list": [
                             SortType.ASC
                         ]
                     }
-                }
+                ]
             }
         """
         query = Search().index(Metadata._doc_type.index).query(self._build_query(criteria["search"]))
@@ -56,15 +57,15 @@ class Manager(object):
         if not sort_criteria:
             return filtered_results
 
-        for key, val in sort_criteria.iteritems():
+        for criteria in sort_criteria:
             kwargs = {}
-            if SortType.DESC in val["flag_list"]:
+            if SortType.DESC in criteria["flag_list"]:
                 kwargs.update({"reverse": True})
 
-            if val.get("sort_type") == SortType.VERSION:
-                filtered_results.sort(key=lambda k: LooseVersion(k[key]["value"]), **kwargs)
+            if criteria.get("sort_type") == SortType.VERSION:
+                filtered_results.sort(key=lambda k: LooseVersion(k[criteria["field"]]["value"]), **kwargs)
             else:
-                filtered_results.sort(key=lambda k: k[key]["value"], **kwargs)
+                filtered_results.sort(key=lambda k: k[criteria["field"]]["value"], **kwargs)
 
         return filtered_results
 
@@ -100,17 +101,17 @@ class Manager(object):
             Builds query based on search criteria.
         """
         query = Q()
-        for key, val in search_criteria.iteritems():
-            nested_query = Q(SearchType.MATCH, items__name=key)
+        for criteria in search_criteria:
+            nested_query = Q(SearchType.MATCH, items__name=criteria["field"])
 
-            if val["search_type"] == SearchType.TILDE:
-                formatted = ".".join(val["value"].split(".")[:-1])
+            if criteria["search_type"] == SearchType.TILDE:
+                formatted = ".".join(criteria["value"].split(".")[:-1])
                 if formatted:
                     formatted += ".*"
                 formatted += "*"
                 nested_query &= Q(SearchType.WILDCARD, items__value=formatted)
             else:
-                nested_query &= Q(val["search_type"], items__value=val["value"])
+                nested_query &= Q(criteria["search_type"], items__value=criteria["value"])
             query &= Q("nested", path="items", query=nested_query)
 
         return query
