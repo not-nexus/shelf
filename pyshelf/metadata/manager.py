@@ -62,6 +62,7 @@ class Manager(object):
         """
         result = Result()
         result = self._try_update_item_with_result(key, value, result)
+        return result
 
     def try_create_item(self, key, value):
         """
@@ -92,7 +93,7 @@ class Manager(object):
 
     def _try_update_item_with_result(self, key, value, result):
         if not self.metadata.is_immutable(key):
-            self.metadata[value]
+            self.metadata[key] = value
             self.write()
             result.value = value
         else:

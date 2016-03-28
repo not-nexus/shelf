@@ -1,5 +1,6 @@
 from tests.functional_test_base import FunctionalTestBase
 import tests.metadata_utils as meta_utils
+from pyshelf.error_code import ErrorCode
 
 
 class MetadataTest(FunctionalTestBase):
@@ -41,21 +42,21 @@ class MetadataTest(FunctionalTestBase):
         self.route_tester \
             .metadata_item() \
             .route_params(bucket_name="test", path="test", item="tag2") \
-            .expect(200, {"immutable": False, "name": "tag2", "value": "test"}) \
+            .expect(201, {"immutable": False, "name": "tag2", "value": "test"}) \
             .post(data=meta_utils.get_meta_item(), headers=self.auth)
 
     def test_post_existing_metadata_item(self):
         self.route_tester \
             .metadata_item() \
             .route_params(bucket_name="test", path="test", item="tag1") \
-            .expect(403, self.RESPONSE_403) \
+            .expect(403, {"code": ErrorCode.FORBIDDEN, "message": "This metadata already exists."}) \
             .post(data=meta_utils.get_meta_item(), headers=self.auth)
 
     def test_put_metadata_item(self):
         self.route_tester \
             .metadata_item() \
             .route_params(bucket_name="test", path="test", item="tag2") \
-            .expect(200, {"immutable": False, "name": "tag2", "value": "test"}) \
+            .expect(201, {"immutable": False, "name": "tag2", "value": "test"}) \
             .put(data=meta_utils.get_meta_item(), headers=self.auth)
 
     def test_put_metadata_existing_item(self):

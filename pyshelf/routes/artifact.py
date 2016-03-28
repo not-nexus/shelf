@@ -56,25 +56,43 @@ def update_artifact_meta(container, bucket_name, path):
 
 @artifact.route("/<bucket_name>/artifact/<path:path>/_meta/<item>", methods=["GET"])
 @decorators.foundation
+def get_metadata_item_route(container, bucket_name, path, item):
+    return get_metadata_item(container, bucket_name, path, item)
+
+
 def get_metadata_item(container, bucket_name, path, item):
-    meta_mapper = MetadataMapper(container, path)
-    metadata = meta_mapper.get_metadata(item)
-    return response_map.create_200(metadata)
+    manager = container.metadata.manager
+    data = manager.metadata.get(item)
+    if None is data:
+        response = response_map.create_404()
+    else:
+        response = response_map.create_200(data)
+
+    return response
 
 
 @artifact.route("/<bucket_name>/artifact/<path:path>/_meta/<item>", methods=["POST", "PUT"])
 @decorators.foundation_headers
 def create_metadata_item(container, bucket_name, path, item):
     data = json.loads(request.data)
-    meta_mapper = MetadataMapper(container, path)
+    manager = container.metadata.manager
+    exists = (item in manager.metadata)
+    result = None
 
-    if not meta_mapper.item_exists(item) or request.method == "PUT":
-        meta_mapper.set_metadata(data, item)
-        meta = meta_mapper.get_metadata(item)
-        response = response_map.create_200(meta)
+    if request.method == "PUT":
+        result = manager.try_update_item(item, data)
+    else:
+        result = manager.try_create_item(item, data)
+
+    if result.success:
+        response = get_metadata_item(container, bucket_name, path, item)
+        if not exists:
+            response.status_code = 201
+
         response.headers["Location"] = container.request.path
     else:
-        response = response_map.create_403()
+        response = response_map.map_metadata_result_errors(result)
+
     return response
 
 
