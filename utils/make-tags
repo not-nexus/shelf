@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# Based on http://www.held.org.il/blog/2011/02/configuring-ctags-for-python-and-vim/
+currentPath="${0%/*}"
+ctags -R --python-kinds=-i -o "$currentPath/../tags"
