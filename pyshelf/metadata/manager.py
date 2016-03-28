@@ -18,6 +18,7 @@ class Manager(object):
         # self.update_manager = self.container.search.update_manager
         self.identity = self.container.resource_identity
         self.portal = self.container.cloud_portal
+        self.initializer = self.container.initializer
         self._metadata = None
 
     @property
@@ -43,12 +44,12 @@ class Manager(object):
         data = self.portal.load(self.identity.cloud_metadata)
         if self.initializer.needs_update(data):
             data = self.initializer.update(data)
-            self.cloud_portal.update(self.identity.cloud_metadata, data)
+            self.portal.update(self.identity.cloud_metadata, data)
 
         return data
 
     def write(self):
-        self.cloud_portal.update(self.identity.cloud_metadata, self.metadata)
+        self.portal.update(self.identity.cloud_metadata, self.metadata)
 
     def try_update_item(self, key, value):
         """
