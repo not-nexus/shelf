@@ -3,6 +3,7 @@ from pyshelf.cloud.cloud_exceptions import \
     ArtifactNotFoundError, BucketNotFoundError, DuplicateArtifactError, InvalidNameError, \
     MetadataNotFoundError, ImmutableMetadataError
 from pyshelf.error_code import ErrorCode
+from pyshelf.metadata.error_code import ErrorCode as MetadataErrorCode
 
 
 def vnd_error(error):
@@ -148,3 +149,10 @@ def map_exception(e):
     if isinstance(e, BucketNotFoundError):
         return create_500(e.error_code, e.message)
     return create_500()
+
+
+def map_metadata_result_errors(result):
+    if result.has_error(MetadataErrorCode.IMMUTABLE):
+        return create_403(ErrorCode.FORBIDDEN, "Cannot update immutable metadata.")
+    elif result.has_error(MetadataErrorCode.DUPLICATE):
+        return create_403(ErrorCode.FORBIDDEN, "This metadata already exists.")
