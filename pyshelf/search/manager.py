@@ -122,7 +122,7 @@ class Manager(object):
                     formatted += ".*"
                     nested_query &= Q(SearchType.WILDCARD, items__value=formatted)
                 else:
-                    nested_query &= Q("range", items__value={"gt": criteria["value"]})
+                    nested_query &= Q("range", items__value={"gte": criteria["value"]})
             else:
                 nested_query &= Q(criteria["search_type"], items__value=criteria["value"])
             query &= Q("nested", path="items", query=nested_query)
