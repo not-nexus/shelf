@@ -81,6 +81,12 @@ def create_metadata_item(container, bucket_name, path, item):
 @artifact.route("/<bucket_name>/artifact/<path:path>/_meta/<item>", methods=["DELETE"])
 @decorators.foundation
 def delete_metadata_item(container, bucket_name, path, item):
-    meta_mapper = MetadataMapper(container, path)
-    meta_mapper.remove_metadata(item)
-    return response_map.create_204()
+    manager = container.metadata.manager
+    result = manager.try_delete_item(item)
+    response = None
+    if result.success:
+        response = response_map.create_204()
+    else:
+        response = response_map.map_metadata_result_errors(result)
+
+    return response

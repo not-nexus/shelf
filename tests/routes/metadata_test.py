@@ -77,7 +77,7 @@ class MetadataTest(FunctionalTestBase):
             .expect(403,
                     {
                         "code": "forbidden",
-                        "message": "The metadata item tag1 is immutable."
+                        "message": "Cannot update immutable metadata."
                     }) \
             .delete(headers=self.auth)
         self.test_get_metadata_item()
