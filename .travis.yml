@@ -4,8 +4,7 @@ python:
     - 2.6
 install:
     - source utils/init-environment
-script: pyproctor
-before_install:
     - pip install codecov
+script: pyproctor
 after_success:
     - codecov
