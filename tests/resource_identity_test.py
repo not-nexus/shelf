@@ -30,6 +30,11 @@ class ResourceIdentityTest(pyproctor.TestBase):
         identity = ResourceIdentity(url)
         self.assertEqual("/blah1/blah2/blah3/_meta", identity.cloud_metadata)
 
+    def test_cloud_metadata_special_type_with_item(self):
+        url = ResourceIdentityTest.TEST_PATH + "/_meta/item_lol"
+        identity = ResourceIdentity(url)
+        self.assertEqual("/blah1/blah2/blah3/_meta", identity.cloud_metadata)
+
     def test_multiple_separators_and_no_leading_slash(self):
         identity = ResourceIdentity("lol-test//artifact///blah1//blah2")
         self.assertEqual("/blah1/blah2", identity.artifact_path)
