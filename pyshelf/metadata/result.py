@@ -9,3 +9,11 @@ class Result(object):
 
     def add_error(self, code):
         self.error_code_list.append(code)
+
+    def has_error(self, code):
+        has_error = False
+
+        if code in self.error_code_list:
+            has_error = True
+
+        return has_error
