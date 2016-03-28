@@ -94,7 +94,7 @@ class Manager(object):
                 pyshelf.metadata.result.Result
         """
         result = Result()
-        if self.metadata.get(key):
+        if None is not self.metadata.get(key):
             result.add_error(ErrorCode.DUPLICATE)
         else:
             result = self._try_update_item_with_result(key, value, result)
