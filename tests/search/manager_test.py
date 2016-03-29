@@ -2,6 +2,7 @@ from tests.unit_test_base import UnitTestBase
 from tests.search.test_wrapper import TestWrapper as SearchTestWrapper
 from pyshelf.search.type import Type as SearchType
 from pyshelf.search.sort_type import SortType
+from pyshelf.search.sort_flag import SortFlag
 import tests.metadata_utils as utils
 import time
 
@@ -54,9 +55,9 @@ class ManagerTest(UnitTestBase):
             "sort": [
                 {
                     "field": "version",
-                    "sort_type": SortType.VERSION,
+                    "sort_type": SortType.ASC,
                     "flag_list": [
-                        SortType.ASC
+                        SortFlag.VERSION
                     ]
                 },
             ]
@@ -94,9 +95,7 @@ class ManagerTest(UnitTestBase):
             "sort": [
                 {
                     "field": "artifactName",
-                    "flag_list": [
-                        SortType.DESC
-                    ]
+                    "sort_type": SortType.DESC
                 }
             ]
         })
@@ -120,17 +119,15 @@ class ManagerTest(UnitTestBase):
             ],
             "sort": [
                 {
-                    "field": "artifactName",
+                    "field": "version",
+                    "sort_type": SortType.DESC,
                     "flag_list": [
-                        SortType.ASC
+                        SortFlag.VERSION
                     ]
                 },
                 {
-                    "field": "version",
-                    "sort_type": SortType.VERSION,
-                    "flag_list": [
-                        SortType.DESC
-                    ]
+                    "field": "artifactName",
+                    "sort_type": SortType.ASC
                 }
             ]
         })

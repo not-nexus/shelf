@@ -2,6 +2,7 @@ from elasticsearch_dsl.query import Q
 from elasticsearch_dsl import Search
 from pyshelf.search.type import Type as SearchType
 from pyshelf.search.sort_type import SortType
+from pyshelf.search.sort_flag import SortFlag
 from pyshelf.search.metadata import Metadata
 from distutils.version import LooseVersion
 
@@ -10,6 +11,7 @@ class Manager(object):
     def __init__(self, search_container):
         self.search_container = search_container
         self.tilde_search = None
+        self.host = self.search_container.elastic_search
 
     def search(self, criteria, key_list=None):
         """
@@ -36,15 +38,16 @@ class Manager(object):
                 "sort": [
                     {
                         "field": "version",
-                        "sort_type": SortType.VERSION,
+                        "sort_type": SortType.ASC,
                         "flag_list": [
-                            SortType.ASC
+                            SortFlag.VERSION
                         ]
                     }
                 ]
             }
         """
-        query = Search().index(Metadata._doc_type.index).query(self._build_query(criteria["search"]))
+        query = Search(using=self.host).index(Metadata._doc_type.index).query(self._build_query(criteria["search"]))
+        self.search_container.logger.debug(query.to_dict())
         results = query.execute()
         filtered_results = self._filter_results(results.hits, key_list)
         formated_results = self._sort_results(filtered_results, criteria.get("sort"))
@@ -64,12 +67,13 @@ class Manager(object):
         if not sort_criteria:
             return filtered_results
 
-        for criteria in sort_criteria:
+        # It is necessary to reverse the array so the first sort takes precedence
+        for criteria in reversed(sort_criteria):
             kwargs = {}
-            if SortType.DESC in criteria["flag_list"]:
+            if SortType.DESC == criteria["sort_type"]:
                 kwargs["reverse"] = True
 
-            if criteria.get("sort_type") == SortType.VERSION:
+            if criteria.get("flag_list") and SortFlag.VERSION in criteria.get("flag_list"):
                 filtered_results.sort(key=lambda k: LooseVersion(k[criteria["field"]]["value"]), **kwargs)
             else:
                 filtered_results.sort(key=lambda k: k[criteria["field"]]["value"], **kwargs)

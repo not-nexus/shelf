@@ -1,31 +1,28 @@
-from elasticsearch_dsl.connections import connections
 from pyshelf.search.update_manager import UpdateManager
 from pyshelf.search.manager import Manager as SearchManager
+from elasticsearch import Elasticsearch
 
 
 class Container(object):
-    def __init__(self, config, logger):
+    def __init__(self, logger, elastic_search_host):
         self.logger = logger
-        self.config = config
+        self.elastic_search_host = elastic_search_host
+        self._elastic_search = None
         self._hosts = None
         self._update_manager = None
         self._search_manager = None
-        self.default_elastic_connection()
 
     @property
-    def hosts(self):
-        if not self._hosts:
-            self._hosts = self.config.get("elasticSearchHost")
+    def elastic_search(self):
+        if not self._elastic_search:
+            self._elastic_search = Elasticsearch(self.elastic_search_host)
 
-        return self._hosts
-
-    def default_elastic_connection(self):
-        connections.create_connection("default", hosts=self.hosts)
+        return self._elastic_search
 
     @property
     def update_manager(self):
         if not self._update_manager:
-            self._update_manager = UpdateManager(self.logger)
+            self._update_manager = UpdateManager(self.logger, self.elastic_search)
 
         return self._update_manager
 

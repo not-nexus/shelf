@@ -2,8 +2,9 @@ from pyshelf.search.metadata import Metadata
 
 
 class UpdateManager(object):
-    def __init__(self, logger):
+    def __init__(self, logger, elastic_search):
         self.logger = logger
+        self.host = elastic_search
 
     def bulk_update(self, data):
         """
@@ -39,6 +40,7 @@ class UpdateManager(object):
         self.logger.debug("Attempting update of metadata: {0} in ES".format(key))
         meta_doc = self.get_metadata(key)
         meta_doc.update_all(metadata)
+        meta_doc.save(using=self.host)
         self.logger.debug("Updated metadata document {0} in ES".format(key))
 
     def update_item(self, key, item):
@@ -52,6 +54,7 @@ class UpdateManager(object):
         self.logger.debug("Attempting to update metadata {0} in ES".format(key))
         meta_doc = self.get_metadata(key)
         meta_doc.update_item(item)
+        meta_doc.save(using=self.host)
         self.logger.debug("Updated metadata {0} in ES".format(key))
 
     def get_metadata(self, key):
@@ -64,7 +67,7 @@ class UpdateManager(object):
             Returns:
                 pyshelf.search.metadata.Metadata
         """
-        meta_doc = Metadata.get(id=key, ignore=404)
+        meta_doc = Metadata.get(id=key, using=self.host, ignore=404)
 
         if not meta_doc:
             meta_doc = Metadata()
