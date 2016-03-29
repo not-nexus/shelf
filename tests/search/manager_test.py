@@ -53,7 +53,7 @@ class ManagerTest(UnitTestBase):
             "search": [
                 {
                     "field": "version",
-                    "search_type": SearchType.TILDE,
+                    "search_type": SearchType.VERSION,
                     "value": "1.1"
                 }
             ],
@@ -92,7 +92,7 @@ class ManagerTest(UnitTestBase):
             "search": [
                 {
                     "field": "artifactName",
-                    "search_type": SearchType.TILDE,
+                    "search_type": SearchType.VERSION,
                     "value": "test"
                 }
             ],
@@ -116,7 +116,7 @@ class ManagerTest(UnitTestBase):
             "search": [
                 {
                     "field": "version",
-                    "search_type": SearchType.TILDE,
+                    "search_type": SearchType.VERSION,
                     "value": "1.2"
                 }
             ],

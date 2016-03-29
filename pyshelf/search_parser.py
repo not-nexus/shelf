@@ -47,7 +47,7 @@ class SearchParser(object):
         wildcard_search = "\*\="
 
         if re.search(tilde_search, search_string):
-            search_criteria["search_type"] = SearchType.TILDE
+            search_criteria["search_type"] = SearchType.VERSION
             split_char = "~="
         elif re.search(wildcard_search, search_string):
             search_criteria["search_type"] = SearchType.WILDCARD

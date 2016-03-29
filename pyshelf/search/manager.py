@@ -32,7 +32,7 @@ class Manager(object):
                     {
                         "field": "version",
                         "value": "1.1",
-                        "search_type": SearchType.TILDE
+                        "search_type": SearchType.VERSION
                     }
                 ],
                 "sort": [
@@ -125,9 +125,11 @@ class Manager(object):
         """
         search.query = Q()
         for criteria in search.search_criteria:
+
+            # The double underscores (items__name) represents a nested field (items.name) in Elasticsearch_dsl
             nested_query = Q(SearchType.MATCH, items__name=criteria["field"])
 
-            if criteria["search_type"] == SearchType.TILDE:
+            if criteria["search_type"] == SearchType.VERSION:
                 formatted = ".".join(criteria["value"].split(".")[:-1])
                 if formatted:
                     formatted += ".*"
