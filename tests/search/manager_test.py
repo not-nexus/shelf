@@ -39,8 +39,8 @@ class ManagerTest(UnitTestBase):
                 }
             ]
         })
-        self.assertEqual(len(results), 1)
-        self.assertEqual(results[0], utils.get_meta())
+        expected = [utils.get_meta()]
+        self.assertEqual(results, expected)
 
     def test_tilde_search_and_sort(self):
         results = self.search_manager.search({
@@ -61,12 +61,12 @@ class ManagerTest(UnitTestBase):
                 },
             ]
         })
-        self.assertEqual(len(results), 5)
-        self.assertEqual(results[0], utils.get_meta("other", "/this/that/other", "1.1"))
-        self.assertEqual(results[1], utils.get_meta("thing", "/thing", "1.2"))
-        self.assertEqual(results[2], utils.get_meta("a", "/a", "1.19"))
-        self.assertEqual(results[3], utils.get_meta("zzzz", "/zzzz", "1.19"))
-        self.assertEqual(results[4], utils.get_meta("blah", "/blah", "1.19"))
+        expected = [
+            utils.get_meta("other", "/this/that/other", "1.1"), utils.get_meta("thing", "/thing", "1.2"),
+            utils.get_meta("a", "/a", "1.19"), utils.get_meta("zzzz", "/zzzz", "1.19"),
+            utils.get_meta("blah", "/blah", "1.19")
+        ]
+        self.assertEqual(results, expected)
 
     def test_select_fields(self):
         results = self.search_manager.search({
@@ -92,11 +92,14 @@ class ManagerTest(UnitTestBase):
             "sort": [
             ]
         })
-        # Very unlikely this type of search would be used but if it was it would
-        # be consistent with what we agreed a ~= search should do.
-        self.assertEqual(results[0], utils.get_meta("zzzz", "/zzzz", "1.19"))
-        self.assertEqual(results[1], utils.get_meta())
-        self.assertEqual(results[2], utils.get_meta("thing", "/thing", "1.2"))
+        self.maxDiff = None
+        expected = [
+            utils.get_meta("zzzz", "/zzzz", "1.19"),
+            utils.get_meta("thing", "/thing", "1.2"),
+            utils.get_meta()
+        ]
+
+        self.assertEqual(results, expected)
 
     def test_sorted_desc_and_asc(self):
         results = self.search_manager.search({
@@ -123,8 +126,8 @@ class ManagerTest(UnitTestBase):
                 }
             ]
         })
-        self.assertEqual(len(results), 4)
-        self.assertEqual(results[0], utils.get_meta("a", "/a", "1.19"))
-        self.assertEqual(results[1], utils.get_meta("blah", "/blah", "1.19"))
-        self.assertEqual(results[2], utils.get_meta("zzzz", "/zzzz", "1.19"))
-        self.assertEqual(results[3], utils.get_meta("thing", "/thing", "1.2"))
+        expected = [
+            utils.get_meta("a", "/a", "1.19"), utils.get_meta("blah", "/blah", "1.19"),
+            utils.get_meta("zzzz", "/zzzz", "1.19"), utils.get_meta("thing", "/thing", "1.2")
+        ]
+        self.assertEqual(results, expected)
