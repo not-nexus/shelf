@@ -8,7 +8,6 @@ class Container(object):
         self.logger = logger
         self.elastic_search_host = elastic_search_host
         self._elastic_search = None
-        self._hosts = None
         self._update_manager = None
         self._search_manager = None
 

@@ -68,7 +68,7 @@ class Container(object):
     @property
     def search(self):
         if not self._search:
-            self._search = SearchContainer(self.app.config, self.app.logger)
+            self._search = SearchContainer(self.app.logger, self.app.config.get("elasticSearchHost"))
 
         return self._search
 
