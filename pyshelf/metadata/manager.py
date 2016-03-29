@@ -50,6 +50,7 @@ class Manager(object):
 
     def write(self):
         self.portal.update(self.identity.cloud_metadata, self.metadata)
+        self.update_manager.update(self.identity.search, self.metadata)
 
     def try_update(self, data):
         old_meta = copy.deepcopy(self.metadata)
