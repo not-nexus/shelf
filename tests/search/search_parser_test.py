@@ -21,7 +21,7 @@ class SearchParseTest(UnitTestBase):
                 {
                     "field": "version",
                     "value": "1.1",
-                    "search_type": SearchType.TILDE
+                    "search_type": SearchType.VERSION
                 }
             ],
             "sort": [
@@ -53,7 +53,7 @@ class SearchParseTest(UnitTestBase):
                 {
                     "field": "version",
                     "value": "1.1",
-                    "search_type": SearchType.TILDE
+                    "search_type": SearchType.VERSION
                 },
                 {
                     "field": "bob",

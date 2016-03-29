@@ -1,5 +1,4 @@
 class Type(object):
-    # What is this called??
-    TILDE = "tilde"
+    VERSION = "version"
     MATCH = "match"
     WILDCARD = "wildcard"
