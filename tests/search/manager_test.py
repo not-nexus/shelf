@@ -2,6 +2,7 @@ from tests.unit_test_base import UnitTestBase
 from tests.search.test_wrapper import TestWrapper as SearchTestWrapper
 from pyshelf.search.type import Type as SearchType
 from pyshelf.search.sort_type import SortType
+from pyshelf.search.sort_flag import SortFlag
 import tests.metadata_utils as utils
 import time
 
@@ -16,13 +17,15 @@ class ManagerTest(UnitTestBase):
         self.test_wrapper.setup_metadata("blah", "/blah", "1.19")
         self.test_wrapper.setup_metadata("a", "/a", "1.19")
         self.test_wrapper.setup_metadata("zzzz", "/zzzz", "1.19")
-        # temp fix
         time.sleep(1)
 
     def tearDown(self):
         self.test_wrapper.teardown_metadata("test")
         self.test_wrapper.teardown_metadata("other")
         self.test_wrapper.teardown_metadata("thing")
+        self.test_wrapper.teardown_metadata("blah")
+        self.test_wrapper.teardown_metadata("a")
+        self.test_wrapper.teardown_metadata("zzzz")
 
     def test_equality_search(self):
         results = self.search_manager.search({
@@ -54,9 +57,9 @@ class ManagerTest(UnitTestBase):
             "sort": [
                 {
                     "field": "version",
-                    "sort_type": SortType.VERSION,
+                    "sort_type": SortType.ASC,
                     "flag_list": [
-                        SortType.ASC
+                        SortFlag.VERSION
                     ]
                 },
             ]
@@ -94,9 +97,7 @@ class ManagerTest(UnitTestBase):
             "sort": [
                 {
                     "field": "artifactName",
-                    "flag_list": [
-                        SortType.DESC
-                    ]
+                    "sort_type": SortType.DESC
                 }
             ]
         })
@@ -120,17 +121,15 @@ class ManagerTest(UnitTestBase):
             ],
             "sort": [
                 {
-                    "field": "artifactName",
+                    "field": "version",
+                    "sort_type": SortType.DESC,
                     "flag_list": [
-                        SortType.ASC
+                        SortFlag.VERSION
                     ]
                 },
                 {
-                    "field": "version",
-                    "sort_type": SortType.VERSION,
-                    "flag_list": [
-                        SortType.DESC
-                    ]
+                    "field": "artifactName",
+                    "sort_type": SortType.ASC
                 }
             ]
         })

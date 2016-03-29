@@ -9,7 +9,7 @@ def app(app):
         content = f.read()
         config = yaml.load(content)
 
-    for key, val in config.iteritems():
+    for key, val in config.get("buckets").iteritems():
         required = {
             "accessKey": val.get("accessKey"),
             "secretKey": val.get("secretKey")

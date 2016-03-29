@@ -1,4 +1,5 @@
 from pyshelf.search.sort_type import SortType
+from pyshelf.search.sort_flag import SortFlag
 from pyshelf.search.type import Type as SearchType
 import re
 
@@ -75,12 +76,13 @@ class SearchParser(object):
             string = string.strip()
 
             if hasattr(SortType, string):
-                if string == SortType.VERSION:
-                    sort_criteria["sort_type"] = SortType.VERSION
-                else:
-                    flag_list.append(string)
+                sort_criteria["sort_type"] = string
+            elif hasattr(SortFlag, string):
+                flag_list.append(string)
             else:
                 sort_criteria["field"] = string
 
-        sort_criteria["flag_list"] = flag_list
+        if flag_list:
+            sort_criteria["flag_list"] = flag_list
+
         return sort_criteria

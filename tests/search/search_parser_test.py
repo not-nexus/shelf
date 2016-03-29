@@ -1,6 +1,7 @@
 from tests.unit_test_base import UnitTestBase
 from pyshelf.search_parser import SearchParser
 from pyshelf.search.sort_type import SortType
+from pyshelf.search.sort_flag import SortFlag
 from pyshelf.search.type import Type as SearchType
 
 
@@ -26,8 +27,8 @@ class SearchParseTest(UnitTestBase):
             "sort": [
                 {
                     "field": "version",
-                    "sort_type": SortType.VERSION,
-                    "flag_list": [SortType.DESC]
+                    "sort_type": SortType.DESC,
+                    "flag_list": [SortFlag.VERSION]
                 }
             ],
             "limit": 1
@@ -68,12 +69,12 @@ class SearchParseTest(UnitTestBase):
             "sort": [
                 {
                     "field": "version",
-                    "sort_type": SortType.VERSION,
-                    "flag_list": [SortType.ASC]
+                    "sort_type": SortType.ASC,
+                    "flag_list": [SortFlag.VERSION]
                 },
                 {
                     "field": "bob",
-                    "flag_list": [SortType.ASC]
+                    "sort_type": SortType.ASC
                 }
             ],
             "limit": None
