@@ -2,7 +2,7 @@ from uuid import uuid4
 from pyshelf.permissions_validator import PermissionsValidator
 from pyshelf.cloud.factory import Factory
 from pyshelf.artifact_list_manager import ArtifactListManager
-from pyshelf.search.services import Services as SearchServices
+from pyshelf.search.container import Container as SearchContainer
 from pyshelf.search_portal import SearchPortal
 from pyshelf.link_mapper import LinkMapper
 from pyshelf.context import Context
@@ -68,7 +68,7 @@ class Container(object):
     @property
     def search(self):
         if not self._search:
-            self._search = SearchServices(self)
+            self._search = SearchContainer(self.app.config, self.app.logger)
 
         return self._search
 

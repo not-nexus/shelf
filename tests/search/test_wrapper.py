@@ -2,8 +2,6 @@ from mock import Mock
 from pyshelf.search.container import Container as SearchContainer
 import tests.metadata_utils as utils
 from pyshelf.search.metadata import Metadata
-from pyshelf.search.manager import Manager as SearchManager
-from pyshelf.search.update_manager import UpdateManager
 import time
 
 
@@ -19,8 +17,6 @@ class TestWrapper(object):
             }
         }
         self.logger = Mock()
-        self._update_manager = None
-        self._search_manager = None
         self._search_container = None
 
     def setup_metadata(self, name="test", path="test", version="1"):
@@ -29,30 +25,16 @@ class TestWrapper(object):
             # Again temp fix for the above init request
             time.sleep(1)
             TestWrapper.INIT = True
-        self.update_manager.update(name, utils.get_meta(name, path, version))
+        self.search_container.update_manager.update(name, utils.get_meta(name, path, version))
 
     def teardown_metadata(self, key):
-        meta = self.update_manager.get_metadata(key)
+        meta = self.search_container.update_manager.get_metadata(key)
         if meta:
             meta.delete()
 
     @property
-    def update_manager(self):
-        if not self._update_manager:
-            self._update_manager = UpdateManager(self.search_container.logger)
-
-        return self._update_manager
-
-    @property
-    def search_manager(self):
-        if not self._search_manager:
-            self._search_manager = SearchManager(self.search_container)
-
-        return self._search_manager
-
-    @property
     def search_container(self):
         if not self._search_container:
-            self._search_container = SearchContainer(self.logger, self.config)
+            self._search_container = SearchContainer(self.config, self.logger)
 
         return self._search_container

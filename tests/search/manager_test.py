@@ -9,7 +9,7 @@ import time
 class ManagerTest(UnitTestBase):
     def setUp(self):
         self.test_wrapper = SearchTestWrapper()
-        self.search_manager = self.test_wrapper.search_manager
+        self.search_manager = self.test_wrapper.search_container.search_manager
         self.test_wrapper.setup_metadata()
         self.test_wrapper.setup_metadata("other", "/this/that/other", "1.1")
         self.test_wrapper.setup_metadata("thing", "/thing", "1.2")

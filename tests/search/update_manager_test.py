@@ -6,7 +6,7 @@ from tests.search.test_wrapper import TestWrapper as SearchTestWrapper
 class UpdateManagerTest(UnitTestBase):
     def setUp(self):
         self.test_wrapper = SearchTestWrapper()
-        self.update_manager = self.test_wrapper.update_manager
+        self.update_manager = self.test_wrapper.search_container.update_manager
         self.test_wrapper.setup_metadata("test_key")
 
     def tearDown(self):
