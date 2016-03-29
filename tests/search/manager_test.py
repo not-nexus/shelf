@@ -100,8 +100,10 @@ class ManagerTest(UnitTestBase):
             utils.get_meta("thing", "/thing", "1.2"),
             utils.get_meta()
         ]
+        results.sort(key = lambda k: k["version"]["value"])
+        expected.sort(key = lambda k: k["version"]["value"])
 
-        self.assertEqual(sorted(results, key = lambda k: k["version"]["value"]), sorted(expected, key = lambda k: k["version"]["value"]))
+        self.assertEqual(results, expected)
 
     def test_sorted_desc_and_asc(self):
         results = self.search_manager.search({
