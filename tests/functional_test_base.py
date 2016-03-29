@@ -40,14 +40,17 @@ class FunctionalTestBase(pyproctor.TestBase):
     @classmethod
     def setUpClass(cls):
         config = {
-            "test": {
-                "accessKey": "test",
-                "secretKey": "test"
+            "buckets": {
+                "test": {
+                    "accessKey": "test",
+                    "secretKey": "test"
+                },
+                "bucket2": {
+                    "accessKey": "test",
+                    "secretKey": "test"
+                }
             },
-            "bucket2": {
-                "accessKey": "test",
-                "secretKey": "test"
-            }
+            "elasticSearchHost": "localhost:9200"
         }
         configure.logger(app.logger, "DEBUG")
         app.config.update(config)
