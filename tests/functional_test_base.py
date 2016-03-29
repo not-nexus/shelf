@@ -8,6 +8,9 @@ import yaml
 import tests.metadata_utils as meta_utils
 import tests.permission_utils as utils
 from tests.route_tester.tester import Tester
+from elasticsearch_dsl import Index
+from elasticsearch import Elasticsearch
+from pyshelf.search.metadata import Metadata
 
 
 class FunctionalTestBase(pyproctor.TestBase):
@@ -54,6 +57,15 @@ class FunctionalTestBase(pyproctor.TestBase):
         }
         configure.logger(app.logger, "DEBUG")
         app.config.update(config)
+        es = Elasticsearch(config.get("elasticSearchHost"))
+        Metadata.init(using=es)
+        Metadata._doc_type.refresh(using=es)
+
+    @classmethod
+    def tearDownClass(cls):
+        es = Elasticsearch(app.config.get("elasticSearchHost"))
+        meta_index = Index("metadata", using=es)
+        meta_index.delete()
 
     def configure_moto(self):
         self.moto_s3 = mock_s3()
