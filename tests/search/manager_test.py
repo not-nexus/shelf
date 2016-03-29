@@ -92,6 +92,12 @@ class ManagerTest(UnitTestBase):
                 }
             ],
             "sort": [
+                {
+                    "field": "artifactName",
+                    "flag_list": [
+                        SortType.DESC
+                    ]
+                }
             ]
         })
         self.maxDiff = None
@@ -100,8 +106,6 @@ class ManagerTest(UnitTestBase):
             utils.get_meta("thing", "/thing", "1.2"),
             utils.get_meta()
         ]
-        results.sort(key = lambda k: k["version"]["value"])
-        expected.sort(key = lambda k: k["version"]["value"])
 
         self.assertEqual(results, expected)
 
