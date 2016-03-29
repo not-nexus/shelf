@@ -84,7 +84,7 @@ class Manager(object):
 
             Args:
                 search(pyshelf.search.wrapper.Wrapper): Wrapper object that encapsulates search properties.
-                key_list(list): List of keys to return. None assumes all keys are requeired
+                key_list(list): List of keys to return. None assumes all keys are required
 
             Returns:
                 pyshelf.search.wrapper.Wrapper: Wrapper object that encapsulate shelf specific search properties.
