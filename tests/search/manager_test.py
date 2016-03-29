@@ -8,7 +8,9 @@ import time
 
 
 class ManagerTest(UnitTestBase):
-    def setUp(self):
+    @classmethod
+    def setUpClass(self):
+        self.maxDiff = None
         self.test_wrapper = SearchTestWrapper()
         self.search_manager = self.test_wrapper.search_container.search_manager
         self.test_wrapper.setup_metadata()
@@ -19,7 +21,8 @@ class ManagerTest(UnitTestBase):
         self.test_wrapper.setup_metadata("zzzz", "/zzzz", "1.19")
         time.sleep(1)
 
-    def tearDown(self):
+    @classmethod
+    def tearDownClass(self):
         self.test_wrapper.teardown_metadata("test")
         self.test_wrapper.teardown_metadata("other")
         self.test_wrapper.teardown_metadata("thing")
@@ -66,12 +69,11 @@ class ManagerTest(UnitTestBase):
         })
         expected = [
             utils.get_meta("other", "/this/that/other", "1.1"),
-            utils.get_meta("thing", "/thing", "1.2"),
-            utils.get_meta("a", "/a", "1.19"),
-            utils.get_meta("zzzz", "/zzzz", "1.19"),
-            utils.get_meta("blah", "/blah", "1.19")
+            utils.get_meta("thing", "/thing", "1.2")
         ]
-        self.assertEqual(results, expected)
+        self.assertEqual(results[0:2], expected)
+        for item in results[2::]:
+            self.assertEqual(item["version"]["value"], "1.19")
 
     def test_select_fields(self):
         results = self.search_manager.search({
@@ -101,7 +103,6 @@ class ManagerTest(UnitTestBase):
                 }
             ]
         })
-        self.maxDiff = None
         expected = [
             utils.get_meta("zzzz", "/zzzz", "1.19"),
             utils.get_meta("thing", "/thing", "1.2"),
