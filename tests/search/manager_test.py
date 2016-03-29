@@ -23,6 +23,9 @@ class ManagerTest(UnitTestBase):
         self.test_wrapper.teardown_metadata("test")
         self.test_wrapper.teardown_metadata("other")
         self.test_wrapper.teardown_metadata("thing")
+        self.test_wrapper.teardown_metadata("blah")
+        self.test_wrapper.teardown_metadata("a")
+        self.test_wrapper.teardown_metadata("zzzz")
 
     def test_equality_search(self):
         results = self.search_manager.search({
