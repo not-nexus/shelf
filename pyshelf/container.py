@@ -140,7 +140,8 @@ class Container(object):
             self._metadata = MetadataContainer(
                 self.bucket_name,
                 self.cloud_factory,
-                self.resource_identity
+                self.resource_identity,
+                self.search.update_manager
             )
 
         return self._metadata

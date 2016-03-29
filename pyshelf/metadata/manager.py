@@ -15,7 +15,7 @@ class Manager(object):
     """
     def __init__(self, container):
         self.container = container
-        # self.update_manager = self.container.search.update_manager
+        self.update_manager = self.container.update_manager
         self.identity = self.container.resource_identity
         self.portal = self.container.cloud_portal
         self.initializer = self.container.initializer
