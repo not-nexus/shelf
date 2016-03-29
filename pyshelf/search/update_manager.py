@@ -6,6 +6,15 @@ class UpdateManager(object):
         self.logger = logger
         self.host = elastic_search
 
+    def remove_old_docs(self, ex_key_list):
+        """
+            Removes any documents with keys not enumerated in the ex_key_list.
+
+            Args:
+                ex_key_list(list): List of keys that should remain in the Elasticsearch collection.
+        """
+        pass
+
     def bulk_update(self, data):
         """
             This provides bulk updating functionality. It has the ability to update multiple documents.
