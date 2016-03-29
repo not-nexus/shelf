@@ -17,7 +17,6 @@ class ManagerTest(UnitTestBase):
         self.test_wrapper.setup_metadata("blah", "/blah", "1.19")
         self.test_wrapper.setup_metadata("a", "/a", "1.19")
         self.test_wrapper.setup_metadata("zzzz", "/zzzz", "1.19")
-        # temp fix
         time.sleep(1)
 
     def tearDown(self):

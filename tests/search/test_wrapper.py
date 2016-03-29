@@ -16,8 +16,7 @@ class TestWrapper(object):
     def setup_metadata(self, name="test", path="test", version="1"):
         if not TestWrapper.INIT:
             Metadata.init(using=self.search_container.elastic_search)
-            # Again temp fix for the above init request
-            time.sleep(1)
+            Metadata._doc_type.refresh(using=self.search_container.elastic_search)
             TestWrapper.INIT = True
         self.search_container.update_manager.update(name, utils.get_meta(name, path, version))
 
