@@ -101,7 +101,7 @@ class ManagerTest(UnitTestBase):
             utils.get_meta()
         ]
 
-        self.assertEqual(sorted(results, key = lambda k:k["version"]["value"]), sorted(expected, key = lambda k:k["version"]["value"]))
+        self.assertEqual(sorted(results, key = lambda k: k["version"]["value"]), sorted(expected, key = lambda k: k["version"]["value"]))
 
     def test_sorted_desc_and_asc(self):
         results = self.search_manager.search({
