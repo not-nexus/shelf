@@ -21,15 +21,3 @@ class Metadata(DocType):
                 metadata(dict): collection of metadata for document.
         """
         self.items = metadata.values()
-
-    def update_item(self, item):
-        """
-            Adds or updates an item in the metadata document distinguished by the unique key.
-
-            Args
-                item(string): value to set the metdata item to.
-        """
-        for ex_item in self.items:
-            if item["name"] == ex_item["name"]:
-                self.items.remove(ex_item)
-        self.items.append(item)

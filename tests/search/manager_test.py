@@ -8,11 +8,10 @@ import time
 
 
 class ManagerTest(UnitTestBase):
-    @classmethod
-    def setUpClass(self):
-        self.maxDiff = None
-        self.test_wrapper = SearchTestWrapper()
-        self.search_manager = self.test_wrapper.search_container.search_manager
+    def setUp(self):
+        super(ManagerTest, self).setUp()
+        self.test_wrapper = SearchTestWrapper(self.search_container)
+        self.search_manager = self.search_container.search_manager
         self.test_wrapper.setup_metadata()
         self.test_wrapper.setup_metadata("other", "/this/that/other", "1.1")
         self.test_wrapper.setup_metadata("thing", "/thing", "1.2")
@@ -21,8 +20,7 @@ class ManagerTest(UnitTestBase):
         self.test_wrapper.setup_metadata("zzzz", "/zzzz", "1.19")
         time.sleep(1)
 
-    @classmethod
-    def tearDownClass(self):
+    def tearDown(self):
         self.test_wrapper.teardown_metadata("test")
         self.test_wrapper.teardown_metadata("other")
         self.test_wrapper.teardown_metadata("thing")
@@ -48,6 +46,18 @@ class ManagerTest(UnitTestBase):
         expected = [utils.get_meta()]
         self.assertEqual(results, expected)
 
+    def test_no_match(self):
+        results = self.search_manager.search({
+            "search": [
+                {
+                    "field": "artifactName",
+                    "search_type": SearchType.MATCH,
+                    "value": "neverrrrrrgonnamattttch"
+                }
+            ]
+        })
+        self.assertEqual(results, [])
+
     def test_tilde_search_and_sort(self):
         results = self.search_manager.search({
             "search": [
@@ -69,11 +79,12 @@ class ManagerTest(UnitTestBase):
         })
         expected = [
             utils.get_meta("other", "/this/that/other", "1.1"),
-            utils.get_meta("thing", "/thing", "1.2")
+            utils.get_meta("thing", "/thing", "1.2"),
+            utils.get_meta("a", "/a", "1.19"),
+            utils.get_meta("zzzz", "/zzzz", "1.19"),
+            utils.get_meta("blah", "/blah", "1.19")
         ]
-        self.assertEqual(results[0:2], expected)
-        for item in results[2::]:
-            self.assertEqual(item["version"]["value"], "1.19")
+        self.assertEqual(results, expected)
 
     def test_select_fields(self):
         results = self.search_manager.search({

@@ -1,19 +1,44 @@
 from pyshelf.search.metadata import Metadata
+from elasticsearch_dsl.query import Q
+from elasticsearch_dsl import Search
+from elasticsearch.helpers import scan, bulk
 
 
 class UpdateManager(object):
     def __init__(self, logger, elastic_search):
         self.logger = logger
-        self.host = elastic_search
+        self.connection = elastic_search
 
-    def remove_old_docs(self, ex_key_list):
+    def remove_unlisted_documents(self, ex_key_list):
         """
             Removes any documents with keys not enumerated in the ex_key_list.
 
             Args:
                 ex_key_list(list): List of keys that should remain in the Elasticsearch collection.
+
+            Returns:
+                Number of documents deleted from Elasticsearch.
         """
-        pass
+        query = ~Q("ids", type=Metadata._doc_type.name, values=ex_key_list)
+        query = Search(using=self.connection).index(Metadata._doc_type.index).query(query).to_dict()
+        self.logger.debug("Executing the following query for removing old documents from {0} index: {1}"
+                .format(Metadata._doc_type.index, query))
+
+        operations = (
+            {
+                "_op_type": "delete",
+                "_id": hit["_id"],
+                "_index": hit["_index"],
+                "_type": hit["_type"],
+            } for hit in scan(
+                self.connection,
+                query=query,
+                index=Metadata._doc_type.index,
+                doc_type=Metadata._doc_type.name,
+                _source=0,
+            )
+        )
+        return bulk(self.connection, operations)
 
     def bulk_update(self, data):
         """
@@ -47,9 +72,9 @@ class UpdateManager(object):
                 metadata(dict): Updated metadata to store in ElasticSearch.
         """
         self.logger.debug("Attempting update of metadata: {0} in ES".format(key))
-        meta_doc = self.get_metadata(key)
+        meta_doc = self._get_metadata(key)
         meta_doc.update_all(metadata)
-        meta_doc.save(using=self.host)
+        meta_doc.save(using=self.connection)
         self.logger.debug("Updated metadata document {0} in ES".format(key))
 
     def update_item(self, key, item):
@@ -61,12 +86,12 @@ class UpdateManager(object):
                 item(dict): Updated metadata to store in ElasticSearch.
         """
         self.logger.debug("Attempting to update metadata {0} in ES".format(key))
-        meta_doc = self.get_metadata(key)
+        meta_doc = self._get_metadata(key)
         meta_doc.update_item(item)
-        meta_doc.save(using=self.host)
+        meta_doc.save(using=self.connection)
         self.logger.debug("Updated metadata {0} in ES".format(key))
 
-    def get_metadata(self, key):
+    def _get_metadata(self, key):
         """
             Attempts to get existing metadata and creates one if it does not exist.
 
@@ -76,7 +101,7 @@ class UpdateManager(object):
             Returns:
                 pyshelf.search.metadata.Metadata
         """
-        meta_doc = Metadata.get(id=key, using=self.host, ignore=404)
+        meta_doc = Metadata.get(id=key, using=self.connection, ignore=404)
 
         if not meta_doc:
             meta_doc = Metadata()
