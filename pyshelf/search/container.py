@@ -22,7 +22,7 @@ class Container(object):
     @property
     def update_manager(self):
         if not self._update_manager:
-            self._update_manager = UpdateManager(self.logger, self.connection_string)
+            self._update_manager = UpdateManager(self.logger, self.connection_string, self.es_index)
 
         return self._update_manager
 
