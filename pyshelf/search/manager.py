@@ -1,11 +1,8 @@
 from elasticsearch_dsl.query import Q
 from elasticsearch_dsl import Search
-from pyshelf.search.wrapper import Wrapper as SearchWrapper
+from pyshelf.search.formatter import Formatter as SearchFormatter
 from pyshelf.search.type import Type as SearchType
-from pyshelf.search.sort_type import SortType
-from pyshelf.search.sort_flag import SortFlag
 from pyshelf.search.metadata import Metadata
-from distutils.version import LooseVersion
 
 
 class Manager(object):
@@ -46,84 +43,26 @@ class Manager(object):
                 ]
             }
         """
-        search = self._build_query(SearchWrapper(criteria))
-        query = Search(using=self.connection).index(Metadata._doc_type.index).query(search.query)
+        query = self._build_query(criteria.get("search"))
+        query = Search(using=self.connection).index(Metadata._doc_type.index).query(query)
         self.search_container.logger.debug("Executing the following search query: {0}".format(query.to_dict()))
-        search.results = query.execute()
-        search = self._filter_results(search, key_list)
-        search = self._sort_results(search)
+        search_results = query.execute()
+        search_formatter = SearchFormatter(criteria, search_results, key_list)
 
-        return search.formatted_results
+        return search_formatter.results
 
-    def _sort_results(self, search):
-        """
-            Sorts results based on sort criteria.
-
-            Args:
-                search(pyshelf.search.wrapper.Wrapper): Wrapper object that encapsulates search properties.
-
-            Returns:
-                pyshelf.search.wrapper.Wrapper: Wrapper object that encapsulate shelf specific search properties.
-        """
-        for criteria in search.sort_criteria:
-            kwargs = {}
-            if SortType.DESC == criteria["sort_type"]:
-                kwargs["reverse"] = True
-
-            if criteria.get("flag_list") and SortFlag.VERSION in criteria.get("flag_list"):
-                search.formatted_results.sort(key=lambda k: LooseVersion(k[criteria["field"]]["value"]), **kwargs)
-            else:
-                search.formatted_results.sort(key=lambda k: k[criteria["field"]]["value"], **kwargs)
-
-        return search
-
-    def _filter_results(self, search, key_list=None):
-        """
-            Filters results into a consumable format.
-
-            Args:
-                search(pyshelf.search.wrapper.Wrapper): Wrapper object that encapsulates search properties.
-                key_list(list): List of keys to return. None assumes all keys are required.
-
-            Returns:
-                pyshelf.search.wrapper.Wrapper: Wrapper object that encapsulate shelf specific search properties.
-        """
-        wrapper = []
-
-        for hit in search.results.hits:
-            filtered = {}
-            add = True
-
-            for item in hit.items:
-                if search.tilde_filter(item.name, item.value):
-                    add = False
-
-                if key_list:
-
-                    if item["name"] in key_list:
-                        filtered.update({item["name"]: item})
-                else:
-                    filtered.update({item["name"]: item})
-
-            if add:
-                wrapper.append(filtered)
-
-        search.formatted_results = wrapper
-
-        return search
-
-    def _build_query(self, search):
+    def _build_query(self, search_criteria):
         """
             Builds query based on search criteria encapsulated by the search object.
 
             Args:
-                search(pyshelf.search.wrapper.Wrapper): Wrapper object that encapsulates search properties.
+                search_criteria(dict): Criteria by which to search.
 
             Returns:
-                pyshelf.search.wrapper.Wrapper: Wrapper object that encapsulate shelf specific search properties.
+                elasticsearch_dsl.Query: Object representing an Elasticsearch query.
         """
-        search.query = Q()
-        for criteria in search.search_criteria:
+        query = Q()
+        for criteria in search_criteria:
 
             # The double underscores (items__name) represents a nested field (items.name) in Elasticsearch_dsl
             nested_query = Q(SearchType.MATCH, items__name=criteria["field"])
@@ -132,12 +71,11 @@ class Manager(object):
                 formatted = ".".join(criteria["value"].split(".")[:-1])
                 if formatted:
                     formatted += ".*"
-                    search.tilde_search[criteria["field"]] = criteria["value"]
                     nested_query &= Q(SearchType.WILDCARD, items__value=formatted)
                 else:
                     nested_query &= Q("range", items__value={"gte": criteria["value"]})
             else:
                 nested_query &= Q(criteria["search_type"], items__value=criteria["value"])
-            search.query &= Q("nested", path="items", query=nested_query)
+            query &= Q("nested", path="items", query=nested_query)
 
-        return search
+        return query
