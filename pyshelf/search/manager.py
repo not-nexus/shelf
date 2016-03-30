@@ -48,7 +48,7 @@ class Manager(object):
         """
         search = self._build_query(SearchWrapper(criteria))
         query = Search(using=self.host).index(Metadata._doc_type.index).query(search.query)
-        self.search_container.logger.debug(query.to_dict())
+        self.search_container.logger.debug("Executing the following search query: {0}".format(query.to_dict()))
         search.results = query.execute()
         search = self._filter_results(search, key_list)
         search = self._sort_results(search)
