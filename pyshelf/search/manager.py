@@ -11,7 +11,7 @@ from distutils.version import LooseVersion
 class Manager(object):
     def __init__(self, search_container):
         self.search_container = search_container
-        self.host = self.search_container.elastic_search
+        self.connection = self.search_container.elastic_search
 
     def search(self, criteria, key_list=None):
         """
@@ -47,7 +47,7 @@ class Manager(object):
             }
         """
         search = self._build_query(SearchWrapper(criteria))
-        query = Search(using=self.host).index(Metadata._doc_type.index).query(search.query)
+        query = Search(using=self.connection).index(Metadata._doc_type.index).query(search.query)
         self.search_container.logger.debug("Executing the following search query: {0}".format(query.to_dict()))
         search.results = query.execute()
         search = self._filter_results(search, key_list)
@@ -65,7 +65,6 @@ class Manager(object):
             Returns:
                 pyshelf.search.wrapper.Wrapper: Wrapper object that encapsulate shelf specific search properties.
         """
-        # It is necessary to reverse the array so the first sort takes precedence
         for criteria in search.sort_criteria:
             kwargs = {}
             if SortType.DESC == criteria["sort_type"]:
@@ -84,7 +83,7 @@ class Manager(object):
 
             Args:
                 search(pyshelf.search.wrapper.Wrapper): Wrapper object that encapsulates search properties.
-                key_list(list): List of keys to return. None assumes all keys are required
+                key_list(list): List of keys to return. None assumes all keys are required.
 
             Returns:
                 pyshelf.search.wrapper.Wrapper: Wrapper object that encapsulate shelf specific search properties.
