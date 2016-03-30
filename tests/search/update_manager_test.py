@@ -22,9 +22,9 @@ class UpdateManagerTest(UnitTestBase):
         self.maxDiff = None
         key_list = ["test_key", "test"]
         result = self.update_manager.remove_unlisted_documents(key_list)
-        self.assertEqual(self.update_manager.get_metadata("delete"), {})
-        self.assertEqual(self.update_manager.get_metadata("old"), {})
-        self.assertEqual(self.update_manager.get_metadata("test_key").to_dict()["items"], utils.get_meta_elastic("test_key"))
+        self.assertEqual(self.update_manager._get_metadata("delete"), {})
+        self.assertEqual(self.update_manager._get_metadata("old"), {})
+        self.assertEqual(self.update_manager._get_metadata("test_key").to_dict()["items"], utils.get_meta_elastic("test_key"))
 
     def test_bulk_update(self):
         data = {
@@ -49,8 +49,8 @@ class UpdateManagerTest(UnitTestBase):
             }
         }
         self.update_manager.bulk_update(data)
-        first = self.update_manager.get_metadata("test_key").to_dict()
-        second = self.update_manager.get_metadata("test").to_dict()
+        first = self.update_manager._get_metadata("test_key").to_dict()
+        second = self.update_manager._get_metadata("test").to_dict()
         expect_first = data["test_key"].values()
         expect_second = data["test"].values()
         self.assertEqual(first["items"], expect_first)
@@ -58,15 +58,5 @@ class UpdateManagerTest(UnitTestBase):
 
     def test_metadata_update(self):
         self.update_manager.update("test_key", utils.get_meta())
-        metadata = self.update_manager.get_metadata("test_key")
+        metadata = self.update_manager._get_metadata("test_key")
         self.assertEqual(metadata.to_dict(), {"items": utils.get_meta_elastic()})
-
-    def test_metadata_update_item(self):
-        self.update_manager.update_item("test_key", utils.get_meta_item())
-        metadata = self.update_manager.get_metadata("test_key").to_dict()
-        got_it = False
-        for item in metadata["items"]:
-            if item["name"] == "tag2":
-                self.assertEqual(item, utils.get_meta_item())
-                got_it = True
-        self.assertTrue(got_it)

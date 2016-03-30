@@ -18,6 +18,6 @@ class TestWrapper(object):
         self.search_container.update_manager.update(name, utils.get_meta(name, path, version))
 
     def teardown_metadata(self, key):
-        meta = self.search_container.update_manager.get_metadata(key)
+        meta = self.search_container.update_manager._get_metadata(key)
         if meta:
             meta.delete(using=self.search_container.elastic_search)

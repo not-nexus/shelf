@@ -72,7 +72,7 @@ class UpdateManager(object):
                 metadata(dict): Updated metadata to store in ElasticSearch.
         """
         self.logger.debug("Attempting update of metadata: {0} in ES".format(key))
-        meta_doc = self.get_metadata(key)
+        meta_doc = self._get_metadata(key)
         meta_doc.update_all(metadata)
         meta_doc.save(using=self.connection)
         self.logger.debug("Updated metadata document {0} in ES".format(key))
@@ -86,12 +86,12 @@ class UpdateManager(object):
                 item(dict): Updated metadata to store in ElasticSearch.
         """
         self.logger.debug("Attempting to update metadata {0} in ES".format(key))
-        meta_doc = self.get_metadata(key)
+        meta_doc = self._get_metadata(key)
         meta_doc.update_item(item)
         meta_doc.save(using=self.connection)
         self.logger.debug("Updated metadata {0} in ES".format(key))
 
-    def get_metadata(self, key):
+    def _get_metadata(self, key):
         """
             Attempts to get existing metadata and creates one if it does not exist.
 
