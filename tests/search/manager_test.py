@@ -4,7 +4,7 @@ from pyshelf.search.type import Type as SearchType
 from pyshelf.search.sort_type import SortType
 from pyshelf.search.sort_flag import SortFlag
 import tests.metadata_utils as utils
-import time
+from pyshelf.search.metadata import Metadata
 
 
 class ManagerTest(UnitTestBase):
@@ -12,21 +12,18 @@ class ManagerTest(UnitTestBase):
         super(ManagerTest, self).setUp()
         self.test_wrapper = SearchTestWrapper(self.search_container)
         self.search_manager = self.search_container.search_manager
-        self.test_wrapper.setup_metadata()
-        self.test_wrapper.setup_metadata("other", "/this/that/other", "1.1")
-        self.test_wrapper.setup_metadata("thing", "/thing", "1.2")
-        self.test_wrapper.setup_metadata("blah", "/blah", "1.19")
-        self.test_wrapper.setup_metadata("a", "/a", "1.19")
-        self.test_wrapper.setup_metadata("zzzz", "/zzzz", "1.19")
-        time.sleep(1)
+        data = [
+            utils.get_meta(),
+            utils.get_meta("other", "/this/that/other", "1.1"),
+            utils.get_meta("thing", "/thing", "1.2"),
+            utils.get_meta("blah", "/blah", "1.19"),
+            utils.get_meta("a", "/a", "1.19"),
+            utils.get_meta("zzzz", "/zzzz", "1.19"),
+        ]
+        self.test_wrapper.setup_metadata(data)
 
     def tearDown(self):
-        self.test_wrapper.teardown_metadata("test")
-        self.test_wrapper.teardown_metadata("other")
-        self.test_wrapper.teardown_metadata("thing")
-        self.test_wrapper.teardown_metadata("blah")
-        self.test_wrapper.teardown_metadata("a")
-        self.test_wrapper.teardown_metadata("zzzz")
+        self.test_wrapper.teardown_metadata()
 
     def test_equality_search(self):
         results = self.search_manager.search({

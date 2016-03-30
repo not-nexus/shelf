@@ -38,7 +38,7 @@ class UpdateManager(object):
                 _source=0,
             )
         )
-        return bulk(self.connection, operations)
+        return bulk(self.connection, operations, refresh=True)
 
     def bulk_update(self, data):
         """

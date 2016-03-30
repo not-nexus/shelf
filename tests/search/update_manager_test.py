@@ -1,7 +1,7 @@
 from tests.unit_test_base import UnitTestBase
 import tests.metadata_utils as utils
 from tests.search.test_wrapper import TestWrapper as SearchTestWrapper
-import time
+from pyshelf.search.metadata import Metadata
 
 
 class UpdateManagerTest(UnitTestBase):
@@ -9,22 +9,19 @@ class UpdateManagerTest(UnitTestBase):
         super(UpdateManagerTest, self).setUp()
         self.test_wrapper = SearchTestWrapper(self.search_container)
         self.update_manager = self.search_container.update_manager
-        self.test_wrapper.setup_metadata("test_key")
-        self.test_wrapper.setup_metadata("delete")
-        self.test_wrapper.setup_metadata("old")
-        time.sleep(1)
+        data = [utils.get_meta("test_key"), utils.get_meta("delete"), utils.get_meta("old")]
+        self.test_wrapper.setup_metadata(data)
 
     def tearDown(self):
-        self.test_wrapper.teardown_metadata("test_key")
-        self.test_wrapper.teardown_metadata("test")
+        self.test_wrapper.teardown_metadata()
 
     def test_remove_old_docs(self):
-        self.maxDiff = None
         key_list = ["test_key", "test"]
-        result = self.update_manager.remove_unlisted_documents(key_list)
-        self.assertEqual(self.update_manager._get_metadata("delete"), {})
-        self.assertEqual(self.update_manager._get_metadata("old"), {})
-        self.assertEqual(self.update_manager._get_metadata("test_key").to_dict()["items"], utils.get_meta_elastic("test_key"))
+        self.update_manager.remove_unlisted_documents(key_list)
+        self.assertEqual(self.test_wrapper.get_metadata("delete"), None)
+        self.assertEqual(self.test_wrapper.get_metadata("old"), None)
+        self.assertEqual(self.test_wrapper.get_metadata("test_key").to_dict()["items"],
+                utils.get_meta_elastic("test_key"))
 
     def test_bulk_update(self):
         data = {

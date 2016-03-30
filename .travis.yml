@@ -5,11 +5,11 @@ python:
 install:
     - source utils/init-environment
     - pip install codecov
-script: pyproctor
 services:
     - elasticsearch
 # This is required for elasticsearch
 before_script:
     - sleep 10
+script: coverage run --source pyshelf/ -m unittest discover -p *_test.py tests -b
 after_success:
     - codecov
