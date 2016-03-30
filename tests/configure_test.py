@@ -40,11 +40,14 @@ class ConfigureTest(pyproctor.TestBase):
 
     def test_app(self):
         config = {
-            "myBucket": {
-                "accessKey": "whateveriwanthere",
-                # can't stop seeing WhichCanalSobe
-                "secretKey": "supersecretkeywhichcanalsobewhateveriwant"
-            }
+            "buckets": {
+                "myBucket": {
+                    "accessKey": "whateveriwanthere",
+                    # can't stop seeing WhichCanalSobe
+                    "secretKey": "supersecretkeywhichcanalsobewhateveriwant"
+                }
+            },
+            "elasticSearchHost": "localhost:9200"
         }
         self.write_config(config)
         # To make sure it doens't overwrite it
