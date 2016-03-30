@@ -16,7 +16,7 @@ def app(app, config_path):
         }
 
 
-    required["elasticSearchHost"] = config.get("elasticSearchHost")
+    required["elasticSearchConnectionString"] = config.get("elasticSearchConnectionString")
 
     if not all(required.values()):
         raise ValueError("config.yaml did not have all required settings: " + ", ".join(required.keys()))

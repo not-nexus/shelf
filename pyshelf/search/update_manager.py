@@ -1,13 +1,14 @@
 from pyshelf.search.metadata import Metadata
 from elasticsearch_dsl.query import Q
 from elasticsearch_dsl import Search
+from elasticsearch import Elasticsearch
 from elasticsearch.helpers import scan, bulk
 
 
 class UpdateManager(object):
-    def __init__(self, logger, elastic_search):
+    def __init__(self, logger, connection_string):
         self.logger = logger
-        self.connection = elastic_search
+        self.connection = Elasticsearch(connection_string)
 
     def remove_unlisted_documents(self, ex_key_list):
         """

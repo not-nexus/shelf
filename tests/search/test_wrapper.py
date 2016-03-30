@@ -1,5 +1,5 @@
 from pyshelf.search.metadata import Metadata
-import time
+from elasticsearch import Elasticsearch
 
 
 class TestWrapper(object):
@@ -8,11 +8,11 @@ class TestWrapper(object):
     def __init__(self, search_container):
         self.search_container = search_container
         self.doc_list = []
-        self.es = self.search_container.elastic_search
+        self.es = Elasticsearch(self.search_container.connection_string)
 
     def setup_metadata(self, data):
         if not TestWrapper.INIT:
-            Metadata.init(using=self.search_container.elastic_search)
+            Metadata.init(using=self.es)
             self.es.indices.refresh(index="metadata")
             TestWrapper.INIT = True
         for doc in data:
