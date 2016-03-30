@@ -69,12 +69,13 @@ class Manager(object):
             nested_query = Q(SearchType.MATCH, items__name=criteria["field"])
 
             if criteria["search_type"] == SearchType.VERSION:
-                formatted = ".".join(criteria["value"].split(".")[:-1])
-                if formatted:
-                    formatted += ".*"
-                    nested_query &= Q(SearchType.WILDCARD, items__value=formatted)
+                formatted = criteria["value"].rsplit(".", 1)
+                value = formatted[0]
+                if len(formatted) > 1:
+                    value += ".*"
+                    nested_query &= Q(SearchType.WILDCARD, items__value=value)
                 else:
-                    nested_query &= Q("range", items__value={"gte": criteria["value"]})
+                    nested_query &= Q("range", items__value={"gte": value})
             else:
                 nested_query &= Q(criteria["search_type"], items__value=criteria["value"])
             query &= Q("nested", path="items", query=nested_query)
