@@ -4,8 +4,8 @@ from pyshelf.request_log_filter import RequestLogFilter
 import yaml
 
 
-def app(app):
-    with open("config.yaml", "r") as f:
+def app(app, config_path):
+    with open(config_path, "r") as f:
         content = f.read()
         config = yaml.load(content)
 
