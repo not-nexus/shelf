@@ -48,6 +48,18 @@ class ManagerTest(UnitTestBase):
         expected = [utils.get_meta()]
         self.assertEqual(results, expected)
 
+    def test_no_match(self):
+        results = self.search_manager.search({
+            "search": [
+                {
+                    "field": "artifactName",
+                    "search_type": SearchType.MATCH,
+                    "value": "neverrrrrrgonnamattttch"
+                }
+            ]
+        })
+        self.assertEqual(results, [])
+
     def test_tilde_search_and_sort(self):
         results = self.search_manager.search({
             "search": [
