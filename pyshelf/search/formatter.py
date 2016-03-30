@@ -88,6 +88,8 @@ class Formatter(object):
             Returns:
                 List[dict]: sorted results.
         """
+        # Always sorts first to ensure predictably ordered results
+        formatted_results.sort()
         for criteria in self.sort_criteria:
             kwargs = {}
             if SortType.DESC == criteria["sort_type"]:

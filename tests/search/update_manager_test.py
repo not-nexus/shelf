@@ -6,8 +6,9 @@ import time
 
 class UpdateManagerTest(UnitTestBase):
     def setUp(self):
-        self.test_wrapper = SearchTestWrapper()
-        self.update_manager = self.test_wrapper.search_container.update_manager
+        super(UpdateManagerTest, self).setUp()
+        self.test_wrapper = SearchTestWrapper(self.search_container)
+        self.update_manager = self.search_container.update_manager
         self.test_wrapper.setup_metadata("test_key")
         self.test_wrapper.setup_metadata("delete")
         self.test_wrapper.setup_metadata("old")
