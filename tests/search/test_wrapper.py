@@ -13,8 +13,7 @@ class TestWrapper(object):
     def setup_metadata(self, data):
         if not TestWrapper.INIT:
             Metadata.init(using=self.search_container.elastic_search)
-            Metadata._doc_type.refresh(using=self.es)
-            time.sleep(.5)
+            self.es.indices.refresh(index="metadata")
             TestWrapper.INIT = True
         for doc in data:
             self.doc_list.append(doc["artifactName"]["value"])
@@ -23,10 +22,11 @@ class TestWrapper(object):
             meta.update_all(doc)
             meta.save(using=self.es)
 
+        self.es.indices.refresh(index="metadata")
+
     def teardown_metadata(self):
         for key in self.doc_list:
             meta = self.get_metadata(key)
-            print meta
             if meta:
                 meta.delete(using=self.es)
 

@@ -1,7 +1,7 @@
 from tests.unit_test_base import UnitTestBase
 import tests.metadata_utils as utils
 from tests.search.test_wrapper import TestWrapper as SearchTestWrapper
-import time
+from pyshelf.search.metadata import Metadata
 
 
 class UpdateManagerTest(UnitTestBase):
@@ -11,7 +11,6 @@ class UpdateManagerTest(UnitTestBase):
         self.update_manager = self.search_container.update_manager
         data = [utils.get_meta("test_key"), utils.get_meta("delete"), utils.get_meta("old")]
         self.test_wrapper.setup_metadata(data)
-        time.sleep(1)
 
     def tearDown(self):
         self.test_wrapper.teardown_metadata()

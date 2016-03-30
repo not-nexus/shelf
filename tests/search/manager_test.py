@@ -4,7 +4,7 @@ from pyshelf.search.type import Type as SearchType
 from pyshelf.search.sort_type import SortType
 from pyshelf.search.sort_flag import SortFlag
 import tests.metadata_utils as utils
-import time
+from pyshelf.search.metadata import Metadata
 
 
 class ManagerTest(UnitTestBase):
@@ -21,7 +21,6 @@ class ManagerTest(UnitTestBase):
             utils.get_meta("zzzz", "/zzzz", "1.19"),
         ]
         self.test_wrapper.setup_metadata(data)
-        time.sleep(1)
 
     def tearDown(self):
         self.test_wrapper.teardown_metadata()
