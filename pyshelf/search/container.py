@@ -7,13 +7,13 @@ class Container(object):
     def __init__(self, logger, connection_string):
         self.logger = logger
         self._es_index = urlparse(connection_string).path[1:]
-        self._connection_string = connection_string.rsplit("/", 1)[0]
+        self._es_host = connection_string.rsplit("/", 1)[0]
         self._update_manager = None
         self._search_manager = None
 
     @property
-    def connection_string(self):
-        return self._connection_string
+    def es_host(self):
+        return self._es_host
 
     @property
     def es_index(self):
@@ -22,7 +22,7 @@ class Container(object):
     @property
     def update_manager(self):
         if not self._update_manager:
-            self._update_manager = UpdateManager(self.logger, self.connection_string, self.es_index)
+            self._update_manager = UpdateManager(self.logger, self.es_host, self.es_index)
 
         return self._update_manager
 

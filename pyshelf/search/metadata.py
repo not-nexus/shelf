@@ -10,9 +10,6 @@ class Metadata(DocType):
         }
     )
 
-    class Meta:
-        index="metadata"
-
     def update_all(self, metadata):
         """
             Updates all metadata related to an artifact.

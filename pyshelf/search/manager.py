@@ -9,7 +9,7 @@ from elasticsearch import Elasticsearch
 class Manager(object):
     def __init__(self, search_container):
         self.search_container = search_container
-        self.connection = Elasticsearch(self.search_container.connection_string)
+        self.connection = Elasticsearch(self.search_container.es_host)
 
     def search(self, criteria, key_list=None):
         """

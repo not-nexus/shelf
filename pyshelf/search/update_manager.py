@@ -6,9 +6,9 @@ from elasticsearch.helpers import scan, bulk
 
 
 class UpdateManager(object):
-    def __init__(self, logger, connection_string, index):
+    def __init__(self, logger, host, index):
         self.logger = logger
-        self.connection = Elasticsearch(connection_string)
+        self.connection = Elasticsearch(host)
         self.index = index
 
     def remove_unlisted_documents(self, ex_key_list):
@@ -103,10 +103,11 @@ class UpdateManager(object):
             Returns:
                 pyshelf.search.metadata.Metadata
         """
-        meta_doc = Metadata.get(id=key, using=self.connection, ignore=404)
+        meta_doc = Metadata.get(id=key, index=self.index, using=self.connection, ignore=404)
 
         if not meta_doc:
             meta_doc = Metadata()
             meta_doc.meta.id = key
+            meta_doc.meta.index = self.index
 
         return meta_doc
