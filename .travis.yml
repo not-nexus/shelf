@@ -5,6 +5,6 @@ python:
 install:
     - source utils/init-environment
     - pip install codecov
-script: pyproctor
+script: pyproctor -c --source pyshelf/
 after_success:
     - codecov
