@@ -36,6 +36,13 @@ class Formatter(object):
         """
             This ensures the current search is a version search and the
             item name is the field that requires sorting.
+
+            Args:
+                item_name: Name of metadata property.
+
+            Returns:
+                boolean: Whether current search is a version search and the metadata property
+                is to be sorted on.
         """
         if not self.version_search:
             for criteria in self.search_criteria:
@@ -48,6 +55,12 @@ class Formatter(object):
         """
             This ensures when a version search is done that any results that are
             less then the version that is passed in are dropped from the result set.
+
+            Args:
+                metadata_property: Metadata property that is to be sorted as a version.
+
+            Returns:
+                boolean: Whether result version is equal to or greater then the searched version.
         """
         item_version = LooseVersion(metadata_property.value)
         searched_version = LooseVersion(self.version_search[metadata_property.name])
