@@ -53,11 +53,6 @@ class FunctionalTestBase(pyproctor.TestBase):
                     "secretKey": "test"
                 }
             },
-            # EXTREMELY IMPORTANT!  If the protocol is not
-            # appended httpretty does not identify it as http
-            # but httplib does so the file pointer that
-            # is supposed to be filled up by httpetty.fakesocket.socket
-            # is not.
             "elasticSearchConnectionString": "http://localhost:9200/metadata"
         }
         configure.logger(app.logger, "DEBUG")
@@ -69,6 +64,13 @@ class FunctionalTestBase(pyproctor.TestBase):
     def configure_moto(self):
         self.moto_s3 = mock_s3()
         self.moto_s3.start()
+        import httpretty
+        # EXTREMELY IMPORTANT!  If the port is not
+        # appended httpretty does not identify it as http
+        # but httplib does so the file pointer that
+        # is supposed to be filled up by httpetty.fakesocket.socket
+        # is not.
+        httpretty.core.POTENTIAL_HTTP_PORTS.add(9200)
         self.boto_connection = boto.connect_s3()
         self.boto_connection.create_bucket("test")
         self.boto_connection.create_bucket("bucket2")
