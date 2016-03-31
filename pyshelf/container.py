@@ -2,11 +2,14 @@ from uuid import uuid4
 from pyshelf.permissions_validator import PermissionsValidator
 from pyshelf.cloud.factory import Factory
 from pyshelf.artifact_list_manager import ArtifactListManager
+from pyshelf.search.container import Container as SearchContainer
+from pyshelf.search_portal import SearchPortal
 from pyshelf.link_mapper import LinkMapper
 from pyshelf.context import Context
 from pyshelf.context_response_mapper import ContextResponseMapper
 from pyshelf.link_manager import LinkManager
 from pyshelf.artifact_path_builder import ArtifactPathBuilder
+from pyshelf.search_parser import SearchParser
 from pyshelf.resource_identity import ResourceIdentity
 from pyshelf.metadata.container import Container as MetadataContainer
 
@@ -26,11 +29,14 @@ class Container(object):
         self._permissions_validator = None
         self._cloud_factory = None
         self._artifact_list_manager = None
+        self._search = None
         self._link_mapper = None
         self._context = None
         self._context_response_mapper = None
         self._link_manager = None
         self._artifact_path_builder = None
+        self._search_portal = None
+        self._search_parser = None
         self._resource_identity = None
         self._metadata = None
 
@@ -58,6 +64,13 @@ class Container(object):
             self._artifact_list_manager = ArtifactListManager(self)
 
         return self._artifact_list_manager
+
+    @property
+    def search(self):
+        if not self._search:
+            self._search = SearchContainer(self.app.logger, self.app.config.get("elasticSearchConnectionString"))
+
+        return self._search
 
     def create_bucket_storage(self):
         return self.cloud_factory.create_storage(self.bucket_name)
@@ -96,6 +109,20 @@ class Container(object):
             self._artifact_path_builder = ArtifactPathBuilder(self.bucket_name)
 
         return self._artifact_path_builder
+
+    @property
+    def search_portal(self):
+        if not self._search_portal:
+            self._search_portal = SearchPortal(self)
+
+        return self._search_portal
+
+    @property
+    def search_parser(self):
+        if not self._search_parser:
+            self._search_parser = SearchParser()
+
+        return self._search_parser
 
     @property
     def resource_identity(self):
