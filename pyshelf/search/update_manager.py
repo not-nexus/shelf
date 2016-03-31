@@ -6,9 +6,9 @@ from elasticsearch.helpers import scan, bulk
 
 
 class UpdateManager(object):
-    def __init__(self, logger, host, index):
+    def __init__(self, logger, url, index):
         self.logger = logger
-        self.connection = Elasticsearch(host)
+        self.connection = Elasticsearch(url)
         self.index = index
 
     def remove_unlisted_documents(self, ex_key_list):
@@ -21,11 +21,18 @@ class UpdateManager(object):
             Returns:
                 Number of documents deleted from Elasticsearch.
         """
+        # Using an invert operator here to create a bool query with a "must not occurence type" with an ids query.
+        # https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-bool-query.html
         query = ~Q("ids", type=Metadata._doc_type.name, values=ex_key_list)
         query = Search(using=self.connection).index(self.index).query(query).to_dict()
         self.logger.debug("Executing the following query for removing old documents from {0} index: {1}"
                 .format(self.index, query))
 
+        # Doing a bulk operation here via the elasticsearch library. With elasticsearch_dsl there is no way to do a bulk delete.
+        # scan is a simple way to iterate through all results and delete each one
+        # http://elasticsearch-py.readthedocs.org/en/master/helpers.html#scan
+        # In summation we do a query for all ids not in the ex_key_list and iterate through and delete all results. Based on my research
+        # this was the easiest way to perform this operation.
         operations = (
             {
                 "_op_type": "delete",
