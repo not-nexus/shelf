@@ -61,10 +61,10 @@ class ConfigureTest(pyproctor.TestBase):
         config = {
             "buckets": {
                 "myBucket": {
-                    "secretKey": "ffffffffffffffffffuuuuuuuuuuuuuu"
+                    "secretKey": "ffffffffffffffffffungal"
                 },
                 "myOtherBucket": {
-                    "accessKey": "imGaGaGonnaMakeYouSomeSoup",
+                    "accessKey": "imGaGaGonnaMakeYouSoup",
                     "secretKey": "freeTibet"
                 }
             },
