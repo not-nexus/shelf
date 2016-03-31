@@ -57,8 +57,9 @@ class FunctionalTestBase(pyproctor.TestBase):
         }
         configure.logger(app.logger, "DEBUG")
         app.config.update(config)
-        es = Elasticsearch(config.get("elasticSearchConnectionString").rsplit("/", 1)[0])
-        Metadata.init(index=urlparse(config.get("elasticSearchConnectionString")).path[1:], using=es)
+        url = urlparse(config.get("elasticSearchConnectionString"))
+        es = Elasticsearch(url.geturl()[:-len(url.path)])
+        Metadata.init(index=url.path[1:], using=es)
         Metadata._doc_type.refresh(using=es)
 
     def configure_moto(self):
