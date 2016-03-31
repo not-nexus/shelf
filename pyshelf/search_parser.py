@@ -2,6 +2,7 @@ from pyshelf.search.sort_type import SortType
 from pyshelf.search.sort_flag import SortFlag
 from pyshelf.search.type import Type as SearchType
 import re
+from pyshelf.metadata.keys import Keys as MetadataKeys
 
 
 class SearchParser(object):
@@ -31,6 +32,23 @@ class SearchParser(object):
             sort_criteria.append(self._format_sort_criteria(request_criteria["sort"]))
 
         return {"search": search_criteria, "sort": sort_criteria, "limit": request_criteria.get("limit")}
+
+    def list_artifacts(self, results):
+        """
+            Creates a list of paths from the search results.
+
+            Args:
+                results(List[dict]): Formatted search results.
+
+            Returns:
+                list: Each element represents the path to an artifact.
+        """
+        artifact_list = []
+
+        for result in results:
+            artifact_list.append(result[MetadataKeys.PATH])
+
+        return artifact_list
 
     def _format_search_criteria(self, search_string):
         """
