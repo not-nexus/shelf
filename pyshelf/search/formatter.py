@@ -44,13 +44,13 @@ class Formatter(object):
 
         return self.version_search.get(item_name) is not None
 
-    def _sufficient_version(self, item_name, item_value):
+    def _sufficient_version(self, metadata_property):
         """
             This ensures when a version search is done that any results that are
             less then the version that is passed in are dropped from the result set.
         """
-        item_version = LooseVersion(item_value)
-        searched_version = LooseVersion(self.version_search[item_name])
+        item_version = LooseVersion(metadata_property.value)
+        searched_version = LooseVersion(self.version_search[metadata_property.name])
 
         return searched_version <= item_version
 
@@ -70,7 +70,7 @@ class Formatter(object):
 
             for item in hit.items:
                 if self._is_version_search(item.name):
-                    add = self._sufficient_version(item.name, item.value)
+                    add = self._sufficient_version(item)
 
                 if self.key_list:
 
