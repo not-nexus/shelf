@@ -1,27 +1,29 @@
 from pyshelf.search.update_manager import UpdateManager
 from pyshelf.search.manager import Manager as SearchManager
-from elasticsearch import Elasticsearch
+from urlparse import urlparse
 
 
 class Container(object):
-    def __init__(self, logger, elastic_search_host):
+    def __init__(self, logger, connection_string):
         self.logger = logger
-        self.elastic_search_host = elastic_search_host
-        self._elastic_search = None
+        parsed_url = urlparse(connection_string)
+        self._es_url = parsed_url.geturl()[:-len(parsed_url.path)]
+        self._es_index = parsed_url.path[1:]
         self._update_manager = None
         self._search_manager = None
 
     @property
-    def elastic_search(self):
-        if not self._elastic_search:
-            self._elastic_search = Elasticsearch(self.elastic_search_host)
+    def es_url(self):
+        return self._es_url
 
-        return self._elastic_search
+    @property
+    def es_index(self):
+        return self._es_index
 
     @property
     def update_manager(self):
         if not self._update_manager:
-            self._update_manager = UpdateManager(self.logger, self.elastic_search)
+            self._update_manager = UpdateManager(self.logger, self.es_url, self.es_index)
 
         return self._update_manager
 

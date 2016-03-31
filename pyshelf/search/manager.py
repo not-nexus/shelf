@@ -3,12 +3,14 @@ from elasticsearch_dsl import Search
 from pyshelf.search.formatter import Formatter as SearchFormatter
 from pyshelf.search.type import Type as SearchType
 from pyshelf.search.metadata import Metadata
+from elasticsearch import Elasticsearch
 
 
 class Manager(object):
     def __init__(self, search_container):
         self.search_container = search_container
-        self.connection = self.search_container.elastic_search
+        self.connection = Elasticsearch(self.search_container.es_url)
+        self.index = self.search_container.es_index
 
     def search(self, criteria, key_list=None):
         """
@@ -44,7 +46,7 @@ class Manager(object):
             }
         """
         query = self._build_query(criteria.get("search"))
-        query = Search(using=self.connection).index(Metadata._doc_type.index).query(query)
+        query = Search(using=self.connection).index(self.index).query(query)
         self.search_container.logger.debug("Executing the following search query: {0}".format(query.to_dict()))
         search_results = query.execute()
         search_formatter = SearchFormatter(criteria, search_results, key_list)
@@ -68,12 +70,13 @@ class Manager(object):
             nested_query = Q(SearchType.MATCH, items__name=criteria["field"])
 
             if criteria["search_type"] == SearchType.VERSION:
-                formatted = ".".join(criteria["value"].split(".")[:-1])
-                if formatted:
-                    formatted += ".*"
-                    nested_query &= Q(SearchType.WILDCARD, items__value=formatted)
+                formatted = criteria["value"].rsplit(".", 1)
+                value = formatted[0]
+                if len(formatted) > 1:
+                    value += ".*"
+                    nested_query &= Q(SearchType.WILDCARD, items__value=value)
                 else:
-                    nested_query &= Q("range", items__value={"gte": criteria["value"]})
+                    nested_query &= Q("range", items__value={"gte": value})
             else:
                 nested_query &= Q(criteria["search_type"], items__value=criteria["value"])
             query &= Q("nested", path="items", query=nested_query)

@@ -1,13 +1,15 @@
 from pyshelf.search.metadata import Metadata
 from elasticsearch_dsl.query import Q
 from elasticsearch_dsl import Search
+from elasticsearch import Elasticsearch
 from elasticsearch.helpers import scan, bulk
 
 
 class UpdateManager(object):
-    def __init__(self, logger, elastic_search):
+    def __init__(self, logger, url, index):
         self.logger = logger
-        self.connection = elastic_search
+        self.connection = Elasticsearch(url)
+        self.index = index
 
     def remove_unlisted_documents(self, ex_key_list):
         """
@@ -20,9 +22,9 @@ class UpdateManager(object):
                 Number of documents deleted from Elasticsearch.
         """
         query = ~Q("ids", type=Metadata._doc_type.name, values=ex_key_list)
-        query = Search(using=self.connection).index(Metadata._doc_type.index).query(query).to_dict()
+        query = Search(using=self.connection).index(self.index).query(query).to_dict()
         self.logger.debug("Executing the following query for removing old documents from {0} index: {1}"
-                .format(Metadata._doc_type.index, query))
+                .format(self.index, query))
 
         operations = (
             {
@@ -33,7 +35,7 @@ class UpdateManager(object):
             } for hit in scan(
                 self.connection,
                 query=query,
-                index=Metadata._doc_type.index,
+                index=self.index,
                 doc_type=Metadata._doc_type.name,
                 _source=0,
             )
@@ -101,10 +103,11 @@ class UpdateManager(object):
             Returns:
                 pyshelf.search.metadata.Metadata
         """
-        meta_doc = Metadata.get(id=key, using=self.connection, ignore=404)
+        meta_doc = Metadata.get(id=key, index=self.index, using=self.connection, ignore=404)
 
         if not meta_doc:
             meta_doc = Metadata()
             meta_doc.meta.id = key
+            meta_doc.meta.index = self.index
 
         return meta_doc

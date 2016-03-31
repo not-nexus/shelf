@@ -20,14 +20,15 @@ Configuration
 
 It is required that a config.yaml exist in the root of the repository.  This will provide information for connecting to AWS.
 
+    buckets:
+        bucket_name:
+            accessKey: XXXXXXXXXXXXXXXXXXXX
+            secretKey: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+        bucket_name_2:
+            accessKey: XXXXXXXXXXXXXXXXXXXX
+            secretKey: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     elasticSearchHost:
         - localhost:9200
-    bucket_name:
-        accessKey: XXXXXXXXXXXXXXXXXXXX
-        secretKey: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-    bucket_name_2:
-        accessKey: XXXXXXXXXXXXXXXXXXXX
-        secretKey: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 Development
 -----------
@@ -38,6 +39,8 @@ Clone the repository.  Then source utils/init-environment
 
 This will install a virtualenv in `venv` and install all required dependencies.  It will also add the root of the repository to $PYTHONPATH
 enabling you to run commands from there.
+
+In order for the Elasticsearch tests to run it requires a local running instance of Elasticsearch for integration testing.
 
 Then you can run main.py to test changes with
 

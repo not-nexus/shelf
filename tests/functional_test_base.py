@@ -8,9 +8,9 @@ import yaml
 import tests.metadata_utils as meta_utils
 import tests.permission_utils as utils
 from tests.route_tester.tester import Tester
-from elasticsearch_dsl import Index
 from elasticsearch import Elasticsearch
 from pyshelf.search.metadata import Metadata
+from urlparse import urlparse
 
 
 class FunctionalTestBase(pyproctor.TestBase):
@@ -54,23 +54,17 @@ class FunctionalTestBase(pyproctor.TestBase):
                 }
             },
             # EXTREMELY IMPORTANT!  If the protocol is not
-            # appended httpretty does not identify it as
+            # appended httpretty does not identify it as http
             # but httplib does so the file pointer that
             # is supposed to be filled up by httpetty.fakesocket.socket
             # is not.
-            "elasticSearchHost": "http://localhost:9200"
+            "elasticSearchConnectionString": "http://localhost:9200/metadata"
         }
         configure.logger(app.logger, "DEBUG")
         app.config.update(config)
-        es = Elasticsearch(config.get("elasticSearchHost"))
-        Metadata.init(using=es)
+        es = Elasticsearch(config.get("elasticSearchConnectionString").rsplit("/", 1)[0])
+        Metadata.init(index=urlparse(config.get("elasticSearchConnectionString")).path[1:], using=es)
         Metadata._doc_type.refresh(using=es)
-
-    @classmethod
-    def tearDownClass(cls):
-        es = Elasticsearch(app.config.get("elasticSearchHost"))
-        meta_index = Index("metadata", using=es)
-        meta_index.delete()
 
     def configure_moto(self):
         self.moto_s3 = mock_s3()

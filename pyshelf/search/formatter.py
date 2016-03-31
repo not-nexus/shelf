@@ -22,7 +22,7 @@ class Formatter(object):
         self.key_list = key_list
         self.search_results = search_results
         self._results = None
-        self.tilde_search = {}
+        self.version_search = {}
 
     @property
     def results(self):
@@ -32,21 +32,40 @@ class Formatter(object):
         self._results = self._sort_results(self._filter_results())
         return self._results
 
-    def _filter_version_search(self, item_name, item_value):
+    def _is_version_search(self, item_name):
+        """
+            This ensures the current search is a version search and the
+            item name is the field that requires sorting.
+
+            Args:
+                item_name: Name of metadata property.
+
+            Returns:
+                boolean: Whether current search is a version search and the metadata property
+                is to be sorted on.
+        """
+        if not self.version_search:
+            for criteria in self.search_criteria:
+                if criteria["search_type"] == SearchType.VERSION:
+                    self.version_search[criteria["field"]] = criteria["value"]
+
+        return self.version_search.get(item_name) is not None
+
+    def _sufficient_version(self, metadata_property):
         """
             This ensures when a version search is done that any results that are
             less then the version that is passed in are dropped from the result set.
 
             Args:
-                item_name
-        """
-        if not self.tilde_search:
-            for criteria in self.search_criteria:
-                if criteria["search_type"] == SearchType.VERSION:
-                    self.tilde_search[criteria["field"]] = criteria["value"]
+                metadata_property: Metadata property that is to be sorted as a version.
 
-        return item_name in self.tilde_search.keys() and \
-            LooseVersion(item_value) < LooseVersion(self.tilde_search[item_name])
+            Returns:
+                boolean: Whether result version is equal to or greater then the searched version.
+        """
+        item_version = LooseVersion(metadata_property.value)
+        searched_version = LooseVersion(self.version_search[metadata_property.name])
+
+        return searched_version <= item_version
 
     def _filter_results(self):
         """
@@ -56,27 +75,29 @@ class Formatter(object):
                  List[dict]: formatted and filtered results. Each list element represents a search hit and
                             each dictionary within represents a metadata item.
         """
-        wrapper = []
+        filtered_list = []
 
         for hit in self.search_results.hits:
             filtered = {}
             add = True
 
-            for item in hit.items:
-                if self._filter_version_search(item.name, item.value):
-                    add = False
+            for metadata_property in hit.items:
+                if self._is_version_search(metadata_property.name):
+                    if not self._sufficient_version(metadata_property):
+                        add = False
+                        break
 
                 if self.key_list:
 
-                    if item["name"] in self.key_list:
-                        filtered.update({item["name"]: item})
+                    if metadata_property["name"] in self.key_list:
+                        filtered[metadata_property["name"]] = metadata_property
                 else:
-                    filtered.update({item["name"]: item})
+                    filtered[metadata_property["name"]] = metadata_property
 
             if add:
-                wrapper.append(filtered)
+                filtered_list.append(filtered)
 
-        return wrapper
+        return filtered_list
 
     def _sort_results(self, formatted_results):
         """
@@ -90,6 +111,7 @@ class Formatter(object):
         """
         # Always sorts first to ensure predictably ordered results
         formatted_results.sort()
+
         for criteria in self.sort_criteria:
             kwargs = {}
             if SortType.DESC == criteria["sort_type"]:
