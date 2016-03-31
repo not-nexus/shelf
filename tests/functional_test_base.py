@@ -53,7 +53,12 @@ class FunctionalTestBase(pyproctor.TestBase):
                     "secretKey": "test"
                 }
             },
-            "elasticSearchHost": "localhost:9200"
+            # EXTREMELY IMPORTANT!  If the protocol is not
+            # appended httpretty does not identify it as
+            # but httplib does so the file pointer that
+            # is supposed to be filled up by httpetty.fakesocket.socket
+            # is not.
+            "elasticSearchHost": "http://localhost:9200"
         }
         configure.logger(app.logger, "DEBUG")
         app.config.update(config)
