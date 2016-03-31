@@ -75,27 +75,27 @@ class Formatter(object):
                  List[dict]: formatted and filtered results. Each list element represents a search hit and
                             each dictionary within represents a metadata item.
         """
-        wrapper = []
+        filtered_list = []
 
         for hit in self.search_results.hits:
             filtered = {}
             add = True
 
-            for item in hit.items:
-                if self._is_version_search(item.name):
-                    add = self._sufficient_version(item)
+            for metadata_property in hit.items:
+                if self._is_version_search(metadata_property.name):
+                    add = self._sufficient_version(metadata_property)
 
                 if self.key_list:
 
-                    if item["name"] in self.key_list:
-                        filtered.update({item["name"]: item})
+                    if metadata_property["name"] in self.key_list:
+                        filtered.update({metadata_property["name"]: metadata_property})
                 else:
-                    filtered.update({item["name"]: item})
+                    filtered.update({metadata_property["name"]: metadata_property})
 
             if add:
-                wrapper.append(filtered)
+                filtered_list.append(filtered)
 
-        return wrapper
+        return filtered_list
 
     def _sort_results(self, formatted_results):
         """
