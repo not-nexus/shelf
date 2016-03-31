@@ -90,9 +90,9 @@ class Formatter(object):
                 if self.key_list:
 
                     if metadata_property["name"] in self.key_list:
-                        filtered.update({metadata_property["name"]: metadata_property})
+                        filtered[metadata_property["name"]] = metadata_property
                 else:
-                    filtered.update({metadata_property["name"]: metadata_property})
+                    filtered[metadata_property["name"]] = metadata_property
 
             if add:
                 filtered_list.append(filtered)
