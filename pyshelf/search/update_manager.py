@@ -6,9 +6,9 @@ from elasticsearch.helpers import scan, bulk
 
 
 class UpdateManager(object):
-    def __init__(self, logger, host, index):
+    def __init__(self, logger, url, index):
         self.logger = logger
-        self.connection = Elasticsearch(host)
+        self.connection = Elasticsearch(url)
         self.index = index
 
     def remove_unlisted_documents(self, ex_key_list):
