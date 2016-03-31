@@ -124,11 +124,8 @@ class Formatter(object):
             for metadata in filtered_results:
                 filtered_metadata = {}
 
-                for key, val in metadata.iteritems():
-
-                    if key in self.key_list:
-                        filtered_metadata[key] = val
-
+                for key in self.key_list:
+                    filtered_metadata[key] = metadata.get(key)
                     filtered_list.append(filtered_metadata)
 
             return filtered_list
