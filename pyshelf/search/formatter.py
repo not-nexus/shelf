@@ -5,14 +5,13 @@ from pyshelf.search.type import Type as SearchType
 
 
 class Formatter(object):
-    def __init__(self, criteria, search_results, key_list=None):
+    def __init__(self, criteria, key_list=None):
         """
             Formats search results from Elasticsearch based on the given criteria.
 
             Args:
                 criteria(dict): This contains the search and sort criteria as outlined on
                                 pyshelf.search.manager.Manager.search.
-                search_results(List[elasticsearch_dsl.result.Result]): List of search results.
                 key_list(list): list of keys to include in filtered results if list is not passed
                                 all fields will be returned.
         """
@@ -20,19 +19,21 @@ class Formatter(object):
         # Sort criteria must be reversed to ensure first sort criteria takes precedence
         self.sort_criteria = reversed(criteria.get("sort", []))
         self.key_list = key_list
-        self.search_results = search_results
-        self._results = None
         self.version_search = {}
 
-    @property
-    def results(self):
+    def get_formatted_results(self, search_results):
         """
-            Filtered and sorted results.
+            Filters and formats elasticsearch search results.
+
+            Args:
+                search_results(List[elasticsearch_dsl.result.Result]): List of search results.
+
+            Returns:
+                List[dict]: Formatted results.
         """
-        filtered_results = self._filter_metadata()
+        filtered_results = self._filter_metadata(search_results)
         filtered_results = self._filter_metadata_properties(filtered_results)
-        self._results = self._sort_results(filtered_results)
-        return self._results
+        return self._sort_results(filtered_results)
 
     def _is_version_search(self, item_name):
         """
@@ -69,9 +70,12 @@ class Formatter(object):
 
         return searched_version <= item_version
 
-    def _filter_metadata(self):
+    def _filter_metadata(self, search_results):
         """
             Filters search_results into a consumable format and returns it.
+
+            Args:
+                search_results(List[elasticsearch_dsl.result.Result]): List of search results.
 
             Returns:
                  List[dict]: formatted and filtered results. Each list element represents a search hit and
@@ -79,7 +83,7 @@ class Formatter(object):
         """
         filtered_list = []
 
-        for metadata in self.search_results.hits:
+        for metadata in search_results.hits:
             add = True
             filtered = {}
 
