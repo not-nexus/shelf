@@ -50,8 +50,9 @@ class Manager(object):
         self.search_container.logger.debug("Executing the following search query: {0}".format(query.to_dict()))
         search_results = query.execute()
         search_formatter = SearchFormatter(criteria, search_results, key_list)
+        formatted_results = search_formatter.results
 
-        return search_formatter.results
+        return formatted_results
 
     def _build_query(self, search_criteria):
         """
