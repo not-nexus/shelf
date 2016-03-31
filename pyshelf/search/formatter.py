@@ -29,7 +29,9 @@ class Formatter(object):
         """
             Filtered and sorted results.
         """
-        self._results = self._sort_results(self._filter_results())
+        filtered_results = self._filter_metadata()
+        filtered_results = self._filter_metadata_properties(filtered_results)
+        self._results = self._sort_results(filtered_results)
         return self._results
 
     def _is_version_search(self, item_name):
@@ -67,7 +69,7 @@ class Formatter(object):
 
         return searched_version <= item_version
 
-    def _filter_results(self):
+    def _filter_metadata(self):
         """
             Filters search_results into a consumable format and returns it.
 
@@ -77,34 +79,49 @@ class Formatter(object):
         """
         filtered_list = []
 
-        for hit in self.search_results.hits:
-            filtered = {}
+        for metadata in self.search_results.hits:
             add = True
+            filtered = {}
 
-            for metadata_property in hit.items:
+            for metadata_property in metadata.items:
                 if self._is_version_search(metadata_property.name):
                     if not self._sufficient_version(metadata_property):
                         add = False
                         break
 
-                if self.key_list:
-
-                    if metadata_property["name"] in self.key_list:
-                        filtered[metadata_property["name"]] = metadata_property
-                else:
-                    filtered[metadata_property["name"]] = metadata_property
+                filtered[metadata_property.name] = metadata_property
 
             if add:
                 filtered_list.append(filtered)
 
         return filtered_list
 
+    def _filter_metadata_properties(self, filtered_results):
+        """
+            Filters metadata properties based on key_list.
+
+            Args:
+                filtered_results(List[dict]): List of dicts representing metadata docs.
+
+            Returns:
+                List[dict]: Metadata with properties filtered out as defined by key_list.
+        """
+        if self.key_list:
+            for metadata in filtered_results:
+
+                for key in metadata.keys():
+
+                    if key not in self.key_list:
+                        metadata.pop(key)
+
+        return filtered_results
+
     def _sort_results(self, formatted_results):
         """
             Sorts results based on sort criteria.
 
             Args:
-                formatted_results(List[dict]): Result set as formatted by self._filter_results.
+                formatted_results(List[dict]): Result set as formatted by self._filter_metadata.
 
             Returns:
                 List[dict]: sorted results.
