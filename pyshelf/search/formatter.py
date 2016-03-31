@@ -22,7 +22,7 @@ class Formatter(object):
         self.key_list = key_list
         self.search_results = search_results
         self._results = None
-        self.tilde_search = {}
+        self.version_search = {}
 
     @property
     def results(self):
@@ -32,21 +32,27 @@ class Formatter(object):
         self._results = self._sort_results(self._filter_results())
         return self._results
 
-    def _filter_version_search(self, item_name, item_value):
+    def _is_version_search(self, item_name):
+        """
+            This ensures the current search is a version search and the
+            item name is the field that requires sorting.
+        """
+        if not self.version_search:
+            for criteria in self.search_criteria:
+                if criteria["search_type"] == SearchType.VERSION:
+                    self.version_search[criteria["field"]] = criteria["value"]
+
+        return self.version_search.get(item_name) is not None
+
+    def _sufficient_version(self, item_name, item_value):
         """
             This ensures when a version search is done that any results that are
             less then the version that is passed in are dropped from the result set.
-
-            Args:
-                item_name
         """
-        if not self.tilde_search:
-            for criteria in self.search_criteria:
-                if criteria["search_type"] == SearchType.VERSION:
-                    self.tilde_search[criteria["field"]] = criteria["value"]
+        item_version = LooseVersion(item_value)
+        searched_version = LooseVersion(self.version_search[item_name])
 
-        return item_name in self.tilde_search.keys() and \
-            LooseVersion(item_value) < LooseVersion(self.tilde_search[item_name])
+        return searched_version <= item_version
 
     def _filter_results(self):
         """
@@ -63,8 +69,8 @@ class Formatter(object):
             add = True
 
             for item in hit.items:
-                if self._filter_version_search(item.name, item.value):
-                    add = False
+                if self._is_version_search(item.name):
+                    add = self._sufficient_version(item.name, item.value)
 
                 if self.key_list:
 
