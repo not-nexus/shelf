@@ -7,13 +7,17 @@ class Container(object):
     def __init__(self, logger, connection_string):
         self.logger = logger
         parsed_url = urlparse(connection_string)
-        self._es_url = parsed_url.geturl()[:-len(parsed_url.path)]
+        self._es_url = parsed_url.scheme + "://" + parsed_url.netloc
         self._es_index = parsed_url.path[1:]
         self._update_manager = None
         self._search_manager = None
 
     @property
     def es_url(self):
+        """
+            es_url contains Elasticsearch connection string without the path.
+            This includes the scheme, the host, and the port.
+        """
         return self._es_url
 
     @property
