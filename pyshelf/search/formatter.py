@@ -130,13 +130,15 @@ class Formatter(object):
         formatted_results.sort()
 
         for criteria in self.sort_criteria:
-            kwargs = {}
+            reverse = False
             if SortType.DESC == criteria["sort_type"]:
-                kwargs["reverse"] = True
+                reverse = True
+
+            val = lambda k: k[criteria["field"]]["value"]
 
             if criteria.get("flag_list") and SortFlag.VERSION in criteria.get("flag_list"):
-                formatted_results.sort(key=lambda k: LooseVersion(k[criteria["field"]]["value"]), **kwargs)
+                formatted_results.sort(key=lambda k: LooseVersion(val(k)), reverse=reverse)
             else:
-                formatted_results.sort(key=lambda k: k[criteria["field"]]["value"], **kwargs)
+                formatted_results.sort(key=val, reverse=reverse)
 
         return formatted_results
