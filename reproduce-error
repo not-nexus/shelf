@@ -1,6 +1,0 @@
-#!/usr/bin/env python
-
-import httpretty
-import requests
-httpretty.enable()
-requests.get("http://localhost:9200/lol")
