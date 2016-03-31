@@ -83,7 +83,9 @@ class Formatter(object):
 
             for metadata_property in hit.items:
                 if self._is_version_search(metadata_property.name):
-                    add = self._sufficient_version(metadata_property)
+                    if not self._sufficient_version(metadata_property):
+                        add = False
+                        break
 
                 if self.key_list:
 
