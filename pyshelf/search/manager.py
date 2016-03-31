@@ -1,15 +1,16 @@
 from elasticsearch_dsl.query import Q
 from elasticsearch_dsl import Search
+from pyshelf.search.formatter import Formatter as SearchFormatter
 from pyshelf.search.type import Type as SearchType
-from pyshelf.search.sort_type import SortType
 from pyshelf.search.metadata import Metadata
-from distutils.version import LooseVersion
+from elasticsearch import Elasticsearch
 
 
 class Manager(object):
     def __init__(self, search_container):
         self.search_container = search_container
-        self.tilde_search = None
+        self.connection = Elasticsearch(self.search_container.es_url)
+        self.index = self.search_container.es_index
 
     def search(self, criteria, key_list=None):
         """
@@ -30,109 +31,53 @@ class Manager(object):
                     {
                         "field": "version",
                         "value": "1.1",
-                        "search_type": SearchType.TILDE
+                        "search_type": SearchType.VERSION
                     }
                 ],
                 "sort": [
                     {
                         "field": "version",
-                        "sort_type": SortType.VERSION,
+                        "sort_type": SortType.ASC,
                         "flag_list": [
-                            SortType.ASC
+                            SortFlag.VERSION
                         ]
                     }
                 ]
             }
         """
-        query = Search().index(Metadata._doc_type.index).query(self._build_query(criteria["search"]))
-        results = query.execute()
-        filtered_results = self._filter_results(results.hits, key_list)
-        formated_results = self._sort_results(filtered_results, criteria.get("sort"))
+        query = self._build_query(criteria.get("search"))
+        query = Search(using=self.connection).index(self.index).query(query)
+        self.search_container.logger.debug("Executing the following search query: {0}".format(query.to_dict()))
+        search_results = query.execute()
+        search_formatter = SearchFormatter(criteria, search_results, key_list)
+        formatted_results = search_formatter.get_formatted_results()
 
-        return formated_results
-
-    def _sort_results(self, filtered_results, sort_criteria=None):
-        """
-            Sorts results based on sort criteria.
-
-            Args:
-                filtered_results(list(dict)): list of dictionaries representing hits from Elasticsearch.
-
-            Returns:
-                list(dict): Sorts the filtered results that are passed in.
-        """
-        if not sort_criteria:
-            return filtered_results
-
-        for criteria in sort_criteria:
-            kwargs = {}
-            if SortType.DESC in criteria["flag_list"]:
-                kwargs["reverse"] = True
-
-            if criteria.get("sort_type") == SortType.VERSION:
-                filtered_results.sort(key=lambda k: LooseVersion(k[criteria["field"]]["value"]), **kwargs)
-            else:
-                filtered_results.sort(key=lambda k: k[criteria["field"]]["value"], **kwargs)
-
-        return filtered_results
-
-    def _filter_results(self, hits, key_list=None):
-        """
-            Filters results into a consumable format.
-
-            Args:
-                hits(list(elasticsearch_dsl.Result): List of result objects as returned from Response.hits
-                key_list(list): List of keys to return. None assumes all keys are requeired
-
-            Returns:
-                list(dict): Formats result list to a list of dictionaries. Each element of the list representing a hit.
-        """
-        wrapper = []
-
-        for hit in hits:
-            filtered = {}
-            add = True
-
-            for item in hit.items:
-                if item.name in self.tilde_search.keys() and LooseVersion(item.value) < \
-                        LooseVersion(self.tilde_search[item.name]):
-                    add = False
-
-                if key_list:
-
-                    if item["name"] in key_list:
-                        filtered.update({item["name"]: item})
-                else:
-                    filtered.update({item["name"]: item})
-
-            if add:
-                wrapper.append(filtered)
-
-        return wrapper
+        return formatted_results
 
     def _build_query(self, search_criteria):
         """
-            Builds query based on search criteria.
+            Builds query based on search criteria encapsulated by the search object.
 
             Args:
-                search_criteria(list(dict)): each dictionary represents a search. Formatted as above.
+                search_criteria(dict): Criteria by which to search.
 
             Returns:
-                elasticsearch_dsl.query.Q: This object represents an Elasticsearch query.
+                elasticsearch_dsl.Query: Object representing an Elasticsearch query.
         """
-        self.tilde_search = {}
         query = Q()
         for criteria in search_criteria:
+
+            # The double underscores (items__name) represents a nested field (items.name) in Elasticsearch_dsl
             nested_query = Q(SearchType.MATCH, items__name=criteria["field"])
 
-            if criteria["search_type"] == SearchType.TILDE:
-                formatted = ".".join(criteria["value"].split(".")[:-1])
-                if formatted:
-                    formatted += ".*"
-                    self.tilde_search[criteria["field"]] = criteria["value"]
-                    nested_query &= Q(SearchType.WILDCARD, items__value=formatted)
+            if criteria["search_type"] == SearchType.VERSION:
+                formatted = criteria["value"].rsplit(".", 1)
+                value = formatted[0]
+                if len(formatted) > 1:
+                    value += ".*"
+                    nested_query &= Q(SearchType.WILDCARD, items__value=value)
                 else:
-                    nested_query &= Q("range", items__value={"gte": criteria["value"]})
+                    nested_query &= Q("range", items__value={"gte": value})
             else:
                 nested_query &= Q(criteria["search_type"], items__value=criteria["value"])
             query &= Q("nested", path="items", query=nested_query)

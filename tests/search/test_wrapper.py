@@ -1,40 +1,38 @@
-from mock import Mock
-from pyshelf.search.container import Container as SearchContainer
-import tests.metadata_utils as utils
 from pyshelf.search.metadata import Metadata
-import time
+from elasticsearch import Elasticsearch
 
 
 class TestWrapper(object):
     INIT = False
 
-    def __init__(self):
-        self.config = {
-            "elasticSearchHost": ["localhost:9200"],
-            "test": {
-                "accessKey": "test",
-                "secretKey": "test",
-            }
-        }
-        self.logger = Mock()
-        self._search_container = None
+    def __init__(self, search_container):
+        self.search_container = search_container
+        self.doc_list = []
+        self.es = Elasticsearch(self.search_container.es_url)
+        self.index = self.search_container.es_index
 
-    def setup_metadata(self, name="test", path="test", version="1"):
+    def setup_metadata(self, data):
         if not TestWrapper.INIT:
-            Metadata.init()
-            # Again temp fix for the above init request
-            time.sleep(1)
+            Metadata.init(index=self.index, using=self.es)
+            self.es.indices.refresh(index=self.index)
             TestWrapper.INIT = True
-        self.search_container.update_manager.update(name, utils.get_meta(name, path, version))
+        for doc in data:
+            self.doc_list.append(doc["artifactName"]["value"])
+            meta = Metadata()
+            meta.meta.id = doc["artifactName"]["value"]
+            meta.meta.index = self.index
+            meta.update_all(doc)
+            meta.save(using=self.es)
 
-    def teardown_metadata(self, key):
-        meta = self.search_container.update_manager.get_metadata(key)
-        if meta:
-            meta.delete()
+        self.es.indices.refresh(index=self.index)
 
-    @property
-    def search_container(self):
-        if not self._search_container:
-            self._search_container = SearchContainer(self.config, self.logger)
+    def teardown_metadata(self):
+        for key in self.doc_list:
+            meta = self.get_metadata(key)
+            if meta:
+                meta.delete(using=self.es)
 
-        return self._search_container
+        self.doc_list = []
+
+    def get_metadata(self, id):
+        return Metadata.get(index=self.index, using=self.es, id=id, ignore=404)

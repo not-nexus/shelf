@@ -1,9 +1,53 @@
 from pyshelf.search.metadata import Metadata
+from elasticsearch_dsl.query import Q
+from elasticsearch_dsl import Search
+from elasticsearch import Elasticsearch
+from elasticsearch.helpers import scan, bulk
 
 
 class UpdateManager(object):
-    def __init__(self, logger):
+    def __init__(self, logger, url, index):
         self.logger = logger
+        self.connection = Elasticsearch(url)
+        self.index = index
+
+    def remove_unlisted_documents(self, ex_key_list):
+        """
+            Removes any documents with keys not enumerated in the ex_key_list.
+
+            Args:
+                ex_key_list(list): List of keys that should remain in the Elasticsearch collection.
+
+            Returns:
+                Number of documents deleted from Elasticsearch.
+        """
+        # Using an invert operator here to create a bool query with a "must not occurence type" with an ids query.
+        # https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-bool-query.html
+        query = ~Q("ids", type=Metadata._doc_type.name, values=ex_key_list)
+        query = Search(using=self.connection).index(self.index).query(query).to_dict()
+        self.logger.debug("Executing the following query for removing old documents from {0} index: {1}"
+                .format(self.index, query))
+
+        # Doing a bulk operation here via the elasticsearch library. With elasticsearch_dsl there is no way to do a bulk delete.
+        # scan is a simple way to iterate through all results and delete each one
+        # http://elasticsearch-py.readthedocs.org/en/master/helpers.html#scan
+        # In summation we do a query for all ids not in the ex_key_list and iterate through and delete all results. Based on my research
+        # this was the easiest way to perform this operation.
+        operations = (
+            {
+                "_op_type": "delete",
+                "_id": hit["_id"],
+                "_index": hit["_index"],
+                "_type": hit["_type"],
+            } for hit in scan(
+                self.connection,
+                query=query,
+                index=self.index,
+                doc_type=Metadata._doc_type.name,
+                _source=0,
+            )
+        )
+        return bulk(self.connection, operations, refresh=True)
 
     def bulk_update(self, data):
         """
@@ -37,8 +81,9 @@ class UpdateManager(object):
                 metadata(dict): Updated metadata to store in ElasticSearch.
         """
         self.logger.debug("Attempting update of metadata: {0} in ES".format(key))
-        meta_doc = self.get_metadata(key)
+        meta_doc = self._get_metadata(key)
         meta_doc.update_all(metadata)
+        meta_doc.save(using=self.connection)
         self.logger.debug("Updated metadata document {0} in ES".format(key))
 
     def update_item(self, key, item):
@@ -50,11 +95,12 @@ class UpdateManager(object):
                 item(dict): Updated metadata to store in ElasticSearch.
         """
         self.logger.debug("Attempting to update metadata {0} in ES".format(key))
-        meta_doc = self.get_metadata(key)
+        meta_doc = self._get_metadata(key)
         meta_doc.update_item(item)
+        meta_doc.save(using=self.connection)
         self.logger.debug("Updated metadata {0} in ES".format(key))
 
-    def get_metadata(self, key):
+    def _get_metadata(self, key):
         """
             Attempts to get existing metadata and creates one if it does not exist.
 
@@ -64,10 +110,11 @@ class UpdateManager(object):
             Returns:
                 pyshelf.search.metadata.Metadata
         """
-        meta_doc = Metadata.get(id=key, ignore=404)
+        meta_doc = Metadata.get(id=key, index=self.index, using=self.connection, ignore=404)
 
         if not meta_doc:
             meta_doc = Metadata()
             meta_doc.meta.id = key
+            meta_doc.meta.index = self.index
 
         return meta_doc

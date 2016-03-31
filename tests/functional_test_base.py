@@ -8,6 +8,9 @@ import yaml
 import tests.metadata_utils as meta_utils
 import tests.permission_utils as utils
 from tests.route_tester.tester import Tester
+from elasticsearch import Elasticsearch
+from pyshelf.search.metadata import Metadata
+from urlparse import urlparse
 
 
 class FunctionalTestBase(pyproctor.TestBase):
@@ -40,17 +43,24 @@ class FunctionalTestBase(pyproctor.TestBase):
     @classmethod
     def setUpClass(cls):
         config = {
-            "test": {
-                "accessKey": "test",
-                "secretKey": "test"
+            "buckets": {
+                "test": {
+                    "accessKey": "test",
+                    "secretKey": "test"
+                },
+                "bucket2": {
+                    "accessKey": "test",
+                    "secretKey": "test"
+                }
             },
-            "bucket2": {
-                "accessKey": "test",
-                "secretKey": "test"
-            }
+            "elasticSearchConnectionString": "http://localhost:9200/metadata"
         }
         configure.logger(app.logger, "DEBUG")
         app.config.update(config)
+        parsed_url = urlparse(config.get("elasticSearchConnectionString"))
+        es = Elasticsearch(parsed_url.scheme + "://" + parsed_url.netloc)
+        Metadata.init(index=parsed_url.path[1:], using=es)
+        Metadata._doc_type.refresh(using=es)
 
     def configure_moto(self):
         self.moto_s3 = mock_s3()
