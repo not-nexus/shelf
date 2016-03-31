@@ -118,13 +118,20 @@ class Formatter(object):
             Returns:
                 List[dict]: Metadata with properties filtered out as defined by key_list.
         """
+        filtered_list = []
         if self.key_list:
+
             for metadata in filtered_results:
+                filtered_metadata = {}
 
-                for key in metadata.keys():
+                for key, val in metadata.iteritems():
 
-                    if key not in self.key_list:
-                        metadata.pop(key)
+                    if key in self.key_list:
+                        filtered_metadata[key] = val
+
+                    filtered_list.append(filtered_metadata)
+
+            return filtered_list
 
         return filtered_results
 
