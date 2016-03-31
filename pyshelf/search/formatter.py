@@ -19,7 +19,7 @@ class Formatter(object):
         # Sort criteria must be reversed to ensure first sort criteria takes precedence
         self.sort_criteria = reversed(criteria.get("sort", []))
         self.key_list = key_list
-        self.version_search = {}
+        self.version_search = self._get_version_search()
 
     def get_formatted_results(self, search_results):
         """
@@ -35,6 +35,19 @@ class Formatter(object):
         filtered_results = self._filter_metadata_properties(filtered_results)
         return self._sort_results(filtered_results)
 
+    def _get_version_search(self):
+        """
+            Determines if a version search has been requested and stores the
+            field and value if so for future result filtering.
+        """
+        version_search = {}
+
+        for criteria in self.search_criteria:
+            if criteria["search_type"] == SearchType.VERSION:
+                version_search[criteria["field"]] = criteria["value"]
+
+        return version_search
+
     def _is_version_search(self, item_name):
         """
             This ensures the current search is a version search and the
@@ -47,11 +60,6 @@ class Formatter(object):
                 boolean: Whether current search is a version search and the metadata property
                 is to be sorted on.
         """
-        if not self.version_search:
-            for criteria in self.search_criteria:
-                if criteria["search_type"] == SearchType.VERSION:
-                    self.version_search[criteria["field"]] = criteria["value"]
-
         return self.version_search.get(item_name) is not None
 
     def _sufficient_version(self, metadata_property):
