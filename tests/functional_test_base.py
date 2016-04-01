@@ -8,9 +8,8 @@ import yaml
 import tests.metadata_utils as meta_utils
 import tests.permission_utils as utils
 from tests.route_tester.tester import Tester
-from elasticsearch import Elasticsearch
-from pyshelf.search.metadata import Metadata
-from urlparse import urlparse
+from tests.search.test_wrapper import TestWrapper as SearchTestWrapper
+from pyshelf.search.container import Container as SearchContainer
 
 
 class FunctionalTestBase(pyproctor.TestBase):
@@ -39,6 +38,16 @@ class FunctionalTestBase(pyproctor.TestBase):
         self.configure_moto()
         self.test_client = app.test_client()
         self._route_tester = None
+        self.setup_elastic()
+
+    def setup_elastic(self):
+        con_str = "http://localhost:9200/metadata"
+        search_container = SearchContainer(self.app.logger, con_str)
+        self.search_wrapper = SearchTestWrapper(search_container)
+        self.search_wrapper.init_metadata()
+
+    def tearDown(self):
+        self.search_wrapper.delete_all_metadata()
 
     @classmethod
     def setUpClass(cls):
@@ -57,14 +66,17 @@ class FunctionalTestBase(pyproctor.TestBase):
         }
         configure.logger(app.logger, "DEBUG")
         app.config.update(config)
-        parsed_url = urlparse(config.get("elasticSearchConnectionString"))
-        es = Elasticsearch(parsed_url.scheme + "://" + parsed_url.netloc)
-        Metadata.init(index=parsed_url.path[1:], using=es)
-        Metadata._doc_type.refresh(using=es)
 
     def configure_moto(self):
         self.moto_s3 = mock_s3()
         self.moto_s3.start()
+        import httpretty
+        # EXTREMELY IMPORTANT!  If the port is not
+        # appended httpretty does not identify it as http
+        # but httplib does so the file pointer that
+        # is supposed to be filled up by httpetty.fakesocket.socket
+        # is not.
+        httpretty.core.POTENTIAL_HTTP_PORTS.add(9200)
         self.boto_connection = boto.connect_s3()
         self.boto_connection.create_bucket("test")
         self.boto_connection.create_bucket("bucket2")
