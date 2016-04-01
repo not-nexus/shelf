@@ -12,6 +12,17 @@ class CloudPortal(object):
         self.container = container
 
     def update(self, cloud_identifier, metadata):
+        """
+            Updates the metadata in the cloud which is the
+            source of truth.
+
+            Args:
+                cloud_identifier(basestring): Something that can
+                    identify the file in the cloud.  Right now that
+                    will be a path to the file in S3 that stores the
+                    metadata
+                metadata(schemas/metadata.json)
+        """
         # So that we don't get unintended side effects
         contents = copy.deepcopy(metadata)
         contents = dict(contents)
