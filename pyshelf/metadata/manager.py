@@ -84,7 +84,7 @@ class Manager(object):
         # assuming success if it hasn't thrown an exception
         return Result()
 
-    def try_update_item(self, key, value):
+    def try_update_property(self, key, value):
         """
             Updates a single metadata property
 
@@ -96,10 +96,10 @@ class Manager(object):
                 pyshelf.metadata.result.Result
         """
         result = Result()
-        result = self._try_update_item_with_result(key, value, result)
+        result = self._try_update_property_with_result(key, value, result)
         return result
 
-    def try_create_item(self, key, value):
+    def try_create_property(self, key, value):
         """
             Creates a single metadata property.  Will error if the
             property already exists.
@@ -115,11 +115,11 @@ class Manager(object):
         if self.metadata.get(key):
             result.add_error(ErrorCode.DUPLICATE)
         else:
-            result = self._try_update_item_with_result(key, value, result)
+            result = self._try_update_property_with_result(key, value, result)
 
         return result
 
-    def try_delete_item(self, key):
+    def try_delete_property(self, key):
         """
             Deletes a single metadata property.
 
@@ -138,7 +138,7 @@ class Manager(object):
 
         return result
 
-    def _try_update_item_with_result(self, key, value, result):
+    def _try_update_property_with_result(self, key, value, result):
         if not self.metadata.is_immutable(key):
             self.metadata[key] = value
             self.write()
