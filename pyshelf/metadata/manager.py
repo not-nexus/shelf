@@ -49,9 +49,23 @@ class Manager(object):
         return data
 
     def write(self):
+        """
+            Updates the cloud to contain the metadata set on this instance.
+        """
         self.portal.update(self.identity.cloud_metadata, self.metadata)
 
     def try_update(self, data):
+        """
+            Overwrites the metadata with the data provided.  The only
+            caveat is that if you try to set metadata that is immutable
+            it will be ignored.
+
+            Args:
+                data(schemas/metadata.json)
+
+            Returns:
+                pyshelf.metadata.result.Result
+        """
         old_meta = copy.deepcopy(self.metadata)
         for key, val in old_meta.iteritems():
             new_meta = data.get(key)
@@ -72,9 +86,11 @@ class Manager(object):
 
     def try_update_item(self, key, value):
         """
+            Updates a single metadata property
+
             Args:
                 key(string)
-                value(mixed)
+                value(schemas/metadata-property.json)
 
             Returns:
                 pyshelf.metadata.result.Result
@@ -85,9 +101,12 @@ class Manager(object):
 
     def try_create_item(self, key, value):
         """
+            Creates a single metadata property.  Will error if the
+            property already exists.
+
             Args:
                 key(string)
-                value(mixed)
+                value(schemas/metadata-property.json)
 
             Returns:
                 pyshelf.metadata.result.Result
@@ -101,6 +120,15 @@ class Manager(object):
         return result
 
     def try_delete_item(self, key):
+        """
+            Deletes a single metadata property.
+
+            Args:
+                key(string): Name of the metadata property
+
+            Returns:
+                pyshelf.metadata.result.Result
+        """
         result = Result()
         if self.metadata.is_immutable(key):
             result.add_error(ErrorCode.IMMUTABLE)
