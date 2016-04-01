@@ -54,9 +54,9 @@ class Initializer(object):
         """
         with self.container.create_cloud_storage() as storage:
             etag = storage.get_etag(self.identity.cloud)
-            metadata[Keys.MD5] = self.mapper.create_response_item(Keys.MD5, etag, True)
+            metadata[Keys.MD5] = self.mapper.create_response_property(Keys.MD5, etag, True)
 
-        metadata[Keys.PATH] = self.mapper.create_response_item(Keys.PATH, self.identity.artifact_path, True)
-        metadata[Keys.NAME] = self.mapper.create_response_item(Keys.NAME, self.identity.artifact_name, True)
+        metadata[Keys.PATH] = self.mapper.create_response_property(Keys.PATH, self.identity.artifact_path, True)
+        metadata[Keys.NAME] = self.mapper.create_response_property(Keys.NAME, self.identity.artifact_name, True)
 
         return metadata

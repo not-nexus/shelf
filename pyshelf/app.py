@@ -25,6 +25,8 @@ def generic_exception_handler(error):
 
 @app.after_request
 def format_response(response):
+    response.headers["Cache-Control"] = "no-cache"
+
     if response.status_code == 404:
         response = response_map.create_404()
 

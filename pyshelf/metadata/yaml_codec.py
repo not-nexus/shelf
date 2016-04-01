@@ -3,6 +3,15 @@ import yaml
 
 class YamlCodec(object):
     def serialize(self, metadata):
+        """
+            Serializes metadata to a string
+
+            Args:
+                metadata(dict): The clouds format for metadata
+
+            Returns:
+                basestring: A yaml representation of the metadata
+        """
         # safe_dump so it doesn't try to represent a python
         # object in yaml and only serializes native yaml
         # types.
@@ -19,5 +28,14 @@ class YamlCodec(object):
         return contents
 
     def deserialize(self, metadata):
+        """
+            Deserializes a string into metadata
+
+            Args:
+                metadata(basestring): Yaml representation of metadata
+
+            Returns:
+                dict: The clouds format for metadata
+        """
         metadata = yaml.load(metadata)
         return metadata
