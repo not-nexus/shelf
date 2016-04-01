@@ -82,7 +82,7 @@ class ManagerTest(UnitTestBase):
             utils.get_meta("zzzz", "/zzzz", "1.19"),
             utils.get_meta("blah", "/blah", "1.19")
         ]
-        self.assertEqual(results, expected)
+        self.asserts.json_equals(expected, results)
 
     def test_select_fields(self):
         results = self.search_manager.search({
