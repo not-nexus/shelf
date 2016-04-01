@@ -44,7 +44,9 @@ class Base(object):
         """
         self.status_code = status_code
         self.response = response
-        self.headers = headers
+        self.headers = None
+        if headers:
+            self.headers = self._normalize_headers(headers)
         return self
 
     def get(self, data=None, headers=None):
@@ -99,13 +101,26 @@ class Base(object):
             try:
                 actual = json.loads(data)
             except ValueError:
-                pass
                 actual = data
 
-            self.test.assertEqual(self.response, actual)
+            if isinstance(actual, basestring):
+                self.test.assertEqual(self.response, actual)
+            else:
+                self.test.asserts.json_equals(self.response, actual)
         if self.headers:
-            for key, value in self.headers.iteritems():
-                self.test.assertEqual(value, actual_response.headers.get(key))
+            self._assert_headers(actual_response.headers)
+
+    def _assert_headers(self, actual_headers):
+        """
+            Validates that the expected headers match the actual headers.
+
+            Args:
+                actual_headers(werkzeug.datastructures.EnvironHeaders)
+
+        """
+        for key, expected_list in self.headers.iteritems():
+            actual_list = actual_headers.getlist(key)
+            self.test.assertEqual(expected_list, actual_list)
 
     def _encode(self, data):
         if data is not None:
@@ -114,3 +129,27 @@ class Base(object):
             except TypeError:
                 pass
         return data
+
+    def _normalize_headers(self, headers):
+        """
+            Forces all values to be a list if it is
+            not already a list.  This is so that I have
+            an expected format to assert against later.
+
+            This change is supposed to fix the problem where
+            we can have multiple of the same response header
+
+            Args:
+                headers(dict): Orginal headers
+
+            Returns:
+                dict<list>
+        """
+        new_headers = {}
+        for key, value in headers.iteritems():
+            if not isinstance(value, list):
+                value = [value]
+
+            new_headers[key] = value
+
+        return new_headers

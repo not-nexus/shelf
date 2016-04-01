@@ -1,0 +1,5 @@
+-R
+--exclude=*.git*
+--exclude=*.pyc
+--python-kinds=-i
+-o tags

@@ -8,6 +8,8 @@ import yaml
 import tests.metadata_utils as meta_utils
 import tests.permission_utils as utils
 from tests.route_tester.tester import Tester
+from tests.search.test_wrapper import TestWrapper as SearchTestWrapper
+from pyshelf.search.container import Container as SearchContainer
 
 
 class FunctionalTestBase(pyproctor.TestBase):
@@ -36,18 +38,31 @@ class FunctionalTestBase(pyproctor.TestBase):
         self.configure_moto()
         self.test_client = app.test_client()
         self._route_tester = None
+        self.setup_elastic()
+
+    def setup_elastic(self):
+        con_str = "http://localhost:9200/metadata"
+        search_container = SearchContainer(self.app.logger, con_str)
+        self.search_wrapper = SearchTestWrapper(search_container)
+        self.search_wrapper.init_metadata()
+
+    def tearDown(self):
+        self.search_wrapper.delete_all_metadata()
 
     @classmethod
     def setUpClass(cls):
         config = {
-            "test": {
-                "accessKey": "test",
-                "secretKey": "test"
+            "buckets": {
+                "test": {
+                    "accessKey": "test",
+                    "secretKey": "test"
+                },
+                "bucket2": {
+                    "accessKey": "test",
+                    "secretKey": "test"
+                }
             },
-            "bucket2": {
-                "accessKey": "test",
-                "secretKey": "test"
-            }
+            "elasticSearchConnectionString": "http://localhost:9200/metadata"
         }
         configure.logger(app.logger, "DEBUG")
         app.config.update(config)
@@ -55,6 +70,13 @@ class FunctionalTestBase(pyproctor.TestBase):
     def configure_moto(self):
         self.moto_s3 = mock_s3()
         self.moto_s3.start()
+        import httpretty
+        # EXTREMELY IMPORTANT!  If the port is not
+        # appended httpretty does not identify it as http
+        # but httplib does so the file pointer that
+        # is supposed to be filled up by httpetty.fakesocket.socket
+        # is not.
+        httpretty.core.POTENTIAL_HTTP_PORTS.add(9200)
         self.boto_connection = boto.connect_s3()
         self.boto_connection.create_bucket("test")
         self.boto_connection.create_bucket("bucket2")
@@ -72,7 +94,6 @@ class FunctionalTestBase(pyproctor.TestBase):
         meta_key.set_contents_from_string(yaml.dump(meta_utils.get_meta()))
         nest_meta_key = Key(self.test_bucket, "/dir/dir2/dir3/_metadata_nest-test.yaml")
         nest_meta_key.set_contents_from_string("")
-        Key(self.test_bucket, "/dir/dir2/dir3/dir4/")
         artifact_list = Key(self.test_bucket, "/dir/dir2/dir3/dir4/test5")
         artifact_list.set_contents_from_string("")
 
