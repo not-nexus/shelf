@@ -30,7 +30,8 @@ class Formatter(object):
             Returns:
                 List[dict]: Formatted results.
         """
-        filtered_results = self._filter_metadata()
+        result_list = self._normalize_result_list(self.search_results.hits)
+        filtered_results = self._filter_metadata(result_list)
         filtered_results = self._filter_metadata_properties(filtered_results)
         return self._sort_results(filtered_results)
 
@@ -72,14 +73,17 @@ class Formatter(object):
             Returns:
                 boolean: Whether result version is equal to or greater then the searched version.
         """
-        item_version = LooseVersion(metadata_property.value)
-        searched_version = LooseVersion(self.version_search[metadata_property.name])
+        item_version = LooseVersion(metadata_property["value"])
+        searched_version = LooseVersion(self.version_search[metadata_property["name"]])
 
         return searched_version <= item_version
 
-    def _filter_metadata(self):
+    def _filter_metadata(self, result_list):
         """
             Filters search_results into a consumable format and returns it.
+
+            Args:
+                result_list(List[dict])
 
             Returns:
                  List[dict]: formatted and filtered results. Each list element represents a search hit and
@@ -87,17 +91,17 @@ class Formatter(object):
         """
         filtered_list = []
 
-        for metadata in self.search_results.hits:
+        for metadata in result_list:
             add = True
             filtered = {}
 
-            for metadata_property in metadata.items:
-                if self._is_version_search(metadata_property.name):
+            for metadata_property in metadata["items"]:
+                if self._is_version_search(metadata_property["name"]):
                     if not self._sufficient_version(metadata_property):
                         add = False
                         break
 
-                filtered[metadata_property.name] = metadata_property
+                filtered[metadata_property["name"]] = metadata_property
 
             if add:
                 filtered_list.append(filtered)
@@ -151,3 +155,20 @@ class Formatter(object):
                 formatted_results.sort(key=val, reverse=reverse)
 
         return formatted_results
+
+    def _normalize_result_list(self, result_list):
+        """
+            Exists so we get regular dicts to use
+            instead of special elasticsearch_dsl.utils.AttrDict
+
+            Args:
+                result_list(List[elasticsearch_dsl.utils.AttrDict])
+
+            Returns:
+                List[dict]
+        """
+        new_list = []
+        for result in result_list:
+            new_list.append(result.to_dict())
+
+        return new_list
