@@ -1,8 +1,10 @@
 {
-    "type": "array",
-    "items": {
-        "$ref": "metadata-property.json"
+    "type": "objects",
+    "decsription": "Basically a list of metadata-properties but keyed by their name",
+    "patternProperties": {
+        ".*": {
+            "$ref": "metadata-property.json"
+        }
     },
-    "minItems": 0,
     "$schema": "http://json-schema.org/draft-04/schema#"
 }
