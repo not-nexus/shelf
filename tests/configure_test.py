@@ -61,32 +61,27 @@ class ConfigureTest(pyproctor.TestBase):
         config = {
             "buckets": {
                 "myBucket": {
-                    "secretKey": "ffffffffffffffffffuuuuuuuuuuuuuu"
+                    "secretKey": "ffffffffffffffffffungal"
                 },
                 "myOtherBucket": {
-                    "accessKey": "imGaGaGonnaMakeYouSomeSoup",
+                    "accessKey": "imGaGaGonnaMakeYouSoup",
                     "secretKey": "freeTibet"
                 }
             },
             "elasticSearchConnectionString": "http://localhost:9200/metadata"
         }
         self.write_config(config)
-        self.assert_value_error()
+        with self.assertRaises(ValueError):
+            self.run_app()
 
     def test_config_empty(self):
         config = {}
         self.write_config(config)
-        self.assert_value_error()
+        with self.assertRaises(ValueError):
+            self.run_app()
 
     def test_config_no_buckets(self):
         config = {"buckets": {}, "elasticSearchConnectionString": "test"}
         self.write_config(config)
-        self.assert_value_error()
-
-    def assert_value_error(self):
-        thrown = False
-        try:
+        with self.assertRaises(ValueError):
             self.run_app()
-        except ValueError:
-            thrown = True
-        self.assertTrue(thrown)
