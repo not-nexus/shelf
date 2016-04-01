@@ -5,35 +5,47 @@ from pyshelf.search.type import Type as SearchType
 
 
 class Formatter(object):
-    def __init__(self, criteria, key_list=None):
+    def __init__(self, criteria, search_results, key_list=None):
         """
             Formats search results from Elasticsearch based on the given criteria.
 
             Args:
                 criteria(dict): This contains the search and sort criteria as outlined on
                                 pyshelf.search.manager.Manager.search.
+                search_results(List[elasticsearch_dsl.result.Result]): List of search results.
                 key_list(list): list of keys to include in filtered results if list is not passed
                                 all fields will be returned.
         """
         self.search_criteria = criteria.get("search")
         # Sort criteria must be reversed to ensure first sort criteria takes precedence
         self.sort_criteria = reversed(criteria.get("sort", []))
+        self.search_results = search_results
         self.key_list = key_list
-        self.version_search = {}
+        self.version_search = self._get_version_search()
 
-    def get_formatted_results(self, search_results):
+    def get_formatted_results(self):
         """
             Filters and formats elasticsearch search results.
-
-            Args:
-                search_results(List[elasticsearch_dsl.result.Result]): List of search results.
 
             Returns:
                 List[dict]: Formatted results.
         """
-        filtered_results = self._filter_metadata(search_results)
+        filtered_results = self._filter_metadata()
         filtered_results = self._filter_metadata_properties(filtered_results)
         return self._sort_results(filtered_results)
+
+    def _get_version_search(self):
+        """
+            Determines if a version search has been requested and stores the
+            field and value if so for future result filtering.
+        """
+        version_search = {}
+
+        for criteria in self.search_criteria:
+            if criteria["search_type"] == SearchType.VERSION:
+                version_search[criteria["field"]] = criteria["value"]
+
+        return version_search
 
     def _is_version_search(self, item_name):
         """
@@ -47,11 +59,6 @@ class Formatter(object):
                 boolean: Whether current search is a version search and the metadata property
                 is to be sorted on.
         """
-        if not self.version_search:
-            for criteria in self.search_criteria:
-                if criteria["search_type"] == SearchType.VERSION:
-                    self.version_search[criteria["field"]] = criteria["value"]
-
         return self.version_search.get(item_name) is not None
 
     def _sufficient_version(self, metadata_property):
@@ -70,12 +77,9 @@ class Formatter(object):
 
         return searched_version <= item_version
 
-    def _filter_metadata(self, search_results):
+    def _filter_metadata(self):
         """
             Filters search_results into a consumable format and returns it.
-
-            Args:
-                search_results(List[elasticsearch_dsl.result.Result]): List of search results.
 
             Returns:
                  List[dict]: formatted and filtered results. Each list element represents a search hit and
@@ -83,7 +87,7 @@ class Formatter(object):
         """
         filtered_list = []
 
-        for metadata in search_results.hits:
+        for metadata in self.search_results.hits:
             add = True
             filtered = {}
 
@@ -110,13 +114,17 @@ class Formatter(object):
             Returns:
                 List[dict]: Metadata with properties filtered out as defined by key_list.
         """
+        filtered_list = []
         if self.key_list:
+
             for metadata in filtered_results:
+                filtered_metadata = {}
 
-                for key in metadata.keys():
+                for key in self.key_list:
+                    filtered_metadata[key] = metadata.get(key)
+                    filtered_list.append(filtered_metadata)
 
-                    if key not in self.key_list:
-                        metadata.pop(key)
+            return filtered_list
 
         return filtered_results
 

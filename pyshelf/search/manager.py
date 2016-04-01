@@ -49,8 +49,8 @@ class Manager(object):
         query = Search(using=self.connection).index(self.index).query(query)
         self.search_container.logger.debug("Executing the following search query: {0}".format(query.to_dict()))
         search_results = query.execute()
-        search_formatter = SearchFormatter(criteria, key_list)
-        formatted_results = search_formatter.get_formatted_results(search_results)
+        search_formatter = SearchFormatter(criteria, search_results, key_list)
+        formatted_results = search_formatter.get_formatted_results()
 
         return formatted_results
 
