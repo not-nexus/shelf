@@ -55,11 +55,11 @@ def update_artifact_meta(container, bucket_name, path):
 
 @artifact.route("/<bucket_name>/artifact/<path:path>/_meta/<item>", methods=["GET"])
 @decorators.foundation
-def get_metadata_item_route(container, bucket_name, path, item):
-    return get_metadata_item(container, bucket_name, path, item)
+def get_metadata_property_route(container, bucket_name, path, item):
+    return get_metadata_property(container, bucket_name, path, item)
 
 
-def get_metadata_item(container, bucket_name, path, item):
+def get_metadata_property(container, bucket_name, path, item):
     manager = container.metadata.manager
     data = manager.metadata.get(item)
     if None is data:
@@ -72,19 +72,19 @@ def get_metadata_item(container, bucket_name, path, item):
 
 @artifact.route("/<bucket_name>/artifact/<path:path>/_meta/<item>", methods=["POST", "PUT"])
 @decorators.foundation_headers
-def create_metadata_item(container, bucket_name, path, item):
+def create_metadata_property(container, bucket_name, path, item):
     data = json.loads(request.data)
     manager = container.metadata.manager
     exists = (item in manager.metadata)
     result = None
 
     if request.method == "PUT":
-        result = manager.try_update_item(item, data)
+        result = manager.try_update_property(item, data)
     else:
-        result = manager.try_create_item(item, data)
+        result = manager.try_create_property(item, data)
 
     if result.success:
-        response = get_metadata_item(container, bucket_name, path, item)
+        response = get_metadata_property(container, bucket_name, path, item)
         if not exists:
             response.status_code = 201
 
@@ -97,9 +97,9 @@ def create_metadata_item(container, bucket_name, path, item):
 
 @artifact.route("/<bucket_name>/artifact/<path:path>/_meta/<item>", methods=["DELETE"])
 @decorators.foundation
-def delete_metadata_item(container, bucket_name, path, item):
+def delete_metadata_property(container, bucket_name, path, item):
     manager = container.metadata.manager
-    result = manager.try_delete_item(item)
+    result = manager.try_delete_property(item)
     response = None
     if result.success:
         response = response_map.create_204()
