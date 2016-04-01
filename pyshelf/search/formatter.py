@@ -142,9 +142,6 @@ class Formatter(object):
             Returns:
                 List[dict]: sorted results.
         """
-        # Always sorts first to ensure predictably ordered results
-        formatted_results.sort()
-
         for criteria in self.sort_criteria:
             reverse = False
             if SortType.DESC == criteria["sort_type"]:

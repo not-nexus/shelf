@@ -74,6 +74,7 @@ class ManagerTest(UnitTestBase):
                 },
             ]
         })
+        self.maxDiff = None
         expected = [
             utils.get_meta("other", "/this/that/other", "1.1"),
             utils.get_meta("thing", "/thing", "1.2"),

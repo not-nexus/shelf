@@ -12,10 +12,7 @@ class TestWrapper(object):
         self.index = self.search_container.es_index
 
     def setup_metadata(self, data):
-        if not TestWrapper.INIT:
-            Metadata.init(index=self.index, using=self.es)
-            self.es.indices.refresh(index=self.index)
-            TestWrapper.INIT = True
+        self.init_metadata()
         for doc in data:
             self.doc_list.append(doc["artifactName"]["value"])
             meta = Metadata()
@@ -33,6 +30,16 @@ class TestWrapper(object):
                 meta.delete(using=self.es)
 
         self.doc_list = []
+
+    def init_metadata(self):
+        if not TestWrapper.INIT:
+            Metadata.init(index=self.index, using=self.es)
+            self.es.indices.refresh(index=self.index)
+            TestWrapper.INIT = True
+
+
+    def delete_all_metadata(self):
+        self.search_container.update_manager.remove_unlisted_documents([])
 
     def get_metadata(self, id):
         return Metadata.get(index=self.index, using=self.es, id=id, ignore=404)
