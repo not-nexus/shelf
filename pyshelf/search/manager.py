@@ -46,7 +46,7 @@ class Manager(object):
             }
         """
         query = self._build_query(criteria.get("search"))
-        query = Search(using=self.connection).index(self.index).sort("_id").query(query)
+        query = Search(using=self.connection).index(self.index).sort("_uid").query(query)
         self.search_container.logger.debug("Executing the following search query: {0}".format(query.to_dict()))
         search_results = query.execute()
         search_formatter = SearchFormatter(criteria, search_results, key_list)
