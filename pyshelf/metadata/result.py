@@ -5,15 +5,32 @@ class Result(object):
 
     @property
     def success(self):
+        """
+            Figures out if the operation was successful.
+
+            Returns:
+                boolean
+        """
         return not bool(len(self.error_code_list))
 
     def add_error(self, code):
+        """
+            Adds an error to the list.
+
+            Args:
+                code(pyshelf.metadata.error_code.ErrorCode)
+        """
         self.error_code_list.append(code)
 
     def has_error(self, code):
-        has_error = False
+        """
+            Checks if we have a particular error code.
 
-        if code in self.error_code_list:
-            has_error = True
+            Args:
+                code(pyshelf.metadata.error_code.ErrorCode)
 
+            Returns:
+                boolean
+        """
+        has_error = (code in self.error_code_list)
         return has_error

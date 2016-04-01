@@ -74,14 +74,15 @@ class ManagerTest(UnitTestBase):
                 },
             ]
         })
+        self.maxDiff = None
         expected = [
             utils.get_meta("other", "/this/that/other", "1.1"),
             utils.get_meta("thing", "/thing", "1.2"),
             utils.get_meta("a", "/a", "1.19"),
-            utils.get_meta("zzzz", "/zzzz", "1.19"),
-            utils.get_meta("blah", "/blah", "1.19")
+            utils.get_meta("blah", "/blah", "1.19"),
+            utils.get_meta("zzzz", "/zzzz", "1.19")
         ]
-        self.assertEqual(results, expected)
+        self.asserts.json_equals(expected, results)
 
     def test_select_fields(self):
         results = self.search_manager.search({

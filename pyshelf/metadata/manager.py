@@ -49,10 +49,24 @@ class Manager(object):
         return data
 
     def write(self):
+        """
+            Updates the cloud to contain the metadata set on this instance.
+        """
         self.portal.update(self.identity.cloud_metadata, self.metadata)
         self.update_manager.update(self.identity.search, self.metadata)
 
     def try_update(self, data):
+        """
+            Overwrites the metadata with the data provided.  The only
+            caveat is that if you try to set metadata that is immutable
+            it will be ignored.
+
+            Args:
+                data(schemas/metadata.json)
+
+            Returns:
+                pyshelf.metadata.result.Result
+        """
         old_meta = copy.deepcopy(self.metadata)
         for key, val in old_meta.iteritems():
             new_meta = data.get(key)
@@ -71,24 +85,29 @@ class Manager(object):
         # assuming success if it hasn't thrown an exception
         return Result()
 
-    def try_update_item(self, key, value):
+    def try_update_property(self, key, value):
         """
+            Updates a single metadata property
+
             Args:
                 key(string)
-                value(mixed)
+                value(schemas/metadata-property.json)
 
             Returns:
                 pyshelf.metadata.result.Result
         """
         result = Result()
-        result = self._try_update_item_with_result(key, value, result)
+        result = self._try_update_property_with_result(key, value, result)
         return result
 
-    def try_create_item(self, key, value):
+    def try_create_property(self, key, value):
         """
+            Creates a single metadata property.  Will error if the
+            property already exists.
+
             Args:
                 key(string)
-                value(mixed)
+                value(schemas/metadata-property.json)
 
             Returns:
                 pyshelf.metadata.result.Result
@@ -97,11 +116,20 @@ class Manager(object):
         if self.metadata.get(key):
             result.add_error(ErrorCode.DUPLICATE)
         else:
-            result = self._try_update_item_with_result(key, value, result)
+            result = self._try_update_property_with_result(key, value, result)
 
         return result
 
-    def try_delete_item(self, key):
+    def try_delete_property(self, key):
+        """
+            Deletes a single metadata property.
+
+            Args:
+                key(string): Name of the metadata property
+
+            Returns:
+                pyshelf.metadata.result.Result
+        """
         result = Result()
         if self.metadata.is_immutable(key):
             result.add_error(ErrorCode.IMMUTABLE)
@@ -111,7 +139,7 @@ class Manager(object):
 
         return result
 
-    def _try_update_item_with_result(self, key, value, result):
+    def _try_update_property_with_result(self, key, value, result):
         if not self.metadata.is_immutable(key):
             self.metadata[key] = value
             self.write()
