@@ -16,7 +16,7 @@ class Mapper(object):
 
         for key, value in metadata.iteritems():
             value["name"] = key
-            new_metadata[key] = self.create_response_item(key, value["value"], value["immutable"])
+            new_metadata[key] = self.create_response_property(key, value["value"], value["immutable"])
 
         return new_metadata
 
@@ -33,7 +33,7 @@ class Mapper(object):
         """
         new_metadata = {}
         for key, value in metadata.iteritems():
-            new_metadata[key] = self.create_cloud_item(value["value"], value["immutable"])
+            new_metadata[key] = self.create_cloud_property(value["value"], value["immutable"])
 
         return new_metadata
 
@@ -50,7 +50,7 @@ class Mapper(object):
             "immutable": immutable
         }
 
-    def create_response_item(self, name, value, immutable):
+    def create_response_property(self, name, value, immutable):
         """
             Creates a single metadata property internal structure
 
