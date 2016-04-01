@@ -22,6 +22,11 @@ class SearchParseTest(UnitTestBase):
                     "field": "version",
                     "value": "1.1",
                     "search_type": SearchType.VERSION
+                },
+                {
+                    "field": "artifactPath",
+                    "value": "*",
+                    "search_type": SearchType.WILDCARD
                 }
             ],
             "sort": [
@@ -33,7 +38,7 @@ class SearchParseTest(UnitTestBase):
             ],
             "limit": 1
         }
-        criteria = self.parser.from_request(request_criteria)
+        criteria = self.parser.from_request(request_criteria, "")
         self.assertEqual(criteria, expected)
 
     def test_from_request_lists(self):
@@ -41,7 +46,7 @@ class SearchParseTest(UnitTestBase):
             "search": [
                 "version~=1.1",
                 "bob=bob",
-                "dumb*=dumbf*"
+                "dumb=dumbf*"
             ],
             "sort": [
                 "version, VERSION, ASC",
@@ -64,6 +69,11 @@ class SearchParseTest(UnitTestBase):
                     "field": "dumb",
                     "value": "dumbf*",
                     "search_type": SearchType.WILDCARD
+                },
+                {
+                    "field": "artifactPath",
+                    "value": "test*",
+                    "search_type": SearchType.WILDCARD
                 }
             ],
             "sort": [
@@ -79,5 +89,5 @@ class SearchParseTest(UnitTestBase):
             ],
             "limit": None
         }
-        criteria = self.parser.from_request(request_criteria)
+        criteria = self.parser.from_request(request_criteria, "test")
         self.assertEqual(criteria, expected)

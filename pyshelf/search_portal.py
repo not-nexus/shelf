@@ -1,5 +1,6 @@
 from pyshelf.search.type import Type as SearchType
 from pyshelf.search.metadata import Metadata
+from pyshelf.metadata.keys import Keys as MetadataKeys
 
 
 class SearchPortal(object):
@@ -9,13 +10,14 @@ class SearchPortal(object):
         self.search_parser = self.container.search_parser
         self.link_manager = self.container.link_manager
 
-    def search(self, criteria):
+    def search(self, criteria, path):
         """
             Searches based on criteria defined in request and assigns links to response
             for each search hit.
 
             Args:
                 criteria(dict): Search and sort criteria formatted as show below.
+                path(string): Path to search.
 
             Format of criteria:
                 {
@@ -37,10 +39,11 @@ class SearchPortal(object):
                     "limit": 1
                 }
         """
-        formatted_criteria = self.search_parser.from_request(criteria)
+        formatted_criteria = self.search_parser.from_request(criteria, path)
         results = self.search_manager.search(formatted_criteria)
-        artifact_list = self.search_parser.list_artifacts(results, criteria.get("limit"))
-        self.link_manager.assign_listing(artifact_list)
+        results = self._limit_results(results, formatted_criteria.get("limit"))
+        artifact_list = self.search_parser.list_artifacts(results)
+        self.link_manager.assign_listing_path(artifact_list)
 
     def _limit_results(self, search_results, limit=None):
         """

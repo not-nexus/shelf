@@ -64,10 +64,13 @@ class PermissionsValidator(object):
             in a directory two paths are compared using fnmatch. The full path
             of the artifact and the directory of the artifact.
         """
+        # IMO this needs some serious refactoring. Pretty ugly, it started out simple and grew to its current state
         access = False
         path = self.container.request.path
         if path.endswith('/_meta'):
             path = re.sub('/_meta', '', path)
+        if path.endswith('/_search'):
+            path = re.sub('/_search', '', path)
         if re.search('\/_meta\/', path):
             ar = path.split('/_meta/')
             path = ar[0]

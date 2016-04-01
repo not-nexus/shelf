@@ -44,10 +44,18 @@ class FunctionalTestBase(pyproctor.TestBase):
         con_str = "http://localhost:9200/metadata"
         search_container = SearchContainer(self.app.logger, con_str)
         self.search_wrapper = SearchTestWrapper(search_container)
-        self.search_wrapper.init_metadata()
+        metadata = [
+            meta_utils.get_meta(),
+            meta_utils.get_meta("other", "/this/that/other", "1.1"),
+            meta_utils.get_meta("thing", "/thing", "1.2"),
+            meta_utils.get_meta("blah", "/blah", "1.19"),
+            meta_utils.get_meta("a", "/a", "1.19"),
+            meta_utils.get_meta("zzzz", "/zzzz", "1.19"),
+        ]
+        self.search_wrapper.setup_metadata(metadata)
 
     def tearDown(self):
-        self.search_wrapper.delete_all_metadata()
+        self.search_wrapper.teardown_metadata()
 
     @classmethod
     def setUpClass(cls):

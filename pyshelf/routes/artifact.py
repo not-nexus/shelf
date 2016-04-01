@@ -111,8 +111,7 @@ def delete_metadata_item(container, bucket_name, path, item):
 @artifact.route("/<bucket_name>/artifact/<path:path>/_search", methods=["POST"])
 @decorators.foundation
 def search(container, bucket_name, path):
-    criteria = request.data
-    container.search_portal.search(criteria)
-    status_code = 204
-    response = container.context_response_mapper.to_response(status_code)
+    criteria = json.loads(request.data)
+    container.search_portal.search(criteria, path)
+    response = container.context_response_mapper.to_response(status_code=204)
     return response

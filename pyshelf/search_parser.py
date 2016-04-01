@@ -6,24 +6,29 @@ from pyshelf.metadata.keys import Keys as MetadataKeys
 
 
 class SearchParser(object):
-    def from_request(self, request_criteria):
+    def from_request(self, request_criteria, path):
         """
             Turns the given request into search criteria that can be consumed by pyshelf.search module.
 
             Args:
                 request_criteria(dict): Search and sort criteria from the request.
+                path(string): Path to search.
 
             Returns:
                 dict: search and sort criteria that will be consumed by search layer
         """
         search_criteria = []
         sort_criteria = []
+        print request_criteria
 
         if isinstance(request_criteria["search"], list):
             for search in request_criteria["search"]:
                 search_criteria.append(self._format_search_criteria(search))
         else:
             search_criteria.append(self._format_search_criteria(request_criteria["search"]))
+
+        path_search = "{0}={1}*".format(MetadataKeys.PATH, path)
+        search_criteria.append(self._format_search_criteria(path_search))
 
         if isinstance(request_criteria["sort"], list):
             for sort in request_criteria["sort"]:
@@ -46,7 +51,7 @@ class SearchParser(object):
         artifact_list = []
 
         for result in results:
-            artifact_list.append(result[MetadataKeys.PATH])
+            artifact_list.append(result[MetadataKeys.PATH]["value"])
 
         return artifact_list
 
@@ -61,18 +66,20 @@ class SearchParser(object):
                 dict: search criteria dictionary
         """
         search_criteria = {}
-        tilde_search = "\~\="
-        wildcard_search = "\*\="
+        version_search = "\~\="
+        # Match star unless it is escaped with \
+        wildcard_search = "[^\\\]\*"
 
-        if re.search(tilde_search, search_string):
+        if re.search(version_search, search_string):
             search_criteria["search_type"] = SearchType.VERSION
             split_char = "~="
-        elif re.search(wildcard_search, search_string):
-            search_criteria["search_type"] = SearchType.WILDCARD
-            split_char = "*="
         else:
-            search_criteria["search_type"] = SearchType.MATCH
             split_char = "="
+
+            if re.search(wildcard_search, search_string):
+                search_criteria["search_type"] = SearchType.WILDCARD
+            else:
+                search_criteria["search_type"] = SearchType.MATCH
 
         search_criteria["field"], search_criteria["value"] = search_string.partition(split_char)[0::2]
         return search_criteria
