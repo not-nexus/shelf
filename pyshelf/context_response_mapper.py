@@ -22,9 +22,6 @@ class ContextResponseMapper(object):
             if body:
                 response.set_data(body)
 
-        # We do not want metadata to get cached
-        response.headers["Cache-Control"] = "no-cache"
-
         # Letting flask default it otherwise
         if content_type:
             response.headers["Content-Type"] = content_type

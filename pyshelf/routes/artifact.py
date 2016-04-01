@@ -28,7 +28,6 @@ def create_artifact(container, bucket_name, path):
         storage.upload_artifact(path, file)
         response = response_map.create_201()
         response.headers["Location"] = container.request.path
-        response.headers["Cache-Control"] = "no-cache"
 
     return response
 
@@ -51,7 +50,6 @@ def update_artifact_meta(container, bucket_name, path):
     manager.try_update(data)
     response = get_artifact_meta(container, bucket_name, path)
     response.headers["Location"] = container.request.path
-    response.headers["Cache-Control"] = "no-cache"
     return response
 
 
@@ -69,7 +67,6 @@ def get_metadata_item(container, bucket_name, path, item):
     else:
         response = response_map.create_200(data)
 
-    response.headers["Cache-Control"] = "no-cache"
     return response
 
 
@@ -95,7 +92,6 @@ def create_metadata_item(container, bucket_name, path, item):
     else:
         response = response_map.map_metadata_result_errors(result)
 
-    response.headers["Cache-Control"] = "no-cache"
     return response
 
 
@@ -110,5 +106,4 @@ def delete_metadata_item(container, bucket_name, path, item):
     else:
         response = response_map.map_metadata_result_errors(result)
 
-    response.headers["Cache-Control"] = "no-cache"
     return response
