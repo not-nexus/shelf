@@ -9,7 +9,7 @@ def get_meta_item():
     }
 
 
-def get_meta(name="test", path="test"):
+def get_meta(name="test", path="test", version="1"):
     return {
         "tag": {
             "name": "tag",
@@ -35,8 +35,16 @@ def get_meta(name="test", path="test"):
             "name": "artifactPath",
             "value": path,
             "immutable": True
+        },
+        "version": {
+            "name": "version",
+            "value": version,
+            "immutable": False
         }
     }
+
+def get_meta_elastic(name="test", path="test", version="1"):
+    return get_meta(name, path, version).values()
 
 
 def get_md5Hash():

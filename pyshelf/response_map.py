@@ -1,8 +1,8 @@
 from pyshelf.json_response import JsonResponse
 from pyshelf.cloud.cloud_exceptions import \
-    ArtifactNotFoundError, BucketNotFoundError, DuplicateArtifactError, InvalidNameError, \
-    MetadataNotFoundError, ImmutableMetadataError
+    ArtifactNotFoundError, BucketNotFoundError, DuplicateArtifactError, InvalidNameError
 from pyshelf.error_code import ErrorCode
+from pyshelf.metadata.error_code import ErrorCode as MetadataErrorCode
 
 
 def vnd_error(error):
@@ -140,11 +140,17 @@ def map_exception(e):
         Returns:
             vnd.error formatted error response
     """
-    if isinstance(e, ArtifactNotFoundError) or isinstance(e, MetadataNotFoundError):
+    if isinstance(e, ArtifactNotFoundError):
         return create_404(e.error_code, e.message)
-    if isinstance(e, DuplicateArtifactError) or isinstance(e, InvalidNameError) or \
-            isinstance(e, ImmutableMetadataError):
+    if isinstance(e, DuplicateArtifactError) or isinstance(e, InvalidNameError):
         return create_403(e.error_code, e.message)
     if isinstance(e, BucketNotFoundError):
         return create_500(e.error_code, e.message)
     return create_500()
+
+
+def map_metadata_result_errors(result):
+    if result.has_error(MetadataErrorCode.IMMUTABLE):
+        return create_403(ErrorCode.FORBIDDEN, "Cannot update immutable metadata.")
+    elif result.has_error(MetadataErrorCode.DUPLICATE):
+        return create_403(ErrorCode.FORBIDDEN, "This metadata already exists.")

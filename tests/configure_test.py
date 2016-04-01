@@ -40,11 +40,14 @@ class ConfigureTest(pyproctor.TestBase):
 
     def test_app(self):
         config = {
-            "myBucket": {
-                "accessKey": "whateveriwanthere",
-                # can't stop seeing WhichCanalSobe
-                "secretKey": "supersecretkeywhichcanalsobewhateveriwant"
-            }
+            "buckets": {
+                "myBucket": {
+                    "accessKey": "whateveriwanthere",
+                    # can't stop seeing WhichCanalSobe
+                    "secretKey": "supersecretkeywhichcanalsobewhateveriwant"
+                }
+            },
+            "elasticSearchConnectionString": "http://localhost:9200/metadata"
         }
         self.write_config(config)
         # To make sure it doens't overwrite it
@@ -53,3 +56,32 @@ class ConfigureTest(pyproctor.TestBase):
         expected["hello"] = "hi"
         self.run_app()
         self.assertEqual(expected, self.app.config)
+
+    def test_config_value_error(self):
+        config = {
+            "buckets": {
+                "myBucket": {
+                    "secretKey": "ffffffffffffffffffungal"
+                },
+                "myOtherBucket": {
+                    "accessKey": "imGaGaGonnaMakeYouSoup",
+                    "secretKey": "freeTibet"
+                }
+            },
+            "elasticSearchConnectionString": "http://localhost:9200/metadata"
+        }
+        self.write_config(config)
+        with self.assertRaises(ValueError):
+            self.run_app()
+
+    def test_config_empty(self):
+        config = {}
+        self.write_config(config)
+        with self.assertRaises(ValueError):
+            self.run_app()
+
+    def test_config_no_buckets(self):
+        config = {"buckets": {}, "elasticSearchConnectionString": "test"}
+        self.write_config(config)
+        with self.assertRaises(ValueError):
+            self.run_app()
