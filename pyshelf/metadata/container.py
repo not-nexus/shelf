@@ -18,13 +18,25 @@ class Container(object):
         self._initializer = None
 
     def create_cloud_storage(self):
+        """
+            Returns:
+                pyshelf.cloud.storage.Storage
+        """
         return self.cloud_factory.create_storage(self.bucket_name)
 
     def create_wrapper(self, metadata):
+        """
+            Returns:
+                pyshelf.metadata.wrapper.Wrapper
+        """
         return Wrapper(metadata)
 
     @property
     def mapper(self):
+        """
+            Returns:
+                pyshelf.metadata.mapper.Mapper
+        """
         if not self._mapper:
             self._mapper = Mapper()
 
@@ -32,6 +44,10 @@ class Container(object):
 
     @property
     def manager(self):
+        """
+            Returns:
+                pyshelf.metadata.manager.Manager
+        """
         if not self._manager:
             self._manager = Manager(self)
 
@@ -39,6 +55,10 @@ class Container(object):
 
     @property
     def yaml_codec(self):
+        """
+            Returns:
+                pyshelf.metadata.yaml_codec.YamlCodec
+        """
         if not self._yaml_codec:
             self._yaml_codec = YamlCodec()
 
@@ -46,6 +66,10 @@ class Container(object):
 
     @property
     def cloud_portal(self):
+        """
+            Returns:
+                pyshelf.metadata.cloud_portal.CloudPortal
+        """
         if not self._cloud_portal:
             self._cloud_portal = CloudPortal(self)
 
@@ -53,6 +77,10 @@ class Container(object):
 
     @property
     def initializer(self):
+        """
+            Returns:
+                pyshelf.metadata.initializer.Initializer
+        """
         if not self._initializer:
             self._initializer = Initializer(self)
 
