@@ -46,11 +46,11 @@ class FunctionalTestBase(pyproctor.TestBase):
         self.search_wrapper = SearchTestWrapper(search_container)
         metadata = [
             meta_utils.get_meta(),
-            meta_utils.get_meta("other", "/this/that/other", "1.1"),
-            meta_utils.get_meta("thing", "/thing", "1.2"),
-            meta_utils.get_meta("blah", "/blah", "1.19"),
-            meta_utils.get_meta("a", "/a", "1.19"),
-            meta_utils.get_meta("zzzz", "/zzzz", "1.19"),
+            meta_utils.get_meta("other", "this/that/other", "1.1"),
+            meta_utils.get_meta("thing", "thing", "1.2"),
+            meta_utils.get_meta("blah", "blah", "1.19"),
+            meta_utils.get_meta("a", "a", "1.19"),
+            meta_utils.get_meta("zzzz", "zzzz", "1.19"),
         ]
         self.search_wrapper.setup_metadata(metadata)
 
