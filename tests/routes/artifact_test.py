@@ -40,6 +40,9 @@ class ArtifactTest(FunctionalTestBase):
     def test_artifact_get_artifact_list(self):
         self.artifact_get_list("dir/dir2/dir3/dir4/")
 
+    def test_artifact_get_artifact_list_no_trailing_slash(self):
+        self.artifact_get_list("dir/dir2/dir3/dir4")
+
     def test_artifact_get_artifact_list_all(self):
         self.route_tester \
             .artifact() \
@@ -48,10 +51,6 @@ class ArtifactTest(FunctionalTestBase):
                 "Link": ["/test/artifact/test; rel=child; title=test", "/test/artifact/dir/; rel=child; title=dir/"]
             }) \
             .get(headers=self.auth)
-
-    def test_artifact_get_artifact_list_no_trailing_slash(self):
-        self.artifact_get_list("dir/dir2/dir3/dir4")
-
 
     def test_artifact_upload(self):
         self.route_tester.artifact() \

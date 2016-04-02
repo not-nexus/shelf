@@ -3,11 +3,13 @@ from pyshelf.permissions_validator import PermissionsValidator
 from pyshelf.cloud.cloud_exceptions import ArtifactNotFoundError
 from mock import MagicMock
 import permission_utils as utils
+import os
 
 
 class PermissionsUnitTest(UnitTestBase):
     def mock_dependencies(self, permissions, path, method, headers):
         self.container.request.path = path
+        self.container.resource_identity.artifact_path, self.container.resource_identity.artifact_name = os.path.split(path)
         self.container.request.method = method
         self.container.request.headers = headers
         self.storage.get_artifact_as_string = MagicMock()

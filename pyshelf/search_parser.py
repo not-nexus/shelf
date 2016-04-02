@@ -30,11 +30,13 @@ class SearchParser(object):
         path_search = "{0}={1}*".format(MetadataKeys.PATH, path)
         search_criteria.append(self._format_search_criteria(path_search))
 
-        if isinstance(request_criteria["sort"], list):
-            for sort in request_criteria["sort"]:
-                sort_criteria.append(self._format_sort_criteria(sort))
-        else:
-            sort_criteria.append(self._format_sort_criteria(request_criteria["sort"]))
+        if request_criteria.get("sort"):
+
+            if isinstance(request_criteria["sort"], list):
+                for sort in request_criteria["sort"]:
+                    sort_criteria.append(self._format_sort_criteria(sort))
+            else:
+                sort_criteria.append(self._format_sort_criteria(request_criteria["sort"]))
 
         return {"search": search_criteria, "sort": sort_criteria, "limit": request_criteria.get("limit")}
 
