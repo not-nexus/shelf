@@ -95,7 +95,7 @@ class Formatter(object):
             add = True
             filtered = {}
 
-            for metadata_property in metadata["items"]:
+            for metadata_property in metadata["property_list"]:
                 if self._is_version_search(metadata_property["name"]):
                     if not self._sufficient_version(metadata_property):
                         add = False

@@ -6,7 +6,7 @@ metadata_analyzer = analyzer("metadata_analyzer", tokenizer=tokenizer("keyword")
 
 
 class Metadata(DocType):
-    items = Nested(
+    property_list = Nested(
         properties={
             "name": String(),
             "value": String(analyzer=metadata_analyzer),
@@ -21,4 +21,4 @@ class Metadata(DocType):
             Args
                 metadata(dict): collection of metadata for document.
         """
-        self.items = metadata.values()
+        self.property_list = metadata.values()
