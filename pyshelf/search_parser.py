@@ -3,6 +3,7 @@ from pyshelf.search.sort_flag import SortFlag
 from pyshelf.search.type import Type as SearchType
 import re
 from pyshelf.metadata.keys import Keys as MetadataKeys
+from pyshelf.resource_identity import ResourceIdentity
 
 
 class SearchParser(object):
@@ -19,7 +20,6 @@ class SearchParser(object):
         """
         search_criteria = []
         sort_criteria = []
-        print request_criteria
 
         if isinstance(request_criteria["search"], list):
             for search in request_criteria["search"]:
@@ -38,7 +38,9 @@ class SearchParser(object):
             else:
                 sort_criteria.append(self._format_sort_criteria(request_criteria["sort"]))
 
-        return {"search": search_criteria, "sort": sort_criteria, "limit": request_criteria.get("limit")}
+        formatted_criteria = {"search": search_criteria, "sort": sort_criteria, "limit": request_criteria.get("limit")}
+
+        return formatted_criteria
 
     def list_artifacts(self, results):
         """
@@ -53,7 +55,8 @@ class SearchParser(object):
         artifact_list = []
 
         for result in results:
-            artifact_list.append(result[MetadataKeys.PATH]["value"])
+            resource_id = ResourceIdentity(result[MetadataKeys.PATH]["value"])
+            artifact_list.append(resource_id.cloud[1:])
 
         return artifact_list
 

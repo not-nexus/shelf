@@ -21,8 +21,8 @@ class SearchTest(FunctionalTestBase):
             .route_params(bucket_name="test", path="") \
             .expect(204, headers={
                 "Link": [
-                    "/test/artifact/test; rel=child; title=test",
                     "/test/artifact/thing; rel=child; title=thing",
+                    "/test/artifact/test; rel=child; title=test"
                 ]
             }) \
             .post({
@@ -35,8 +35,9 @@ class SearchTest(FunctionalTestBase):
             .route_params(bucket_name="test", path="") \
             .expect(204, headers={
                 "Link": [
-                    "/test/artifact/test/Test; rel=child; title=test/Test",
+                    "/test/artifact/dir/dir2/Test; rel=child; title=dir/dir2/Test",
                     "/test/artifact/test; rel=child; title=test",
+                    "/test/artifact/dir/dir2/dir3/nest-test; rel=child; title=dir/dir2/dir3/nest-test"
                 ]
             }) \
             .post({
@@ -46,14 +47,14 @@ class SearchTest(FunctionalTestBase):
     def test_version_search(self):
         self.route_tester \
             .search() \
-            .route_params(bucket_name="test", path="test") \
+            .route_params(bucket_name="test", path="") \
             .expect(204, headers={
                 "Link": [
-                    "/test/artifact/a; rel=child; title=a",
                     "/test/artifact/blah; rel=child; title=blah",
+                    "/test/artifact/a; rel=child; title=a",
+                    "/test/artifact/zzzz; rel=child; title=zzzz",
                     "/test/artifact/this/that/other; rel=child; title=this/that/other",
                     "/test/artifact/thing; rel=child; title=thing",
-                    "/test/artifact/zzzz; rel=child; title=zzzz"
                 ]
             }) \
             .post({
@@ -61,14 +62,16 @@ class SearchTest(FunctionalTestBase):
             }, headers=self.auth)
 
     def test_version_search_and_sort(self):
+        # Default ASC sort... Starts with lower version 1.2 and ends with 1.19.
         self.route_tester \
             .search() \
-            .route_params(bucket_name="test", path="test") \
+            .route_params(bucket_name="test", path="") \
             .expect(204, headers={
                 "Link": [
+                    "/test/artifact/this/that/other; rel=child; title=this/that/other",
                     "/test/artifact/thing; rel=child; title=thing",
-                    "/test/artifact/a; rel=child; title=a",
                     "/test/artifact/blah; rel=child; title=blah",
+                    "/test/artifact/a; rel=child; title=a",
                     "/test/artifact/zzzz; rel=child; title=zzzz"
                 ]
             }) \
@@ -80,7 +83,7 @@ class SearchTest(FunctionalTestBase):
     def test_version_search_and_multi_sort(self):
         self.route_tester \
             .search() \
-            .route_params(bucket_name="test", path="test") \
+            .route_params(bucket_name="test", path="") \
             .expect(204, headers={
                 "Link": [
                     "/test/artifact/this/that/other; rel=child; title=this/that/other",
@@ -99,13 +102,35 @@ class SearchTest(FunctionalTestBase):
                 ]
             }, headers=self.auth)
 
+    def test_search_with_path(self):
+        self.route_tester \
+            .search() \
+            .route_params(bucket_name="test", path="dir/dir2") \
+            .expect(204, headers={
+                "Link": [
+                    "/test/artifact/dir/dir2/Test; rel=child; title=dir/dir2/Test"
+                ]
+            }) \
+            .post({
+                "search": "artifactName=Test"
+            }, headers=self.auth)
+
     def test_search_no_results(self):
         self.route_tester \
             .search() \
-            .route_params(bucket_name="test", path="test") \
+            .route_params(bucket_name="test", path="") \
             .expect(204, headers={
                 "Link": []
             }) \
             .post({
                 "search": "artifactName=baloba"
             }, headers=self.auth)
+
+    # This appears redundant but search requires read permissions while all other POSTs
+    # require write permissions.
+    def test_search_no_permissions(self):
+        self.route_tester \
+            .search() \
+            .route_params(bucket_name="test", path="test") \
+            .expect(401, "Permission Denied\n") \
+            .post({"search": "artifactName=*"}, headers=self.auth)

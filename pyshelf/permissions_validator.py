@@ -1,5 +1,5 @@
 import yaml
-import fnmatch
+from fnmatch import fnmatch
 import os
 from pyshelf.cloud.cloud_exceptions import ArtifactNotFoundError
 
@@ -63,25 +63,54 @@ class PermissionsValidator(object):
                 allowed = self._get_access(write)
             elif method in PermissionsValidator.REQUIRES_READ or "/_search" in path and "/artifact/" in path:
                 read = self.permissions.get("read")
-                allowed = self._get_access(read)
+
+                if "/_search" in path:
+                    allowed = self._get_search_access(read)
+                else:
+                    allowed = self._get_access(read)
 
         return allowed
 
     def _get_access(self, permissions):
         """
-            Parses permissions and compares it to request path to ensure user
-            has proper access. To allow for read access to only specific files
-            in a directory two paths are compared using fnmatch. The full path
-            of the artifact and the directory of the artifact.
+            Determines if key associated with request has proper access.
 
             Args:
                 permissions(dict): Permissions loaded from _keys directory of requested bucket.
+
+            Returns:
+                bool: sufficient permissions.
         """
         access = False
         dir_path = self.container.resource_identity.artifact_path
         artifact_path = os.path.join(dir_path, self.container.resource_identity.artifact_name)
 
         for p in permissions:
-            if fnmatch.fnmatch(artifact_path, p) or fnmatch.fnmatch(dir_path, p):
+            if fnmatch(artifact_path, p) or fnmatch(dir_path, p):
+                return True
+        return access
+
+    # Separated as search request are partial paths rather then full artifact paths.
+    def _get_search_access(self, permissions):
+        """
+            Determines if key associated with request has proper access to search.
+
+            Args:
+                permissions(dict): Permissions loaded from _keys directory of requested bucket.
+
+            Returns:
+                bool: sufficient permissions.
+        """
+        access = False
+        path_list = self.container.request.path.split("/")[3:-1]
+
+        if not path_list:
+            search_path = "/"
+        else:
+            search_path = "/".join(path_list)
+            search_path = "/{0}/".format(search_path)
+
+        for p in permissions:
+            if fnmatch(search_path, p):
                 return True
         return access

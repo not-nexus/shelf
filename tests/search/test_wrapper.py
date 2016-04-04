@@ -11,14 +11,20 @@ class TestWrapper(object):
         self.index = self.search_container.es_index
 
     def setup_metadata(self, data):
-        self.init_metadata()
         for doc in data:
-            meta = Metadata()
-            meta.meta.id = doc["artifactName"]["value"]
-            meta.meta.index = self.index
-            meta.update_all(doc)
-            meta.save(using=self.es)
+            self.add_metadata(doc["artifactName"]["value"], doc)
 
+        self.refresh_index()
+
+    def add_metadata(self, key, metadata):
+        self.init_metadata()
+        meta = Metadata()
+        meta.meta.id = key
+        meta.meta.index = self.index
+        meta.update_all(metadata)
+        meta.save(using=self.es)
+
+    def refresh_index(self):
         self.es.indices.refresh(index=self.index)
 
     def teardown_metadata(self):
@@ -28,7 +34,7 @@ class TestWrapper(object):
         if not TestWrapper.INIT:
             # This is necessary as I added an analyzer with a keyword tokenizer
             # which requires an index to be closed and reopened.
-            self.es.indices.delete(index=self.index)
+            self.es.indices.delete(index=self.index, ignore=404)
             Metadata.init(index=self.index, using=self.es)
             self.es.indices.refresh(index=self.index)
             TestWrapper.INIT = True
