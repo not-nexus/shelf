@@ -8,11 +8,11 @@ class ResourceIdentity(object):
             resource_url = "/" + resource_url
 
         # To get rid of redundant separators
-        self.resource_url = os.path.normpath(resource_url)
+        resource_url = os.path.normpath(resource_url)
         self._bucket_name = bucket_name
         self._artifact_path = artifact_path
 
-        self._parse(self.resource_url)
+        self._parse(resource_url)
         self._search = None
         self._cloud_metadata = None
         self._artifact_name = None
@@ -23,6 +23,10 @@ class ResourceIdentity(object):
             self._bucket_name = self._part_list[1]
 
         return self._bucket_name
+
+    @property
+    def resource_path(self):
+        return self._resource_path
 
     @property
     def artifact_path(self):
@@ -74,6 +78,7 @@ class ResourceIdentity(object):
             part_list = part_list[:index]
 
         self._part_list = part_list
+        self._resource_path = "/".join(part_list)
 
     def _try_index(self, part_list, key_list):
         index = None
