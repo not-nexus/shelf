@@ -83,6 +83,7 @@ class Manager(object):
             self.metadata.update(data)
 
         # assuming success if it hasn't thrown an exception
+        self.write()
         return Result()
 
     def try_update_property(self, key, value):
