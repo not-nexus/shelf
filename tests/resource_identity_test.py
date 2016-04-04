@@ -43,6 +43,9 @@ class ResourceIdentityTest(pyproctor.TestBase):
     def test_artifact_name(self):
         self.assertEqual("blah3", self.create().artifact_name)
 
+    def test_resource_path(self):
+        self.assertEqual("/lol-test/artifact/blah1/blah2/blah3", self.create().resource_path)
+
     def test_artifact_name_with_search(self):
         self.run_artifact_name_with_alternate_suffix("_search")
 
