@@ -18,7 +18,7 @@ class MetadataTest(FunctionalTestBase):
             .expect(200, meta_utils.get_meta(name="nest-test", path="/dir/dir2/dir3"),
                     headers={"Location": "http://localhost/test/artifact/dir/dir2/dir3/nest-test/_meta"}) \
             .put(data=meta_utils.send_meta(), headers=self.auth)
-        self.assert_metadata_matches("/test/artifact/dir/dir2/dir3/nest-test/_meta")  # NOCOMMIT
+        self.assert_metadata_matches("/test/artifact/dir/dir2/dir3/nest-test/_meta")
 
     def test_put_metadata_immutable(self):
         self.route_tester \
@@ -26,6 +26,7 @@ class MetadataTest(FunctionalTestBase):
             .route_params(bucket_name="test", path="test") \
             .expect(200, meta_utils.get_meta()) \
             .put(data=meta_utils.send_meta_changed(), headers=self.auth)
+        self.assert_metadata_matches("/test/artifact/test/_meta")
 
     def test_get_metadata_item(self):
         self.route_tester.metadata_item() \
@@ -45,6 +46,7 @@ class MetadataTest(FunctionalTestBase):
             .route_params(bucket_name="test", path="test", item="tag2") \
             .expect(201, {"immutable": False, "name": "tag2", "value": "test"}) \
             .post(data=meta_utils.get_meta_item(), headers=self.auth)
+        self.assert_metadata_matches("/test/artifact/test/_meta")
 
     def test_post_existing_metadata_item(self):
         self.route_tester \
@@ -52,6 +54,7 @@ class MetadataTest(FunctionalTestBase):
             .route_params(bucket_name="test", path="test", item="tag1") \
             .expect(403, {"code": ErrorCode.FORBIDDEN, "message": "This metadata already exists."}) \
             .post(data=meta_utils.get_meta_item(), headers=self.auth)
+        self.assert_metadata_matches("/test/artifact/test/_meta")
 
     def test_put_metadata_item(self):
         self.route_tester \
@@ -59,6 +62,7 @@ class MetadataTest(FunctionalTestBase):
             .route_params(bucket_name="test", path="test", item="tag2") \
             .expect(201, {"immutable": False, "name": "tag2", "value": "test"}) \
             .put(data=meta_utils.get_meta_item(), headers=self.auth)
+        self.assert_metadata_matches("/test/artifact/test/_meta")
 
     def test_put_metadata_existing_item(self):
         self.route_tester \
@@ -66,12 +70,14 @@ class MetadataTest(FunctionalTestBase):
             .route_params(bucket_name="test", path="test", item="tag") \
             .expect(200, meta_utils.get_meta()["tag"]) \
             .put(data=meta_utils.get_meta()["tag"], headers=self.auth)
+        self.assert_metadata_matches("/test/artifact/test/_meta")
 
     def test_delete_metadata_item(self):
         self.route_tester.metadata_item() \
             .route_params(bucket_name="test", path="test", item="tag") \
             .expect(204) \
             .delete(headers=self.auth)
+        self.assert_metadata_matches("/test/artifact/test/_meta")
 
     def test_delete_metadata_immutable(self):
         self.route_tester.metadata_item() \
@@ -83,3 +89,4 @@ class MetadataTest(FunctionalTestBase):
                     }) \
             .delete(headers=self.auth)
         self.test_get_metadata_item()
+        self.assert_metadata_matches("/test/artifact/test/_meta")
