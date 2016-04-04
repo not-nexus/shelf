@@ -52,6 +52,7 @@ class Comparator(object):
         # Make extra sure our data will show up
         self.es_connection.indices.refresh(index=self.index)
         metadata = Metadata.get(index=self.index, using=self.es_connection, id=identity.search, ignore=404)
+        metadata = metadata.to_dict()["property_list"]
         # TODO: This obviously will fail.  At the moment I can't get anything to come back from elasticsearch
         import pprint # NOCOMMIT
         pprint.pprint(metadata) # NOCOMMIT
