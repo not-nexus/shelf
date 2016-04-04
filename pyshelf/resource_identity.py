@@ -8,11 +8,11 @@ class ResourceIdentity(object):
             resource_url = "/" + resource_url
 
         # To get rid of redundant separators
-        self._resource_url = os.path.normpath(resource_url)
+        resource_url = os.path.normpath(resource_url)
         self._bucket_name = bucket_name
         self._artifact_path = artifact_path
 
-        self._parse(self._resource_url)
+        self._parse(resource_url)
         self._search = None
         self._cloud_metadata = None
         self._artifact_name = None
