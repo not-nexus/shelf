@@ -55,9 +55,6 @@ class FunctionalTestBase(pyproctor.TestBase):
         ]
         self.search_wrapper.setup_metadata(metadata)
 
-    def tearDown(self):
-        self.search_wrapper.teardown_metadata()
-
     @classmethod
     def setUpClass(cls):
         config = {
@@ -123,6 +120,7 @@ class FunctionalTestBase(pyproctor.TestBase):
 
     def tearDown(self):
         self.moto_s3.stop()
+        self.search_wrapper.teardown_metadata()
 
     def response_500(self, message=None):
         if not message:

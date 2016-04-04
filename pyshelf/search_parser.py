@@ -70,7 +70,7 @@ class SearchParser(object):
         search_criteria = {}
         version_search = "\~\="
         # Match star unless it is escaped with \
-        wildcard_search = "[^\\\]\*"
+        wildcard_search = r"[^\\]\*"
 
         if re.search(version_search, search_string):
             search_criteria["search_type"] = SearchType.VERSION

@@ -108,17 +108,20 @@ def delete_metadata_property(container, bucket_name, path, item):
 
     return response
 
+
 @artifact.route("/<bucket_name>/artifact/_search", methods=["POST"])
 @decorators.foundation
 def root_search(container, bucket_name):
     response = search(container, bucket_name)
     return response
 
+
 @artifact.route("/<bucket_name>/artifact/<path:path>/_search", methods=["POST"])
 @decorators.foundation
 def path_search(container, bucket_name, path):
     response = search(container, bucket_name)
     return response
+
 
 def search(container, bucket_name, path=""):
     """

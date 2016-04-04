@@ -1,6 +1,7 @@
 from elasticsearch_dsl import String, Nested, Boolean, DocType, tokenizer, analyzer
 
 
+# Required for case sensitivity
 metadata_analyzer = analyzer("metadata_analyzer", tokenizer=tokenizer("keyword"))
 
 
