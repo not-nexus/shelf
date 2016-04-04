@@ -112,4 +112,7 @@ class SearchParser(object):
         if flag_list:
             sort_criteria["flag_list"] = flag_list
 
+        if not sort_criteria.get("sort_type"):
+            sort_criteria["sort_type"] = SortType.ASC
+
         return sort_criteria
