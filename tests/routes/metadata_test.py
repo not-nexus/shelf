@@ -18,6 +18,7 @@ class MetadataTest(FunctionalTestBase):
             .expect(200, meta_utils.get_meta(name="nest-test", path="/dir/dir2/dir3"),
                     headers={"Location": "http://localhost/test/artifact/dir/dir2/dir3/nest-test/_meta"}) \
             .put(data=meta_utils.send_meta(), headers=self.auth)
+        self.assert_metadata_matches("/test/artifact/dir/dir2/dir3/nest-test/_meta")  # NOCOMMIT
 
     def test_put_metadata_immutable(self):
         self.route_tester \
