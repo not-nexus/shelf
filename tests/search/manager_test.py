@@ -4,7 +4,6 @@ from pyshelf.search.type import Type as SearchType
 from pyshelf.search.sort_type import SortType
 from pyshelf.search.sort_flag import SortFlag
 import tests.metadata_utils as utils
-from pyshelf.search.metadata import Metadata
 
 
 class ManagerTest(UnitTestBase):
@@ -94,7 +93,8 @@ class ManagerTest(UnitTestBase):
                 }
             ]
         }, ["artifactPath"])
-        self.assertEqual(results[0], {"artifactPath": {"name": "artifactPath", "value": "test", "immutable": True}})
+        self.assertEqual(results[0], {"artifactPath": {"name": "artifactPath", "value": "/test/artifact/test",
+            "immutable": True}})
 
     def test_dumb_tilde_search(self):
         results = self.search_manager.search({

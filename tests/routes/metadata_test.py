@@ -19,6 +19,14 @@ class MetadataTest(FunctionalTestBase):
                     headers={"Location": "http://localhost/test/artifact/dir/dir2/dir3/nest-test/_meta"}) \
             .put(data=meta_utils.send_meta(), headers=self.auth)
 
+    def test_empty_metadata(self):
+        self.route_tester \
+            .metadata() \
+            .route_params(bucket_name="test", path="thing") \
+            .expect(200, meta_utils.get_meta(name="thing", path="/test/artifact/thing"),
+                    headers={"Location": "http://localhost/test/artifact/thing/_meta"}) \
+            .put(data=meta_utils.send_meta(), headers=self.auth)
+
     def test_put_metadata_immutable(self):
         self.route_tester \
             .metadata() \
