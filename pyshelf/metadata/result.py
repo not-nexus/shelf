@@ -32,9 +32,5 @@ class Result(object):
             Returns:
                 boolean
         """
-        has_error = False
-
-        if code in self.error_code_list:
-            has_error = True
-
+        has_error = (code in self.error_code_list)
         return has_error
