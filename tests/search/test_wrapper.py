@@ -26,6 +26,9 @@ class TestWrapper(object):
 
     def init_metadata(self):
         if not TestWrapper.INIT:
+            # This is necessary as I added an analyzer with a keyword tokenizer
+            # which requires an index to be closed and reopened.
+            self.es.indices.delete(index=self.index)
             Metadata.init(index=self.index, using=self.es)
             self.es.indices.refresh(index=self.index)
             TestWrapper.INIT = True

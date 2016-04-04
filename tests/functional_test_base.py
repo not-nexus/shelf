@@ -51,6 +51,7 @@ class FunctionalTestBase(pyproctor.TestBase):
             meta_utils.get_meta("blah", "blah", "1.19"),
             meta_utils.get_meta("a", "a", "1.19"),
             meta_utils.get_meta("zzzz", "zzzz", "1.19"),
+            meta_utils.get_meta("Test", "test/Test", "2"),
         ]
         self.search_wrapper.setup_metadata(metadata)
 
