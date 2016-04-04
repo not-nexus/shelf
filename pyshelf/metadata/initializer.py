@@ -56,7 +56,7 @@ class Initializer(object):
             etag = storage.get_etag(self.identity.cloud)
             metadata[Keys.MD5] = self.mapper.create_response_property(Keys.MD5, etag, True)
 
-        metadata[Keys.PATH] = self.mapper.create_response_property(Keys.PATH, self.identity.artifact_path, True)
+        metadata[Keys.PATH] = self.mapper.create_response_property(Keys.PATH, self.identity.resource_path, True)
         metadata[Keys.NAME] = self.mapper.create_response_property(Keys.NAME, self.identity.artifact_name, True)
 
         return metadata
