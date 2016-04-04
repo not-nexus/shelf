@@ -2,7 +2,7 @@ from elasticsearch_dsl import String, Nested, Boolean, DocType
 
 
 class Metadata(DocType):
-    items = Nested(
+    property_list = Nested(
         properties={
             "name": String(),
             "value": String(),
@@ -17,4 +17,4 @@ class Metadata(DocType):
             Args
                 metadata(dict): collection of metadata for document.
         """
-        self.items = metadata.values()
+        self.property_list = metadata.values()

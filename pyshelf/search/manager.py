@@ -67,19 +67,19 @@ class Manager(object):
         query = Q()
         for criteria in search_criteria:
 
-            # The double underscores (items__name) represents a nested field (items.name) in Elasticsearch_dsl
-            nested_query = Q(SearchType.MATCH, items__name=criteria["field"])
+            # The double underscores (property_list__name) represents a nested field (properties_list.name) in Elasticsearch_dsl
+            nested_query = Q(SearchType.MATCH, property_list__name=criteria["field"])
 
             if criteria["search_type"] == SearchType.VERSION:
                 formatted = criteria["value"].rsplit(".", 1)
                 value = formatted[0]
                 if len(formatted) > 1:
                     value += ".*"
-                    nested_query &= Q(SearchType.WILDCARD, items__value=value)
+                    nested_query &= Q(SearchType.WILDCARD, property_list__value=value)
                 else:
-                    nested_query &= Q("range", items__value={"gte": value})
+                    nested_query &= Q("range", property_list__value={"gte": value})
             else:
-                nested_query &= Q(criteria["search_type"], items__value=criteria["value"])
-            query &= Q("nested", path="items", query=nested_query)
+                nested_query &= Q(criteria["search_type"], property_list__value=criteria["value"])
+            query &= Q("nested", path="property_list", query=nested_query)
 
         return query
