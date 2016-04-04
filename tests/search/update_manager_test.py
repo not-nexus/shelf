@@ -20,7 +20,7 @@ class UpdateManagerTest(UnitTestBase):
         self.update_manager.remove_unlisted_documents(key_list)
         self.assertEqual(self.test_wrapper.get_metadata("delete"), None)
         self.assertEqual(self.test_wrapper.get_metadata("old"), None)
-        self.assertEqual(self.test_wrapper.get_metadata("test_key").to_dict()["items"],
+        self.assertEqual(self.test_wrapper.get_metadata("test_key").to_dict()["property_list"],
                 utils.get_meta_elastic("test_key"))
 
     def test_bulk_update(self):
@@ -50,10 +50,10 @@ class UpdateManagerTest(UnitTestBase):
         second = self.update_manager._get_metadata("test").to_dict()
         expect_first = data["test_key"].values()
         expect_second = data["test"].values()
-        self.assertEqual(first["items"], expect_first)
-        self.assertEqual(second["items"], expect_second)
+        self.assertEqual(first["property_list"], expect_first)
+        self.assertEqual(second["property_list"], expect_second)
 
     def test_metadata_update(self):
         self.update_manager.update("test_key", utils.get_meta())
         metadata = self.update_manager._get_metadata("test_key")
-        self.assertEqual(metadata.to_dict(), {"items": utils.get_meta_elastic()})
+        self.assertEqual(metadata.to_dict(), {"property_list": utils.get_meta_elastic()})
