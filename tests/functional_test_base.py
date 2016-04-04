@@ -11,7 +11,7 @@ from tests.route_tester.tester import Tester
 from tests.search.test_wrapper import TestWrapper as SearchTestWrapper
 from pyshelf.search.container import Container as SearchContainer
 from pyshelf.search.metadata import Metadata
-import hashlib
+from pyshelf.resource_identity import ResourceIdentity
 
 
 class FunctionalTestBase(pyproctor.TestBase):
@@ -104,17 +104,15 @@ class FunctionalTestBase(pyproctor.TestBase):
         """
             Adds metadata to moto and elastic.
         """
-        full_path = "/{0}/artifact{1}{2}".format(bucket_name, artifact_path, artifact_name)
-        data = meta_utils.get_meta(artifact_name, full_path)
+        resource_id = ResourceIdentity("/{0}/artifact{1}{2}".format(bucket_name, artifact_path, artifact_name))
+        data = meta_utils.get_meta(artifact_name, resource_id.resource_path)
 
         if metadata:
             data.update(metadata)
 
-        cloud_name = "{0}_metadata_{1}.yaml".format(artifact_path, artifact_name)
-        search_key = hashlib.sha256(bucket_name + ":" + artifact_path + ":" + artifact_name).hexdigest()
-        key = Key(self.boto_connection.get_bucket(bucket_name), cloud_name)
+        key = Key(self.boto_connection.get_bucket(bucket_name), resource_id.cloud_metadata)
         key.set_contents_from_string(yaml.dump(data))
-        self.search_wrapper.add_metadata(search_key, data)
+        self.search_wrapper.add_metadata(resource_id.search, data)
 
     def create_auth_key(self):
         self.auth = utils.auth_header()
