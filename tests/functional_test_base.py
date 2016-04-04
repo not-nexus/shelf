@@ -54,6 +54,7 @@ class FunctionalTestBase(pyproctor.TestBase):
     def metadata_comparator(self):
         if not self._metadata_comparator:
             self._metadata_comparator = MetadataComparator(
+                self,
                 FunctionalTestBase.ELASTICSEARCH_CONNECTION_STRING,
                 app.logger)
 

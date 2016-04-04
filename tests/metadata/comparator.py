@@ -9,9 +9,10 @@ from pyshelf.cloud.storage import Storage
 
 
 class Comparator(object):
-    def __init__(self, es_connection_string, logger):
+    def __init__(self, test, es_connection_string, logger):
         self._es_connection_parts = urlparse(es_connection_string)
         self.logger = logger
+        self.test = test
         self._fake_container = None
         self._es_connection = None
         self._cloud_portal = None
@@ -52,8 +53,14 @@ class Comparator(object):
         # Make extra sure our data will show up
         self.es_connection.indices.refresh(index=self.index)
         metadata = Metadata.get(index=self.index, using=self.es_connection, id=identity.search, ignore=404)
+        metadata = self._map_es_metadata(metadata)
+        self.test.asserts.json_equals(cloud_metadata, metadata)
+
+    def _map_es_metadata(self, metadata):
         metadata = metadata.to_dict()["property_list"]
-        # TODO: This obviously will fail.  At the moment I can't get anything to come back from elasticsearch
-        import pprint # NOCOMMIT
-        pprint.pprint(metadata) # NOCOMMIT
-        assert metadata == cloud_metadata
+
+        new_metadata = {}
+        for metadata_property in metadata:
+            new_metadata[metadata_property["name"]] = metadata_property
+
+        return new_metadata
