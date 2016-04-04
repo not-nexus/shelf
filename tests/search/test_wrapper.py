@@ -12,15 +12,17 @@ class TestWrapper(object):
         self.index = self.search_container.es_index
 
     def setup_metadata(self, data):
-        self.init_metadata()
         for doc in data:
             self.doc_list.append(doc["artifactName"]["value"])
-            meta = Metadata()
-            meta.meta.id = doc["artifactName"]["value"]
-            meta.meta.index = self.index
-            meta.update_all(doc)
-            meta.save(using=self.es)
+            self.add_metadata(doc["artifactName"]["value"], doc)
 
+    def add_metadata(self, key, metadata):
+        self.init_metadata()
+        meta = Metadata()
+        meta.meta.id = key
+        meta.meta.index = self.index
+        meta.update_all(metadata)
+        meta.save(using=self.es)
         self.es.indices.refresh(index=self.index)
 
     def teardown_metadata(self):

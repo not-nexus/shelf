@@ -9,7 +9,7 @@ def get_meta_item():
     }
 
 
-def get_meta(name="test", path="test", version="1"):
+def get_meta(name="test", path="/test/artifact/test", version="1"):
     return {
         "tag": {
             "name": "tag",
@@ -43,7 +43,7 @@ def get_meta(name="test", path="test", version="1"):
         }
     }
 
-def get_meta_elastic(name="test", path="test", version="1"):
+def get_meta_elastic(name="test", path="/test/artifact/test", version="1"):
     return get_meta(name, path, version).values()
 
 

@@ -1,7 +1,6 @@
 from tests.unit_test_base import UnitTestBase
 import tests.metadata_utils as utils
 from tests.search.test_wrapper import TestWrapper as SearchTestWrapper
-from pyshelf.search.metadata import Metadata
 
 
 class UpdateManagerTest(UnitTestBase):
@@ -20,8 +19,8 @@ class UpdateManagerTest(UnitTestBase):
         self.update_manager.remove_unlisted_documents(key_list)
         self.assertEqual(self.test_wrapper.get_metadata("delete"), None)
         self.assertEqual(self.test_wrapper.get_metadata("old"), None)
-        self.assertEqual(self.test_wrapper.get_metadata("test_key").to_dict()["property_list"],
-                utils.get_meta_elastic("test_key"))
+        self.assertEqual(utils.get_meta_elastic("test_key"),
+                self.test_wrapper.get_metadata("test_key").to_dict()["property_list"])
 
     def test_bulk_update(self):
         data = {
