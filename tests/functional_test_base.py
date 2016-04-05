@@ -89,9 +89,9 @@ class FunctionalTestBase(pyproctor.TestBase):
         nested_key.set_contents_from_string("hello world")
         artifact_list = Key(self.test_bucket, "/dir/dir2/dir3/dir4/test5")
         artifact_list.set_contents_from_string("")
-        thing_key = Key(self.test_bucket, "thing")
+        thing_key = Key(self.test_bucket, "empty")
         thing_key.set_contents_from_string("hello world")
-        empty_meta = Key(self.test_bucket, "/_metadata_thing.yaml")
+        empty_meta = Key(self.test_bucket, "/_metadata_empty.yaml")
         empty_meta.set_contents_from_string("")
 
     def setup_metadata(self):

@@ -49,8 +49,8 @@ class ArtifactTest(FunctionalTestBase):
             .route_params(bucket_name="test", path="") \
             .expect(204, headers={
                 "Link": [
+                    "/test/artifact/empty; rel=child; title=empty",
                     "/test/artifact/test; rel=child; title=test",
-                    "/test/artifact/thing; rel=child; title=thing",
                     "/test/artifact/dir/; rel=child; title=dir/",
                     "/test/artifact/this/; rel=child; title=this/"
                 ]

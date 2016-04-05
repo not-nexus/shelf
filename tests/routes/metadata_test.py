@@ -22,9 +22,9 @@ class MetadataTest(FunctionalTestBase):
     def test_empty_metadata(self):
         self.route_tester \
             .metadata() \
-            .route_params(bucket_name="test", path="thing") \
-            .expect(200, meta_utils.get_meta(name="thing", path="/test/artifact/thing"),
-                    headers={"Location": "http://localhost/test/artifact/thing/_meta"}) \
+            .route_params(bucket_name="test", path="empty") \
+            .expect(200, meta_utils.get_meta(name="empty", path="/test/artifact/empty"),
+                    headers={"Location": "http://localhost/test/artifact/empty/_meta"}) \
             .put(data=meta_utils.send_meta(), headers=self.auth)
 
     def test_put_metadata_immutable(self):
