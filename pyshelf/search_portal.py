@@ -1,5 +1,6 @@
 from pyshelf.metadata.keys import Keys as MetadataKeys
 from pyshelf.resource_identity import ResourceIdentity
+import utils
 
 
 class SearchPortal(object):
@@ -41,27 +42,15 @@ class SearchPortal(object):
                     "limit": 1
                 }
         """
-        criteria["search"] = self._default_to_list(criteria.get("search"))
-        criteria["sort"] = self._default_to_list(criteria.get("sort"))
-        path_search = "{0}={1}*".format(MetadataKeys.PATH, self.resource_id.resource_path)
-        criteria["search"].append(path_search)
+        search_path = "{0}={1}*".format(MetadataKeys.PATH, self.resource_id.resource_path)
+        criteria["search"] = utils.default_to_list(criteria.get("search"))
+        criteria["sort"] = utils.default_to_list(criteria.get("sort"))
+        criteria["search"].append(search_path)
 
         formatted_criteria = self.search_parser.from_request(criteria)
         results = self.search_manager.search(formatted_criteria)
         artifact_list = self._list_artifacts(results, criteria.get("limit"))
         self.link_manager.assign_listing(artifact_list)
-
-    def _default_to_list(self, criteria):
-        """
-            Encapsulates non-list objects in a list for easy parsing.
-
-            Args:
-                criteria(string | list): search or sort criteria.
-        """
-        if not isinstance(criteria, list) and criteria is not None:
-            criteria = [criteria]
-
-        return criteria
 
     def _list_artifacts(self, results, limit=None):
         """

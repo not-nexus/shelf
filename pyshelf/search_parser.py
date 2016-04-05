@@ -21,11 +21,11 @@ class SearchParser(object):
         for search in request_criteria["search"]:
             search_criteria.append(self._format_search_criteria(search))
 
-        if request_criteria.get("sort"):
-            for sort in request_criteria["sort"]:
-                sort_criteria.append(self._format_sort_criteria(sort))
+        for sort in request_criteria["sort"]:
+            sort_criteria.append(self._format_sort_criteria(sort))
 
         formatted_criteria = {"search": search_criteria, "sort": sort_criteria}
+        print formatted_criteria
 
         return formatted_criteria
 
