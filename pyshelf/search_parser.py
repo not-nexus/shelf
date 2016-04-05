@@ -75,6 +75,10 @@ class SearchParser(object):
 
         for result in results:
             resource_id = ResourceIdentity(result[MetadataKeys.PATH]["value"])
+            # CODE_REVIEW If you are doing this for link paths, you should
+            # not need to.  If we concat this with another path, we should
+            # probably just handle both cases.  Remember os.path.join is
+            # your friend.
             artifact_list.append(resource_id.cloud[1:])
 
         return artifact_list
