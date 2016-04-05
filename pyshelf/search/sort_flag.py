@@ -16,4 +16,4 @@ class SortFlag(object):
             Returns:
                 pyshelf.search.sort_flag.SortFlag or None: returns None if invalid alias.
         """
-        return SortFlag.ALIASES.get(alias)
+        return SortFlag.ALIASES.get(alias.upper())

@@ -8,14 +8,7 @@ from pyshelf.search_portal import SearchPortal
 from mock import Mock
 
 
-# CODE_REVIEW: Missing test cases
-#
-# ~= in the search twice. "version~=1.1~=blah"  <-- as messed up as that is.
-# escaping ~ and *
-# case insensitive sort_type/sort_flag (I know this doesn't exist yet)
-# sending anything that is not a sort_type/sort_flag that is not the first field
-# sort is an empty list/not provided at all
-class SearchParseTest(UnitTestBase):
+class SearchParserTest(UnitTestBase):
     def setUp(self):
         self.parser = SearchParser()
         self.portal = SearchPortal(Mock())
@@ -74,3 +67,31 @@ class SearchParseTest(UnitTestBase):
 
         parsed = self.portal._list_artifacts(results, 1)
         self.assertEqual(expected, parsed)
+
+    def test_version_search_string(self):
+        expected = {
+            "field": "test\~\=ing",
+            "value": "1.1",
+            "search_type": SearchType.VERSION
+        }
+        self.assert_search_criteria("test\~\=ing~=1.1", expected)
+
+    def test_equality_search_string(self):
+        expected = {
+            "field": "test\=ing",
+            "value": "1.1",
+            "search_type": SearchType.MATCH
+        }
+        self.assert_search_criteria("test\=ing=1.1", expected)
+
+    def test_fake_wildcard_actually_match_search_string(self):
+        expected = {
+            "field": "test\=i\*ng",
+            "value": "1.1",
+            "search_type": SearchType.MATCH
+        }
+        self.assert_search_criteria("test\=i\*ng=1.1", expected)
+
+    def assert_search_criteria(self, search_string, expected):
+        formatted = self.parser._format_search_criteria(search_string)
+        self.assertEqual(expected, formatted)

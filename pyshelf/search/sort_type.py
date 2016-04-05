@@ -19,4 +19,4 @@ class SortType(object):
             Returns:
                 pyshelf.search.sort_type.SortType or None: returns None if invalid alias.
         """
-        return SortType.ALIASES.get(alias)
+        return SortType.ALIASES.get(alias.upper())

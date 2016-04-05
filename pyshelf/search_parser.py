@@ -25,7 +25,6 @@ class SearchParser(object):
             sort_criteria.append(self._format_sort_criteria(sort))
 
         formatted_criteria = {"search": search_criteria, "sort": sort_criteria}
-        print formatted_criteria
 
         return formatted_criteria
 
@@ -40,25 +39,26 @@ class SearchParser(object):
                 dict: search criteria dictionary
         """
         search_criteria = {}
-        # Both regex's match unless characters are escaped with \
-        version_search = r"[^\\]\~"
-        wildcard_search = r"[^\\]\*"
-        split_char = "="
+        # Regex's match unless characters is preceded with \
+        version_search = r"(?<!\\)\~="
+        wildcard_search = r"(?<!\\)\*"
+        equality_search = r"(?<!\\)\="
+        split_char = equality_search
 
-        # Finds first occurance of = and checks for unescaped tilde in substring
-        index = search_string.find("=")
-        sub_string = search_string[index - 2:index]
-
-        if re.search(version_search, sub_string):
+        # Search the search_string for potential tilde and does a negative lookbehind for \
+        # If tilde exists and \ does preceede it, it is a match and thus a version search
+        if re.search(version_search, search_string):
             search_criteria["search_type"] = SearchType.VERSION
-            split_char = "~="
+            split_char = version_search
         else:
+
             if re.search(wildcard_search, search_string):
                 search_criteria["search_type"] = SearchType.WILDCARD
             else:
                 search_criteria["search_type"] = SearchType.MATCH
 
-        search_criteria["field"], search_criteria["value"] = search_string.split(split_char, 1)
+        # Splits using re.split to ensure first occurence of non-escaped = or ~= is split on
+        search_criteria["field"], search_criteria["value"] = re.split(split_char, search_string, 1)
         return search_criteria
 
     def _format_sort_criteria(self, sort_string):
@@ -74,6 +74,7 @@ class SearchParser(object):
         sort_criteria = {}
         flag_list = []
         sort_list = sort_string.split(",")
+        # The field is always first in the sort string.
         sort_criteria["field"] = sort_list.pop(0).strip()
 
         for sort_string in sort_list:
@@ -81,6 +82,8 @@ class SearchParser(object):
             sort_type = SortType.get_alias(sort_string)
             sort_flag = SortFlag.get_alias(sort_string)
 
+            # Only one pyshelf.search.sort_type.SortType can be used at once.
+            # We decided grabbing the last one makes the most sense if there are multiple.
             if sort_type:
                 sort_criteria["sort_type"] = sort_type
             elif sort_flag:
