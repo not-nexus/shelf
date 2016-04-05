@@ -3,6 +3,7 @@ from pyshelf.search_parser import SearchParser
 from pyshelf.search.sort_type import SortType
 from pyshelf.search.sort_flag import SortFlag
 from pyshelf.search.type import Type as SearchType
+import tests.metadata_utils as utils
 
 
 class SearchParseTest(UnitTestBase):
@@ -38,7 +39,7 @@ class SearchParseTest(UnitTestBase):
             ]
         }
         criteria = self.parser.from_request(request_criteria, "")
-        self.assertEqual(criteria, expected)
+        self.assertEqual(expected, criteria)
 
     def test_from_request_lists(self):
         request_criteria = {
@@ -88,4 +89,14 @@ class SearchParseTest(UnitTestBase):
             ]
         }
         criteria = self.parser.from_request(request_criteria, "test")
-        self.assertEqual(criteria, expected)
+        self.assertEqual(expected, criteria)
+
+    def test_listing(self):
+        results = []
+        expected = ["dir/test"]
+
+        for i in range(5):
+            results.append(utils.get_meta(path="/test/artifact/dir/test"))
+
+        parsed = self.parser.list_artifacts(results, 1)
+        self.assertEqual(expected, parsed)

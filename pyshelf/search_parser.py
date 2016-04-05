@@ -42,17 +42,21 @@ class SearchParser(object):
 
         return formatted_criteria
 
-    def list_artifacts(self, results):
+    def list_artifacts(self, results, limit=None):
         """
             Creates a list of paths from the search results.
 
             Args:
                 results(List[dict]): Formatted search results.
+                limit(int | None): limit number of records
 
             Returns:
                 list: Each element represents the path to an artifact.
         """
         artifact_list = []
+
+        if limit:
+            results = results[:limit]
 
         for result in results:
             resource_id = ResourceIdentity(result[MetadataKeys.PATH]["value"])
