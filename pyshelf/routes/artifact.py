@@ -133,7 +133,7 @@ def search(container):
         Returns:
             Flask response
     """
-    criteria = json.loads(request.data)
+    criteria = request.get_json(force=True)
     container.search_portal.search(criteria)
     response = container.context_response_mapper.to_response(status_code=204)
     return response
