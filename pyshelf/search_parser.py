@@ -137,6 +137,10 @@ class SearchParser(object):
         sort_criteria = {}
         flag_list = []
 
+        # CODE_REVIEW: In addition to matching aliases and
+        # making the first field ALWAYS the field name, can
+        # we also make this case insensitive? Easiest is probably
+        # just to uppercase anything that is not the first field.
         for string in sort_string.split(","):
             string = string.strip()
 
