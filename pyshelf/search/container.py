@@ -1,4 +1,5 @@
 from pyshelf.search.update_manager import UpdateManager
+# CODE_REVIEW: Why alias to SearchManager?
 from pyshelf.search.manager import Manager as SearchManager
 from urlparse import urlparse
 
@@ -31,6 +32,9 @@ class Container(object):
 
         return self._update_manager
 
+    # CODE_REVIEW: Why call it search_manager instead of manager?
+    # we are already in the search namespace.  Also accessing it
+    # outside looks kind of funny: contianer.search.search_manager
     @property
     def search_manager(self):
         if not self._search_manager:
