@@ -9,7 +9,7 @@ class LinkManager(object):
         self.request = self.container.request
         self.path_builder = self.container.artifact_path_builder
 
-    def assign_listing_path(self, artifact_path_list):
+    def assign_listing(self, artifact_path_list):
         """
             Builds list of artifact links and assigns it to pyshelf.context.Context.link_list
 
@@ -28,18 +28,6 @@ class LinkManager(object):
             })
 
         self.context.link_list = link_list
-
-
-    def assign_listing(self, artifact_list):
-        """
-            Builds list of artifact links and assigns it to pyshelf.context.Context.link_list
-
-            Args:
-                artifact_list(List[pyshelf.cloud.stream_iterator.StreamIterator]): List of artifacts.
-        """
-        # artifact.name in this case is the full path to the artifact and thus path_list
-        artifact_path_list = [artifact.name for artifact in artifact_list]
-        self.assign_listing_path(artifact_path_list)
 
     def assign_single(self, artifact):
         """

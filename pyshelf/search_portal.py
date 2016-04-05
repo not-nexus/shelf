@@ -49,7 +49,7 @@ class SearchPortal(object):
         formatted_criteria = self.search_parser.from_request(criteria)
         results = self.search_manager.search(formatted_criteria)
         artifact_list = self._list_artifacts(results, criteria.get("limit"))
-        self.link_manager.assign_listing_path(artifact_list)
+        self.link_manager.assign_listing(artifact_list)
 
     def _default_to_list(self, criteria):
         """
