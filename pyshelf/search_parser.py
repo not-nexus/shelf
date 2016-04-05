@@ -2,18 +2,15 @@ from pyshelf.search.sort_type import SortType
 from pyshelf.search.sort_flag import SortFlag
 from pyshelf.search.type import Type as SearchType
 import re
-from pyshelf.metadata.keys import Keys as MetadataKeys
-from pyshelf.resource_identity import ResourceIdentity
 
 
 class SearchParser(object):
-    def from_request(self, request_criteria, path):
+    def from_request(self, request_criteria):
         """
             Turns the given request into search criteria that can be consumed by pyshelf.search module.
 
             Args:
                 request_criteria(dict): Search and sort criteria from the request.
-                path(string): Path to search.
 
             Returns:
                 dict: search and sort criteria that will be consumed by search layer
@@ -21,63 +18,16 @@ class SearchParser(object):
         search_criteria = []
         sort_criteria = []
 
-        # CODE_REVIEW: Instead of doing this if else thing can you make a
-        # function to default to a list and then always treat the result
-        # as a list?
-        if isinstance(request_criteria["search"], list):
-            for search in request_criteria["search"]:
-                search_criteria.append(self._format_search_criteria(search))
-        else:
-            search_criteria.append(self._format_search_criteria(request_criteria["search"]))
+        for search in request_criteria["search"]:
+            search_criteria.append(self._format_search_criteria(search))
 
-        # CODE_REVIEW: I'm thinking this is outside the scope of the
-        # SearchParser.  The SearchParser should somewhat stupidly
-        # just parse what it is handed.  What if we had another source
-        # that wouldn't have a path?  I think these types of rules are
-        # better added to a manager whose responsibility is specific to
-        # a request to an API.
-        path_search = "{0}={1}*".format(MetadataKeys.PATH, path)
-        search_criteria.append(self._format_search_criteria(path_search))
-
-        # CODE_REVIEW: Should add this type of functionality to the
-        # list defaulting function.
         if request_criteria.get("sort"):
-
-            # CODE_REVIEW: Again, defaulting list thing.
-            if isinstance(request_criteria["sort"], list):
-                for sort in request_criteria["sort"]:
-                    sort_criteria.append(self._format_sort_criteria(sort))
-            else:
-                sort_criteria.append(self._format_sort_criteria(request_criteria["sort"]))
+            for sort in request_criteria["sort"]:
+                sort_criteria.append(self._format_sort_criteria(sort))
 
         formatted_criteria = {"search": search_criteria, "sort": sort_criteria}
 
         return formatted_criteria
-
-    # CODE_REVIEW: This should be moved elsewhere.  It doesn't parse
-    # a the search request data structure.  I think the SearchPortal
-    # could do this instead, or a separate class used by the SearchPortal
-    def list_artifacts(self, results, limit=None):
-        """
-            Creates a list of paths from the search results.
-
-            Args:
-                results(List[dict]): Formatted search results.
-                limit(int | None): limit number of records
-
-            Returns:
-                list: Each element represents the path to an artifact.
-        """
-        artifact_list = []
-
-        if limit:
-            results = results[:limit]
-
-        for result in results:
-            resource_id = ResourceIdentity(result[MetadataKeys.PATH]["value"])
-            artifact_list.append(resource_id.cloud[1:])
-
-        return artifact_list
 
     def _format_search_criteria(self, search_string):
         """
@@ -90,38 +40,25 @@ class SearchParser(object):
                 dict: search criteria dictionary
         """
         search_criteria = {}
-        # CODE_REVIEW: Can we escapse "~" as well?
-        version_search = "\~\="
-        # Match star unless it is escaped with \
+        # Both regex's match unless characters are escaped with \
+        version_search = r"[^\\]\~"
         wildcard_search = r"[^\\]\*"
         split_char = "="
 
-        # CODE_REVIEW: I think we may want to do this
-        # slightly different.  Right now we define a
-        # "split_char" and it will be "=" unless it can
-        # find ~= anywhere in the string.  Instead I think
-        # it should be the first occurance of "=" that defines
-        # what the search.  In other words...
-        #
-        # lol=blah~=blah
-        #
-        # Ends up being "lol": "blah~=blah" instead of
-        # "lol=blah": "blah".
-        if re.search(version_search, search_string):
+        # Finds first occurance of = and checks for unescaped tilde in substring
+        index = search_string.find("=")
+        sub_string = search_string[index - 2:index]
+
+        if re.search(version_search, sub_string):
             search_criteria["search_type"] = SearchType.VERSION
             split_char = "~="
         else:
-
             if re.search(wildcard_search, search_string):
                 search_criteria["search_type"] = SearchType.WILDCARD
             else:
                 search_criteria["search_type"] = SearchType.MATCH
 
-        # CODE_REVIEW: Why not `search_string.split(split_char, 1)` ?
-        # Then you wouldn't need to slice the returned tuple.
-        #
-        # This may change based on previous code review comments anyways.
-        search_criteria["field"], search_criteria["value"] = search_string.partition(split_char)[0::2]
+        search_criteria["field"], search_criteria["value"] = search_string.split(split_char, 1)
         return search_criteria
 
     def _format_sort_criteria(self, sort_string):
@@ -136,20 +73,18 @@ class SearchParser(object):
         """
         sort_criteria = {}
         flag_list = []
+        sort_list = sort_string.split(",")
+        sort_criteria["field"] = sort_list.pop(0).strip()
 
-        for string in sort_string.split(","):
-            string = string.strip()
+        for sort_string in sort_list:
+            sort_string = sort_string.strip()
+            sort_type = SortType.get_alias(sort_string)
+            sort_flag = SortFlag.get_alias(sort_string)
 
-            if hasattr(SortType, string):
-                sort_criteria["sort_type"] = string
-            # CODE_REVIEW: Can we make VER and alias for VERSION?
-            elif hasattr(SortFlag, string):
-                flag_list.append(string)
-            else:
-                # CODE_REVIEW: Can we instead enforce the first value
-                # to be the field?  In this way I wouldn't be able to
-                # search a field called "VERSION"
-                sort_criteria["field"] = string
+            if sort_type:
+                sort_criteria["sort_type"] = sort_type
+            elif sort_flag:
+                flag_list.append(sort_flag)
 
         if flag_list:
             sort_criteria["flag_list"] = flag_list

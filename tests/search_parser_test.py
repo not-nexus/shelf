@@ -4,44 +4,16 @@ from pyshelf.search.sort_type import SortType
 from pyshelf.search.sort_flag import SortFlag
 from pyshelf.search.type import Type as SearchType
 import tests.metadata_utils as utils
+from pyshelf.search_portal import SearchPortal
+from mock import Mock
 
 
 class SearchParseTest(UnitTestBase):
     def setUp(self):
         self.parser = SearchParser()
+        self.portal = SearchPortal(Mock())
 
-    def test_from_request_singular(self):
-        self.maxDiff = None
-        request_criteria = {
-            "search": "version~=1.1",
-            "sort": "version, VERSION, DESC",
-            "limit": 1
-        }
-        expected = {
-            "search": [
-                {
-                    "field": "version",
-                    "value": "1.1",
-                    "search_type": SearchType.VERSION
-                },
-                {
-                    "field": "artifactPath",
-                    "value": "*",
-                    "search_type": SearchType.WILDCARD
-                }
-            ],
-            "sort": [
-                {
-                    "field": "version",
-                    "sort_type": SortType.DESC,
-                    "flag_list": [SortFlag.VERSION]
-                }
-            ]
-        }
-        criteria = self.parser.from_request(request_criteria, "")
-        self.assertEqual(expected, criteria)
-
-    def test_from_request_lists(self):
+    def test_from_request(self):
         request_criteria = {
             "search": [
                 "version~=1.1",
@@ -69,11 +41,6 @@ class SearchParseTest(UnitTestBase):
                     "field": "dumb",
                     "value": "dumbf*",
                     "search_type": SearchType.WILDCARD
-                },
-                {
-                    "field": "artifactPath",
-                    "value": "test*",
-                    "search_type": SearchType.WILDCARD
                 }
             ],
             "sort": [
@@ -88,7 +55,7 @@ class SearchParseTest(UnitTestBase):
                 }
             ]
         }
-        criteria = self.parser.from_request(request_criteria, "test")
+        criteria = self.parser.from_request(request_criteria)
         self.assertEqual(expected, criteria)
 
     def test_listing(self):
@@ -98,5 +65,5 @@ class SearchParseTest(UnitTestBase):
         for i in range(5):
             results.append(utils.get_meta(path="/test/artifact/dir/test"))
 
-        parsed = self.parser.list_artifacts(results, 1)
+        parsed = self.portal._list_artifacts(results, 1)
         self.assertEqual(expected, parsed)
