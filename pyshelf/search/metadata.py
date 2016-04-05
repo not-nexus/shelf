@@ -2,14 +2,15 @@ from elasticsearch_dsl import String, Nested, Boolean, DocType, tokenizer, analy
 
 
 # Required for case sensitivity
-metadata_analyzer = analyzer("metadata_analyzer", tokenizer=tokenizer("keyword"))
+# To add an analyzer to an existing mapping requires mapping to be "closed"
+case_sensitive_analyzer = analyzer("case_sensitive_analyzer", tokenizer=tokenizer("keyword"))
 
 
 class Metadata(DocType):
     property_list = Nested(
         properties={
-            "name": String(),
-            "value": String(analyzer=metadata_analyzer),
+            "name": String(analyzer=case_sensitive_analyzer),
+            "value": String(analyzer=case_sensitive_analyzer),
             "immutable": Boolean()
         }
     )

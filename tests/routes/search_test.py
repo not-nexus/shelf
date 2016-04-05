@@ -62,7 +62,7 @@ class SearchTest(FunctionalTestBase):
             }, headers=self.auth)
 
     def test_version_search_and_sort(self):
-        # Default ASC sort... Starts with lower version 1.2 and ends with 1.19.
+        # Starts with lower version 1.2 and ends with 1.19.
         self.route_tester \
             .search() \
             .route_params(bucket_name="test", path="") \
@@ -77,7 +77,7 @@ class SearchTest(FunctionalTestBase):
             }) \
             .post({
                 "search": "version~=1.2",
-                "sort": "version, VERSION"
+                "sort": "version, VER, ASC"
             }, headers=self.auth)
 
     def test_version_search_and_multi_sort(self):

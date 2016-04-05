@@ -2,18 +2,15 @@ from pyshelf.search.sort_type import SortType
 from pyshelf.search.sort_flag import SortFlag
 from pyshelf.search.type import Type as SearchType
 import re
-from pyshelf.metadata.keys import Keys as MetadataKeys
-from pyshelf.resource_identity import ResourceIdentity
 
 
 class SearchParser(object):
-    def from_request(self, request_criteria, path):
+    def from_request(self, request_criteria):
         """
             Turns the given request into search criteria that can be consumed by pyshelf.search module.
 
             Args:
                 request_criteria(dict): Search and sort criteria from the request.
-                path(string): Path to search.
 
             Returns:
                 dict: search and sort criteria that will be consumed by search layer
@@ -21,48 +18,15 @@ class SearchParser(object):
         search_criteria = []
         sort_criteria = []
 
-        if isinstance(request_criteria["search"], list):
-            for search in request_criteria["search"]:
-                search_criteria.append(self._format_search_criteria(search))
-        else:
-            search_criteria.append(self._format_search_criteria(request_criteria["search"]))
+        for search in request_criteria["search"]:
+            search_criteria.append(self._format_search_criteria(search))
 
-        path_search = "{0}={1}*".format(MetadataKeys.PATH, path)
-        search_criteria.append(self._format_search_criteria(path_search))
-
-        if request_criteria.get("sort"):
-
-            if isinstance(request_criteria["sort"], list):
-                for sort in request_criteria["sort"]:
-                    sort_criteria.append(self._format_sort_criteria(sort))
-            else:
-                sort_criteria.append(self._format_sort_criteria(request_criteria["sort"]))
+        for sort in request_criteria["sort"]:
+            sort_criteria.append(self._format_sort_criteria(sort))
 
         formatted_criteria = {"search": search_criteria, "sort": sort_criteria}
 
         return formatted_criteria
-
-    def list_artifacts(self, results, limit=None):
-        """
-            Creates a list of paths from the search results.
-
-            Args:
-                results(List[dict]): Formatted search results.
-                limit(int | None): limit number of records
-
-            Returns:
-                list: Each element represents the path to an artifact.
-        """
-        artifact_list = []
-
-        if limit:
-            results = results[:limit]
-
-        for result in results:
-            resource_id = ResourceIdentity(result[MetadataKeys.PATH]["value"])
-            artifact_list.append(resource_id.cloud[1:])
-
-        return artifact_list
 
     def _format_search_criteria(self, search_string):
         """
@@ -75,14 +39,17 @@ class SearchParser(object):
                 dict: search criteria dictionary
         """
         search_criteria = {}
-        version_search = "\~\="
-        # Match star unless it is escaped with \
-        wildcard_search = r"[^\\]\*"
-        split_char = "="
+        # Regex's match unless characters is preceded with \
+        version_search = r"(?<!\\)\~="
+        wildcard_search = r"(?<!\\)\*"
+        equality_search = r"(?<!\\)\="
+        split_char = equality_search
 
+        # Search the search_string for potential tilde and does a negative lookbehind for \
+        # If tilde exists and \ does preceede it, it is a match and thus a version search
         if re.search(version_search, search_string):
             search_criteria["search_type"] = SearchType.VERSION
-            split_char = "~="
+            split_char = version_search
         else:
 
             if re.search(wildcard_search, search_string):
@@ -90,7 +57,8 @@ class SearchParser(object):
             else:
                 search_criteria["search_type"] = SearchType.MATCH
 
-        search_criteria["field"], search_criteria["value"] = search_string.partition(split_char)[0::2]
+        # Splits using re.split to ensure first occurence of non-escaped = or ~= is split on
+        search_criteria["field"], search_criteria["value"] = re.split(split_char, search_string, 1)
         return search_criteria
 
     def _format_sort_criteria(self, sort_string):
@@ -105,16 +73,21 @@ class SearchParser(object):
         """
         sort_criteria = {}
         flag_list = []
+        sort_list = sort_string.split(",")
+        # The field is always first in the sort string.
+        sort_criteria["field"] = sort_list.pop(0).strip()
 
-        for string in sort_string.split(","):
-            string = string.strip()
+        for sort_string in sort_list:
+            sort_string = sort_string.strip()
+            sort_type = SortType.get_alias(sort_string)
+            sort_flag = SortFlag.get_alias(sort_string)
 
-            if hasattr(SortType, string):
-                sort_criteria["sort_type"] = string
-            elif hasattr(SortFlag, string):
-                flag_list.append(string)
-            else:
-                sort_criteria["field"] = string
+            # Only one pyshelf.search.sort_type.SortType can be used at once.
+            # We decided grabbing the last one makes the most sense if there are multiple.
+            if sort_type:
+                sort_criteria["sort_type"] = sort_type
+            elif sort_flag:
+                flag_list.append(sort_flag)
 
         if flag_list:
             sort_criteria["flag_list"] = flag_list
