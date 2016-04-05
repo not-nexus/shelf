@@ -57,17 +57,16 @@ class PermissionsValidator(object):
             method = self.container.request.method
             path = self.container.request.path
 
-            # Note: we use POST for searches but searches only require read permissions.
-            if method in PermissionsValidator.REQUIRES_WRITE and "/artifact/" in path and "/_search" not in path:
+            # Note: at this point searches only require the existance of any permissions for a bucket.
+            # TODO: Perhaps implement separate listing permissions for searching to make search permissions explicit.
+            if "/_search" in path:
+                allowed = True
+            elif method in PermissionsValidator.REQUIRES_WRITE and "/artifact/" in path:
                 write = self.permissions.get("write")
                 allowed = self._get_access(write)
-            elif method in PermissionsValidator.REQUIRES_READ or "/_search" in path and "/artifact/" in path:
+            elif method in PermissionsValidator.REQUIRES_READ and "/artifact/" in path:
                 read = self.permissions.get("read")
-
-                if "/_search" in path:
-                    allowed = self._get_search_access(read)
-                else:
-                    allowed = self._get_access(read)
+                allowed = self._get_access(read)
 
         return allowed
 
@@ -87,30 +86,5 @@ class PermissionsValidator(object):
 
         for p in permissions:
             if fnmatch(artifact_path, p) or fnmatch(dir_path, p):
-                return True
-        return access
-
-    # Separated as search request are partial paths rather then full artifact paths.
-    def _get_search_access(self, permissions):
-        """
-            Determines if key associated with request has proper access to search.
-
-            Args:
-                permissions(dict): Permissions loaded from _keys directory of requested bucket.
-
-            Returns:
-                bool: sufficient permissions.
-        """
-        access = False
-        path_list = self.container.request.path.split("/")[3:-1]
-
-        if not path_list:
-            search_path = "/"
-        else:
-            search_path = "/".join(path_list)
-            search_path = "/{0}/".format(search_path)
-
-        for p in permissions:
-            if fnmatch(search_path, p):
                 return True
         return access

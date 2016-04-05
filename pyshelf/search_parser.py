@@ -38,7 +38,7 @@ class SearchParser(object):
             else:
                 sort_criteria.append(self._format_sort_criteria(request_criteria["sort"]))
 
-        formatted_criteria = {"search": search_criteria, "sort": sort_criteria, "limit": request_criteria.get("limit")}
+        formatted_criteria = {"search": search_criteria, "sort": sort_criteria}
 
         return formatted_criteria
 
@@ -74,12 +74,12 @@ class SearchParser(object):
         version_search = "\~\="
         # Match star unless it is escaped with \
         wildcard_search = r"[^\\]\*"
+        split_char = "="
 
         if re.search(version_search, search_string):
             search_criteria["search_type"] = SearchType.VERSION
             split_char = "~="
         else:
-            split_char = "="
 
             if re.search(wildcard_search, search_string):
                 search_criteria["search_type"] = SearchType.WILDCARD

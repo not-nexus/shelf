@@ -36,9 +36,8 @@ class SearchPortal(object):
         """
         formatted_criteria = self.search_parser.from_request(criteria, self.resource_id.resource_path)
         results = self.search_manager.search(formatted_criteria)
-        results = self._limit_results(results, formatted_criteria.get("limit"))
+        results = self._limit_results(results, criteria.get("limit"))
         artifact_list = self.search_parser.list_artifacts(results)
-        print artifact_list
         self.link_manager.assign_listing_path(artifact_list)
 
     def _limit_results(self, search_results, limit=None):

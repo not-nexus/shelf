@@ -125,12 +125,3 @@ class SearchTest(FunctionalTestBase):
             .post({
                 "search": "artifactName=baloba"
             }, headers=self.auth)
-
-    # This appears redundant but search requires read permissions while all other POSTs
-    # require write permissions.
-    def test_search_no_permissions(self):
-        self.route_tester \
-            .search() \
-            .route_params(bucket_name="test", path="test") \
-            .expect(401, "Permission Denied\n") \
-            .post({"search": "artifactName=*"}, headers=self.auth)

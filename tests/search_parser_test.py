@@ -35,8 +35,7 @@ class SearchParseTest(UnitTestBase):
                     "sort_type": SortType.DESC,
                     "flag_list": [SortFlag.VERSION]
                 }
-            ],
-            "limit": 1
+            ]
         }
         criteria = self.parser.from_request(request_criteria, "")
         self.assertEqual(criteria, expected)
@@ -86,8 +85,7 @@ class SearchParseTest(UnitTestBase):
                     "field": "bob",
                     "sort_type": SortType.ASC
                 }
-            ],
-            "limit": None
+            ]
         }
         criteria = self.parser.from_request(request_criteria, "test")
         self.assertEqual(criteria, expected)
