@@ -3,9 +3,12 @@ from pyshelf.resource_identity import ResourceIdentity
 
 
 class SearchPortal(object):
+    """
+        This class is the link between the request/view and the search layer.
+    """
     def __init__(self, container):
         self.container = container
-        self.search_manager = self.container.search.search_manager
+        self.search_manager = self.container.search.manager
         self.search_parser = self.container.search_parser
         self.link_manager = self.container.link_manager
         self.resource_id = self.container.resource_identity

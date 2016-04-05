@@ -8,6 +8,13 @@ from pyshelf.search_portal import SearchPortal
 from mock import Mock
 
 
+# CODE_REVIEW: Missing test cases
+#
+# ~= in the search twice. "version~=1.1~=blah"  <-- as messed up as that is.
+# escaping ~ and *
+# case insensitive sort_type/sort_flag (I know this doesn't exist yet)
+# sending anything that is not a sort_type/sort_flag that is not the first field
+# sort is an empty list/not provided at all
 class SearchParseTest(UnitTestBase):
     def setUp(self):
         self.parser = SearchParser()

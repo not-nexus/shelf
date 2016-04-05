@@ -10,7 +10,7 @@ class ManagerTest(UnitTestBase):
     def setUp(self):
         super(ManagerTest, self).setUp()
         self.test_wrapper = SearchTestWrapper(self.search_container)
-        self.search_manager = self.search_container.search_manager
+        self.manager = self.search_container.manager
         data = [
             utils.get_meta(),
             utils.get_meta("other", "/this/that/other", "1.1"),
@@ -25,7 +25,7 @@ class ManagerTest(UnitTestBase):
         self.test_wrapper.teardown_metadata()
 
     def test_equality_search(self):
-        results = self.search_manager.search({
+        results = self.manager.search({
             "search": [
                 {
                     "field": "artifactName",
@@ -43,7 +43,7 @@ class ManagerTest(UnitTestBase):
         self.assertEqual(results, expected)
 
     def test_no_match(self):
-        results = self.search_manager.search({
+        results = self.manager.search({
             "search": [
                 {
                     "field": "artifactName",
@@ -55,7 +55,7 @@ class ManagerTest(UnitTestBase):
         self.assertEqual(results, [])
 
     def test_tilde_search_and_sort(self):
-        results = self.search_manager.search({
+        results = self.manager.search({
             "search": [
                 {
                     "field": "version",
@@ -84,7 +84,7 @@ class ManagerTest(UnitTestBase):
         self.asserts.json_equals(expected, results)
 
     def test_select_fields(self):
-        results = self.search_manager.search({
+        results = self.manager.search({
             "search": [
                 {
                     "field": "artifactName",
@@ -97,7 +97,7 @@ class ManagerTest(UnitTestBase):
             "immutable": True}})
 
     def test_dumb_tilde_search(self):
-        results = self.search_manager.search({
+        results = self.manager.search({
             "search": [
                 {
                     "field": "artifactName",
@@ -121,7 +121,7 @@ class ManagerTest(UnitTestBase):
         self.assertEqual(results, expected)
 
     def test_sorted_desc_and_asc(self):
-        results = self.search_manager.search({
+        results = self.manager.search({
             "search": [
                 {
                     "field": "version",
