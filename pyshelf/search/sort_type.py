@@ -3,9 +3,9 @@ class SortType(object):
     DESC = "DESC"
 
     ALIASES = {
-        "ASC": ASC,
+        ASC: ASC,
         "ASCENDING": ASC,
-        "DESC": DESC,
+        DESC: DESC,
         "DESCENDING": DESC
     }
 

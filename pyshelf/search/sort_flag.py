@@ -2,7 +2,7 @@ class SortFlag(object):
     VERSION = "VERSION"
 
     ALIASES = {
-        "VERSION": VERSION,
+        VERSION: VERSION,
         "VER": VERSION
     }
 
