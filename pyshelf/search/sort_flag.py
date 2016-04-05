@@ -1,17 +1,19 @@
-from pyshelf.search.sort_base import SortBase
-
-
-class SortFlag(SortBase):
+class SortFlag(object):
     VERSION = "VERSION"
 
-    #Aliases for all sort flags where the key is the appropriate name.
     ALIASES = {
-        "VERSION": [
-            "VER",
-            "VERSION"
-        ]
+        "VERSION": VERSION,
+        "VER": VERSION
     }
 
     @classmethod
-    def get_alias(cls, flag):
-        return super(SortFlag, cls).get_sort_alias(flag, SortFlag.ALIASES)
+    def get_alias(cls, alias):
+        """
+            Determines if passed in flag is a SortFlag or an alias of a SortFlag.
+            Args:
+                alias(string): pyshelf.search.sort_flag.SortFlag alias.
+
+            Returns:
+                pyshelf.search.sort_flag.SortFlag or None: returns None if invalid alias.
+        """
+        return SortFlag.ALIASES.get(alias)
