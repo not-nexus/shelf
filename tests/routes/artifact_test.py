@@ -28,6 +28,13 @@ class ArtifactTest(FunctionalTestBase):
             .expect(500, self.response_500()) \
             .get(headers=self.auth)
 
+    def test_no_permission_file(self):
+        self.route_tester \
+            .artifact() \
+            .route_params(bucket_name="test", path="billy-bob-thorton") \
+            .expect(401, "Permission Denied\n") \
+            .get(headers={"Authorization": "bkdjfaojdklfjakdjHELLOWORLDlajdfjkadjok"})
+
     def artifact_get_list(self, path):
         self.route_tester \
             .artifact() \

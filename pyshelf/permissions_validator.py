@@ -82,7 +82,7 @@ class PermissionsValidator(object):
         """
         access = False
         dir_path = self.container.resource_identity.artifact_path
-        artifact_path = os.path.join(dir_path, self.container.resource_identity.artifact_name)
+        artifact_path = self.container.resource_identity.cloud
 
         for p in permissions:
             if fnmatch(artifact_path, p) or fnmatch(dir_path, p):
