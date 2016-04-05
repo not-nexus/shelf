@@ -1,0 +1,25 @@
+{
+    "type": "array",
+    "decription": "Array of objects, each represents sort to be performed on the results of a search criteria. For mutlisorts the first sort takes precedence.",
+    "items": {
+        "type": "object",
+        "properties": {
+            "field": {
+                "type": "string",
+                "description": "Field to sort by."
+            },
+            "sort_type": {
+                "$ref": "pyshelf.search.sort_type.SortType",
+                "description": "Type of sort."
+            },
+            "sort_flag": {
+                "$ref": "pyshelf.search.sort_flag.SortFlag",
+                "description": "Additional sort critieria. Ex. sort by version where 1.19 > 1.3"
+            }
+        },
+        "required": [
+            "field"
+        ]
+    },
+    "$schema": "http://json-schema.org/draft-04/schema#"
+}
