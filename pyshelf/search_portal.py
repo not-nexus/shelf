@@ -1,3 +1,11 @@
+# CODE_REVIEW:  Can we rename this to RequestSearchPortal or add a comment
+# to that effect?  This class really is a portal between a request and the
+# search layer.  If we were going to use the search layer outside of a
+# request context, we would not use this class
+#
+# Same goes with SearchParser I guess
+
+
 class SearchPortal(object):
     def __init__(self, container):
         self.container = container
