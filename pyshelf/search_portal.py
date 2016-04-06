@@ -1,6 +1,9 @@
 from pyshelf.metadata.keys import Keys as MetadataKeys
 from pyshelf.resource_identity import ResourceIdentity
 import utils
+from jsonschema import validate
+import json
+from pyshelf.error_code import ErrorCode
 
 
 class SearchPortal(object):
@@ -20,28 +23,11 @@ class SearchPortal(object):
             for each search hit.
 
             Args:
-                criteria(dict): Search and sort criteria formatted as show below.
-
-            Format of criteria:
-                {
-                    "search": [
-                        "version~=1.1"
-                    ],
-                    "sort": [
-                        "version, VERSION, ASC",
-                        "bob,DESC"
-                    ],
-                    "limit": 1
-                }
-
-                Or if there is only a single sort/search
-
-                {
-                    "search": "version~=1.1",
-                    "sort": "version, VERSION, ASC",
-                    "limit": 1
-                }
+                criteria(schemas.search-request-criteria.json): Search and sort criteria formatted as show below.
         """
+        if not self._validate_schema(criteria, "search-request-criteria.json"):
+            return False
+
         search_path = "{0}={1}*".format(MetadataKeys.PATH, self.resource_id.resource_path)
         criteria["search"] = utils.default_to_list(criteria.get("search"))
         criteria["sort"] = utils.default_to_list(criteria.get("sort"))
@@ -73,3 +59,30 @@ class SearchPortal(object):
             artifact_list.append(resource_id.cloud[1:])
 
         return artifact_list
+
+    # TODO: This could be split out in the future if it used more.
+    def _validate_schema(self, data, schema_name):
+        """
+            Validates data against a schema.
+
+            Args:
+                data(type outlined by schema_name)
+                schema_name(string)
+
+            Returns:
+                ValidationError: if data is not valid
+        """
+        path = "schemas/{0}".format(schema_name)
+
+        with open(path, "r") as file:
+            schema = file.read()
+
+        schema = json.loads(schema)
+
+        try:
+            validate(data, schema)
+        except:
+            self.container.context.add_error(ErrorCode.INVALID_SEARCH_CRITERIA)
+            return False
+
+        return True

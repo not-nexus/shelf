@@ -1,12 +1,39 @@
 {
     "type": "object",
-    "decsription": "Criteria that will be used to search elasticsearch and subsequently sort the results.",
+    "decsription": "Request criteria for searching artifact metadata, sorting the results, and limiting the number of results returned.",
     "properties": {
         "search": {
-            "$ref": "search-criteria.json"
+            "oneOf": [
+                {
+                    "type": "array",
+                    "description": "List of search strings. Requires an equals without preceding backslash.",
+                    "items": {
+                        "type": "string",
+                        "pattern": "(?<!\\))="
+                    }
+                },
+                {
+                    "type": "string",
+                    "pattern": "(?<!\\))="
+                }
+            ]
         },
         "sort": {
-            "$ref": "sort-criteria.json"
+            "oneOf": [
+                {
+                    "type": "array",
+                    "description": "List of sort strings.",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "type": "string"
+                }
+            ]
+        },
+        "limit": {
+            "type": "integer"
         }
     },
     "required": [

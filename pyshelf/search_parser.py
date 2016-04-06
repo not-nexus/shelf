@@ -10,10 +10,10 @@ class SearchParser(object):
             Turns the given request into search criteria that can be consumed by pyshelf.search module.
 
             Args:
-                request_criteria(dict): Search and sort criteria from the request.
+                request_criteria(search-request-criteria.json): Criteria from request.
 
             Returns:
-                dict: search and sort criteria that will be consumed by search layer
+                schemas.search-layer-criteria.json: search and sort criteria that will be consumed by search layer
         """
         search_criteria = []
         sort_criteria = []
@@ -36,7 +36,7 @@ class SearchParser(object):
                 search_string(string): Search string from request, ex: "version~=1.1"
 
             Returns:
-                dict: search criteria dictionary
+                schemas.search-criteria.json: search criteria dictionary
         """
         search_criteria = {}
         # Regex's match unless characters is preceded with \
@@ -69,7 +69,7 @@ class SearchParser(object):
                 sort_string(string): Sort string from request, ex: "version, VERSION, ASC"
 
             Returns:
-                dict: sort criteria dictionary
+                schemas.sort-criteria.json: sort criteria dictionary
         """
         sort_criteria = {}
         flag_list = []

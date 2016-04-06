@@ -135,5 +135,10 @@ def search(container):
     """
     criteria = request.get_json(force=True)
     container.search_portal.search(criteria)
-    response = container.context_response_mapper.to_response(status_code=204)
+
+    if container.context.has_error():
+        response = response_map.map_context_error(container.context)
+    else:
+        response = container.context_response_mapper.to_response(status_code=204)
+
     return response

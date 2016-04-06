@@ -68,6 +68,26 @@ def create_404(error_code=None, msg=None):
     return vnd_error(error)
 
 
+def create_400(error_code, msg):
+    """
+        Creates response wiih 400 status code.
+
+        Args:
+            error_code(pyshelf.error_code.ErrorCode):
+            msg(string)
+
+        Returns:
+            flask Response
+    """
+    error = {
+        "code": error_code,
+        "message": msg,
+        "status_code": 400
+    }
+
+    return vnd_error(error)
+
+
 def create_500(error_code=None, msg=None):
     """
         Creates a 500 response using vnd.error
@@ -147,6 +167,20 @@ def map_exception(e):
     if isinstance(e, BucketNotFoundError):
         return create_500(e.error_code, e.message)
     return create_500()
+
+
+def map_context_error(context):
+    """
+        Maps errors set on pyshelf.context.Context
+
+        Args:
+            context(pyshelf.context.Context)
+
+        Returns:
+            flask Response
+    """
+    if ErrorCode.INVALID_SEARCH_CRITERIA in context.error_list:
+        return create_400(ErrorCode.BAD_REQUEST, "Invalid search and/or sort criteria.")
 
 
 def map_metadata_result_errors(result):

@@ -1,0 +1,16 @@
+{
+    "type": "object",
+    "decsription": "Criteria that will be used to search elasticsearch and subsequently sort the results.",
+    "properties": {
+        "search": {
+            "$ref": "search-criteria.json"
+        },
+        "sort": {
+            "$ref": "sort-criteria.json"
+        }
+    },
+    "required": [
+        "search"
+    ],
+    "$schema": "http://json-schema.org/draft-04/schema#"
+}

@@ -2,7 +2,6 @@ from elasticsearch_dsl.query import Q
 from elasticsearch_dsl import Search
 from pyshelf.search.formatter import Formatter as SearchFormatter
 from pyshelf.search.type import Type as SearchType
-from pyshelf.search.metadata import Metadata
 from elasticsearch import Elasticsearch
 
 
@@ -17,33 +16,12 @@ class Manager(object):
             Builds ElasticSearch query.
 
             Args:
-                criteria(dict): Criteria to use to initiate search. Example below.
+                criteria(schemas.search-layer-criteriai.json): Criteria to use to initiate search.
                 key_list(list): List of keys to receive back from a search.
 
             Returns:
                 dict: each element in the outer dict represents a search "hit"
                       with the returned keys specified in key_list.
-
-        Example of criteria:
-
-            {
-                "search": [
-                    {
-                        "field": "version",
-                        "value": "1.1",
-                        "search_type": SearchType.VERSION
-                    }
-                ],
-                "sort": [
-                    {
-                        "field": "version",
-                        "sort_type": SortType.ASC,
-                        "flag_list": [
-                            SortFlag.VERSION
-                        ]
-                    }
-                ]
-            }
         """
         query = self._build_query(criteria.get("search"))
         query = Search(using=self.connection).index(self.index).sort("_uid").query(query)
@@ -59,7 +37,7 @@ class Manager(object):
             Builds query based on search criteria encapsulated by the search object.
 
             Args:
-                search_criteria(dict): Criteria by which to search.
+                search_criteria(schemas.search-criteria.json): Criteria by which to search.
 
             Returns:
                 elasticsearch_dsl.Query: Object representing an Elasticsearch query.
@@ -67,7 +45,8 @@ class Manager(object):
         query = Q()
         for criteria in search_criteria:
 
-            # The double underscores (property_list__name) represents a nested field (properties_list.name) in Elasticsearch_dsl
+            # The double underscores represents a nested field in Elasticsearch_dsl.
+            # Ex. property_list__name => property_list.name (keyword args can be used as well).
             nested_query = Q(SearchType.MATCH, property_list__name=criteria["field"])
 
             if criteria["search_type"] == SearchType.VERSION:
