@@ -15,7 +15,7 @@ class Manager(object):
     """
     def __init__(self, container):
         self.container = container
-        # self.update_manager = self.container.search.update_manager
+        self.update_manager = self.container.update_manager
         self.identity = self.container.resource_identity
         self.portal = self.container.bucket_container.cloud_portal
         self.initializer = self.container.bucket_container.initializer
@@ -53,6 +53,7 @@ class Manager(object):
             Updates the cloud to contain the metadata set on this instance.
         """
         self.portal.update(self.identity.cloud_metadata, self.metadata)
+        self.update_manager.update(self.identity.search, self.metadata)
 
     def try_update(self, data):
         """
@@ -82,6 +83,7 @@ class Manager(object):
             self.metadata.update(data)
 
         # assuming success if it hasn't thrown an exception
+        self.write()
         return Result()
 
     def try_update_property(self, key, value):

@@ -8,10 +8,11 @@ from pyshelf.metadata.bucket_container import BucketContainer
 
 
 class Container(object):
-    def __init__(self, bucket_name, cloud_factory, resource_identity):
+    def __init__(self, bucket_name, cloud_factory, resource_identity, update_manager):
         self.bucket_name = bucket_name
         self.cloud_factory = cloud_factory
         self.resource_identity = resource_identity
+        self.update_manager = update_manager
         self._mapper = None
         self._manager = None
         self._yaml_codec = None

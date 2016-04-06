@@ -10,6 +10,7 @@ import tests.permission_utils as utils
 from tests.route_tester.tester import Tester
 from tests.search.test_wrapper import TestWrapper as SearchTestWrapper
 from pyshelf.search.container import Container as SearchContainer
+from tests.metadata.comparator import Comparator as MetadataComparator
 from pyshelf.resource_identity import ResourceIdentity
 
 
@@ -34,6 +35,8 @@ class FunctionalTestBase(pyproctor.TestBase):
         "message": "Artifact by name test already exists in current directory"
     }
 
+    ELASTICSEARCH_CONNECTION_STRING = "http://localhost:9200/metadata"
+
     def setUp(self):
         self.app = app
         self.setup_elastic()
@@ -41,6 +44,35 @@ class FunctionalTestBase(pyproctor.TestBase):
         self.setup_metadata()
         self.test_client = app.test_client()
         self._route_tester = None
+        self._metadata_comparator = None
+
+    @property
+    def metadata_comparator(self):
+        if not self._metadata_comparator:
+            self._metadata_comparator = MetadataComparator(
+                self,
+                FunctionalTestBase.ELASTICSEARCH_CONNECTION_STRING,
+                app.logger)
+
+        return self._metadata_comparator
+
+    def assert_metadata_matches(self, resource_url):
+        """
+            Makes the assumption that mock_s3 has been
+            enabled (done in configure_moto).
+
+            Makes sure that the metadata for a particular
+            artifact is the same in the search layer and
+            the cloud layer.
+
+            Args:
+                resource_url(basestring): The full path to the resource from the APIs
+                    perspective
+
+            Raises:
+                AssertionError
+        """
+        self.metadata_comparator.compare(resource_url)
 
     @classmethod
     def setUpClass(cls):
@@ -55,14 +87,14 @@ class FunctionalTestBase(pyproctor.TestBase):
                     "secretKey": "test"
                 }
             },
-            "elasticSearchConnectionString": "http://localhost:9200/metadata"
+            "elasticSearchConnectionString": cls.ELASTICSEARCH_CONNECTION_STRING,
+
         }
         configure.logger(app.logger, "DEBUG")
         app.config.update(config)
 
     def setup_elastic(self):
-        con_str = "http://localhost:9200/metadata"
-        search_container = SearchContainer(self.app.logger, con_str)
+        search_container = SearchContainer(self.app.logger, FunctionalTestBase.ELASTICSEARCH_CONNECTION_STRING)
         self.search_wrapper = SearchTestWrapper(search_container)
 
     def setup_moto(self):
