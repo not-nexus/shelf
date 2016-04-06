@@ -30,8 +30,8 @@ Search
 
 ####Artifact Path:
 * This api exposes two search endpoints.
-    * Search from the root of an S3 bucket:  **/<bucket-name>/artifact/\_search**
-    * Search from a partial path: **/<bucket-name>/artifact/<path>/\_search**
+    * Search from the root of an S3 bucket:  **/\<bucket-name\>/artifact/\_search**
+    * Search from a partial path: **/\<bucket-name\>/artifact/\<path\>/\_search**
 
 The following is an example of a simple search request that will search the root of the S3 bucket. We are also sorting the results by the artifact path.
 
