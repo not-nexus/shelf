@@ -94,8 +94,7 @@ class FunctionalTestBase(pyproctor.TestBase):
         app.config.update(config)
 
     def setup_elastic(self):
-        con_str = "http://localhost:9200/metadata"
-        search_container = SearchContainer(self.app.logger, con_str)
+        search_container = SearchContainer(self.app.logger, FunctionalTestBase.ELASTICSEARCH_CONNECTION_STRING)
         self.search_wrapper = SearchTestWrapper(search_container)
 
     def setup_moto(self):
