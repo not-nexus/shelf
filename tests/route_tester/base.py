@@ -1,4 +1,5 @@
 import json
+import re
 
 
 class Base(object):
@@ -16,6 +17,10 @@ class Base(object):
     def endpoint(self):
         if not self._endpoint:
             self._endpoint = self.route.format(**self.params)
+            # This is specifically for the search route but I cannot see any draw
+            # backs with having this here.
+            if re.search("//", self._endpoint):
+                self._endpoint = re.sub("//", "/", self._endpoint)
         return self._endpoint
 
     def route_params(self, **params):

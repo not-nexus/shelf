@@ -89,21 +89,28 @@ class FunctionalTestBase(pyproctor.TestBase):
         nested_key.set_contents_from_string("hello world")
         artifact_list = Key(self.test_bucket, "/dir/dir2/dir3/dir4/test5")
         artifact_list.set_contents_from_string("")
-        thing_key = Key(self.test_bucket, "thing")
+        thing_key = Key(self.test_bucket, "empty")
         thing_key.set_contents_from_string("hello world")
-        empty_meta = Key(self.test_bucket, "/_metadata_thing.yaml")
+        empty_meta = Key(self.test_bucket, "/_metadata_empty.yaml")
         empty_meta.set_contents_from_string("")
 
     def setup_metadata(self):
         self.add_metadata("/test/artifact/test")
         self.add_metadata("/test/artifact/dir/dir2/dir3/nest-test")
+        self.add_metadata("/test/artifact/this/that/other", "1.2")
+        self.add_metadata("/test/artifact/thing", "1.2"),
+        self.add_metadata("/test/artifact/blah", "1.19"),
+        self.add_metadata("/test/artifact/a", "1.19"),
+        self.add_metadata("/test/artifact/zzzz", "1.19"),
+        self.add_metadata("/test/artifact/dir/dir2/Test", "2")
+        self.search_wrapper.refresh_index()
 
-    def add_metadata(self, resource_path, metadata=None):
+    def add_metadata(self, resource_path, version="1", metadata=None):
         """
             Adds metadata to moto and elastic.
         """
         resource_id = ResourceIdentity(resource_path)
-        data = meta_utils.get_meta(resource_id.artifact_name, resource_id.resource_path)
+        data = meta_utils.get_meta(resource_id.artifact_name, resource_id.resource_path, version)
 
         if metadata:
             data.update(metadata)
@@ -129,7 +136,7 @@ class FunctionalTestBase(pyproctor.TestBase):
 
     def tearDown(self):
         self.moto_s3.stop()
-        self.search_wrapper.delete_all_metadata()
+        self.search_wrapper.teardown_metadata()
 
     def response_500(self, message=None):
         if not message:
