@@ -1,58 +1,37 @@
 Search
-======
+------
 
 ####Our api supports searching artifact metadata which will return a link header for each search result.
 
 ####Note:
-    * The only requirement is the search portion of the criteria.
+* The only requirement is the search portion of the criteria.
 
 ####Search criteria:
-    * We currently support equality, wildcard, and version searches.
-    * Equality search syntax: `"field=value"`
-    * Wildcard search syntax: `"field=valu*"` where the `*` represents the 0 or more characters.
-    * Version search syntax: `"field~=1.1"` where search results >= 1.1 but < 2.
-    * We support escaping of \*, ~, and = for literal evaluation.
+* We currently support equality, wildcard, and version searches.
+* Equality search syntax: `"field=value"`
+* Wildcard search syntax: `"field=valu*"` where the `*` represents the 0 or more characters.
+* Version search syntax: `"field~=1.1"` where search results >= 1.1 but < 2.
+* We support escaping of \*, ~, and = for literal evaluation.
 
 ####Sort criteria:
-    * We support sort types and sort flags.
-    * Sort types supported are ASC and DESC
-        * with aliases ASCENDING and DESCENDING respectively
-    * Sort flag supported is VERSION (with alias VER).
-    * This version flag uses distutils.version.LooseVersion library (where 1.19 > 1.2).
-        * More info: https://docs.python.org/2/distutils/apiref.html#module-distutils.version
-    * The sort criteria must start with the field name.
-    * The default sort type is ascending. If multiple sort types are given the last is used.
-    * With multi-sorts the first sort takes precedence.
+* We support sort types and sort flags.
+* Sort types supported are ASC and DESC
+    * with aliases ASCENDING and DESCENDING respectively
+* Sort flag supported is VERSION (with alias VER).
+* This version flag uses distutils.version.LooseVersion library (where 1.19 > 1.2).
+    * More info: https://docs.python.org/2/distutils/apiref.html#module-distutils.version
+* The sort criteria must start with the field name.
+* The default sort type is ascending. If multiple sort types are given the last is used.
+* With multi-sorts the first sort takes precedence.
 
 ####Limit:
-    * A limit can be set on the number of results returned back by the api.
-    * Note: the method of sort effects which artifacts are contained within the limit.
+* A limit can be set on the number of results returned back by the api.
+* Note: the method of sort effects which artifacts are contained within the limit.
 
 ####Artifact Path:
-    * This api exposes two search endpoints.
-        * Search from the root of an S3 bucket:  **/<bucket-name>/artifact/\_search**
-        * Search from a partial path: **/<bucket-name>/artifact/<path>/\_search**
-
-#### Example of criteria with single search and sort with a limit on number of results.
-
-    {
-        "search": "version=1.*",
-        "sort": "version, VERSION",
-        "limit": 1
-    }
-
-#### Example of criteria with multiple searches and sorts.
-    {
-        "search": [
-            "version~=1.1",
-            "bob=bob"
-        ],
-        "sort": [
-            "version, VERSION, ASC",
-            "bob, DESC"
-        ]
-    }
-
+* This api exposes two search endpoints.
+    * Search from the root of an S3 bucket:  **/<bucket-name>/artifact/\_search**
+    * Search from a partial path: **/<bucket-name>/artifact/<path>/\_search**
 
 The following is an example of a simple search request that will search the root of the S3 bucket. We are also sorting the results by the artifact path.
 
@@ -76,11 +55,11 @@ We are searching for any artifact named test in the requested bucket. Here is th
 
 Here is an example of a search with multiple sort criteria.
 
-    * We will assume the following about the artifacts in the response:
-        * Artifact "a" is version=1.19 & buildNumber=25
-        * Artifact "b" is version=1.19 & buildNumber=24
-        * Artifact "c" is version=1.1 & buildNumber=100
-        * Artifact "d" is version=1.1 & buildNumber=99
+* We will assume the following about the artifacts in the response:
+    * Artifact "a" is version=1.19 & buildNumber=25
+    * Artifact "b" is version=1.19 & buildNumber=24
+    * Artifact "c" is version=1.1 & buildNumber=100
+    * Artifact "d" is version=1.1 & buildNumber=99
 
     POST /bucket-name/artifact/application-dir/_search
     Authorization: supersecrettoken
