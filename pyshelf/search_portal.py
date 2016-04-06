@@ -1,6 +1,8 @@
 from pyshelf.metadata.keys import Keys as MetadataKeys
 from pyshelf.resource_identity import ResourceIdentity
 import utils
+from pyshelf.error_code import ErrorCode
+from jsonschema import ValidationError
 
 
 class SearchPortal(object):
@@ -13,6 +15,7 @@ class SearchPortal(object):
         self.search_parser = self.container.search_parser
         self.link_manager = self.container.link_manager
         self.resource_id = self.container.resource_identity
+        self.schema_validator = self.container.schema_validator
 
     def search(self, criteria):
         """
@@ -20,28 +23,15 @@ class SearchPortal(object):
             for each search hit.
 
             Args:
-                criteria(dict): Search and sort criteria formatted as show below.
-
-            Format of criteria:
-                {
-                    "search": [
-                        "version~=1.1"
-                    ],
-                    "sort": [
-                        "version, VERSION, ASC",
-                        "bob,DESC"
-                    ],
-                    "limit": 1
-                }
-
-                Or if there is only a single sort/search
-
-                {
-                    "search": "version~=1.1",
-                    "sort": "version, VERSION, ASC",
-                    "limit": 1
-                }
+                criteria(schemas/search-request-criteria.json): Search and sort criteria formatted as show below.
         """
+        try:
+            self.schema_validator.validate(criteria, "schemas/search-request-criteria.json")
+        except ValidationError as e:
+            msg = self.schema_validator.format_error(e)
+            self.container.context.add_error(ErrorCode.INVALID_SEARCH_CRITERIA, msg)
+            return
+
         search_path = "{0}={1}*".format(MetadataKeys.PATH, self.resource_id.resource_path)
         criteria["search"] = utils.default_to_list(criteria.get("search"))
         criteria["sort"] = utils.default_to_list(criteria.get("sort"))

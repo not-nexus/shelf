@@ -1,5 +1,6 @@
 from pyshelf.cloud.storage import Storage
 from pyshelf.cloud.cloud_exceptions import CloudStorageException
+from pyshelf.error_code import ErrorCode
 
 
 class Factory(object):
@@ -14,5 +15,6 @@ class Factory(object):
         # buckets when we want.
         if not c.get("buckets").get(bucket_name):
             raise CloudStorageException("Access keys for {0} are not in your config.".format(bucket_name),
-                    "internal_server_error")
-        return Storage(c["buckets"][bucket_name]["accessKey"], c["buckets"][bucket_name]["secretKey"], bucket_name, self.logger)
+                    ErrorCode.INTERNAL_SERVER)
+        return Storage(c["buckets"][bucket_name]["accessKey"], c["buckets"][bucket_name]["secretKey"],
+                bucket_name, self.logger)
