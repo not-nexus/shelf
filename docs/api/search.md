@@ -72,6 +72,8 @@ Here is an example of a search with multiple sort criteria.
     * Artifact "c" is version=1.1 & buildNumber=100
     * Artifact "d" is version=1.1 & buildNumber=99
 
+<b></b>
+
     HTTP/1.0 204 NO CONTENT
     Content-Type: text/html; charset=utf-8
     Link: /bucket-name/artifact/application-dir/a; rel=child; title=application-dir/a
