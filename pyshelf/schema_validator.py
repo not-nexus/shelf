@@ -8,15 +8,16 @@ class SchemaValidator(object):
 
     def validate(self, data, schema_path):
         """
-            Validates data against schema. This supresses all exceptions and merely returns True
-            on success and False on failure. It also logs the details of the exception.
+            Validates data against schema. Logs and reraises any exceptions that occur.
 
             Args:
                 data(type outlined schema)
                 schema_path(string)
 
-            Returns:
-                bool: if data does not match schema
+            Raises:
+                ValidationError: if data does not match schema
+                IOError: if schema_path is invalid
+                SchemaError: if schema is flawed
         """
         try:
             with open(schema_path, "r") as file:
@@ -26,6 +27,19 @@ class SchemaValidator(object):
             validate(data, schema)
         except Exception as e:
             self.logger.exception(e)
-            return False
+            # Log then reraise exception
+            raise
 
-        return True
+    def format_error(self, error):
+        """
+            Formats ValidationError into a human readable error.
+
+            Args:
+                error(ValidationError)
+            Returns:
+                string: formatted error message.
+        """
+        msg_list = [error.message for error in error.context]
+        msg = ", ".join(msg_list)
+
+        return msg

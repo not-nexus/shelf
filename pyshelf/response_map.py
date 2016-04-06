@@ -59,7 +59,7 @@ def create_404(error_code=ErrorCode.RESOURCE_NOT_FOUND, msg="Resource not found"
     return vnd_error(error)
 
 
-def create_400(error_code, msg):
+def create_400(error_code=ErrorCode.BAD_REQUEST, msg="Bad request"):
     """
         Creates response wiih 400 status code.
 
@@ -165,8 +165,8 @@ def map_context_error(context):
         Returns:
             flask Response
     """
-    if ErrorCode.INVALID_SEARCH_CRITERIA in context.error_list:
-        return create_400(ErrorCode.BAD_REQUEST, "Invalid search and/or sort criteria.")
+    if ErrorCode.INVALID_SEARCH_CRITERIA in context.errors:
+        return create_400(ErrorCode.BAD_REQUEST, context.errors[ErrorCode.INVALID_SEARCH_CRITERIA])
 
 
 def map_metadata_result_errors(result):
