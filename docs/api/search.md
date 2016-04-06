@@ -19,9 +19,9 @@ Search
         * with aliases ASCENDING and DESCENDING respectively
     * Sort flag supported is VERSION (with alias VER).
     * This version flag uses distutils.version.LooseVersion library (where 1.19 > 1.2).
-        * More info: [distutils.version](https://docs.python.org/2/distutils/apiref.html#module-distutils.version)
+        * More info: https://docs.python.org/2/distutils/apiref.html#module-distutils.version
     * The sort criteria must start with the field name.
-    * The default sort type is ascending. If multiple sort types are supplied the last one will be used.
+    * The default sort type is ascending. If multiple sort types are given the last is used.
     * With multi-sorts the first sort takes precedence.
 
 ####Limit:
