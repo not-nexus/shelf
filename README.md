@@ -12,8 +12,7 @@ for development purposes in `bin/main.py`.
 Current Support
 ---------------
 
-We are still in heavy development. So far you are only able to upload and download artifacts.  You can see a full list of support
-in [docs](docs/README.md)
+We are still in heavy development. You can see of support in [docs](docs/README.md)
 
 Configuration
 -------------

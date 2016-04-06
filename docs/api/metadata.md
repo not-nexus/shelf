@@ -1,7 +1,7 @@
 Metadata
 ========
 
-####Pyshelf supports mutable and immutable metadata for artifacts. You can request, update, create, and delete metadata and particular metdata items.
+####pyshelf supports mutable and immutable metadata for artifacts. You can request, update, create, and delete metadata and particular metdata items.
 
 The following is an example of updating all metadata for an artifact. This will only overwrite mutable items. The response to this request is identical to doing a GET on the same route.
 
