@@ -125,3 +125,21 @@ class SearchTest(FunctionalTestBase):
             .post({
                 "search": "artifactName=baloba"
             }, headers=self.auth)
+
+    def search_with_bad_criteria(self, data, msg):
+        self.route_tester \
+            .search() \
+            .route_params(bucket_name="test", path="") \
+            .expect(400, {
+                "code": "bad_request",
+                "message": msg
+            }) \
+            .post(data, headers=self.auth)
+
+    def test_search_bad_search_criteria(self):
+        msg = "u'imCool' is not of type u'array', u'imCool' does not match u'(?<!\\\\\\\\)='"
+        self.search_with_bad_criteria({"search": "imCool"}, msg)
+
+    def test_search_escaped_equal_criteria(self):
+        msg = "u'imCool\\\\=notCoolDude' is not of type u'array', u'imCool\\\\=notCoolDude' does not match u'(?<!\\\\\\\\)='"
+        self.search_with_bad_criteria({"search": "imCool\=notCoolDude"}, msg)
