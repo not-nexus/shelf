@@ -13,8 +13,12 @@
                 "description": "Value to search."
             },
             "search_type": {
-                "$ref": "pyshelf.search.type.Type",
-                "description": "Type of search to perform."
+                "enum": [
+                    "WILDCARD",
+                    "MATCH",
+                    "VERSION"
+                ],
+                "description": "Type of search to perform. See pyshelf.search.type.Type."
             }
         },
         "required": [
