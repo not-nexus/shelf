@@ -22,7 +22,7 @@
             "oneOf": [
                 {
                     "type": "array",
-                    "description": "List of sort strings. String requires atleast",
+                    "description": "List of sort strings.",
                     "items": {
                         "type": "string",
                         "pattern": "(?i)^[\\w\\s]+(?:,\\s(DESC|DESCENDING|ASC|ASCENDING|VERSION|VER)*)*$"
