@@ -36,7 +36,7 @@ class ConfigureTest(pyproctor.TestBase):
             f.write(contents)
 
     def run_app_config(self):
-        configure.app_config(self.app, self.path)
+        configure.app_config(self.app.config, self.path)
 
     def test_app(self):
         config = {
