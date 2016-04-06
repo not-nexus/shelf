@@ -2,7 +2,7 @@ Search
 ======
 
 Our api supports searching artifact metadata which will return a link header for each search result.
----
+
 Note:
 * The only requirement is the search portion of the criteria.
 
@@ -66,7 +66,11 @@ Here is an example of a search with multiple sort criteria.
         ]
     }
 
-I want to point out the sort will give us a link to the highest verion and with the highest build number first.
+* We will assume the following about the artifacts being searched:
+    * Artifact "a" is version=1.19 & buildNumber=25
+    * Artifact "b" is version=1.19 & buildNumber=24
+    * Artifact "c" is version=1.1 & buildNumber=100
+    * Artifact "d" is version=1.1 & buildNumber=99
 
     HTTP/1.0 204 NO CONTENT
     Content-Type: text/html; charset=utf-8
@@ -77,10 +81,3 @@ I want to point out the sort will give us a link to the highest verion and with 
     Content-Length: 0
     Server: Werkzeug/0.11.3 Python/2.7.10
     Date: Wed, 09 Mar 2016 21:51:40 GMT
-
-* We will assume the following about the artifacts in the response:
-    * Artifact "a" is version=1.19 & buildNumber=25
-    * Artifact "b" is version=1.19 & buildNumber=24
-    * Artifact "c" is version=1.1 & buildNumber=100
-    * Artifact "d" is version=1.1 & buildNumber=99
-
