@@ -50,9 +50,14 @@ class Comparator(object):
     def compare(self, resource_url):
         identity = ResourceIdentity(resource_url)
         cloud_metadata = self.cloud_portal.load(identity.cloud_metadata)
+        if not cloud_metadata:
+            self.fail("Failed to find metadata in cloud for {0}".format(identity.cloud_metadata))
         # Make extra sure our data will show up
         self.es_connection.indices.refresh(index=self.index)
         metadata = Metadata.get(index=self.index, using=self.es_connection, id=identity.search, ignore=404)
+        if not metadata:
+            self.test.fail("Failed to find metadata in search for {0}".format(identity.search))
+
         metadata = self._map_es_metadata(metadata)
         self.test.asserts.json_equals(cloud_metadata, metadata)
 
