@@ -9,12 +9,12 @@
                     "description": "List of search strings. Requires an equals without preceding backslash.",
                     "items": {
                         "type": "string",
-                        "pattern": "(?<!\\))="
+                        "pattern": "(?<!\\\\)="
                     }
                 },
                 {
                     "type": "string",
-                    "pattern": "(?<!\\))="
+                    "pattern": "(?<!\\\\)="
                 }
             ]
         },

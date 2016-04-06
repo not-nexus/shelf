@@ -126,7 +126,7 @@ class SearchTest(FunctionalTestBase):
                 "search": "artifactName=baloba"
             }, headers=self.auth)
 
-    def test_search_bad_criteria(self):
+    def search_with_bad_criteria(self, data):
         self.route_tester \
             .search() \
             .route_params(bucket_name="test", path="") \
@@ -134,6 +134,10 @@ class SearchTest(FunctionalTestBase):
                 "code": "bad_request",
                 "message": "Invalid search and/or sort criteria."
             }) \
-            .post({
-                "search": "imCool"
-            }, headers=self.auth)
+            .post(data, headers=self.auth)
+
+    def test_search_bad_search_criteria(self):
+        self.search_with_bad_criteria({"search": "imCool"})
+
+    def test_search_escaped_equal_criteria(self):
+        self.search_with_bad_criteria({"search": "imCool\=notCoolDude"})
