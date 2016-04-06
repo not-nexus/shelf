@@ -2,6 +2,7 @@ from pyshelf.cloud.factory import Factory as CloudFactory
 from pyshelf.metadata.bucket_container import BucketContainer
 from pyshelf.metadata.yaml_codec import YamlCodec
 from pyshelf.metadata.mapper import Mapper
+from pyshelf.search.container import Container as SearchContainer
 
 
 class Container(object):
@@ -18,9 +19,11 @@ class Container(object):
         """
         self.config = config
         self.logger = logger
+
         self._cloud_factory = None
         self._mapper = None
-        self.codec = None
+        self._codec = None
+        self._search_container = None
 
     def create_bucket_container(self, bucket_name):
         """
@@ -71,3 +74,13 @@ class Container(object):
             self._mapper = Mapper()
 
         return self._mapper
+
+    @property
+    def search_container(self):
+        if not self._search_container:
+            self._search_container = SearchContainer(
+                self.logger,
+                self.config["elasticSearchConnectionString"]
+            )
+
+        return self._search_container
