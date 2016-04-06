@@ -22,13 +22,15 @@
             "oneOf": [
                 {
                     "type": "array",
-                    "description": "List of sort strings.",
+                    "description": "List of sort strings. String requires atleast",
                     "items": {
-                        "type": "string"
+                        "type": "string",
+                        "pattern": "(?i)^[\\w\\s]+(?:,\\s(DESC|DESCENDING|ASC|ASCENDING|VERSION|VER)*)*$"
                     }
                 },
                 {
-                    "type": "string"
+                    "type": "string",
+                    "pattern": "(?i)^[\\w\\s]+(?:,\\s(DESC|DESCENDING|ASC|ASCENDING|VERSION|VER)*)*$"
                 }
             ]
         },
