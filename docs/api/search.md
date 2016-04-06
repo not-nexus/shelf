@@ -55,12 +55,6 @@ We are searching for any artifact named test in the requested bucket. Here is th
 
 Here is an example of a search with multiple sort criteria.
 
-* We will assume the following about the artifacts in the response:
-    * Artifact "a" is version=1.19 & buildNumber=25
-    * Artifact "b" is version=1.19 & buildNumber=24
-    * Artifact "c" is version=1.1 & buildNumber=100
-    * Artifact "d" is version=1.1 & buildNumber=99
-
     POST /bucket-name/artifact/application-dir/_search
     Authorization: supersecrettoken
 
@@ -83,4 +77,10 @@ I want to point out the sort will give us a link to the highest verion and with 
     Content-Length: 0
     Server: Werkzeug/0.11.3 Python/2.7.10
     Date: Wed, 09 Mar 2016 21:51:40 GMT
+
+* We will assume the following about the artifacts in the response:
+    * Artifact "a" is version=1.19 & buildNumber=25
+    * Artifact "b" is version=1.19 & buildNumber=24
+    * Artifact "c" is version=1.1 & buildNumber=100
+    * Artifact "d" is version=1.1 & buildNumber=99
 
