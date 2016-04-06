@@ -16,7 +16,7 @@ class Manager(object):
             Builds ElasticSearch query.
 
             Args:
-                criteria(schemas.search-layer-criteriai.json): Criteria to use to initiate search.
+                criteria(schemas/search-layer-criteriai.json): Criteria to use to initiate search.
                 key_list(list): List of keys to receive back from a search.
 
             Returns:
@@ -37,7 +37,7 @@ class Manager(object):
             Builds query based on search criteria encapsulated by the search object.
 
             Args:
-                search_criteria(schemas.search-criteria.json): Criteria by which to search.
+                search_criteria(schemas/search-criteria.json): Criteria by which to search.
 
             Returns:
                 elasticsearch_dsl.Query: Object representing an Elasticsearch query.
