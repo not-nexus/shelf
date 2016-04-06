@@ -35,9 +35,5 @@ def get_permissions_func_test():
           - '/dir/dir2/dir3/*'""".format(VALID_KEY)
 
 
-def auth_header(is_valid=True):
-    if is_valid:
-        auth = VALID_KEY
-    else:
-        auth = "not a real key"
-    return {"Authorization": auth}
+def auth_header():
+    return {"Authorization": VALID_KEY}

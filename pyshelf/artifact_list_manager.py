@@ -23,7 +23,8 @@ class ArtifactListManager(object):
             artifact_list = storage.get_directory_contents(directory_path, recursive=False)
             if len(artifact_list) > 0:
                 self.container.logger.debug("Resource {0} is assumed to be a directory.".format(directory_path))
-                self.link_manager.assign_listing(artifact_list)
+                artifact_path_list = [artifact.name for artifact in artifact_list]
+                self.link_manager.assign_listing(artifact_path_list)
             else:
                 content = storage.get_artifact(path)
                 self.link_manager.assign_single(content)
