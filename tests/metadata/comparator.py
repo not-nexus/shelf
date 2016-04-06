@@ -13,21 +13,17 @@ class Comparator(object):
         self._es_connection_parts = urlparse(es_connection_string)
         self.logger = logger
         self.test = test
-        self._fake_container = None
         self._es_connection = None
         self._cloud_portal = None
 
-    @property
-    def fake_container(self):
-        if not self._fake_container:
-            # Trailing comma in the tuple is important otherwise it is interpretted
-            # as a grouping and just returns the type "object"
-            self._fake_container = type("FakeMetadataContainer", (object,), {})()
-            self._fake_container.yaml_codec = YamlCodec()
-            self._fake_container.mapper = Mapper()
-            self._fake_container.create_cloud_storage = lambda: Storage(None, None, "test", self.logger)
-
-        return self._fake_container
+    def create_fake_container(self, bucket_name):
+        # Trailing comma in the tuple is important otherwise it is interpretted
+        # as a grouping and just returns the type "object"
+        fake_container = type("FakeMetadataContainer", (object,), {})()
+        fake_container.yaml_codec = YamlCodec()
+        fake_container.mapper = Mapper()
+        fake_container.create_cloud_storage = lambda: Storage(None, None, bucket_name, self.logger)
+        return fake_container
 
     @property
     def es_connection(self):
@@ -40,16 +36,15 @@ class Comparator(object):
     def index(self):
         return self._es_connection_parts.path[1:]
 
-    @property
-    def cloud_portal(self):
-        if not self._cloud_portal:
-            self._cloud_portal = CloudPortal(self.fake_container)
-
-        return self._cloud_portal
+    def create_cloud_portal(self, bucket_name):
+        container = self.create_fake_container(bucket_name)
+        cloud_portal = CloudPortal(container)
+        return cloud_portal
 
     def compare(self, resource_url):
         identity = ResourceIdentity(resource_url)
-        cloud_metadata = self.cloud_portal.load(identity.cloud_metadata)
+        cloud_portal = self.create_cloud_portal(identity.bucket_name)
+        cloud_metadata = cloud_portal.load(identity.cloud_metadata)
         if not cloud_metadata:
             self.fail("Failed to find metadata in cloud for {0}".format(identity.cloud_metadata))
         # Make extra sure our data will show up
