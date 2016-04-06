@@ -10,27 +10,23 @@ class SearchParser(object):
             Turns the given request into search criteria that can be consumed by pyshelf.search module.
 
             Args:
-                request_criteria(dict): Search and sort criteria from the request.
+                request_criteria(schemas/search-request-criteria.json): Criteria from request.
 
             Returns:
-                dict: search and sort criteria that will be consumed by search layer
+                schemas/search-layer-criteria.json: search and sort criteria that will be consumed by search layer
         """
         search_criteria = []
         sort_criteria = []
 
-        if isinstance(request_criteria["search"], list):
-            for search in request_criteria["search"]:
-                search_criteria.append(self._format_search_criteria(search))
-        else:
-            search_criteria.append(self._format_search_criteria(request_criteria["search"]))
+        for search in request_criteria["search"]:
+            search_criteria.append(self._format_search_criteria(search))
 
-        if isinstance(request_criteria["sort"], list):
-            for sort in request_criteria["sort"]:
-                sort_criteria.append(self._format_sort_criteria(sort))
-        else:
-            sort_criteria.append(self._format_sort_criteria(request_criteria["sort"]))
+        for sort in request_criteria["sort"]:
+            sort_criteria.append(self._format_sort_criteria(sort))
 
-        return {"search": search_criteria, "sort": sort_criteria, "limit": request_criteria.get("limit")}
+        formatted_criteria = {"search": search_criteria, "sort": sort_criteria}
+
+        return formatted_criteria
 
     def _format_search_criteria(self, search_string):
         """
@@ -40,23 +36,29 @@ class SearchParser(object):
                 search_string(string): Search string from request, ex: "version~=1.1"
 
             Returns:
-                dict: search criteria dictionary
+                schemas/search-criteria.json: search criteria dictionary
         """
         search_criteria = {}
-        tilde_search = "\~\="
-        wildcard_search = "\*\="
+        # Regex's match unless characters is preceded with \
+        version_search = r"(?<!\\)\~="
+        wildcard_search = r"(?<!\\)\*"
+        equality_search = r"(?<!\\)\="
+        split_char = equality_search
 
-        if re.search(tilde_search, search_string):
+        # Search the search_string for potential tilde and does a negative lookbehind for \
+        # If tilde exists and \ does preceede it, it is a match and thus a version search
+        if re.search(version_search, search_string):
             search_criteria["search_type"] = SearchType.VERSION
-            split_char = "~="
-        elif re.search(wildcard_search, search_string):
-            search_criteria["search_type"] = SearchType.WILDCARD
-            split_char = "*="
+            split_char = version_search
         else:
-            search_criteria["search_type"] = SearchType.MATCH
-            split_char = "="
 
-        search_criteria["field"], search_criteria["value"] = search_string.partition(split_char)[0::2]
+            if re.search(wildcard_search, search_string):
+                search_criteria["search_type"] = SearchType.WILDCARD
+            else:
+                search_criteria["search_type"] = SearchType.MATCH
+
+        # Splits using re.split to ensure first occurence of non-escaped = or ~= is split on
+        search_criteria["field"], search_criteria["value"] = re.split(split_char, search_string, 1)
         return search_criteria
 
     def _format_sort_criteria(self, sort_string):
@@ -67,22 +69,30 @@ class SearchParser(object):
                 sort_string(string): Sort string from request, ex: "version, VERSION, ASC"
 
             Returns:
-                dict: sort criteria dictionary
+                schemas/sort-criteria.json: sort criteria dictionary
         """
         sort_criteria = {}
         flag_list = []
+        sort_list = sort_string.split(",")
+        # The field is always first in the sort string.
+        sort_criteria["field"] = sort_list.pop(0).strip()
 
-        for string in sort_string.split(","):
-            string = string.strip()
+        for sort_string in sort_list:
+            sort_string = sort_string.strip()
+            sort_type = SortType.get_alias(sort_string)
+            sort_flag = SortFlag.get_alias(sort_string)
 
-            if hasattr(SortType, string):
-                sort_criteria["sort_type"] = string
-            elif hasattr(SortFlag, string):
-                flag_list.append(string)
-            else:
-                sort_criteria["field"] = string
+            # Only one pyshelf.search.sort_type.SortType can be used at once.
+            # We decided grabbing the last one makes the most sense if there are multiple.
+            if sort_type:
+                sort_criteria["sort_type"] = sort_type
+            elif sort_flag:
+                flag_list.append(sort_flag)
 
         if flag_list:
             sort_criteria["flag_list"] = flag_list
+
+        if not sort_criteria.get("sort_type"):
+            sort_criteria["sort_type"] = SortType.ASC
 
         return sort_criteria

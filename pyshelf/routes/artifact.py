@@ -107,3 +107,38 @@ def delete_metadata_property(container, bucket_name, path, item):
         response = response_map.map_metadata_result_errors(result)
 
     return response
+
+
+@artifact.route("/<bucket_name>/artifact/_search", methods=["POST"])
+@decorators.foundation
+def root_search(container, bucket_name):
+    response = search(container)
+    return response
+
+
+@artifact.route("/<bucket_name>/artifact/<path:path>/_search", methods=["POST"])
+@decorators.foundation
+def path_search(container, bucket_name, path):
+    response = search(container)
+    return response
+
+
+def search(container):
+    """
+        Does a search with the given criteria.
+
+        Args:
+            container(pyshelf.container.Container)
+
+        Returns:
+            Flask response
+    """
+    criteria = request.get_json(force=True)
+    container.search_portal.search(criteria)
+
+    if container.context.has_error():
+        response = response_map.map_context_error(container.context)
+    else:
+        response = container.context_response_mapper.to_response(status_code=204)
+
+    return response

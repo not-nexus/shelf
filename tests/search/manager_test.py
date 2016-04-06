@@ -4,14 +4,13 @@ from pyshelf.search.type import Type as SearchType
 from pyshelf.search.sort_type import SortType
 from pyshelf.search.sort_flag import SortFlag
 import tests.metadata_utils as utils
-from pyshelf.search.metadata import Metadata
 
 
 class ManagerTest(UnitTestBase):
     def setUp(self):
         super(ManagerTest, self).setUp()
         self.test_wrapper = SearchTestWrapper(self.search_container)
-        self.search_manager = self.search_container.search_manager
+        self.manager = self.search_container.manager
         data = [
             utils.get_meta(),
             utils.get_meta("other", "/this/that/other", "1.1"),
@@ -26,7 +25,7 @@ class ManagerTest(UnitTestBase):
         self.test_wrapper.teardown_metadata()
 
     def test_equality_search(self):
-        results = self.search_manager.search({
+        results = self.manager.search({
             "search": [
                 {
                     "field": "artifactName",
@@ -36,7 +35,7 @@ class ManagerTest(UnitTestBase):
                 {
                     "field": "artifactPath",
                     "search_type": SearchType.WILDCARD,
-                    "value": "tes?"
+                    "value": "/test/artifact/tes?"
                 }
             ]
         })
@@ -44,7 +43,7 @@ class ManagerTest(UnitTestBase):
         self.assertEqual(results, expected)
 
     def test_no_match(self):
-        results = self.search_manager.search({
+        results = self.manager.search({
             "search": [
                 {
                     "field": "artifactName",
@@ -56,7 +55,7 @@ class ManagerTest(UnitTestBase):
         self.assertEqual(results, [])
 
     def test_tilde_search_and_sort(self):
-        results = self.search_manager.search({
+        results = self.manager.search({
             "search": [
                 {
                     "field": "version",
@@ -85,7 +84,7 @@ class ManagerTest(UnitTestBase):
         self.asserts.json_equals(expected, results)
 
     def test_select_fields(self):
-        results = self.search_manager.search({
+        results = self.manager.search({
             "search": [
                 {
                     "field": "artifactName",
@@ -94,10 +93,11 @@ class ManagerTest(UnitTestBase):
                 }
             ]
         }, ["artifactPath"])
-        self.assertEqual(results[0], {"artifactPath": {"name": "artifactPath", "value": "test", "immutable": True}})
+        self.assertEqual(results[0], {"artifactPath": {"name": "artifactPath", "value": "/test/artifact/test",
+            "immutable": True}})
 
     def test_dumb_tilde_search(self):
-        results = self.search_manager.search({
+        results = self.manager.search({
             "search": [
                 {
                     "field": "artifactName",
@@ -121,7 +121,7 @@ class ManagerTest(UnitTestBase):
         self.assertEqual(results, expected)
 
     def test_sorted_desc_and_asc(self):
-        results = self.search_manager.search({
+        results = self.manager.search({
             "search": [
                 {
                     "field": "version",

@@ -4,3 +4,5 @@ class ErrorCode(object):
     DUPLICATE_ARTIFACT = "duplicate_artifact"
     INVALID_ARTIFACT_NAME = "invalid_artifact_name"
     FORBIDDEN = "forbidden"
+    INVALID_SEARCH_CRITERIA = "invalid_search_criteria"
+    BAD_REQUEST = "bad_request"

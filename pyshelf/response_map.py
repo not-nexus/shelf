@@ -1,6 +1,6 @@
 from pyshelf.json_response import JsonResponse
-from pyshelf.cloud.cloud_exceptions import \
-    ArtifactNotFoundError, BucketNotFoundError, DuplicateArtifactError, InvalidNameError
+from pyshelf.cloud.cloud_exceptions import BucketNotFoundError, ArtifactNotFoundError, \
+    DuplicateArtifactError, InvalidNameError
 from pyshelf.error_code import ErrorCode
 from pyshelf.metadata.error_code import ErrorCode as MetadataErrorCode
 
@@ -21,21 +21,16 @@ def vnd_error(error):
     return response
 
 
-def create_403(error_code=None, msg=None):
+def create_403(error_code, msg):
     """
         Creates a 403 response using vnd.error
 
         args:
-            error_code(pyshelf.error_code.ErrorCode):
-                Defaults to ErrorCode.FORBIDDEN if a more specific code is not supplied
-            msg(basestring): Defaults to "Forbidden" if a specific message is not supplied
+            error_code(pyshelf.error_code.ErrorCode)
+            msg(string)
         Returns:
-            vnd.error formatted error response
+            pyshelf.json_response.JsonResponse
     """
-    if msg is None:
-        msg = "Forbidden"
-    if error_code is None:
-        error_code = ErrorCode.FORBIDDEN
     error = {
         "code": error_code,
         "message": msg,
@@ -44,21 +39,17 @@ def create_403(error_code=None, msg=None):
     return vnd_error(error)
 
 
-def create_404(error_code=None, msg=None):
+def create_404(error_code=ErrorCode.RESOURCE_NOT_FOUND, msg="Resource not found"):
     """
-        Creates a 404 response using vnd.error
+        Creates a 404 response.
 
         args:
             error_code(pyshelf.error_code.ErrorCode):
-                Defaults to ErrorCode.RESOURCE_NOT_FOUND if a more specific code is not supplied
-            msg(basestring): Defaults to "Resource not found" if a specific message is not supplied
+            msg(string)
+
         Returns:
-            vnd.error formatted error response
+            pyshelf.json_response.JsonResponse
     """
-    if msg is None:
-        msg = "Resource not found"
-    if error_code is None:
-        error_code = ErrorCode.RESOURCE_NOT_FOUND
     error = {
         "code": error_code,
         "message": msg,
@@ -68,21 +59,37 @@ def create_404(error_code=None, msg=None):
     return vnd_error(error)
 
 
-def create_500(error_code=None, msg=None):
+def create_400(error_code=ErrorCode.BAD_REQUEST, msg="Bad request"):
     """
-        Creates a 500 response using vnd.error
+        Creates response wiih 400 status code.
 
         args:
             error_code(pyshelf.error_code.ErrorCode):
-                Defaults to ErrorCode.INTERNAL_SERVER_ERROR if a more specific code is not supplied
-            msg(basestring): Defaults to "Internal server error" if a specific message is not supplied
+            msg(string)
+
         Returns:
-            vnd.error formatted error response
+            pyshelf.json_response.JsonResponse
     """
-    if msg is None:
-        msg = "Internal server error"
-    if error_code is None:
-        error_code = ErrorCode.INTERNAL_SERVER_ERROR
+    error = {
+        "code": error_code,
+        "message": msg,
+        "status_code": 400
+    }
+
+    return vnd_error(error)
+
+
+def create_500(error_code=ErrorCode.INTERNAL_SERVER_ERROR, msg="Internal server error"):
+    """
+        Creates a 500 response using vnd.error
+
+        Args:
+            error_code(pyshelf.error_code.ErrorCode):
+            msg(string)
+
+        Returns:
+            pyshelf.json_response.JsonResponse
+    """
     error = {
         "code": error_code,
         "message": msg,
@@ -114,15 +121,13 @@ def create_204():
     return response
 
 
-def create_200(body=None):
+def create_200(body):
     """
         Creates a 200 response
 
         Args:
             body(dict): body of response.
     """
-    if body is None:
-        body = {"success": True}
     response = JsonResponse()
     response.status_code = 200
     response.set_data(body)
@@ -146,7 +151,22 @@ def map_exception(e):
         return create_403(e.error_code, e.message)
     if isinstance(e, BucketNotFoundError):
         return create_500(e.error_code, e.message)
+
     return create_500()
+
+
+def map_context_error(context):
+    """
+        Maps errors set on pyshelf.context.Context
+
+        Args:
+            context(pyshelf.context.Context)
+
+        Returns:
+            flask Response
+    """
+    if ErrorCode.INVALID_SEARCH_CRITERIA in context.errors:
+        return create_400(ErrorCode.BAD_REQUEST, context.errors[ErrorCode.INVALID_SEARCH_CRITERIA])
 
 
 def map_metadata_result_errors(result):

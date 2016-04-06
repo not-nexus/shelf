@@ -1,0 +1,50 @@
+{
+    "type": "object",
+    "decsription": "Request criteria for searching artifact metadata, sorting the results, and limiting the number of results returned.",
+    "properties": {
+        "search": {
+            "oneOf": [
+                {
+                    "type": "array",
+                    "description": "List of search strings. Requires an equals without preceding backslash.",
+                    "items": {
+                        "type": "string",
+                        "pattern": "(?<!\\\\)="
+                    }
+                },
+                {
+                    "type": "string",
+                    "pattern": "(?<!\\\\)="
+                }
+            ]
+        },
+        "sort": {
+            "oneOf": [
+                {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/$types/sortString"
+                    },
+                    "minItems": 1
+                },
+                {
+                    "$ref": "#/$types/sortString"
+                }
+            ]
+        },
+        "limit": {
+            "type": "integer"
+        }
+    },
+    "required": [
+        "search"
+    ],
+    "$types": {
+        "sortString": {
+            "description": "The field should come first, and all flags/types should come afterwards in a comma separated list.  Example: myVersion, VERSION, DESC",
+            "type": "string",
+            "pattern": "(?i)^[\\w\\s]+(?:,\\s(DESC|DESCENDING|ASC|ASCENDING|VERSION|VER)*)*$"
+        }
+    },
+    "$schema": "http://json-schema.org/draft-04/schema#"
+}
