@@ -28,6 +28,13 @@ class ArtifactTest(FunctionalTestBase):
             .expect(500, self.response_500()) \
             .get(headers=self.auth)
 
+    def test_no_permission_file(self):
+        self.route_tester \
+            .artifact() \
+            .route_params(bucket_name="test", path="billy-bob-thorton") \
+            .expect(401, "Permission Denied\n") \
+            .get(headers={"Authorization": "bkdjfaojdklfjakdjHELLOWORLDlajdfjkadjok"})
+
     def artifact_get_list(self, path):
         self.route_tester \
             .artifact() \
@@ -40,15 +47,19 @@ class ArtifactTest(FunctionalTestBase):
     def test_artifact_get_artifact_list(self):
         self.artifact_get_list("dir/dir2/dir3/dir4/")
 
+    def test_artifact_get_artifact_list_no_trailing_slash(self):
+        self.artifact_get_list("dir/dir2/dir3/dir4")
+
     def test_artifact_get_artifact_list_all(self):
         self.route_tester \
             .artifact() \
             .route_params(bucket_name="test", path="") \
             .expect(204, headers={
                 "Link": [
+                    "/test/artifact/empty; rel=child; title=empty",
                     "/test/artifact/test; rel=child; title=test",
-                    "/test/artifact/thing; rel=child; title=thing",
-                    "/test/artifact/dir/; rel=child; title=dir/"
+                    "/test/artifact/dir/; rel=child; title=dir/",
+                    "/test/artifact/this/; rel=child; title=this/"
                 ]
             }) \
             .get(headers=self.auth)

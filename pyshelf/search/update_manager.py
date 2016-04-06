@@ -86,20 +86,6 @@ class UpdateManager(object):
         meta_doc.save(using=self.connection)
         self.logger.debug("Updated metadata document {0} in ES".format(key))
 
-    def update_item(self, key, item):
-        """
-           Updates metadata item in the ElasticSearch collection.
-
-            Args:
-                key(string): Unique key that is associated with the metadata document to update.
-                item(dict): Updated metadata to store in ElasticSearch.
-        """
-        self.logger.debug("Attempting to update metadata {0} in ES".format(key))
-        meta_doc = self._get_metadata(key)
-        meta_doc.update_item(item)
-        meta_doc.save(using=self.connection)
-        self.logger.debug("Updated metadata {0} in ES".format(key))
-
     def _get_metadata(self, key):
         """
             Attempts to get existing metadata and creates one if it does not exist.
