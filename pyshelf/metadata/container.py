@@ -4,6 +4,7 @@ from pyshelf.metadata.manager import Manager
 from pyshelf.metadata.yaml_codec import YamlCodec
 from pyshelf.metadata.cloud_portal import CloudPortal
 from pyshelf.metadata.initializer import Initializer
+from pyshelf.metadata.bucket_container import BucketContainer
 
 
 class Container(object):
@@ -14,15 +15,7 @@ class Container(object):
         self._mapper = None
         self._manager = None
         self._yaml_codec = None
-        self._cloud_portal = None
-        self._initializer = None
-
-    def create_cloud_storage(self):
-        """
-            Returns:
-                pyshelf.cloud.storage.Storage
-        """
-        return self.cloud_factory.create_storage(self.bucket_name)
+        self._bucket_container = None
 
     def create_wrapper(self, metadata):
         """
@@ -65,23 +58,17 @@ class Container(object):
         return self._yaml_codec
 
     @property
-    def cloud_portal(self):
+    def bucket_container(self):
         """
             Returns:
-                pyshelf.metadata.cloud_portal.CloudPortal
+                pyshelf.metadata.bucket_container.BucketContainer
         """
-        if not self._cloud_portal:
-            self._cloud_portal = CloudPortal(self)
+        if not self._bucket_container:
+            self._bucket_container = BucketContainer(
+                self.bucket_name,
+                self.yaml_codec,
+                self.mapper,
+                self.cloud_factory
+            )
 
-        return self._cloud_portal
-
-    @property
-    def initializer(self):
-        """
-            Returns:
-                pyshelf.metadata.initializer.Initializer
-        """
-        if not self._initializer:
-            self._initializer = Initializer(self)
-
-        return self._initializer
+        return self._bucket_container
