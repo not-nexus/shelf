@@ -5,3 +5,4 @@ gunicorn==19.3.0
 PyYAML==3.11
 boto==2.38.0
 elasticsearch-dsl<2.0.0
+docopt
