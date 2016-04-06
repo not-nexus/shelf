@@ -9,10 +9,11 @@ from pyshelf.cloud.storage import Storage
 
 
 class Comparator(object):
-    def __init__(self, test, es_connection_string, logger):
+    def __init__(self, test, bucket_name, es_connection_string, logger):
         self._es_connection_parts = urlparse(es_connection_string)
         self.logger = logger
         self.test = test
+        self.bucket_name = bucket_name
         self._fake_container = None
         self._es_connection = None
         self._cloud_portal = None
@@ -25,7 +26,7 @@ class Comparator(object):
             self._fake_container = type("FakeMetadataContainer", (object,), {})()
             self._fake_container.yaml_codec = YamlCodec()
             self._fake_container.mapper = Mapper()
-            self._fake_container.create_cloud_storage = lambda: Storage(None, None, "test", self.logger)
+            self._fake_container.create_cloud_storage = lambda: Storage(None, None, self.bucket_name, self.logger)
 
         return self._fake_container
 
