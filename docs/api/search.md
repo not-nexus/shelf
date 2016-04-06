@@ -2,11 +2,13 @@ Search
 ======
 
 Our api supports searching artifact metadata which will return a link header for each search result.
----
+
 Note:
 * The only requirement is the search portion of the criteria.
 
 Search criteria:
+----------------
+
 * We currently support equality, wildcard, and version searches.
 * Equality search syntax: `"field=value"`
 * Wildcard search syntax: `"field=valu*"` where the `*` represents the 0 or more characters.
@@ -14,6 +16,8 @@ Search criteria:
 * We support escaping of \*, ~, and = for literal evaluation.
 
 Sort criteria:
+--------------
+
 * We support sort types and sort flags.
 * Sort types supported are ASC and DESC
     * with aliases ASCENDING and DESCENDING respectively
@@ -25,10 +29,14 @@ Sort criteria:
 * With multi-sorts the first sort takes precedence.
 
 Limit:
+------
+
 * A limit can be set on the number of results returned back by the api.
 * Note: the method of sort effects which artifacts are contained within the limit.
 
 Artifact Path:
+--------------
+
 * This api exposes two search endpoints.
     * Search from the root of an S3 bucket:  **/\<bucket-name\>/artifact/\_search**
     * Search from a partial path: **/\<bucket-name\>/artifact/\<path\>/\_search**
