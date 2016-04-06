@@ -24,7 +24,7 @@ class SearchPortal(object):
             Args:
                 criteria(schemas.search-request-criteria.json): Search and sort criteria formatted as show below.
         """
-        if not self.schema_validator.validate(criteria, "search-request-criteria.json"):
+        if not self.schema_validator.validate(criteria, "schemas/search-request-criteria.json"):
             self.container.context.add_error(ErrorCode.INVALID_SEARCH_CRITERIA)
             return
 

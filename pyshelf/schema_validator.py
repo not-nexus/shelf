@@ -12,16 +12,14 @@ class SchemaValidator(object):
             on success and False on failure. It also logs the details of the exception.
 
             Args:
-                data(type outlined by schema_name)
+                data(type outlined schema)
                 schema_path(string)
 
             Returns:
                 bool: if data does not match schema
         """
-        path = "schemas/{0}".format(schema_path)
-
         try:
-            with open(path, "r") as file:
+            with open(schema_path, "r") as file:
                 schema = file.read()
 
             schema = json.loads(schema)
