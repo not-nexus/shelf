@@ -1,8 +1,6 @@
 from pyshelf.metadata.keys import Keys as MetadataKeys
 from pyshelf.resource_identity import ResourceIdentity
 import utils
-from jsonschema import validate
-import json
 from pyshelf.error_code import ErrorCode
 
 
@@ -16,6 +14,7 @@ class SearchPortal(object):
         self.search_parser = self.container.search_parser
         self.link_manager = self.container.link_manager
         self.resource_id = self.container.resource_identity
+        self.schema_validator = self.container.schema_validator
 
     def search(self, criteria):
         """
@@ -25,8 +24,9 @@ class SearchPortal(object):
             Args:
                 criteria(schemas.search-request-criteria.json): Search and sort criteria formatted as show below.
         """
-        if not self._validate_schema(criteria, "search-request-criteria.json"):
-            return False
+        if not self.schema_validator.validate(criteria, "search-request-criteria.json"):
+            self.container.context.add_error(ErrorCode.INVALID_SEARCH_CRITERIA)
+            return
 
         search_path = "{0}={1}*".format(MetadataKeys.PATH, self.resource_id.resource_path)
         criteria["search"] = utils.default_to_list(criteria.get("search"))
@@ -59,30 +59,3 @@ class SearchPortal(object):
             artifact_list.append(resource_id.cloud[1:])
 
         return artifact_list
-
-    # TODO: This could be split out in the future if it used more.
-    def _validate_schema(self, data, schema_name):
-        """
-            Validates data against a schema.
-
-            Args:
-                data(type outlined by schema_name)
-                schema_name(string)
-
-            Returns:
-                ValidationError: if data is not valid
-        """
-        path = "schemas/{0}".format(schema_name)
-
-        with open(path, "r") as file:
-            schema = file.read()
-
-        schema = json.loads(schema)
-
-        try:
-            validate(data, schema)
-        except:
-            self.container.context.add_error(ErrorCode.INVALID_SEARCH_CRITERIA)
-            return False
-
-        return True
