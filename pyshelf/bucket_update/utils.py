@@ -1,3 +1,8 @@
+from pyshelf.bucket_update.container import Container
+import sys
+import logging
+
+
 def update_search_index(bucket_config):
     """
         Updates the search index for a specific bucket.
@@ -5,4 +10,11 @@ def update_search_index(bucket_config):
         Args:
             bucket_config(schemas/search-bucket-update-config.json)
     """
-    pass
+    container = _create_container(bucket_config)
+
+
+def _create_container(bucket_config):
+    logging.basicConfig(stream=sys.stdout, level=bucket_config["logLevel"])
+    logger = logging.getLogger(bucket_config["name"])
+    container = Container(bucket_config, logger)
+    return container

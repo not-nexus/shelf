@@ -3,6 +3,7 @@ from pyshelf.metadata.yaml_codec import YamlCodec
 from pyshelf.cloud.factory import Factory as CloudFactory
 from pyshelf.search.container import Container as SearchContainer
 from pyshelf.metadata.mapper import Mapper
+from pyshelf.bucket_update.search_updater import SearchUpdater
 
 
 class Container(object):
@@ -19,6 +20,7 @@ class Container(object):
         self._mapper = None
         self._codec = None
         self._search_container = None
+        self._search_updater = None
 
     @property
     def bucket_container(self):
@@ -81,3 +83,14 @@ class Container(object):
             )
 
         return self._search_container
+
+    @property
+    def search_updater(self):
+        """
+            Returns:
+                pyshelf.bucket_update.search_updater
+        """
+        if not self._search_updater:
+            self._search_updater = SearchUpdater(self)
+
+        return self._search_updater
