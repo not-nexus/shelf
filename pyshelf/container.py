@@ -10,7 +10,7 @@ from pyshelf.context_response_mapper import ContextResponseMapper
 from pyshelf.link_manager import LinkManager
 from pyshelf.artifact_path_builder import ArtifactPathBuilder
 from pyshelf.search_parser import SearchParser
-from pyshelf.resource_identity import ResourceIdentity
+from pyshelf.resource_identity_factory import ResourceIdentityFactory
 from pyshelf.metadata.container import Container as MetadataContainer
 from pyshelf.schema_validator import SchemaValidator
 
@@ -39,6 +39,7 @@ class Container(object):
         self._search_portal = None
         self._search_parser = None
         self._resource_identity = None
+        self._resource_identity_factory = None
         self._metadata = None
         self._schema_validator = None
 
@@ -129,7 +130,7 @@ class Container(object):
     @property
     def resource_identity(self):
         if not self._resource_identity:
-            self._resource_identity = ResourceIdentity(self.request.path)
+            self._resource_identity = self.resource_identity_factory.from_resource_url(self.request.path)
 
         return self._resource_identity
 
@@ -139,6 +140,13 @@ class Container(object):
             self._schema_validator = SchemaValidator(self.logger)
 
         return self._schema_validator
+
+    @property
+    def resource_identity_factory(self):
+        if not self._resource_identity_factory:
+            self._resource_identity_factory = ResourceIdentityFactory(self.artifact_path_builder)
+
+        return self._resource_identity_factory
 
     @property
     def metadata(self):

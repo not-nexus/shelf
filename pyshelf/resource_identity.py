@@ -3,14 +3,14 @@ import hashlib
 
 
 class ResourceIdentity(object):
-    def __init__(self, resource_url, bucket_name=None, artifact_path=None):
+    def __init__(self, resource_url):
         if resource_url[0] != "/":
             resource_url = "/" + resource_url
 
         # To get rid of redundant separators
         resource_url = os.path.normpath(resource_url)
-        self._bucket_name = bucket_name
-        self._artifact_path = artifact_path
+        self._bucket_name = None
+        self._artifact_path = None
 
         self._parse(resource_url)
         self._search = None
