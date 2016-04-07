@@ -43,6 +43,5 @@ if bucket_string:
     bucket_list = bucket_string.split(",")
     bucket_list = [val.strip() for val in bucket_list]
 
-logger.debug("Config: {0}".format(config))
 container = Container(config, logger)
 container.runner.run(bucket_list)
