@@ -64,6 +64,20 @@ def private(key_list):
     return new_list
 
 
+def directories(key_list):
+    """
+        Filters out the key if we have identified
+        it as a directory (ends with a "/")
+        Args:
+            key_list(List(s3.boto.key.Key))
+
+        Returns:
+            List(s3.boto.key.Key)
+    """
+    new_list = filter(_is_not_directory, key_list)
+    return new_list
+
+
 def _is_not_metadata(key):
     return not _is_metadata(key)
 
@@ -86,3 +100,11 @@ def _is_private(key):
     # with an underscore it is considered
     # private
     return bool(re.search("^_|/_(?!metadata)", key.name))
+
+
+def _is_not_directory(key):
+    return not _is_directory(key)
+
+
+def _is_directory(key):
+    return bool(re.search("/$", key.name))
