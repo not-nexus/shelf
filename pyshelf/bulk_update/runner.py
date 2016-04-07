@@ -39,7 +39,7 @@ class Runner(object):
 
     def _find_bucket_list(self, requested_bucket_list=None):
         bucket_list = []
-        for name, bucket_config in self.all_buckets.iteritems:
+        for name, bucket_config in self.all_buckets.iteritems():
             # This is because I would like the bucket data to be in a particular
             # format
             if not requested_bucket_list or name in requested_bucket_list:
