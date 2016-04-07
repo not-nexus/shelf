@@ -3,7 +3,15 @@ from pyshelf.bucket_update.utils import update_search_index
 
 
 class Runner(object):
+    """
+        Responsible for creating processes that will take care of
+        updating the search index per bucket.
+    """
     def __init__(self, container):
+        """
+            Args:
+                container(pyshelf.bulk_update.container.Container)
+        """
         self.container = container
         self.config = container.config
 
