@@ -4,6 +4,8 @@ from pyshelf.cloud.factory import Factory as CloudFactory
 from pyshelf.search.container import Container as SearchContainer
 from pyshelf.metadata.mapper import Mapper
 from pyshelf.bucket_update.search_updater import SearchUpdater
+from pyshelf.resource_identity_factory import ResourceIdentityFactory
+from pyshelf.artifact_path_builder import ArtifactPathBuilder
 
 
 class Container(object):
@@ -21,6 +23,7 @@ class Container(object):
         self._codec = None
         self._search_container = None
         self._search_updater = None
+        self._resource_identity_factory = None
 
     @property
     def bucket_container(self):
@@ -94,3 +97,11 @@ class Container(object):
             self._search_updater = SearchUpdater(self)
 
         return self._search_updater
+
+    @property
+    def resource_identity_factory(self):
+        if not self._resource_identity_factory:
+            builder = ArtifactPathBuilder(self.config["name"])
+            self._resource_identity_factory = ResourceIdentityFactory(builder)
+
+        return self._resource_identity_factory
