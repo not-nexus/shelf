@@ -24,6 +24,7 @@ class Container(object):
         self._search_container = None
         self._search_updater = None
         self._resource_identity_factory = None
+        self._bucket_container = None
 
     @property
     def bucket_container(self):
@@ -51,7 +52,15 @@ class Container(object):
                 pyshelf.cloud.factory.Factory
         """
         if not self._cloud_factory:
-            self._cloud_factory = CloudFactory(self.config, self.logger)
+            # TODO: This kind of sucks.  I shouldn't have to
+            # recreate a different config format in order  to
+            # use the cloud factory.
+            config = {
+                "buckets": {
+                    self.config["name"]: self.config
+                }
+            }
+            self._cloud_factory = CloudFactory(config, self.logger)
 
         return self._cloud_factory
 

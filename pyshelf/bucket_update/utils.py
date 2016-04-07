@@ -11,6 +11,7 @@ def update_search_index(bucket_config):
             bucket_config(schemas/search-bucket-update-config.json)
     """
     container = _create_container(bucket_config)
+    container.search_updater.run()
 
 
 def _create_container(bucket_config):
