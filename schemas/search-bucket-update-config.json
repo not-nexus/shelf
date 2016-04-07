@@ -1,0 +1,34 @@
+{
+    "type": "objects",
+    "decsription": "Used in running an update of the search index",
+    "properties": {
+        "name": {
+            "type": "string",
+            "description": "Name of the bucket that will be operating on"
+        },
+        "accessKey": {
+            "type": "string",
+            "description": "The public part of the key pair to access the cloud"
+        },
+        "secretKey": {
+            "type": "string",
+            "description": "The private part of the key pair to access the cloud"
+        },
+        "elasticSearchConnectionString": {
+            "type": "string",
+            "description": "The way to connect to elasticsearch"
+        },
+        "logLevel": {
+            "type": "string",
+            "description": "What we should set the log level to.  This will either be DEBUG or INFO"
+        }
+    },
+    "required": [
+        "name",
+        "accessKey",
+        "secretKey",
+        "elasticSearchConnectionString",
+        "logLevel"
+    ],
+    "$schema": "http://json-schema.org/draft-04/schema#"
+}

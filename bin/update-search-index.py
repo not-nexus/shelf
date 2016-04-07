@@ -3,6 +3,7 @@ import docopt
 import logging
 import sys
 import pyshelf.configure as configure
+from pyshelf.bulk_update.container import Container
 
 doc = """Usage: ./build-cf [options] <config-path>
 
@@ -29,7 +30,10 @@ if args["--verbose"]:
 logging.basicConfig(stream=sys.stdout, level=log_level)
 logger = logging.getLogger()
 
-config = {}
+config = {
+    "logLevel": log_level
+}
+
 configure.app_config(config, args["<config-path>"])
 
 bucket_string = args.get("--bucket")
@@ -40,3 +44,5 @@ if bucket_string:
     bucket_list = [val.strip() for val in bucket_list]
 
 logger.debug("Config: {0}".format(config))
+container = Container(config, logger)
+container.runner.run(bucket_list)
