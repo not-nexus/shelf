@@ -29,7 +29,8 @@ class Runner(object):
         for bucket_config in bucket_list:
             bucket_config.update({
                 "elasticSearchConnectionString": self.config["elasticSearchConnectionString"],
-                "logLevel": self.config["logLevel"]
+                "logLevel": self.config["logLevel"],
+                "chunkSize": self.config["chunkSize"]
             })
             self.container.logger.info("Starting process for bucket {0}".format(bucket_config["name"]))
             self._run_process(bucket_config)

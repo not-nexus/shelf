@@ -8,17 +8,21 @@ from pyshelf.bulk_update.container import Container
 doc = """Usage: ./build-cf [options] <config-path>
 
     Options:
-        -b --bucket bucket      The name of the bucket, or buckets that you
-                                would like to rebuild the search index for.
-                                If this is not sent along, all buckets will
-                                be rebuilt.  If multiple buckets are provided
-                                they should be comma separated.
-                                Example: -b "bucket1, bucket2, etc.."
+        -b --bucket bucket          The name of the bucket, or buckets that you
+                                    would like to rebuild the search index for.
+                                    If this is not sent along, all buckets will
+                                    be rebuilt.  If multiple buckets are provided
+                                    they should be comma separated.
+                                    Example: -b "bucket1, bucket2, etc.."
 
-        -v --verbose            If set, the log level will be set to DEBUG.
+        -c --chunk-size chunk-size  How many artifacts (per bucket) should be
+                                    processed at once.
+                                    [default: 20]
+
+        -v --verbose                If set, the log level will be set to DEBUG.
 
     Arguments:
-        <config-path>           Path to the yaml configuration file.
+        <config-path>               Path to the yaml configuration file.
 """
 
 args = docopt.docopt(doc)
@@ -31,7 +35,8 @@ logging.basicConfig(stream=sys.stdout, level=log_level)
 logger = logging.getLogger()
 
 config = {
-    "logLevel": log_level
+    "logLevel": log_level,
+    "chunkSize": args["--chunk-size"]
 }
 
 configure.app_config(config, args["<config-path>"])

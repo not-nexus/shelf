@@ -21,6 +21,10 @@
         "logLevel": {
             "type": "string",
             "description": "What we should set the log level to.  This will either be DEBUG or INFO"
+        },
+        "chunkSize": {
+            "type": "integer",
+            "description": "How many records to process at once"
         }
     },
     "required": [
@@ -28,7 +32,8 @@
         "accessKey",
         "secretKey",
         "elasticSearchConnectionString",
-        "logLevel"
+        "logLevel",
+        "chunkSize"
     ],
     "$schema": "http://json-schema.org/draft-04/schema#"
 }
