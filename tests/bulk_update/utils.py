@@ -8,6 +8,24 @@ import logging
 
 
 class UtilsTest(UnitTestBase):
+    EXPECTED_KYLE = {
+        "chunkSize": 20,
+        "name": "kyle-long",
+        "logLevel": logging.INFO,
+        "elasticSearchConnectionString": "http://localhost:9200/metadata",
+        "accessKey": "KKKKKKKKKKKKKKKKKKKK",
+        "secretKey": "KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK"
+    }
+
+    EXPECTED_ANDY = {
+        "chunkSize": 20,
+        "name": "andy-gertjejansen",
+        "logLevel": logging.INFO,
+        "elasticSearchConnectionString": "http://localhost:9200/metadata",
+        "accessKey": "AAAAAAAAAAAAAAAAAAAA",
+        "secretKey": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+    }
+
     def setUp(self):
         super(UtilsTest, self).setUp()
         self.run_process_mock = Mock()
@@ -31,30 +49,12 @@ class UtilsTest(UnitTestBase):
         self.execute()
         self.assertEqual(2, self.run_process_mock.call_count)
         args_list = self.run_process_mock.call_args_list
-        expected_kyle = {
-            "chunkSize": 20,
-            "name": "kyle-long",
-            "logLevel": logging.INFO,
-            "elasticSearchConnectionString": "http://localhost:9200/metadata",
-            "accessKey": "KKKKKKKKKKKKKKKKKKKK",
-            "secretKey": "KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK"
-        }
-
-        expected_andy = {
-            "chunkSize": 20,
-            "name": "andy-gertjejansen",
-            "logLevel": logging.INFO,
-            "elasticSearchConnectionString": "http://localhost:9200/metadata",
-            "accessKey": "AAAAAAAAAAAAAAAAAAAA",
-            "secretKey": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-        }
-
         # I do this instead of assuming order since it is a dict
         # when the config is decoded and we can't rely on the
         # order of a dict
         for args in args_list:
             config = args[0][0]
             if config["name"] == "andy-gertjejansen":
-                self.assertEqual(expected_andy, config)
+                self.assertEqual(UtilsTest.EXPECTED_ANDY, config)
             else:
-                self.assertEqual(expected_kyle, config)
+                self.assertEqual(UtilsTest.EXPECTED_KYLE, config)
