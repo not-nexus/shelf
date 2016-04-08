@@ -1,5 +1,4 @@
 from pyshelf.bucket_update.container import Container
-import sys
 import logging
 
 
@@ -15,7 +14,12 @@ def update_search_index(bucket_config):
 
 
 def _create_container(bucket_config):
-    logging.basicConfig(stream=sys.stdout, level=bucket_config["logLevel"])
+    filename = "/var/log/bucket-update/{0}.log".format(bucket_config["name"])
+    logging.basicConfig(
+        format="%(asctime)s:%(name)s:%(levelname)s:%(message)s",
+        filename=filename,
+        level=bucket_config["logLevel"],
+    )
     logger = logging.getLogger(bucket_config["name"])
     container = Container(bucket_config, logger)
     return container

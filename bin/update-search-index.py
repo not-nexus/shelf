@@ -31,8 +31,10 @@ log_level = logging.INFO
 if args["--verbose"]:
     log_level = logging.DEBUG
 
-logging.basicConfig(stream=sys.stdout, level=log_level)
-logger = logging.getLogger()
+handler = logging.StreamHandler(stream=sys.stdout)
+logger = logging.getLogger("update-search-index")
+logger.addHandler(handler)
+logger.setLevel(log_level)
 
 config = {
     "logLevel": log_level,
