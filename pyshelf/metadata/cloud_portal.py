@@ -1,4 +1,5 @@
 import copy
+from pyshelf.cloud.cloud_exceptions import ArtifactNotFoundError
 
 
 class CloudPortal(object):
@@ -39,10 +40,10 @@ class CloudPortal(object):
                 dict
         """
         with self.container.create_cloud_storage() as storage:
-            raw_meta = storage.get_artifact_as_string(cloud_identifier)
-            meta = self.codec.deserialize(raw_meta)
-
-            if not meta:
+            try:
+                raw_meta = storage.get_artifact_as_string(cloud_identifier)
+                meta = self.codec.deserialize(raw_meta)
+            except ArtifactNotFoundError:
                 meta = {}
 
             meta = self.mapper.to_response(meta)
