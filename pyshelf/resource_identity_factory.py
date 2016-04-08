@@ -32,6 +32,6 @@ class ResourceIdentityFactory(object):
             Returns:
                 pyshelf.resource_identity.ResourceIdentity
         """
-        resource_url = self.artifact_path_builder(cloud_identifier)
+        resource_url = self.artifact_path_builder.build(cloud_identifier)
         identity = self.from_resource_url(resource_url)
         return identity
