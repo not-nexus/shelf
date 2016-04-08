@@ -5,6 +5,7 @@ from pyshelf.search.container import Container as SearchContainer
 
 class UnitTestBase(pyproctor.TestBase):
     def setUp(self):
+        super(UnitTestBase, self).setUp()
         self.mock_container()
         self.search_container = SearchContainer(Mock(), "http://localhost:9200/metadata")
 
