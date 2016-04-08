@@ -4,6 +4,7 @@ from mock import Mock
 from pyshelf.bulk_update.runner import Runner
 import os.path
 from pyshelf.bulk_update.utils import run
+import logging
 
 
 class UtilsTest(UnitTestBase):
@@ -28,3 +29,29 @@ class UtilsTest(UnitTestBase):
 
     def test_run(self):
         self.execute()
+        self.assertEqual(2, self.run_process_mock.call_count)
+        args_list = self.run_process_mock.call_args_list
+        expected_kyle = {
+            "chunkSize": 20,
+            "name": "kyle-long",
+            "logLevel": logging.INFO,
+            "elasticSearchConnectionString": "http://localhost:9200/metadata",
+            "accessKey": "KKKKKKKKKKKKKKKKKKKK",
+            "secretKey": "KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK"
+        }
+
+        expected_andy = {
+            "chunkSize": 20,
+            "name": "andy-gertjejansen",
+            "logLevel": logging.INFO,
+            "elasticSearchConnectionString": "http://localhost:9200/metadata",
+            "accessKey": "AAAAAAAAAAAAAAAAAAAA",
+            "secretKey": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+        }
+
+        for args in args_list:
+            config = args[0][0]
+            if config["name"] == "andy-gertjejansen":
+                self.assertEqual(expected_andy, config)
+            else:
+                self.assertEqual(expected_kyle, config)

@@ -1,8 +1,8 @@
 elasticSearchConnectionString: http://localhost:9200/metadata
 buckets:
     kyle-long:
-        accessKey: XXXXXXXXXXXXXXXXXXXX
-        secretKey: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+        accessKey: KKKKKKKKKKKKKKKKKKKK
+        secretKey: KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK
     andy-gertjejansen:
-        accessKey: XXXXXXXXXXXXXXXXXXXX
-        secretKey: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+        accessKey: AAAAAAAAAAAAAAAAAAAA
+        secretKey: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
