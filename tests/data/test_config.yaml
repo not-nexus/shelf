@@ -1,0 +1,8 @@
+elasticSearchConnectionString: http://localhost:9200/metadata
+buckets:
+    kyle-long:
+        accessKey: XXXXXXXXXXXXXXXXXXXX
+        secretKey: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+    andy-gertjejansen:
+        accessKey: XXXXXXXXXXXXXXXXXXXX
+        secretKey: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
