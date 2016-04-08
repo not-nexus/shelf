@@ -49,6 +49,9 @@ class UtilsTest(UnitTestBase):
             "secretKey": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         }
 
+        # I do this instead of assuming order since it is a dict
+        # when the config is decoded and we can't rely on the
+        # order of a dict
         for args in args_list:
             config = args[0][0]
             if config["name"] == "andy-gertjejansen":
