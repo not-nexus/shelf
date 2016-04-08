@@ -1,4 +1,4 @@
-from flask import url_for
+import os.path
 
 
 class ArtifactPathBuilder(object):
@@ -7,13 +7,21 @@ class ArtifactPathBuilder(object):
 
     def build(self, path):
         """
-            Builds the path part of the full url for an artifact.
+            Attempts to build an artifact path in only a single place.
 
-            Note: This is tightly coupled with the name of the function in
-            the artifact route which is terrible.  It seems to be the way
-            to do it?  The point of making this object was to centralize the
-            pain so that if we change that function name we only need to
-            change it in a single place.
+            Note: I use this outside of an application context so I couldn't
+            use flask url_for functionality.
+
+            Args:
+                path(basetring): The path as it would appear as the cloud
+                    identifier.
+
+            Returns:
+                basestring: Full resource url.  For example:
+                    /my-bucket/artifact/path/to/artifact/in/cloud
         """
-        url = url_for(".get_path", path=path, bucket_name=self.bucket_name)
+        if path[0] == "/":
+            path = path[1:]
+
+        url = os.path.join("/" + self.bucket_name, "artifact", path)
         return url
