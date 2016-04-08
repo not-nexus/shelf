@@ -17,7 +17,9 @@ class ArtifactMetadataUpdater(object):
         portal = self.container.cloud_portal
         initializer = self.container.initializer
         metadata = portal.load(self.identity.cloud_metadata)
+
         if initializer.needs_update(metadata):
             metadata = initializer.update(self.identity, metadata)
             portal.update(self.identity.cloud_metadata, metadata)
-        self._metadata = self._load_metadata()
+
+        self._metadata = metadata
