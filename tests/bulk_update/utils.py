@@ -45,8 +45,8 @@ class UtilsTest(UnitTestBase):
 
         run(args)
 
-    def test_run(self):
-        self.execute()
+    def run_and_assert_both_buckets(self, bucket):
+        self.execute(bucket=bucket)
         self.assertEqual(2, self.run_process_mock.call_count)
         args_list = self.run_process_mock.call_args_list
         # I do this instead of assuming order since it is a dict
@@ -58,3 +58,9 @@ class UtilsTest(UnitTestBase):
                 self.assertEqual(UtilsTest.EXPECTED_ANDY, config)
             else:
                 self.assertEqual(UtilsTest.EXPECTED_KYLE, config)
+
+    def test_run(self):
+        self.run_and_assert_both_buckets(None)
+
+    def test_with_comma_separated_bucket_list(self):
+        self.run_and_assert_both_buckets("kyle-long, andy-gertjejansen")
