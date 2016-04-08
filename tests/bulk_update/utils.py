@@ -64,3 +64,9 @@ class UtilsTest(UnitTestBase):
 
     def test_with_comma_separated_bucket_list(self):
         self.run_and_assert_both_buckets("kyle-long, andy-gertjejansen")
+
+    def test_single_bucket_only(self):
+        self.execute(bucket="kyle-long")
+        self.assertEqual(1, self.run_process_mock.call_count)
+        args = self.run_process_mock.args
+        self.assertEqual(UtilsTest.EXPECTED_KYLE, args[0][0])
