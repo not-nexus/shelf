@@ -36,7 +36,7 @@ logger = logging.getLogger()
 
 config = {
     "logLevel": log_level,
-    "chunkSize": args["--chunk-size"]
+    "chunkSize": int(args["--chunk-size"])
 }
 
 configure.app_config(config, args["<config-path>"])
