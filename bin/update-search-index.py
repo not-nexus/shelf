@@ -31,6 +31,11 @@ log_level = logging.INFO
 if args["--verbose"]:
     log_level = logging.DEBUG
 
+# Important to not use logging.basicConfig here
+# because calling it again (in subprocesses) is
+# a no-op and its easiest to use it in the subprocesses
+# because then it also automatically configures child
+# loggers such as boto and elasticsearch
 handler = logging.StreamHandler(stream=sys.stdout)
 logger = logging.getLogger("update-search-index")
 logger.addHandler(handler)
