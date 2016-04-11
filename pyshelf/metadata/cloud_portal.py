@@ -40,6 +40,8 @@ class CloudPortal(object):
                 dict
         """
         with self.container.create_cloud_storage() as storage:
+            meta = None
+
             try:
                 raw_meta = storage.get_artifact_as_string(cloud_identifier)
                 meta = self.codec.deserialize(raw_meta)
