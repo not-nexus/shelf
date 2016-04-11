@@ -28,6 +28,14 @@ class MetadataBuilder(object):
             data = MetadataBuilder.DEFAULT
 
         self.data = deepcopy(data)
+        self._identity = None
+
+    @property
+    def identity(self):
+        if not self._identity:
+            raise AttributeError("identity was not assigned on this MetadataBuilder.  Have you called resource_url()?")
+
+        return self._identity
 
     @property
     def mapper(self):
@@ -52,7 +60,7 @@ class MetadataBuilder(object):
 
     def resource_url(self, resource_url):
         identity = ResourceIdentity(resource_url)
-        self.identity = identity
+        self._identity = identity
         self.data[Keys.PATH]["value"] = identity.artifact_path
         self.data[Keys.NAME]["value"] = identity.artifact_name
         return self
@@ -61,4 +69,5 @@ class MetadataBuilder(object):
         return self.mapper.to_cloud(self.data)
 
     def copy(self):
-        return MetadataBuilder(self.data)
+        builder = deepcopy(self)
+        return builder
