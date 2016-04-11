@@ -6,6 +6,7 @@ from urlparse import urlparse
 from pyshelf.search.metadata import Metadata
 from elasticsearch import Elasticsearch
 from pyshelf.cloud.storage import Storage
+from tests.metadata.factory import Factory
 
 
 class Comparator(object):
@@ -14,16 +15,14 @@ class Comparator(object):
         self.logger = logger
         self.test = test
         self._es_connection = None
-        self._cloud_portal = None
+        self._factory = None
 
-    def create_fake_container(self, bucket_name):
-        # Trailing comma in the tuple is important otherwise it is interpretted
-        # as a grouping and just returns the type "object"
-        fake_container = type("FakeMetadataContainer", (object,), {})()
-        fake_container.yaml_codec = YamlCodec()
-        fake_container.mapper = Mapper()
-        fake_container.create_cloud_storage = lambda: Storage(None, None, bucket_name, self.logger)
-        return fake_container
+    @property
+    def factory(self):
+        if not self._factory:
+            self._factory = Factory(self.logger)
+
+        return self._factory
 
     @property
     def es_connection(self):
@@ -36,14 +35,9 @@ class Comparator(object):
     def index(self):
         return self._es_connection_parts.path[1:]
 
-    def create_cloud_portal(self, bucket_name):
-        container = self.create_fake_container(bucket_name)
-        cloud_portal = CloudPortal(container)
-        return cloud_portal
-
     def compare(self, resource_url):
         identity = ResourceIdentity(resource_url)
-        cloud_portal = self.create_cloud_portal(identity.bucket_name)
+        cloud_portal = self.factory.create_cloud_portal(identity.bucket_name)
         cloud_metadata = cloud_portal.load(identity.cloud_metadata)
         if not cloud_metadata:
             self.fail("Failed to find metadata in cloud for {0}".format(identity.cloud_metadata))
