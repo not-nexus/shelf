@@ -12,6 +12,7 @@ from tests.search.test_wrapper import TestWrapper as SearchTestWrapper
 from pyshelf.search.container import Container as SearchContainer
 from tests.metadata.comparator import Comparator as MetadataComparator
 from pyshelf.resource_identity import ResourceIdentity
+from tests.metadata_builder import MetadataBuilder
 
 
 class FunctionalTestBase(pyproctor.TestBase):
@@ -158,6 +159,9 @@ class FunctionalTestBase(pyproctor.TestBase):
         auth_key.set_contents_from_string(utils.get_permissions_func_test())
         auth_bucket2 = Key(self.boto_connection.get_bucket("bucket2"), key_name)
         auth_bucket2.set_contents_from_string(utils.get_permissions_func_test())
+
+    def create_metadata_builder(self):
+        return MetadataBuilder()
 
     @property
     def route_tester(self):
