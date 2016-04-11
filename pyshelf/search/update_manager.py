@@ -67,6 +67,7 @@ class UpdateManager(object):
         self.logger.debug("Executing the following query for removing old documents from {0} index: {1}"
                 .format(self.index, query))
 
+        self.connection.indices.refresh(index=self.index) # NOCOMMIT
         # Doing a bulk operation here via the elasticsearch library. With elasticsearch_dsl there is no way to do a bulk delete.
         # scan is a simple way to iterate through all results and delete each one
         # http://elasticsearch-py.readthedocs.org/en/master/helpers.html#scan
@@ -86,7 +87,15 @@ class UpdateManager(object):
                 _source=0,
             )
         )
+
+        # import pprint; pprint.pprint(operations) # NOCOMMIT
+        # all_id_list = []
+        # for item in operations:
+        #     all_id_list.append(item)
+
+        # self.logger.info("Deleting ids: {0}".format(all_id_list)) # NOCOMMIT
         stats = bulk(self.connection, operations, refresh=True)
+        # print "COUNT {0}".format(stats[0]) # NOCOMMIT
         return stats[0]
 
     def bulk_update(self, data):
