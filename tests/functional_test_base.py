@@ -87,7 +87,9 @@ class FunctionalTestBase(pyproctor.TestBase):
                     "secretKey": "test"
                 }
             },
-            "elasticSearchConnectionString": cls.ELASTICSEARCH_CONNECTION_STRING,
+            "elasticsearch": {
+                "connectionString": cls.ELASTICSEARCH_CONNECTION_STRING,
+            }
 
         }
         configure.logger(app.logger, "DEBUG")

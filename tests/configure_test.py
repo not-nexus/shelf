@@ -47,7 +47,12 @@ class ConfigureTest(pyproctor.TestBase):
                     "secretKey": "supersecretkeywhichcanalsobewhateveriwant"
                 }
             },
-            "elasticSearchConnectionString": "http://localhost:9200/metadata"
+            "elasticsearch": {
+                "connectionString": "http://localhost:9200/metadata",
+                "aws": True,
+                "accessKey": "blahdiddyblah",
+                "secretKey": "sneakyAlphaNumericKey"
+            }
         }
         self.write_config(config)
         # To make sure it doens't overwrite it
