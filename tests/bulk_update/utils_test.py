@@ -5,6 +5,7 @@ from pyshelf.bulk_update.runner import Runner
 import os.path
 from pyshelf.bulk_update.utils import run
 import logging
+from copy import deepcopy
 
 
 class UtilsTest(UnitTestBase):
@@ -31,13 +32,13 @@ class UtilsTest(UnitTestBase):
         self.run_process_mock = Mock()
         MonkeyPatcher.patch(Runner, "_run_process", self.run_process_mock)
 
-    def execute(self, bucket=None, chunk_size=None):
+    def execute(self, bucket=None, chunk_size=None, verbose=False):
         path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "../data/test_config.yaml")
         args = {
             "--chunk-size": 20,
             "--bucket": bucket,
             "<config-path>": path,
-            "--verbose": False
+            "--verbose": verbose
         }
 
         if chunk_size:
@@ -66,7 +67,9 @@ class UtilsTest(UnitTestBase):
         self.run_and_assert_both_buckets("kyle-long, andy-gertjejansen")
 
     def test_single_bucket_only(self):
-        self.execute(bucket="kyle-long")
+        self.execute(bucket="kyle-long", verbose=True)
         self.assertEqual(1, self.run_process_mock.call_count)
         args = self.run_process_mock.call_args
-        self.assertEqual(UtilsTest.EXPECTED_KYLE, args[0][0])
+        expected = deepcopy(UtilsTest.EXPECTED_KYLE)
+        expected["logLevel"] = logging.DEBUG
+        self.assertEqual(expected, args[0][0])
