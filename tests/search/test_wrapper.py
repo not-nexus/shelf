@@ -29,7 +29,6 @@ class TestWrapper(object):
 
     def teardown_metadata(self):
         self.search_container.update_manager.remove_unlisted_documents([])
-        print "HEY KYLE, INSIDE TEARDOWN" # NOCOMMIT
 
     def init_metadata(self):
         if not TestWrapper.INIT:
