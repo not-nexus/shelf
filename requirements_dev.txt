@@ -3,3 +3,4 @@ mock==1.3.0
 git+https://gitlab.cwscloud.net/cws-agi/pyproctor.git@master
 flake8
 moto
+unittest2

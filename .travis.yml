@@ -10,6 +10,6 @@ services:
 # This is required for elasticsearch
 before_script:
     - sleep 10
-script: coverage run --source pyshelf/ -m unittest discover -p *_test.py tests -b
+script: coverage run --source pyshelf/ unit2 discover -p *_test.py tests -b
 after_success:
     - codecov
