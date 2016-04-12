@@ -61,7 +61,7 @@ class MetadataBuilder(object):
     def resource_url(self, resource_url):
         identity = ResourceIdentity(resource_url)
         self._identity = identity
-        self.data[Keys.PATH]["value"] = identity.resource_url
+        self.data[Keys.PATH]["value"] = identity.resource_path
         self.data[Keys.NAME]["value"] = identity.artifact_name
         return self
 
