@@ -88,6 +88,10 @@ class Container(object):
 
     @property
     def search_container(self):
+        """
+            Returns:
+                pyshelf.search.container.Container
+        """
         if not self._search_container:
             self._search_container = SearchContainer(
                 self.logger,
@@ -109,6 +113,10 @@ class Container(object):
 
     @property
     def resource_identity_factory(self):
+        """
+            Returns:
+                pyshelf.resource_identity_factory.ResourceIdentityFactory
+        """
         if not self._resource_identity_factory:
             builder = ArtifactPathBuilder(self.config["name"])
             self._resource_identity_factory = ResourceIdentityFactory(builder)
