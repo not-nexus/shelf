@@ -44,3 +44,5 @@ class ArtifactMetadataUpdaterTest(TestBase):
         for key in expected_keys:
             if key not in new_metadata:
                 self.fail("Key {0} was not initialized".format(key))
+
+        self.assertEqual(updater.metadata, new_metadata)
