@@ -1,4 +1,3 @@
-import pyproctor
 from moto import mock_s3
 from pyshelf.app import app
 import pyshelf.configure as configure
@@ -13,9 +12,10 @@ from pyshelf.search.container import Container as SearchContainer
 from tests.metadata.comparator import Comparator as MetadataComparator
 from pyshelf.resource_identity import ResourceIdentity
 from tests.metadata_builder import MetadataBuilder
+from tests.test_base import TestBase
 
 
-class FunctionalTestBase(pyproctor.TestBase):
+class FunctionalTestBase(TestBase):
     RESPONSE_404 = {
         "message": "Resource not found",
         "code": "resource_not_found"
@@ -77,6 +77,7 @@ class FunctionalTestBase(pyproctor.TestBase):
 
     @classmethod
     def setUpClass(cls):
+        super(FunctionalTestBase, cls).setUpClass()
         config = {
             "buckets": {
                 "test": {
