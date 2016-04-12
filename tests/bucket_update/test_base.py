@@ -3,9 +3,7 @@ import logging
 from boto.s3.key import Key
 from pyshelf.bucket_update.container import Container
 from tests.metadata.factory import Factory
-import logging
 import sys
-
 
 
 class TestBase(FunctionalTestBase):
@@ -44,4 +42,3 @@ class TestBase(FunctionalTestBase):
     def add_both(self, builder):
         self.add_cloud(builder)
         self.add_search(builder)
-
