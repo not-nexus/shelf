@@ -91,9 +91,16 @@ class ArtifactTest(FunctionalTestBase):
             .expect(403, self.RESPONSE_INVALID_NAME) \
             .post(data={"file": (StringIO("file contents"), "test.txt")}, headers=self.auth)
 
-    def test_bucket_doesnt_exist(self):
+    def test_bucket_configuration_doesnt_exist(self):
         self.route_tester \
             .artifact() \
             .route_params(bucket_name="lol-this-doesnt-exist", path="hello/there") \
             .expect(404, self.RESPONSE_404) \
+            .get(headers=self.auth)
+
+    def test_bucket_doesnt_exist(self):
+        self.route_tester \
+            .artifact() \
+            .route_params(bucket_name="thisBucketDoesntExistLol", path="hello/there") \
+            .expect(500, self.response_500()) \
             .get(headers=self.auth)
