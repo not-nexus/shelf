@@ -50,6 +50,7 @@ class ConfigureTest(pyproctor.TestBase):
             "elasticsearch": {
                 "connectionString": "http://localhost:9200/metadata",
                 "aws": True,
+                "region": "us-east-1",
                 "accessKey": "blahdiddyblah",
                 "secretKey": "sneakyAlphaNumericKey"
             }

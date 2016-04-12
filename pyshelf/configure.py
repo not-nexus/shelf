@@ -17,7 +17,8 @@ def app(app, config_path):
         _validate_aws_keys(val)
 
     if config.get("aws"):
-        _validate_aws_keys(config.get("elasticsarch"))
+        _validate_aws_keys(config.get("elasticsearch"))
+        _validate_key("region", config.get("elasticsearch").get("region"))
 
     app.config.update(config)
 

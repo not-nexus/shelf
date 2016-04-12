@@ -1,16 +1,15 @@
 from pyshelf.search.metadata import Metadata
 from elasticsearch_dsl.query import Q
 from elasticsearch_dsl import Search
-from elasticsearch import Elasticsearch
 from elasticsearch.helpers import scan, bulk
 from pyshelf.search.type import Type as SearchType
 from pyshelf.metadata.keys import Keys as MetadataKeys
 
 
 class UpdateManager(object):
-    def __init__(self, logger, url, index):
+    def __init__(self, logger, es_connection, index):
         self.logger = logger
-        self.connection = Elasticsearch(url)
+        self.connection = es_connection
         self.index = index
 
     def remove_unlisted_documents(self, ex_key_list):
@@ -51,7 +50,6 @@ class UpdateManager(object):
         query &= Q("nested", path="property_list", query=nested_query)
         query = Search(using=self.connection).index(self.index).query(query).to_dict()
 
-
         return self._bulk_delete(query)
 
     def _bulk_delete(self, query):
@@ -67,11 +65,12 @@ class UpdateManager(object):
         self.logger.debug("Executing the following query for removing old documents from {0} index: {1}"
                 .format(self.index, query))
 
-        # Doing a bulk operation here via the elasticsearch library. With elasticsearch_dsl there is no way to do a bulk delete.
+        # Doing a bulk operation here via the elasticsearch library.
+        # With elasticsearch_dsl there is no way to do a bulk delete.
         # scan is a simple way to iterate through all results and delete each one
         # http://elasticsearch-py.readthedocs.org/en/master/helpers.html#scan
-        # In summation we do a query for all ids not in the ex_key_list and iterate through and delete all results. Based on my research
-        # this was the easiest way to perform this operation.
+        # In summation we do a query for all ids not in the ex_key_list and iterate through and delete all results.
+        # Based on my research this was the easiest way to perform this operation.
         operations = (
             {
                 "_op_type": "delete",

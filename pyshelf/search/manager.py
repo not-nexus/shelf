@@ -8,7 +8,7 @@ from elasticsearch import Elasticsearch
 class Manager(object):
     def __init__(self, search_container):
         self.search_container = search_container
-        self.connection = Elasticsearch(self.search_container.es_url)
+        self.connection = self.search_container.es_connection
         self.index = self.search_container.es_index
 
     def search(self, criteria, key_list=None):
