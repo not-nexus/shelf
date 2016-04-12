@@ -1,5 +1,6 @@
 from pyshelf.bucket_update.container import Container
 import logging
+import os.path
 
 
 def update_search_index(bucket_config):
@@ -14,7 +15,7 @@ def update_search_index(bucket_config):
 
 
 def _create_container(bucket_config):
-    filename = "/var/log/bucket-update/{0}.log".format(bucket_config["name"])
+    filename = os.path.join(bucket_config["bulkUpdateLogDirectory"], "{0}.log".format(bucket_config["name"]))
     logging.basicConfig(
         format="%(asctime)s:%(name)s:%(levelname)s:%(message)s",
         filename=filename,

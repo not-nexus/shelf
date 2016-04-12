@@ -22,6 +22,9 @@ def app_config(existing_config, config_path):
     required = {"elasticSearchConnectionString": config.get("elasticSearchConnectionString")}
     _validate_dict(required)
 
+    if not config.get("bulkUpdateLogDirectory"):
+        config["bulkUpdateLogDirectory"] = "/var/log/bucket-update"
+
     existing_config.update(config)
 
 

@@ -1,13 +1,16 @@
 from tests.functional_test_base import FunctionalTestBase
 import pyshelf.bucket_update.utils as utils
 import logging
+import os.path
 
 
 class UtilsTest(FunctionalTestBase):
     def test_create_container(self):
+        directory = os.path.dirname(os.path.realpath(__file__)) + "/../data/logging-dir"
         bucket_config = {
             "name": "my-test-bucket",
-            "logLevel": logging.INFO
+            "logLevel": logging.INFO,
+            "bulkUpdateLogDirectory": directory
         }
 
         container = utils._create_container(bucket_config)

@@ -54,6 +54,7 @@ class ConfigureTest(pyproctor.TestBase):
         self.app.config["hello"] = "hi"
         expected = copy.deepcopy(config)
         expected["hello"] = "hi"
+        expected["bulkUpdateLogDirectory"] = "/var/log/bucket-update"
         self.run_app_config()
         self.assertEqual(expected, self.app.config)
 
