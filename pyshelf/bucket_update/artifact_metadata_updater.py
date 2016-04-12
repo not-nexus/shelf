@@ -11,9 +11,18 @@ class ArtifactMetadataUpdater(object):
 
     @property
     def metadata(self):
+        """
+            Returns:
+                schemas/metadata.json|None: None if run was not executed.
+        """
         return self._metadata
 
     def run(self):
+        """
+            Populates the metadata property. It will also ensure that the
+            metadata is in a usable state.  In other words, all required
+            properties are populated.
+        """
         portal = self.container.cloud_portal
         initializer = self.container.initializer
         metadata = portal.load(self.identity.cloud_metadata)
