@@ -1,6 +1,5 @@
 from pyshelf.cloud.storage import Storage
-from pyshelf.cloud.cloud_exceptions import BucketNotFoundError
-from pyshelf.error_code import ErrorCode
+from pyshelf.cloud.cloud_exceptions import BucketConfigurationNotFound
 
 
 class Factory(object):
@@ -15,6 +14,6 @@ class Factory(object):
         # buckets when we want.
         if not c.get("buckets").get(bucket_name):
             self.logger.warning("Access keys for {0} are not in your config.".format(bucket_name))
-            raise BucketNotFoundError(ErrorCode.RESOURCE_NOT_FOUND)
+            raise BucketConfigurationNotFound(bucket_name)
         return Storage(c["buckets"][bucket_name]["accessKey"], c["buckets"][bucket_name]["secretKey"],
                        bucket_name, self.logger)
