@@ -40,7 +40,7 @@ class Storage(object):
         """
         key = self._get_key(artifact_name)
         self.logger.debug(
-            "Creating instance of pyshelf.cloud.stream_iterator.StreamIterator. Artifact {}".format(artifact_name))
+            "Creating instance of pyshelf.cloud.stream_iterator.StreamIterator. Artifact {0}".format(artifact_name))
         stream = StreamIterator(key)
         return stream
 
@@ -53,7 +53,7 @@ class Storage(object):
                 fp(file): File to be uploaded
 
         """
-        a = "/{}".format(artifact_name)
+        a = "/{0}".format(artifact_name)
         match = re.search('\/_', a)
         if match:
             raise InvalidNameError(artifact_name)
@@ -61,7 +61,7 @@ class Storage(object):
         if bucket.get_key(artifact_name) is not None:
             raise DuplicateArtifactError(artifact_name)
         key = Key(bucket, artifact_name)
-        self.logger.debug("Commencing upload of {}".format(artifact_name))
+        self.logger.debug("Commencing upload of {0}".format(artifact_name))
         key.set_contents_from_file(fp)
 
     def get_artifact_as_string(self, path):
@@ -129,18 +129,18 @@ class Storage(object):
 
     def _get_key(self, artifact_name):
         bucket = self._get_bucket(self.bucket_name)
-        self.logger.debug("Attempting to get artifact {}".format(artifact_name))
+        self.logger.debug("Attempting to get artifact {0}".format(artifact_name))
         key = bucket.get_key(artifact_name)
         if key is None:
-            self.logger.error("Artifact {} does not exist in bucket {}".format(artifact_name, self.bucket_name))
+            self.logger.error("Artifact {0} does not exist in bucket {0}".format(artifact_name, self.bucket_name))
             raise ArtifactNotFoundError(artifact_name)
         return key
 
     def _get_bucket(self, bucket_name):
-        self.logger.debug("Attempting to get bucket {}".format(bucket_name))
+        self.logger.debug("Attempting to get bucket {0}".format(bucket_name))
         bucket = self.conn.lookup(self.bucket_name)
         if bucket is None:
-            self.logger.error("Bucket {} does not exist".format(bucket_name))
+            self.logger.error("Bucket {0} does not exist".format(bucket_name))
             raise BucketNotFoundError(bucket_name)
         return bucket
 
