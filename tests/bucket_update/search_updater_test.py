@@ -76,6 +76,15 @@ class SearchUpdaterTest(FunctionalTestBase):
         self.add_cloud(update_cloud_builder)
         self.add_cloud_artifact(update_cloud_builder)
 
+        # Important because if these docs were JUST added
+        # to elasticsearch they will not end up being found
+        # when doing the bulk update.  In practice this shouldn't
+        # happen unless in very quick succession we add metadata
+        # then manually delete it in S3 and then run bucket-update
+        # really really quick.
+        self.search_wrapper.refresh_index()
+
+        # Running actual code
         runner = self.container.search_updater
         runner.run()
 
