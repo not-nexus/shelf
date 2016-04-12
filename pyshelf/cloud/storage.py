@@ -64,10 +64,6 @@ class Storage(object):
         self.logger.debug("Commencing upload of {}".format(artifact_name))
         key.set_contents_from_file(fp)
 
-    def delete_artifact(self, artifact_name):
-        key = self._get_key(artifact_name)
-        key.delete()
-
     def get_artifact_as_string(self, path):
         """
             Just gets the content of the artifact instead of
@@ -108,26 +104,6 @@ class Storage(object):
         """
         key = self._get_key(path)
         return key.etag[1:-1]
-
-    def artifact_exists(self, artifact_name):
-        """
-            Checks if artifact exists.
-
-            Args:
-                artifact_name(string): Name of artifact to check for.
-
-            Returns:
-                boolean: whether artifact exists
-        """
-        try:
-            key = self._get_key(artifact_name)
-        except ArtifactNotFoundError:
-            return False
-
-        if key.exists():
-            return True
-
-        return False
 
     def get_directory_contents(self, path, recursive):
         """
