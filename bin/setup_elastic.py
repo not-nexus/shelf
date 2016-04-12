@@ -1,6 +1,7 @@
 from pyshelf.search.metadata import Metadata
 from elasticsearch import Elasticsearch
 from urlparse import urlparse
+import yaml
 
 
 class ElasticInitializer(object):
@@ -11,12 +12,12 @@ class ElasticInitializer(object):
         self.es = Elasticsearch(url)
 
     def initialize(self):
-        Metadata.init(using=self.ex, index=self.index)
+        Metadata.init(using=self.es, index=self.index)
         self.es.indices.refresh(index=self.index)
 
 
 with open("config.yaml") as cf:
-    config = cf.read()
+    config = yaml.load(cf.read())
 
 elastic = ElasticInitializer(config.get("elasticSearchConnectionString"))
 elastic.initialize()
