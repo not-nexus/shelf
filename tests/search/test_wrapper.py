@@ -7,7 +7,7 @@ class TestWrapper(object):
 
     def __init__(self, search_container):
         self.search_container = search_container
-        self.es = Elasticsearch(self.search_container.es_url)
+        self.es = self.search_container.es_connection
         self.index = self.search_container.es_index
 
     def setup_metadata(self, data):

@@ -3,6 +3,7 @@ from pyshelf.search.manager import Manager
 from urlparse import urlparse
 from requests_aws4auth import AWS4Auth
 from elasticsearch import Elasticsearch
+from pyshelf.search import utils
 
 
 class Container(object):
@@ -11,19 +12,8 @@ class Container(object):
         self.logger = logger
         self._update_manager = None
         self._manager = None
-        self._es_connection = None
-        self._using_aws = None
-        self._es_url = ""
-        self._es_index = None
-        self.configure_es_connection()
-
-    @property
-    def es_url(self):
-        """
-            es_url contains Elasticsearch connection string without the path.
-            This includes the scheme, the host, and the port.
-        """
-        return self._es_url
+        self._es_connection, self._es_index = utils.configure_es_connection(self.config["connectionString"],
+                self.config.get("accessKey"), self.config.get("secretKey"), self.config.get("region"))
 
     @property
     def es_index(self):
@@ -46,28 +36,3 @@ class Container(object):
     @property
     def es_connection(self):
         return self._es_connection
-
-    @property
-    def using_aws(self):
-        return bool(self.config.get("aws"))
-
-    def configure_es_connection(self):
-        """
-            Configures Elasticsearch connection based on provided config.
-        """
-        parsed_url = urlparse(self.config.get("connectionString"))
-
-        if parsed_url.scheme:
-            self._es_url += parsed_url.scheme + "://"
-
-        self._es_url += parsed_url.netloc
-        self._es_index = parsed_url.path[1:]
-        auth = None
-
-        if self.using_aws:
-            auth = AWS4Auth(
-                self.config["accessKey"],
-                self.config["secretKey"],
-                self.config["region"], "es")
-
-        self._es_connection = Elasticsearch(self._es_url, http_auth=auth)
