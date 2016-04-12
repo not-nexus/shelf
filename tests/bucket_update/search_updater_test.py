@@ -1,4 +1,5 @@
 from tests.bucket_update.test_base import TestBase
+from mock import Mock
 
 
 class SearchUpdaterTest(TestBase):
@@ -55,3 +56,12 @@ class SearchUpdaterTest(TestBase):
         # This should have been deleted
         should_be_deleted = self.search_wrapper.get_metadata(delete_builder.identity.search)
         self.assertEqual(None, should_be_deleted)
+
+    def test_no_artifacts(self):
+        bucket_name = "bucket-that-doesnt-have-artifacts"
+        self.boto_connection.create_bucket(bucket_name)
+        self.container.config["name"] = bucket_name
+        logger = self.container.logger
+        logger.info = Mock()
+        updater = self.container.search_updater
+        updater.run()

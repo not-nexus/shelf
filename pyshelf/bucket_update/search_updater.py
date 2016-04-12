@@ -46,10 +46,6 @@ class SearchUpdater(object):
         path_list = self.load_path_list()
         gc.collect()
 
-        if not path_list:
-            self.logger.info("Found nothing to process.")
-            return
-
         self.logger.info("Starting to process {0} artifact's metadata".format(len(path_list)))
         all_id_list = []
         for chunk_list in self._chunk(path_list):
@@ -91,6 +87,9 @@ class SearchUpdater(object):
             A generate that will (with each yield) return the next
             chunk of artifact paths that should be processed
         """
+        # Defaulting index is important here if path_list is
+        # empty
+        index = 0
         for index in range(0, len(path_list), self.chunk_size):
             yield path_list[index: index + self.chunk_size]
 
