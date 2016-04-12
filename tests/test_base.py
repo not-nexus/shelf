@@ -11,6 +11,11 @@ class TestBase(pyproctor.TestBase):
             will log on stdout.  Every call to basicConfig after
             this point will be a no-op
         """
-        logging.basicConfig(
-            stream=sys.stdout
-        )
+        # AGI-731
+        # See jira for more information
+        #
+        # https://github.com/gabrielfalcao/HTTPretty/issues/280
+        #
+        # logging.basicConfig(
+        #     stream=sys.stdout
+        # )
