@@ -6,8 +6,8 @@ from elasticsearch import Elasticsearch
 
 
 class Container(object):
-    def __init__(self, logger, config):
-        self.config = config
+    def __init__(self, logger, elastic_config):
+        self.config = elastic_config
         self.logger = logger
         self._update_manager = None
         self._manager = None
