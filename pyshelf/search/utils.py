@@ -22,6 +22,12 @@ def configure_es_connection(connection_string, access_key=None, secret_key=None,
     """
         Configures Elasticsearch connection. Returns a tuple with Elasticsearch object and Elasticsearch index.
 
+        Args:
+            connection_string(string| None)
+            access_key(string | None)
+            secret_key(string | None)
+            region(string | None)
+
         Returns:
             Tuple(elasticsearch.Elasticsearch, string)
     """
