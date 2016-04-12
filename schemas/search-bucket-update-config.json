@@ -25,6 +25,10 @@
         "chunkSize": {
             "type": "integer",
             "description": "How many records to process at once"
+        },
+        "bulkUpdateLogDirectory": {
+            "type": "string",
+            "description": "The location of a writable directory for storing logs per bucket"
         }
     },
     "required": [
@@ -33,7 +37,8 @@
         "secretKey",
         "elasticSearchConnectionString",
         "logLevel",
-        "chunkSize"
+        "chunkSize",
+        "bulkUpdateLogDirectory"
     ],
     "$schema": "http://json-schema.org/draft-04/schema#"
 }
