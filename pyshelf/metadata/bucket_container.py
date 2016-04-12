@@ -47,4 +47,8 @@ class BucketContainer(object):
         return self._initializer
 
     def create_cloud_storage(self):
+        """
+            Returns:
+                pyshelf.cloud.storage.Storage
+        """
         return self.cloud_factory.create_storage(self.bucket_name)
