@@ -147,10 +147,10 @@ def map_exception(e):
     """
     if isinstance(e, ArtifactNotFoundError):
         return create_404(e.error_code, e.message)
-    if isinstance(e, DuplicateArtifactError) or isinstance(e, InvalidNameError):
+    elif isinstance(e, DuplicateArtifactError) or isinstance(e, InvalidNameError):
         return create_403(e.error_code, e.message)
-    if isinstance(e, BucketNotFoundError):
-        return create_500(e.error_code, e.message)
+    elif isinstance(e, BucketNotFoundError):
+        return create_404()
 
     return create_500()
 

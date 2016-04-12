@@ -9,19 +9,19 @@ class CloudStorageException(Exception):
 
 class ArtifactNotFoundError(CloudStorageException):
     def __init__(self, artifact_name):
-        message = "Artifact {} not found".format(artifact_name)
+        message = "Artifact {0} not found".format(artifact_name)
         super(ArtifactNotFoundError, self).__init__(message, ErrorCode.RESOURCE_NOT_FOUND)
 
 
 class BucketNotFoundError(CloudStorageException):
     def __init__(self, bucket_name):
-        message = "Bucket {} not found".format(bucket_name)
-        super(BucketNotFoundError, self).__init__(message, ErrorCode.INTERNAL_SERVER_ERROR)
+        message = "Bucket {0} not found".format(bucket_name)
+        super(BucketNotFoundError, self).__init__(message, ErrorCode.RESOURCE_NOT_FOUND)
 
 
 class DuplicateArtifactError(CloudStorageException):
     def __init__(self, artifact_name):
-        message = "Artifact by name {} already exists in current directory".format(artifact_name)
+        message = "Artifact by name {0} already exists in current directory".format(artifact_name)
         super(DuplicateArtifactError, self).__init__(message, ErrorCode.DUPLICATE_ARTIFACT)
 
 

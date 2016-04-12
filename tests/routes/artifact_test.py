@@ -21,13 +21,6 @@ class ArtifactTest(FunctionalTestBase):
             .expect(404, self.RESPONSE_404) \
             .get(headers=self.auth)
 
-    def test_no_bucket(self):
-        self.route_tester \
-            .artifact() \
-            .route_params(bucket_name="ufo", path="john-travolta") \
-            .expect(500, self.response_500()) \
-            .get(headers=self.auth)
-
     def test_no_permission_file(self):
         self.route_tester \
             .artifact() \
@@ -97,3 +90,10 @@ class ArtifactTest(FunctionalTestBase):
             .route_params(bucket_name="test", path="_test") \
             .expect(403, self.RESPONSE_INVALID_NAME) \
             .post(data={"file": (StringIO("file contents"), "test.txt")}, headers=self.auth)
+
+    def test_bucket_doesnt_exist(self):
+        self.route_tester \
+            .artifact() \
+            .route_params(bucket_name="lol-this-doesnt-exist", path="hello/there") \
+            .expect(404, self.RESPONSE_404) \
+            .get(headers=self.auth)
