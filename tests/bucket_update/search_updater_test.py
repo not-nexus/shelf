@@ -38,10 +38,6 @@ class SearchUpdaterTest(FunctionalTestBase):
 
     def add_search(self, builder):
         self.search_wrapper.add_metadata(builder.identity.search, builder.data)
-        self.search_wrapper.refresh_index()
-        print ":::::GETTING METADATA::::"
-        val = self.search_wrapper.get_metadata(builder.identity.search) # NOCOMMIT
-        import pprint; pprint.pprint(val._id) # NOCOMMIT
 
     def add_both(self, builder):
         self.add_cloud(builder)
@@ -83,10 +79,11 @@ class SearchUpdaterTest(FunctionalTestBase):
         runner = self.container.search_updater
         runner.run()
 
+        # These two artifacts should have identity metadata in both
+        # search and cloud
         self.assert_metadata_matches(add_builder.identity.resource_url)
         self.assert_metadata_matches(update_search_builder.identity.resource_url)
 
-        print "HEY KYLE: {0}".format(delete_builder.identity.search) # NOCOMMIT
-        self.search_wrapper.refresh_index() # NOCOMMIT
+        # This should have been deleted
         should_be_deleted = self.search_wrapper.get_metadata(delete_builder.identity.search)
         self.assertEqual(None, should_be_deleted)
