@@ -1,10 +1,11 @@
-import pyproctor
+from tests.test_base import TestBase
 from mock import Mock, MagicMock
 from pyshelf.search.container import Container as SearchContainer
 
 
-class UnitTestBase(pyproctor.TestBase):
+class UnitTestBase(TestBase):
     def setUp(self):
+        super(UnitTestBase, self).setUp()
         self.mock_container()
         self.search_container = SearchContainer(Mock(), "http://localhost:9200/metadata")
 

@@ -86,6 +86,7 @@ class UpdateManager(object):
                 _source=0,
             )
         )
+
         stats = bulk(self.connection, operations, refresh=True)
         return stats[0]
 
