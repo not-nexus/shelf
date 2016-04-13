@@ -1,8 +1,5 @@
 from pyshelf.search.update_manager import UpdateManager
 from pyshelf.search.manager import Manager
-from urlparse import urlparse
-from requests_aws4auth import AWS4Auth
-from elasticsearch import Elasticsearch
 from pyshelf.search import utils
 
 
