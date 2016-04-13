@@ -75,7 +75,9 @@ class ConfigureTest(pyproctor.TestBase):
                     "secretKey": "freeTibet"
                 }
             },
-            "elasticSearchConnectionString": "http://localhost:9200/metadata"
+            "elasticsearch": {
+                "connectionString": "http://localhost:9200/metadata"
+            }
         }
         self.write_config(config)
         with self.assertRaises(ValueError):
@@ -88,7 +90,7 @@ class ConfigureTest(pyproctor.TestBase):
             self.run_app_config()
 
     def test_config_no_buckets(self):
-        config = {"buckets": {}, "elasticSearchConnectionString": "test"}
+        config = {"buckets": {}, "elasticsearch": "test"}
         self.write_config(config)
         with self.assertRaises(ValueError):
             self.run_app_config()

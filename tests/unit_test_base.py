@@ -5,14 +5,12 @@ from pyshelf.search.container import Container as SearchContainer
 
 class UnitTestBase(TestBase):
     def setUp(self):
-        config = {
-            "elasticsearch": {
-                "connectionString": "http://localhost:9200/metadata"
-            }
+        self.config = {
+            "connectionString": "http://localhost:9200/metadata"
         }
         super(UnitTestBase, self).setUp()
         self.mock_container()
-        self.search_container = SearchContainer(Mock(), config)
+        self.search_container = SearchContainer(Mock(), self.config)
 
     def mock_container(self):
         request = Mock()
