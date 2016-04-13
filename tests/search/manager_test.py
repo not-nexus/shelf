@@ -153,3 +153,7 @@ class ManagerTest(UnitTestBase):
             utils.get_meta("thing", "/thing", "1.2")
         ]
         self.assertEqual(results, expected)
+
+    def test_utils(self):
+        connection, index = search_utils.configure_es_connection("http://localhost:9200/index", "test", "test", "test")
+        self.assertEqual("index", index)
