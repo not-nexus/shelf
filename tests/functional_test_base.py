@@ -87,6 +87,10 @@ class FunctionalTestBase(TestBase):
                 "bucket2": {
                     "accessKey": "test",
                     "secretKey": "test"
+                },
+                "thisBucketDoesntExistLol": {
+                    "accessKey": "fail",
+                    "secretKey": "fail"
                 }
             },
             "elasticSearchConnectionString": cls.ELASTICSEARCH_CONNECTION_STRING,
