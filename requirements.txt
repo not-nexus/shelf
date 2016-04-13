@@ -6,4 +6,5 @@ PyYAML==3.11
 boto==2.38.0
 elasticsearch-dsl<2.0.0
 jsonschema
-requests-aws4auth==0.9
+# This repo just happens to work with 2.6.6 but it isn't a requirement... Thus I am locking version down to this commit.
+git+git://github.com/DavidMuller/aws-requests-auth.git@fbea2fe7061ab4aa44188906354638b73c0860bd
