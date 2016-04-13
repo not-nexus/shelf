@@ -28,7 +28,7 @@ Note: If you are using Elasticsearch via AWS and your Elasticsearch domain is re
         bucket_name_2:
             accessKey: XXXXXXXXXXXXXXXXXXXX
             secretKey: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-    elasticSearch:
+    elasticsearch:
         connectionString: http://localhost:9200/index
         aws: True
         region: us-east-1

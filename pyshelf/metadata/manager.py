@@ -17,8 +17,8 @@ class Manager(object):
         self.container = container
         self.update_manager = self.container.update_manager
         self.identity = self.container.resource_identity
-        self.portal = self.container.cloud_portal
-        self.initializer = self.container.initializer
+        self.portal = self.container.bucket_container.cloud_portal
+        self.initializer = self.container.bucket_container.initializer
         self._metadata = None
 
     @property
@@ -43,7 +43,7 @@ class Manager(object):
         """
         data = self.portal.load(self.identity.cloud_metadata)
         if self.initializer.needs_update(data):
-            data = self.initializer.update(data)
+            data = self.initializer.update(self.identity, data)
             self.portal.update(self.identity.cloud_metadata, data)
 
         return data

@@ -16,7 +16,6 @@ class Initializer(object):
         """
         self.container = container
         self.mapper = self.container.mapper
-        self.identity = self.container.resource_identity
 
     def needs_update(self, metadata):
         """
@@ -41,22 +40,23 @@ class Initializer(object):
 
         return False
 
-    def update(self, metadata):
+    def update(self, identity, metadata):
         """
             Updates the metadata to have the required keys.
             Note: This does not update it in the cloud.
 
             Args:
                 metadata(schemas/metadata.json)
+                resource(pyshelf.resource_identity.ResourceIdentity)
 
             Returns:
                 metadata(schemas/metadata.json): But updated
         """
         with self.container.create_cloud_storage() as storage:
-            etag = storage.get_etag(self.identity.cloud)
+            etag = storage.get_etag(identity.cloud)
             metadata[Keys.MD5] = self.mapper.create_response_property(Keys.MD5, etag, True)
 
-        metadata[Keys.PATH] = self.mapper.create_response_property(Keys.PATH, self.identity.resource_path, True)
-        metadata[Keys.NAME] = self.mapper.create_response_property(Keys.NAME, self.identity.artifact_name, True)
+        metadata[Keys.PATH] = self.mapper.create_response_property(Keys.PATH, identity.resource_path, True)
+        metadata[Keys.NAME] = self.mapper.create_response_property(Keys.NAME, identity.artifact_name, True)
 
         return metadata
