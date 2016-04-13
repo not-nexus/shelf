@@ -18,7 +18,7 @@ class ElasticInitializer(object):
         with open(self.config_path) as cf:
             config = yaml.load(cf.read())
 
-            return config.get("elasticSearch")
+            return config.get("elasticsearch")
 
 elastic = ElasticInitializer("config.yaml")
 elastic.initialize()
