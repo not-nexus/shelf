@@ -48,6 +48,8 @@ def configure_es_connection(connection_string, access_key=None, secret_key=None,
             region, "es")
         kwargs = {
             "http_auth": auth,
+            "use_ssl": True,
+            "verify_certs": True,
             "connection_class": RequestsHttpConnection
         }
 
