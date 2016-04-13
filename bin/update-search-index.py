@@ -2,7 +2,7 @@
 import docopt
 from pyshelf.bulk_update.utils import run
 
-doc = """Usage: ./build-cf [options] <config-path>
+doc = """Usage: ./update-search-index [options] <config-path>
 
     Options:
         -b --bucket bucket          The name of the bucket, or buckets that you
