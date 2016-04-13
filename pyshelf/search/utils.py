@@ -39,12 +39,18 @@ def configure_es_connection(connection_string, access_key=None, secret_key=None,
 
     es_url += parsed_url.netloc
     es_index = parsed_url.path[1:]
-    auth = None
+    kwargs = {}
 
     if access_key and secret_key and region:
         auth = AWS4Auth(
             access_key,
             secret_key,
             region, "es")
+        kwargs = {
+            "http_auth": auth,
+            "use_ssl": True,
+            "verify_certs": True,
+            "connection_class": RequestsHttpConnection
+        }
 
-    return (Elasticsearch(es_url, http_auth=auth), es_index)
+    return (Elasticsearch(es_url, **kwargs), es_index)

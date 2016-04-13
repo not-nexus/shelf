@@ -4,6 +4,9 @@ from pyshelf.search.type import Type as SearchType
 from pyshelf.search.sort_type import SortType
 from pyshelf.search.sort_flag import SortFlag
 import tests.metadata_utils as utils
+import pyshelf.search.utils as search_utils
+from elasticsearch import Elasticsearch, RequestsHttpConnection
+from requests_aws4auth import AWS4Auth
 
 
 class ManagerTest(UnitTestBase):
