@@ -154,4 +154,12 @@ class ManagerTest(UnitTestBase):
 
     def test_utils(self):
         connection, index = search_utils.configure_es_connection("http://localhost:9200/index", "test", "test", "test")
+        self.assertEqual("localhost", connection.transport.hosts[0]["host"])
+        self.assertEqual(9200, connection.transport.hosts[0]["port"])
+        self.assertEqual("http", connection.transport.hosts[0]["scheme"])
         self.assertEqual("index", index)
+        auth = connection.transport.get_connection().session.auth
+        self.assertEqual("test", auth.aws_access_key)
+        self.assertEqual("test", auth.aws_secret_access_key)
+        self.assertEqual("localhost:9200", auth.aws_host)
+        self.assertEqual("test", auth.aws_region)
