@@ -1,5 +1,6 @@
 from jsonschema import validate
 import json
+import pyshelf.utils as utils
 
 
 class SchemaValidator(object):
@@ -19,6 +20,7 @@ class SchemaValidator(object):
                 IOError: if schema_path is invalid
                 SchemaError: if schema is flawed
         """
+        schema_path = utils.create_path(schema_path)
         try:
             with open(schema_path, "r") as file:
                 schema = file.read()
@@ -39,7 +41,7 @@ class SchemaValidator(object):
             Returns:
                 string: formatted error message.
         """
-        msg_list = [error.message for error in error.context]
+        msg_list = [error_item.message for error_item in error.context]
         msg = ", ".join(msg_list)
 
         return msg
