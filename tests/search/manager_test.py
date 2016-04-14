@@ -157,10 +157,9 @@ class ManagerTest(UnitTestBase):
         host = wrapper.connection.transport.hosts[0]
         self.assertEqual("localhost", host["host"])
         self.assertEqual(9200, host["port"])
-        self.assertEqual("http", host["scheme"])
         self.assertEqual("index", wrapper.index)
         auth = wrapper.connection.transport.get_connection().session.auth
         self.assertEqual("test", auth.aws_access_key)
         self.assertEqual("test", auth.aws_secret_access_key)
-        self.assertEqual("localhost:9200", auth.aws_host)
+        self.assertEqual("localhost", auth.aws_host)
         self.assertEqual("test", auth.aws_region)
