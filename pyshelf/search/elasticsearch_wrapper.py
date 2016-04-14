@@ -63,7 +63,7 @@ class ElasticsearchWrapper(object):
         if access_key and secret_key and region:
             auth = AWSRequestsAuth(aws_access_key=access_key,
                        aws_secret_access_key=secret_key,
-                       aws_host=self._es_host,
+                       aws_host=self.es_host,
                        aws_region=region,
                        aws_service="es")
 
