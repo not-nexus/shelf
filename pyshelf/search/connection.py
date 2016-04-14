@@ -3,21 +3,21 @@ from aws_requests_auth.aws_auth import AWSRequestsAuth
 from urlparse import urlparse
 
 
-class ElasticsearchWrapper(object):
+class Connection(Elasticsearch):
     def __init__(self, connection_string, access_key=None, secret_key=None, region=None):
         self.connection_string = connection_string
-        self._index = None
+        self._es_index = None
         self._es_host = None
         self._es_port = None
         self._parse_url()
-        self._connection = self._get_connection(access_key, secret_key, region)
+        self._init_connection(access_key, secret_key, region)
 
     @property
-    def index(self):
-        if not self._index:
-            self._index = self._parsed_url.path[1:]
+    def es_index(self):
+        if not self._es_index:
+            self._es_index = self._parsed_url.path[1:]
 
-        return self._index
+        return self._es_index
 
     @property
     def es_host(self):
@@ -37,10 +37,6 @@ class ElasticsearchWrapper(object):
 
         return self._es_port
 
-    @property
-    def connection(self):
-        return self._connection
-
     def _parse_url(self):
         """
             Parses connection string.
@@ -50,7 +46,7 @@ class ElasticsearchWrapper(object):
         if not self._parsed_url.scheme:
             self._parsed_url.scheme = "http"
 
-    def _get_connection(self, access_key=None, secret_key=None, region=None):
+    def _init_connection(self, access_key=None, secret_key=None, region=None):
         """
             Configures Elasticsearch connection object.
         """
@@ -68,6 +64,5 @@ class ElasticsearchWrapper(object):
                        aws_service="es")
 
         hosts = [{"host": self.es_host, "port": self.es_port}]
-        connection = Elasticsearch(hosts=hosts, http_auth=auth, use_ssl=ssl, connection_class=RequestsHttpConnection)
-
-        return connection
+        super(Connection, self).__init__(hosts=hosts,
+                http_auth=auth, use_ssl=ssl, connection_class=RequestsHttpConnection)

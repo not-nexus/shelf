@@ -1,5 +1,4 @@
 from pyshelf.search.metadata import Metadata
-from elasticsearch import Elasticsearch
 
 
 class TestWrapper(object):
@@ -7,8 +6,8 @@ class TestWrapper(object):
 
     def __init__(self, search_container):
         self.search_container = search_container
-        self.es = self.search_container.elastic_wrapper.connection
-        self.index = self.search_container.elastic_wrapper.index
+        self.connection = self.search_container.connection
+        self.index = self.search_container.connection.es_index
 
     def setup_metadata(self, data):
         for doc in data:
@@ -22,10 +21,10 @@ class TestWrapper(object):
         meta.meta.id = key
         meta.meta.index = self.index
         meta.update_all(metadata)
-        meta.save(using=self.es)
+        meta.save(using=self.connection)
 
     def refresh_index(self):
-        self.es.indices.refresh(index=self.index)
+        self.connection.indices.refresh(index=self.index)
 
     def teardown_metadata(self):
         self.search_container.update_manager.remove_unlisted_documents([])
@@ -34,10 +33,10 @@ class TestWrapper(object):
         if not TestWrapper.INIT:
             # This is necessary as I added an analyzer with a keyword tokenizer
             # which requires an index to be closed and reopened.
-            self.es.indices.delete(index=self.index, ignore=404)
-            Metadata.init(index=self.index, using=self.es)
-            self.es.indices.refresh(index=self.index)
+            self.connection.indices.delete(index=self.index, ignore=404)
+            Metadata.init(index=self.index, using=self.connection)
+            self.connection.indices.refresh(index=self.index)
             TestWrapper.INIT = True
 
     def get_metadata(self, id):
-        return Metadata.get(index=self.index, using=self.es, id=id, ignore=404)
+        return Metadata.get(index=self.index, using=self.connection, id=id, ignore=404)

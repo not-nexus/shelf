@@ -7,10 +7,10 @@ from pyshelf.metadata.keys import Keys as MetadataKeys
 
 
 class UpdateManager(object):
-    def __init__(self, logger, elastic_wrapper):
+    def __init__(self, logger, connection):
         self.logger = logger
-        self.connection = elastic_wrapper.connection
-        self.index = elastic_wrapper.index
+        self.connection = connection
+        self.index = connection.es_index
 
     def remove_unlisted_documents(self, ex_key_list):
         """

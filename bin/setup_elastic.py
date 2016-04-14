@@ -1,7 +1,7 @@
 from pyshelf.search.metadata import Metadata
-from pyshelf.search import utils
 import yaml
 import os
+from pyshelf.search.connection import Connection
 
 
 class ElasticInitializer(object):
@@ -10,10 +10,11 @@ class ElasticInitializer(object):
 
     def initialize(self):
         config = self.read_config()
-        wrapper = utils.configure_es_connection(config["connectionString"],
+        connection = Connection(config["connectionString"],
                 config.get("accessKey"), config.get("secretKey"), config.get("region"))
-        Metadata.init(using=wrapper.connection, index=wrapper.index)
-        wrapper.connection.indices.refresh(index=wrapper.index)
+        connection.indices.create(index=connection.es_index, ignore=400)
+        Metadata.init(using=connection, index=connection.es_index, ignore=400)
+        connection.indices.refresh(index=connection.es_index)
 
     def read_config(self):
         with open(self.config_path) as cf:
