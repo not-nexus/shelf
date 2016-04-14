@@ -19,10 +19,6 @@
                 "type": "string",
                 "description": "The way to connect to elasticsearch"
             },
-            "aws": {
-                "type": "boolean",
-                "description": "Whether or not you are using Elasticsearch as an AWS service."
-            },
             "accessKey": {
                 "type": "string",
                 "description": "The public part of the key pair to access the cloud"
