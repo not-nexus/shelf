@@ -7,8 +7,8 @@ class TestWrapper(object):
 
     def __init__(self, search_container):
         self.search_container = search_container
-        self.es = self.search_container.es_connection
-        self.index = self.search_container.es_index
+        self.es = self.search_container.elastic_wrapper.connection
+        self.index = self.search_container.elastic_wrapper.index
 
     def setup_metadata(self, data):
         for doc in data:

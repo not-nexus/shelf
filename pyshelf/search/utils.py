@@ -1,6 +1,4 @@
-from elasticsearch import Elasticsearch, RequestsHttpConnection
-from aws_requests_auth.aws_auth import AWSRequestsAuth
-from urlparse import urlparse
+from pyshelf.search.elasticsearch_wrapper import ElasticsearchWrapper
 
 
 def default_to_list(value):
@@ -29,30 +27,6 @@ def configure_es_connection(connection_string, access_key=None, secret_key=None,
             region(string | None)
 
         Returns:
-            Tuple(elasticsearch.Elasticsearch, string)
+            pyshelf.search.elasticsearch_wrapper.ElastcisearchWrapper
     """
-    parsed_url = urlparse(connection_string)
-
-    if not parsed_url.scheme:
-        parsed_url.scheme = "https"
-
-    es_url = parsed_url.scheme + "://" + parsed_url.netloc
-    es_index = parsed_url.path[1:]
-    kwargs = {}
-
-    if access_key and secret_key and region:
-        auth = AWSRequestsAuth(aws_access_key=access_key,
-                   aws_secret_access_key=secret_key,
-                   aws_host=parsed_url.netloc,
-                   aws_region=region,
-                   aws_service="es")
-        use_ssl = True
-        if parsed_url.scheme == "http":
-            use_ssl = False
-        kwargs = {
-            "http_auth": auth,
-            "use_ssl": use_ssl,
-            "connection_class": RequestsHttpConnection
-        }
-
-    return (Elasticsearch(es_url, **kwargs), es_index)
+    return ElasticsearchWrapper(connection_string, access_key, secret_key, region)

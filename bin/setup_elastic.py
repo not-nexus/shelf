@@ -1,6 +1,7 @@
 from pyshelf.search.metadata import Metadata
 from pyshelf.search import utils
 import yaml
+import os
 
 
 class ElasticInitializer(object):
@@ -20,5 +21,7 @@ class ElasticInitializer(object):
 
             return config.get("elasticsearch")
 
-elastic = ElasticInitializer("config.yaml")
+bin_dir = os.path.dirname(os.path.realpath(__file__))
+config_path = os.path.realpath(os.path.join(bin_dir, "../config.yaml"))
+elastic = ElasticInitializer(config_path)
 elastic.initialize()

@@ -9,17 +9,13 @@ class Container(object):
         self.logger = logger
         self._update_manager = None
         self._manager = None
-        self._es_connection, self._es_index = utils.configure_es_connection(self.config["connectionString"],
+        self._elastic_wrapper = utils.configure_es_connection(self.config["connectionString"],
                 self.config.get("accessKey"), self.config.get("secretKey"), self.config.get("region"))
-
-    @property
-    def es_index(self):
-        return self._es_index
 
     @property
     def update_manager(self):
         if not self._update_manager:
-            self._update_manager = UpdateManager(self.logger, self.es_connection, self.es_index)
+            self._update_manager = UpdateManager(self.logger, self._elastic_wrapper)
 
         return self._update_manager
 
@@ -31,5 +27,5 @@ class Container(object):
         return self._manager
 
     @property
-    def es_connection(self):
-        return self._es_connection
+    def elastic_wrapper(self):
+        return self._elastic_wrapper
