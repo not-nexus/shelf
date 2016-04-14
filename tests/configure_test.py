@@ -49,7 +49,6 @@ class ConfigureTest(pyproctor.TestBase):
             },
             "elasticsearch": {
                 "connectionString": "http://localhost:9200/metadata",
-                "aws": True,
                 "region": "us-east-1",
                 "accessKey": "blahdiddyblah",
                 "secretKey": "sneakyAlphaNumericKey"
@@ -90,7 +89,7 @@ class ConfigureTest(pyproctor.TestBase):
             self.run_app_config()
 
     def test_config_no_buckets(self):
-        config = {"buckets": {}, "elasticsearch": "test"}
+        config = {"buckets": {}, "elasticsearch": {}}
         self.write_config(config)
         with self.assertRaises(ValueError):
             self.run_app_config()

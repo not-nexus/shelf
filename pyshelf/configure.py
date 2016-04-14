@@ -16,9 +16,11 @@ def app_config(existing_config, config_path):
     for key, val in config.get("buckets").iteritems():
         _validate_aws_keys(val)
 
-    if config.get("aws"):
-        _validate_aws_keys(config.get("elasticsearch"))
-        _validate_key("region", config.get("elasticsearch").get("region"))
+    elastic_config = config.get("elasticsearch")
+
+    if elastic_config.get("accessKey") and elastic_config.get("secretKey"):
+        _validate_aws_keys(elastic_config)
+        _validate_key("region", elastic_config)
 
     if not config.get("bulkUpdateLogDirectory"):
         config["bulkUpdateLogDirectory"] = "/var/log/bucket-update"
