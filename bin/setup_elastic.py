@@ -1,6 +1,7 @@
 from pyshelf.search.metadata import Metadata
 from pyshelf.search import utils
 import yaml
+import os
 
 
 class ElasticInitializer(object):
@@ -9,10 +10,10 @@ class ElasticInitializer(object):
 
     def initialize(self):
         config = self.read_config()
-        connection, index = utils.configure_es_connection(config["connectionString"],
+        wrapper = utils.configure_es_connection(config["connectionString"],
                 config.get("accessKey"), config.get("secretKey"), config.get("region"))
-        Metadata.init(using=connection, index=index)
-        self.es.indices.refresh(index=index)
+        Metadata.init(using=wrapper.connection, index=wrapper.index)
+        wrapper.connection.indices.refresh(index=wrapper.index)
 
     def read_config(self):
         with open(self.config_path) as cf:
@@ -20,5 +21,7 @@ class ElasticInitializer(object):
 
             return config.get("elasticsearch")
 
-elastic = ElasticInitializer("config.yaml")
+bin_dir = os.path.dirname(os.path.realpath(__file__))
+config_path = os.path.realpath(os.path.join(bin_dir, "../config.yaml"))
+elastic = ElasticInitializer(config_path)
 elastic.initialize()

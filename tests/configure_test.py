@@ -35,8 +35,8 @@ class ConfigureTest(pyproctor.TestBase):
         with open(self.path, "w") as f:
             f.write(contents)
 
-    def run_app(self):
-        configure.app(self.app, self.path)
+    def run_app_config(self):
+        configure.app_config(self.app.config, self.path)
 
     def test_app(self):
         config = {
@@ -49,7 +49,6 @@ class ConfigureTest(pyproctor.TestBase):
             },
             "elasticsearch": {
                 "connectionString": "http://localhost:9200/metadata",
-                "aws": True,
                 "region": "us-east-1",
                 "accessKey": "blahdiddyblah",
                 "secretKey": "sneakyAlphaNumericKey"
@@ -60,7 +59,8 @@ class ConfigureTest(pyproctor.TestBase):
         self.app.config["hello"] = "hi"
         expected = copy.deepcopy(config)
         expected["hello"] = "hi"
-        self.run_app()
+        expected["bulkUpdateLogDirectory"] = "/var/log/bucket-update"
+        self.run_app_config()
         self.assertEqual(expected, self.app.config)
 
     def test_config_value_error(self):
@@ -74,20 +74,22 @@ class ConfigureTest(pyproctor.TestBase):
                     "secretKey": "freeTibet"
                 }
             },
-            "elasticSearchConnectionString": "http://localhost:9200/metadata"
+            "elasticsearch": {
+                "connectionString": "http://localhost:9200/metadata"
+            }
         }
         self.write_config(config)
         with self.assertRaises(ValueError):
-            self.run_app()
+            self.run_app_config()
 
     def test_config_empty(self):
         config = {}
         self.write_config(config)
         with self.assertRaises(ValueError):
-            self.run_app()
+            self.run_app_config()
 
     def test_config_no_buckets(self):
-        config = {"buckets": {}, "elasticSearchConnectionString": "test"}
+        config = {"buckets": {}, "elasticsearch": {}}
         self.write_config(config)
         with self.assertRaises(ValueError):
-            self.run_app()
+            self.run_app_config()

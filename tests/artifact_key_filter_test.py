@@ -90,3 +90,19 @@ class ArtifactKeyFilterTest(UnitTestBase):
 
         filtered_key_list = akfilter.all_private(key_list)
         self.assert_keys_match(expected_list, filtered_key_list)
+
+    def test_directories(self):
+        key_list = [
+            self.key("/sup"),
+            self.key("directory1/"),
+            self.key("/blah/hello"),
+            self.key("directory2/"),
+        ]
+
+        expected_list = [
+            "/sup",
+            "/blah/hello"
+        ]
+
+        filtered_key_list = akfilter.directories(key_list)
+        self.assert_keys_match(expected_list, filtered_key_list)

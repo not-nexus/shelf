@@ -4,7 +4,7 @@ from pyshelf.request_log_filter import RequestLogFilter
 import yaml
 
 
-def app(app, config_path):
+def app_config(existing_config, config_path):
     with open(config_path, "r") as f:
         content = f.read()
         config = yaml.load(content)
@@ -16,11 +16,16 @@ def app(app, config_path):
     for key, val in config.get("buckets").iteritems():
         _validate_aws_keys(val)
 
-    if config.get("aws"):
-        _validate_aws_keys(config.get("elasticsearch"))
-        _validate_key("region", config.get("elasticsearch").get("region"))
+    elastic_config = config.get("elasticsearch")
 
-    app.config.update(config)
+    if elastic_config.get("accessKey") and elastic_config.get("secretKey"):
+        _validate_aws_keys(elastic_config)
+        _validate_key("region", elastic_config)
+
+    if not config.get("bulkUpdateLogDirectory"):
+        config["bulkUpdateLogDirectory"] = "/var/log/bucket-update"
+
+    existing_config.update(config)
 
 
 def _validate_aws_keys(config):
