@@ -19,6 +19,8 @@ Configuration
 
 It is required that a config.yaml exist in the root of the repository.  This will provide information for connecting to AWS.
 
+Note: If you are using Elasticsearch via AWS and your Elasticsearch domain is restricted use the last 3 lines of the example config to support IAM authentication. Otherwise omit the aforementioned config lines.
+
     buckets:
         bucket_name:
             accessKey: XXXXXXXXXXXXXXXXXXXX
@@ -26,8 +28,11 @@ It is required that a config.yaml exist in the root of the repository.  This wil
         bucket_name_2:
             accessKey: XXXXXXXXXXXXXXXXXXXX
             secretKey: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-    elasticSearchHost:
-        - localhost:9200
+    elasticsearch:
+        connectionString: http://localhost:9200/index
+        region: us-east-1
+        accessKey: xxxxxxxxxxxxxxxxxxxx
+        secretKey: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 Development
 -----------

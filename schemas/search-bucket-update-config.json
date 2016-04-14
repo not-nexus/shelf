@@ -14,9 +14,23 @@
             "type": "string",
             "description": "The private part of the key pair to access the cloud"
         },
-        "elasticSearchConnectionString": {
-            "type": "string",
-            "description": "The way to connect to elasticsearch"
+        "elasticsearch": {
+            "connectionString": {
+                "type": "string",
+                "description": "The way to connect to elasticsearch"
+            },
+            "aws": {
+                "type": "boolean",
+                "description": "Whether or not you are using Elasticsearch as an AWS service."
+            },
+            "accessKey": {
+                "type": "string",
+                "description": "The public part of the key pair to access the cloud"
+            },
+            "secretKey": {
+                "type": "string",
+                "description": "The private part of the key pair to access the cloud"
+            }
         },
         "logLevel": {
             "type": "string",
@@ -29,13 +43,16 @@
         "bulkUpdateLogDirectory": {
             "type": "string",
             "description": "The location of a writable directory for storing logs per bucket"
-        }
+        },
+        "required": [
+            "connectionString"
+        ]
     },
     "required": [
         "name",
         "accessKey",
         "secretKey",
-        "elasticSearchConnectionString",
+        "elasticsearch",
         "logLevel",
         "chunkSize",
         "bulkUpdateLogDirectory"

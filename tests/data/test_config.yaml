@@ -1,4 +1,5 @@
-elasticSearchConnectionString: http://localhost:9200/metadata
+elasticsearch:
+    connectionString: http://localhost:9200/metadata
 buckets:
     kyle-long:
         accessKey: KKKKKKKKKKKKKKKKKKKK

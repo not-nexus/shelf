@@ -4,6 +4,7 @@ import os
 import yaml
 import errno
 import copy
+from jsonschema import ValidationError
 
 
 class ConfigureTest(pyproctor.TestBase):
@@ -47,7 +48,12 @@ class ConfigureTest(pyproctor.TestBase):
                     "secretKey": "supersecretkeywhichcanalsobewhateveriwant"
                 }
             },
-            "elasticSearchConnectionString": "http://localhost:9200/metadata"
+            "elasticsearch": {
+                "connectionString": "http://localhost:9200/metadata",
+                "region": "us-east-1",
+                "accessKey": "blahdiddyblah",
+                "secretKey": "sneakyAlphaNumericKey"
+            }
         }
         self.write_config(config)
         # To make sure it doens't overwrite it
@@ -69,20 +75,22 @@ class ConfigureTest(pyproctor.TestBase):
                     "secretKey": "freeTibet"
                 }
             },
-            "elasticSearchConnectionString": "http://localhost:9200/metadata"
+            "elasticsearch": {
+                "connectionString": "http://localhost:9200/metadata"
+            }
         }
         self.write_config(config)
-        with self.assertRaises(ValueError):
+        with self.assertRaises(ValidationError):
             self.run_app_config()
 
     def test_config_empty(self):
         config = {}
         self.write_config(config)
-        with self.assertRaises(ValueError):
+        with self.assertRaises(ValidationError):
             self.run_app_config()
 
     def test_config_no_buckets(self):
-        config = {"buckets": {}, "elasticSearchConnectionString": "test"}
+        config = {"buckets": {}, "elasticsearch": {}}
         self.write_config(config)
-        with self.assertRaises(ValueError):
+        with self.assertRaises(ValidationError):
             self.run_app_config()

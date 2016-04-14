@@ -25,7 +25,8 @@ class UtilsTest(UnitTestBase):
         bucket_config = {
             "name": "my-test-bucket",
             "logLevel": logging.INFO,
-            "bulkUpdateLogDirectory": self.directory
+            "bulkUpdateLogDirectory": self.directory,
+            "elasticsearch": self.config
         }
 
         container = utils._create_container(bucket_config)
