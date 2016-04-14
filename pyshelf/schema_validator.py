@@ -14,9 +14,9 @@ class SchemaValidator(object):
                 data(type outlined schema)
 
             Raises:
-                ValidationError: if data does not match schema
+                jsonschema.ValidationError: if data does not match schema
                 IOError: if schema_path is invalid
-                SchemaError: if schema is flawed
+                jsonschema.SchemaError: if schema is flawed
         """
         try:
             utils.validate_json(schema_path, data)

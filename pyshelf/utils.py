@@ -29,9 +29,9 @@ def validate_json(schema_path, data):
             data(type outlined schema)
 
         Raises:
-            ValidationError: if data does not match schema
+            jsonschema.ValidationError: if data does not match schema
             IOError: if schema_path is invalid
-            SchemaError: if schema is flawed
+            jsonschema.SchemaError: if schema is flawed
     """
     schema_path = create_path(schema_path)
     with open(schema_path, "r") as file:
