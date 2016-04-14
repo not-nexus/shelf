@@ -1,10 +1,10 @@
 import logging
-import pyshelf.utils as utils
+from pyshelf.get_container import get_container
 
 
 class RequestLogFilter(logging.Filter):
     def filter(self, record):
-        container = utils.get_container()
+        container = get_container()
         record.url = ""
         record.request_id = ""
         record.user = ""

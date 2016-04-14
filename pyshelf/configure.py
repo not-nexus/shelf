@@ -2,6 +2,7 @@ import logging
 import sys
 from pyshelf.request_log_filter import RequestLogFilter
 import yaml
+from pyshelf import utils
 
 
 def app_config(existing_config, config_path):
@@ -9,36 +10,12 @@ def app_config(existing_config, config_path):
         content = f.read()
         config = yaml.load(content)
 
-    _validate_key("buckets", config)
-    _validate_key("elasticsearch", config)
-    _validate_key("connectionString", config.get("elasticsearch"))
-
-    for key, val in config.get("buckets").iteritems():
-        _validate_aws_keys(val)
-
-    elastic_config = config.get("elasticsearch")
-
-    if elastic_config.get("accessKey") and elastic_config.get("secretKey"):
-        _validate_aws_keys(elastic_config)
-        _validate_key("region", elastic_config)
+    utils.validate_json("schemas/config.json", config)
 
     if not config.get("bulkUpdateLogDirectory"):
         config["bulkUpdateLogDirectory"] = "/var/log/bucket-update"
 
     existing_config.update(config)
-
-
-def _validate_aws_keys(config):
-    required = {
-        "accessKey": config.get("accessKey"),
-        "secretKey": config.get("secretKey")
-    }
-    if not all(required.values()):
-        raise ValueError("config.yaml did not have all required settings: " + ", ".join(required.keys()))
-
-def _validate_key(key, config):
-    if not config.get(key):
-        raise ValueError("config.yaml requires {0} key.".format(key))
 
 
 def logger(logger, log_level_name):

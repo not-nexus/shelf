@@ -4,6 +4,7 @@ import os
 import yaml
 import errno
 import copy
+from jsonschema import ValidationError
 
 
 class ConfigureTest(pyproctor.TestBase):
@@ -79,17 +80,17 @@ class ConfigureTest(pyproctor.TestBase):
             }
         }
         self.write_config(config)
-        with self.assertRaises(ValueError):
+        with self.assertRaises(ValidationError):
             self.run_app_config()
 
     def test_config_empty(self):
         config = {}
         self.write_config(config)
-        with self.assertRaises(ValueError):
+        with self.assertRaises(ValidationError):
             self.run_app_config()
 
     def test_config_no_buckets(self):
         config = {"buckets": {}, "elasticsearch": {}}
         self.write_config(config)
-        with self.assertRaises(ValueError):
+        with self.assertRaises(ValidationError):
             self.run_app_config()
