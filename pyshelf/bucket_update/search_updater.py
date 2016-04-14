@@ -31,11 +31,11 @@ class SearchUpdater(object):
         """
         with self.bucket_container.create_cloud_storage() as storage:
             artifact_list = storage.get_directory_contents("", True)
-            artifact_list = filters.directories(artifact_list)
-            artifact_list = filters.all_private(artifact_list)
-            artifact_name_list = [key.name for key in artifact_list]
+            path_list = filters.to_path_list(artifact_list)
+            path_list = filters.directories(path_list)
+            path_list = filters.all_private(path_list)
 
-        return artifact_name_list
+        return path_list
 
     def run(self):
         """
