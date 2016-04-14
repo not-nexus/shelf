@@ -4,6 +4,7 @@ from pyshelf.search.type import Type as SearchType
 from pyshelf.search.sort_type import SortType
 from pyshelf.search.sort_flag import SortFlag
 import tests.metadata_utils as utils
+import pyshelf.search.utils as search_utils
 
 
 class ManagerTest(UnitTestBase):
@@ -150,3 +151,16 @@ class ManagerTest(UnitTestBase):
             utils.get_meta("thing", "/thing", "1.2")
         ]
         self.assertEqual(results, expected)
+
+    def test_utils(self):
+        wrapper = search_utils.configure_es_connection("http://localhost:9200/index", "test", "test", "test")
+        host = wrapper.connection.transport.hosts[0]
+        self.assertEqual("localhost", host["host"])
+        self.assertEqual(9200, host["port"])
+        self.assertEqual("http", host["scheme"])
+        self.assertEqual("index", wrapper.index)
+        auth = wrapper.connection.transport.get_connection().session.auth
+        self.assertEqual("test", auth.aws_access_key)
+        self.assertEqual("test", auth.aws_secret_access_key)
+        self.assertEqual("localhost:9200", auth.aws_host)
+        self.assertEqual("test", auth.aws_region)

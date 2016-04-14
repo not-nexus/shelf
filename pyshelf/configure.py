@@ -9,18 +9,16 @@ def app_config(existing_config, config_path):
         content = f.read()
         config = yaml.load(content)
 
-    if not config.get("buckets"):
-        raise ValueError("config.yaml requires buckets heading for list of buckets with associated keys.")
+    _validate_key("buckets", config)
+    _validate_key("elasticsearch", config)
+    _validate_key("connectionString", config.get("elasticsearch"))
 
     for key, val in config.get("buckets").iteritems():
-        required = {
-            "accessKey": val.get("accessKey"),
-            "secretKey": val.get("secretKey")
-        }
-        _validate_dict(required)
+        _validate_aws_keys(val)
 
-    required = {"elasticSearchConnectionString": config.get("elasticSearchConnectionString")}
-    _validate_dict(required)
+    if config.get("aws"):
+        _validate_aws_keys(config.get("elasticsearch"))
+        _validate_key("region", config.get("elasticsearch").get("region"))
 
     if not config.get("bulkUpdateLogDirectory"):
         config["bulkUpdateLogDirectory"] = "/var/log/bucket-update"
@@ -28,9 +26,17 @@ def app_config(existing_config, config_path):
     existing_config.update(config)
 
 
-def _validate_dict(required):
+def _validate_aws_keys(config):
+    required = {
+        "accessKey": config.get("accessKey"),
+        "secretKey": config.get("secretKey")
+    }
     if not all(required.values()):
         raise ValueError("config.yaml did not have all required settings: " + ", ".join(required.keys()))
+
+def _validate_key(key, config):
+    if not config.get(key):
+        raise ValueError("config.yaml requires {0} key.".format(key))
 
 
 def logger(logger, log_level_name):

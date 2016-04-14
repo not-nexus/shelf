@@ -95,7 +95,7 @@ class Container(object):
         if not self._search_container:
             self._search_container = SearchContainer(
                 self.logger,
-                self.config["elasticSearchConnectionString"]
+                self.config["elasticsearch"]
             )
 
         return self._search_container

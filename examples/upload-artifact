@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
 echo "testing file upload with a simple txt file. Woot woot!" > ./upload-test.txt
-endpoint="localhost:8080/kyle-long/artifact/upload_test"
-curl -i -L -H "Authorization: 190a64931e6e49ccb9917c7f32a29d19" -F "file=@./upload-test.txt" "$endpoint"
+endpoint="https://api.shelf.cwscloud.net/testing-shelf-api/artifact/upload_test"
+curl -i -L -H -k "Authorization: 450a91931e8e69ccb9117d7f32a29d26" -F "file=@./upload-test.txt" "$endpoint"
 rm ./upload-test.txt

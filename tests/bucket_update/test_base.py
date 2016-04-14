@@ -13,7 +13,7 @@ class TestBase(FunctionalTestBase):
             "name": "test",
             "accessKey": "ABC123",
             "secretKey": "321CBA",
-            "elasticSearchConnectionString": FunctionalTestBase.ELASTICSEARCH_CONNECTION_STRING,
+            "elasticsearch": FunctionalTestBase.CONFIG["elasticsearch"],
             "logLevel": logging.INFO,
             "chunkSize": 10
         }

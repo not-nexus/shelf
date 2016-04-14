@@ -28,7 +28,7 @@ class Runner(object):
         bucket_list = self._find_bucket_list(requested_bucket_list)
         for bucket_config in bucket_list:
             bucket_config.update({
-                "elasticSearchConnectionString": self.config["elasticSearchConnectionString"],
+                "elasticsearch": self.config["elasticsearch"],
                 "logLevel": self.config["logLevel"],
                 "chunkSize": self.config["chunkSize"]
             })

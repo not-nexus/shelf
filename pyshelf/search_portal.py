@@ -1,6 +1,6 @@
 from pyshelf.metadata.keys import Keys as MetadataKeys
 from pyshelf.resource_identity import ResourceIdentity
-import utils
+from pyshelf.search import utils
 from pyshelf.error_code import ErrorCode
 from jsonschema import ValidationError
 

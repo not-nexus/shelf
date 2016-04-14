@@ -71,7 +71,7 @@ class Container(object):
     @property
     def search(self):
         if not self._search:
-            self._search = SearchContainer(self.app.logger, self.app.config.get("elasticSearchConnectionString"))
+            self._search = SearchContainer(self.app.logger, self.app.config.get("elasticsearch"))
 
         return self._search
 
