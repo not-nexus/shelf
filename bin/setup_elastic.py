@@ -13,7 +13,7 @@ class ElasticInitializer(object):
         connection = Connection(config["connectionString"],
                 config.get("accessKey"), config.get("secretKey"), config.get("region"))
         connection.indices.create(index=connection.es_index, ignore=400)
-        Metadata.init(using=connection, index=connection.es_index, ignore=400)
+        Metadata.init(using=connection, index=connection.es_index)
         connection.indices.refresh(index=connection.es_index)
 
     def read_config(self):
