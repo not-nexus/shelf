@@ -3,7 +3,7 @@ from pyshelf.search.elasticsearch_wrapper import ElasticsearchWrapper
 
 def default_to_list(value):
     """
-        Encapsulates non-list objects in a list for easy parsing.
+        Ensures non-list objects are add to a list for easy parsing.
 
         Args:
             value(object): value to be returned as is if it is a list or encapsulated in a list if not.
