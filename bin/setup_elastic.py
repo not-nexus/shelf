@@ -10,9 +10,9 @@ class ElasticInitializer(object):
 
     def initialize(self):
         config = self.read_config()
-        connection, index = utils.configure_es_connection(config["connectionString"],
+        wrapper = utils.configure_es_connection(config["connectionString"],
                 config.get("accessKey"), config.get("secretKey"), config.get("region"))
-        Metadata.init(using=connection, index=index)
+        Metadata.init(using=wrapper.connection, index=wrapper.index)
         self.es.indices.refresh(index=index)
 
     def read_config(self):
