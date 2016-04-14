@@ -29,6 +29,7 @@ class ElasticsearchWrapper(object):
     @property
     def es_port(self):
         if not self._es_port:
+            # If no port is given then Elasticsearch-py defaults it to 9200
             port = self._parsed_url.netloc.rsplit(":", 1)
 
             if len(port) > 1:
@@ -47,17 +48,17 @@ class ElasticsearchWrapper(object):
         self._parsed_url = urlparse(self.connection_string)
 
         if not self._parsed_url.scheme:
-            self._parsed_url.scheme = "https"
+            self._parsed_url.scheme = "http"
 
     def _get_connection(self, access_key=None, secret_key=None, region=None):
         """
             Configures Elasticsearch connection object.
         """
-        ssl = True
+        ssl = False
         auth = None
 
-        if self._parsed_url.scheme == "http":
-            ssl = False
+        if self._parsed_url.scheme == "https":
+            ssl = True
 
         if access_key and secret_key and region:
             auth = AWSRequestsAuth(aws_access_key=access_key,
