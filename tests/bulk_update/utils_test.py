@@ -14,6 +14,7 @@ class UtilsTest(UnitTestBase):
         "name": "kyle-long",
         "logLevel": logging.INFO,
         "elasticSearchConnectionString": "http://localhost:9200/metadata",
+        "bulkUpdateLogDirectory": "/var/log/bucket-update",
         "accessKey": "KKKKKKKKKKKKKKKKKKKK",
         "secretKey": "KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK"
     }
@@ -23,6 +24,7 @@ class UtilsTest(UnitTestBase):
         "name": "andy-gertjejansen",
         "logLevel": logging.INFO,
         "elasticSearchConnectionString": "http://localhost:9200/metadata",
+        "bulkUpdateLogDirectory": "/var/log/bucket-update",
         "accessKey": "AAAAAAAAAAAAAAAAAAAA",
         "secretKey": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
     }
