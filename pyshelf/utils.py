@@ -1,4 +1,6 @@
 import os.path
+import json
+import jsonschema
 
 
 def create_path(*args):
@@ -16,3 +18,24 @@ def create_path(*args):
     full_path = os.path.join(directory_of_this_file, "../", *args)
     full_path = os.path.realpath(full_path)
     return full_path
+
+
+def validate_json(schema_path, data):
+    """
+        Validates data against schema.
+
+        Args:
+            schema_path(string)
+            data(type outlined schema)
+
+        Raises:
+            ValidationError: if data does not match schema
+            IOError: if schema_path is invalid
+            SchemaError: if schema is flawed
+    """
+    schema_path = create_path(schema_path)
+    with open(schema_path, "r") as file:
+        schema = file.read()
+
+    schema = json.loads(schema)
+    jsonschema.validate(data, schema)
