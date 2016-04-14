@@ -13,7 +13,7 @@ class ElasticInitializer(object):
         wrapper = utils.configure_es_connection(config["connectionString"],
                 config.get("accessKey"), config.get("secretKey"), config.get("region"))
         Metadata.init(using=wrapper.connection, index=wrapper.index)
-        self.es.indices.refresh(index=wrapper.index)
+        wrapper.connection.indices.refresh(index=wrapper.index)
 
     def read_config(self):
         with open(self.config_path) as cf:
