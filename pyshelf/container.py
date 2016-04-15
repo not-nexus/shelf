@@ -13,6 +13,7 @@ from pyshelf.search_parser import SearchParser
 from pyshelf.resource_identity_factory import ResourceIdentityFactory
 from pyshelf.metadata.container import Container as MetadataContainer
 from pyshelf.schema_validator import SchemaValidator
+from pyshelf.path_converter import PathConverter
 
 
 class Container(object):
@@ -42,6 +43,7 @@ class Container(object):
         self._resource_identity_factory = None
         self._metadata = None
         self._schema_validator = None
+        self._path_converter = None
 
     @property
     def logger(self):
@@ -144,7 +146,7 @@ class Container(object):
     @property
     def resource_identity_factory(self):
         if not self._resource_identity_factory:
-            self._resource_identity_factory = ResourceIdentityFactory(self.artifact_path_builder)
+            self._resource_identity_factory = ResourceIdentityFactory(self.path_converter)
 
         return self._resource_identity_factory
 
@@ -162,3 +164,10 @@ class Container(object):
             )
 
         return self._metadata
+
+    @property
+    def path_converter(self):
+        if not self._path_converter:
+            self._path_converter = PathConverter(self.artifact_path_builder)
+
+        return self._path_converter

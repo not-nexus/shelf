@@ -11,7 +11,7 @@ class LinkManager(object):
         self.bucket_name = self.container.bucket_name
         self.context = self.container.context
         self.request = self.container.request
-        self.path_builder = self.container.artifact_path_builder
+        self.path_converter = self.container.path_converter
 
     def assign_listing(self, artifact_path_list):
         """
@@ -23,7 +23,7 @@ class LinkManager(object):
         link_list = []
         for artifact_path in artifact_path_list:
             rel_type = "child"
-            if self.path_builder.build(artifact_path) == self.request.path:
+            if self.path_converter.from_cloud(artifact_path) == self.request.path:
                 rel_type = "self"
 
             link_list.append({
@@ -53,3 +53,6 @@ class LinkManager(object):
         ]
 
         self.context.link_list = link_list
+
+    def metadata_cloud_to_resource(self, path):
+        pass
