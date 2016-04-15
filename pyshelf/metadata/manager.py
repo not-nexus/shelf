@@ -53,7 +53,8 @@ class Manager(object):
             Updates the cloud to contain the metadata set on this instance.
         """
         self.portal.update(self.identity.cloud_metadata, self.metadata)
-        self.update_manager.update(self.identity.search, self.metadata)
+        formatted_metadata = self.container.mapper.to_response(self.metadata)
+        self.update_manager.update(self.identity.search, formatted_metadata)
 
     def try_update(self, data):
         """

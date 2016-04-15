@@ -36,17 +36,14 @@ class UtilsTest(UnitTestBase):
         self.run_process_mock = Mock()
         MonkeyPatcher.patch(Runner, "_run_process", self.run_process_mock)
 
-    def execute(self, bucket=None, chunk_size=None, verbose=False):
+    def execute(self, bucket=None, chunk_size=20, verbose=False):
         path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "../data/test_config.yaml")
         args = {
-            "--chunk-size": 20,
+            "--chunk-size": chunk_size,
             "--bucket": bucket,
             "<config-path>": path,
             "--verbose": verbose
         }
-
-        if chunk_size:
-            args["--chunk-size"] = chunk_size
 
         run(args)
 
