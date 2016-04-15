@@ -7,7 +7,9 @@ class ResourceIdentity(object):
         if resource_url[0] != "/":
             resource_url = "/" + resource_url
 
-        self.resource_url = resource_url
+        # To get rid of redundant separators
+        self.resource_url = os.path.normpath(resource_url)
+
         self._bucket_name = None
         self._artifact_path = None
 
