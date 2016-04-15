@@ -3,6 +3,10 @@ import os.path
 
 class LinkManager(object):
     def __init__(self, container):
+        """
+            Args:
+                container(pyshelf.container.Container)
+        """
         self.container = container
         self.bucket_name = self.container.bucket_name
         self.context = self.container.context
@@ -14,7 +18,7 @@ class LinkManager(object):
             Builds list of artifact links and assigns it to pyshelf.context.Context.link_list
 
             Args:
-                artifact_path_list(List[string]): List of artifacts paths.
+                artifact_path_list(List(string)): List of artifacts paths.
         """
         link_list = []
         for artifact_path in artifact_path_list:
