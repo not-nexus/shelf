@@ -70,7 +70,7 @@ class ResourceIdentity(object):
     @property
     def metadata(self):
         if not self._metadata:
-            self._metadata = os.path.join(self.artifact_path, self.artifact_name, "_meta")
+            self._metadata = os.path.join(self.resource_path, "_meta")
 
         return self._metadata
 
