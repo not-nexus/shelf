@@ -6,7 +6,7 @@ from pyshelf.cloud.cloud_exceptions import ArtifactNotFoundError
 
 class PermissionsValidator(object):
     REQUIRES_WRITE = ["POST", "PUT", "DELETE"]
-    REQUIRES_READ = ["GET"]
+    REQUIRES_READ = ["GET", "HEAD"]
 
     def __init__(self, container):
         self.container = container

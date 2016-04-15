@@ -44,15 +44,15 @@ class LinkManager(object):
                 "title": title
             })
 
-    def assign_single(self, artifact):
+    def assign_single(self, artifact_path):
         """
             Assigns individual link to pyshelf.context.Context.link_list.
 
             Args:
-                artifact(pyshelf.cloud.stream_iterator.StreamIterator): artifact
+                artifact_path(base)
         """
         identity = self.container.resource_identity_factory \
-            .from_cloud_identifier(artifact.key.name)
+            .from_cloud_identifier(artifact_path)
 
         link_list = [
             {
