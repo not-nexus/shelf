@@ -1,7 +1,7 @@
 import functools
 import flask
 import json
-import utils
+from pyshelf.get_container import get_container
 import pyshelf.response_map as response_map
 from pyshelf.cloud.cloud_exceptions import BucketNotFoundError
 
@@ -80,7 +80,7 @@ class EndpointDecorators(object):
             request_data = request.get_data()
 
             def log(message, data):
-                container.logger.info("{} : \n {}".format(message, data))
+                container.logger.info("{0} : \n {1}".format(message, data))
 
             if request_data:
                 request_data = json.dumps(
@@ -108,7 +108,7 @@ class EndpointDecorators(object):
             request = container.request
 
             def log(message, data):
-                container.logger.info("{} : \n {}".format(message, data))
+                container.logger.info("{0} : \n {1}".format(message, data))
 
             log("REQUEST HEADERS", request.headers)
             response = func(container, *args, **kwargs)
@@ -124,7 +124,7 @@ class EndpointDecorators(object):
         """
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
-            container = utils.get_container()
+            container = get_container()
             container.bucket_name = kwargs.get("bucket_name")
             result = func(container, *args, **kwargs)
             return result

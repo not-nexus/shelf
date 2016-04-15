@@ -1,6 +1,6 @@
 from pyshelf.metadata.keys import Keys as MetadataKeys
 from pyshelf.resource_identity import ResourceIdentity
-import utils
+from pyshelf.search import utils
 from pyshelf.error_code import ErrorCode
 from jsonschema import ValidationError
 
@@ -26,7 +26,7 @@ class SearchPortal(object):
                 criteria(schemas/search-request-criteria.json): Search and sort criteria formatted as show below.
         """
         try:
-            self.schema_validator.validate(criteria, "schemas/search-request-criteria.json")
+            self.schema_validator.validate("schemas/search-request-criteria.json", criteria)
         except ValidationError as e:
             msg = self.schema_validator.format_error(e)
             self.container.context.add_error(ErrorCode.INVALID_SEARCH_CRITERIA, msg)

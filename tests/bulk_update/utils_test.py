@@ -13,8 +13,10 @@ class UtilsTest(UnitTestBase):
         "chunkSize": 20,
         "name": "kyle-long",
         "logLevel": logging.INFO,
-        "elasticSearchConnectionString": "http://localhost:9200/metadata",
         "bulkUpdateLogDirectory": "/var/log/bucket-update",
+        "elasticsearch": {
+            "connectionString": "http://localhost:9200/metadata",
+        },
         "accessKey": "KKKKKKKKKKKKKKKKKKKK",
         "secretKey": "KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK"
     }
@@ -23,8 +25,10 @@ class UtilsTest(UnitTestBase):
         "chunkSize": 20,
         "name": "andy-gertjejansen",
         "logLevel": logging.INFO,
-        "elasticSearchConnectionString": "http://localhost:9200/metadata",
         "bulkUpdateLogDirectory": "/var/log/bucket-update",
+        "elasticsearch": {
+            "connectionString": "http://localhost:9200/metadata",
+        },
         "accessKey": "AAAAAAAAAAAAAAAAAAAA",
         "secretKey": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
     }
