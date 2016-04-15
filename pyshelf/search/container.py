@@ -1,33 +1,22 @@
 from pyshelf.search.update_manager import UpdateManager
 from pyshelf.search.manager import Manager
-from urlparse import urlparse
+from pyshelf.search.connection import Connection
 
 
 class Container(object):
-    def __init__(self, logger, connection_string):
+    def __init__(self, logger, elastic_config):
+        self.config = elastic_config
         self.logger = logger
-        parsed_url = urlparse(connection_string)
-        self._es_url = parsed_url.scheme + "://" + parsed_url.netloc
-        self._es_index = parsed_url.path[1:]
+
+        # Services
         self._update_manager = None
         self._manager = None
-
-    @property
-    def es_url(self):
-        """
-            es_url contains Elasticsearch connection string without the path.
-            This includes the scheme, the host, and the port.
-        """
-        return self._es_url
-
-    @property
-    def es_index(self):
-        return self._es_index
+        self._connection = None
 
     @property
     def update_manager(self):
         if not self._update_manager:
-            self._update_manager = UpdateManager(self.logger, self.es_url, self.es_index)
+            self._update_manager = UpdateManager(self.logger, self.connection)
 
         return self._update_manager
 
@@ -37,3 +26,11 @@ class Container(object):
             self._manager = Manager(self)
 
         return self._manager
+
+    @property
+    def connection(self):
+        if not self._connection:
+            self._connection = Connection(self.config["connectionString"],
+                    self.config.get("accessKey"), self.config.get("secretKey"), self.config.get("region"))
+
+        return self._connection

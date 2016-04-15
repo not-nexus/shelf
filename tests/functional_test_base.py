@@ -36,7 +36,25 @@ class FunctionalTestBase(TestBase):
         "message": "Artifact by name test already exists in current directory"
     }
 
-    ELASTICSEARCH_CONNECTION_STRING = "http://localhost:9200/metadata"
+    CONFIG = {
+        "buckets": {
+            "test": {
+                "accessKey": "test",
+                "secretKey": "test"
+            },
+            "bucket2": {
+                "accessKey": "test",
+                "secretKey": "test"
+            },
+            "thisBucketDoesntExistLol": {
+                "accessKey": "fail",
+                "secretKey": "fail"
+            }
+        },
+        "elasticsearch": {
+            "connectionString": "http://localhost:9200/metadata",
+        }
+    }
 
     def setUp(self):
         self.app = app
@@ -52,7 +70,7 @@ class FunctionalTestBase(TestBase):
         if not self._metadata_comparator:
             self._metadata_comparator = MetadataComparator(
                 self,
-                FunctionalTestBase.ELASTICSEARCH_CONNECTION_STRING,
+                FunctionalTestBase.CONFIG["elasticsearch"]["connectionString"],
                 app.logger)
 
         return self._metadata_comparator
@@ -78,29 +96,11 @@ class FunctionalTestBase(TestBase):
     @classmethod
     def setUpClass(cls):
         super(FunctionalTestBase, cls).setUpClass()
-        config = {
-            "buckets": {
-                "test": {
-                    "accessKey": "test",
-                    "secretKey": "test"
-                },
-                "bucket2": {
-                    "accessKey": "test",
-                    "secretKey": "test"
-                },
-                "thisBucketDoesntExistLol": {
-                    "accessKey": "fail",
-                    "secretKey": "fail"
-                }
-            },
-            "elasticSearchConnectionString": cls.ELASTICSEARCH_CONNECTION_STRING,
-
-        }
         configure.logger(app.logger, "DEBUG")
-        app.config.update(config)
+        app.config.update(cls.CONFIG)
 
     def setup_elastic(self):
-        search_container = SearchContainer(self.app.logger, FunctionalTestBase.ELASTICSEARCH_CONNECTION_STRING)
+        search_container = SearchContainer(self.app.logger, FunctionalTestBase.CONFIG["elasticsearch"])
         self.search_wrapper = SearchTestWrapper(search_container)
 
     def setup_moto(self):
