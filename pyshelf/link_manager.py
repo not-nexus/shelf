@@ -27,11 +27,12 @@ class LinkManager(object):
 
             rel_type = "item"
             title = "artifact"
-            if resource_path == self.request.path:
-                rel_type = "self"
-            elif resource_path[-1] == "/":
+            if resource_path[-1] == "/":
                 rel_type = "collection"
                 title = "a collection of artifacts"
+
+            if resource_path == self.request.path:
+                rel_type = "self"
 
             self._add_link(resource_path, rel_type, title)
 
