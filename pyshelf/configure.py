@@ -31,7 +31,7 @@ def logger(logger, log_level_name):
     logger.setLevel(log_level)
 
 
-def configure_app(app):
+def app(app):
     config_path = os.path.dirname(os.path.realpath(__file__)) + "/../config.yaml"
     app_config(app.config, config_path)
     log_level_name = app.config.get("logLevel", "DEBUG")
