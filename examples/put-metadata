@@ -2,4 +2,4 @@
 
 endpoint="localhost:8080/<bucket>/artifact/<path>/_meta"
 curl -i -L -H "Content-Type: application/json" -H "Authorization: XXXXXXXXXXXXXXXXXXXXXX" -X PUT \
--d '{"version":{"name":"version", "value": "1.0", "immutable": false}, "build":{"name": "build", "value": "1","immutable": true}}' "$endpoint"
+-d '{"version":{"value": "1.0", "immutable": false}, "build":{"value": "1","immutable": true}}' "$endpoint"
