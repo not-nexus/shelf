@@ -1,4 +1,4 @@
-import os.path
+import pyshelf.artifact_key_filter as filters
 
 
 class LinkManager(object):
@@ -13,25 +13,35 @@ class LinkManager(object):
         self.request = self.container.request
         self.path_converter = self.container.path_converter
 
-    def assign_listing(self, artifact_path_list):
+    def assign_listing(self, path_list):
         """
-            Builds list of artifact links and assigns it to pyshelf.context.Context.link_list
+            Builds list of links and assigns it to pyshelf.context.Context.link_list
 
             Args:
-                artifact_path_list(List(string)): List of artifacts paths.
+                path_list(List(string)): List of cloud paths.
         """
-        link_list = []
+        artifact_path_list = filters.all_private(path_list)
         for artifact_path in artifact_path_list:
-            rel_type = "child"
-            if self.path_converter.from_cloud(artifact_path) == self.request.path:
+
+            resource_path = self.path_converter.from_cloud(artifact_path)
+
+            rel_type = "item"
+            title = "artifact"
+            if resource_path == self.request.path:
                 rel_type = "self"
+            elif resource_path[-1] == "/":
+                rel_type = "collection"
+                title = "a collection of artifacts"
 
-            link_list.append({
-                "path": artifact_path,
-                "type": rel_type
+            self._add_link(resource_path, rel_type, title)
+
+    def _add_link(self, path, rel_type, title):
+
+            self.context.add_link({
+                "path": path,
+                "type": rel_type,
+                "title": title
             })
-
-        self.context.link_list = link_list
 
     def assign_single(self, artifact):
         """
@@ -40,19 +50,20 @@ class LinkManager(object):
             Args:
                 artifact(pyshelf.cloud.stream_iterator.StreamIterator): artifact
         """
+        identity = self.container.resource_identity_factory \
+            .from_cloud_identifier(artifact.key.name)
+
         link_list = [
             {
-                "path": artifact.key.name,
-                "type": "self"
+                "path": identity.resource_url,
+                "type": "self",
+                "title": "artifact"
             },
             {
-                "path": os.path.join(artifact.key.name, "_meta"),
-                "type": "metadata",
+                "path": identity.metadata,
+                "type": "related",
                 "title": "metadata"
             }
         ]
 
         self.context.link_list = link_list
-
-    def metadata_cloud_to_resource(self, path):
-        pass

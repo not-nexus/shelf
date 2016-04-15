@@ -83,7 +83,7 @@ class Container(object):
     @property
     def link_mapper(self):
         if not self._link_mapper:
-            self._link_mapper = LinkMapper(self.artifact_path_builder)
+            self._link_mapper = LinkMapper()
 
         return self._link_mapper
 

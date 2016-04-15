@@ -1,30 +1,11 @@
-import re
-
-
 class LinkMapper(object):
-    def __init__(self, artifact_path_builder):
-        """
-            Args:
-                artifact_path_builder(pyshelf.artifact_path_builder.ArtifactPathBuilder)
-        """
-        self.builder = artifact_path_builder
-
     def to_response(self, link_list):
-        link_list = self._remove_private_artifacts(link_list)
         link_list = self._format_link_list(link_list)
         return link_list
 
-    def _remove_private_artifacts(self, link_list):
-        refined_list = []
-        for link in link_list:
-            match = re.search("^_", link["path"])
-            if not match:
-                refined_list.append(link)
-        return refined_list
-
     def _format_link(self, link):
         title = link.get("title", link["path"])
-        url = self.builder.build(link["path"])
+        url = link["path"]
         rel = link.get("type")
         return self._build_link(url, rel, title)
 

@@ -39,3 +39,18 @@ class ResourceIdentityFactory(object):
         resource_url = self.path_converter.from_cloud(cloud_identifier)
         identity = self.from_resource_url(resource_url)
         return identity
+
+    def from_cloud_metadata_identifier(self, cloud_metadata_identifier):
+        """
+            Creates a ResourceIdentity from the cloud identifier for
+            an artifacts metadata.
+
+            Args:
+                cloud_metadata_identifier(basestring)
+
+            Returns:
+                pyshelf.resource_identity.ResourceIdentity
+        """
+        resource_url = self.path_converter.from_cloud_metadata(cloud_metadata_identifier)
+        identity = self.from_resource_url(resource_url)
+        return identity
