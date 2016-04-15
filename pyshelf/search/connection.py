@@ -64,5 +64,5 @@ class Connection(Elasticsearch):
                        aws_service="es")
 
         hosts = [{"host": self.es_host, "port": self.es_port}]
-        super(Connection, self).__init__(hosts=hosts,
-                http_auth=auth, use_ssl=ssl, connection_class=RequestsHttpConnection)
+        super(Connection, self).__init__(hosts=hosts, http_auth=auth, use_ssl=ssl,
+                verify_certs=ssl, connection_class=RequestsHttpConnection)
