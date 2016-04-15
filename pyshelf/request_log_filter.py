@@ -10,8 +10,8 @@ class RequestLogFilter(logging.Filter):
         record.user = ""
 
         if container:
-            record.url = "- {} ".format(container.request.url)
-            record.request_id = "- {} ".format(container.request_id)
-            record.user = "- {} ".format(container.permissions_validator.name)
+            record.url = "- {0} ".format(container.request.url)
+            record.request_id = "- {0} ".format(container.request_id)
+            record.user = "- {0} ".format(container.permissions_validator.name)
 
         return True

@@ -3,6 +3,7 @@ import sys
 from pyshelf.request_log_filter import RequestLogFilter
 import yaml
 from pyshelf import utils
+import os
 
 
 def app_config(existing_config, config_path):
@@ -28,3 +29,10 @@ def logger(logger, log_level_name):
     handler.addFilter(RequestLogFilter())
     logger.addHandler(handler)
     logger.setLevel(log_level)
+
+
+def configure_app(app):
+    config_path = os.path.dirname(os.path.realpath(__file__)) + "/../config.yaml"
+    app_config(app.config, config_path)
+    log_level_name = app.config.get("logLevel", "DEBUG")
+    logger(app.logger, log_level_name)
