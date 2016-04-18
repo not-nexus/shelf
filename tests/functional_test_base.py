@@ -159,7 +159,7 @@ class FunctionalTestBase(TestBase):
 
     def create_auth_key(self):
         self.auth = utils.auth_header()
-        key_name = "_keys/{}".format(self.auth["Authorization"])
+        key_name = "_keys/{0}".format(self.auth["Authorization"])
         auth_key = Key(self.test_bucket, key_name)
         auth_key.set_contents_from_string(utils.get_permissions_func_test())
         auth_bucket2 = Key(self.boto_connection.get_bucket("bucket2"), key_name)
