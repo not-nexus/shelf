@@ -11,6 +11,10 @@
                 }
             }
         },
+        "bulkUpdateLogDirectory": {
+            "type": "string",
+            "description": "The directory you would like logs to be placed when doing a bulk update."
+        },
         "elasticsearch": {
             "type": "object",
             "allOf": [

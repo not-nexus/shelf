@@ -13,6 +13,7 @@ class UtilsTest(UnitTestBase):
         "chunkSize": 20,
         "name": "kyle-long",
         "logLevel": logging.INFO,
+        "bulkUpdateLogDirectory": "/var/log/bucket-update",
         "elasticsearch": {
             "connectionString": "http://localhost:9200/metadata",
         },
@@ -24,6 +25,7 @@ class UtilsTest(UnitTestBase):
         "chunkSize": 20,
         "name": "andy-gertjejansen",
         "logLevel": logging.INFO,
+        "bulkUpdateLogDirectory": "/var/log/bucket-update",
         "elasticsearch": {
             "connectionString": "http://localhost:9200/metadata",
         },

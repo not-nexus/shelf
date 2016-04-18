@@ -6,6 +6,7 @@ from pyshelf.metadata.mapper import Mapper
 from pyshelf.bucket_update.search_updater import SearchUpdater
 from pyshelf.resource_identity_factory import ResourceIdentityFactory
 from pyshelf.artifact_path_builder import ArtifactPathBuilder
+from pyshelf.path_converter import PathConverter
 
 
 class Container(object):
@@ -119,6 +120,7 @@ class Container(object):
         """
         if not self._resource_identity_factory:
             builder = ArtifactPathBuilder(self.config["name"])
-            self._resource_identity_factory = ResourceIdentityFactory(builder)
+            path_converter = PathConverter(builder)
+            self._resource_identity_factory = ResourceIdentityFactory(path_converter)
 
         return self._resource_identity_factory

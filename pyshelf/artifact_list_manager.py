@@ -27,6 +27,6 @@ class ArtifactListManager(object):
                 self.link_manager.assign_listing(artifact_path_list)
             else:
                 content = storage.get_artifact(path)
-                self.link_manager.assign_single(content)
+                self.link_manager.assign_single(content.key.name)
 
         return content

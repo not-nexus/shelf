@@ -9,6 +9,7 @@ class ResourceIdentity(object):
 
         # To get rid of redundant separators
         self.resource_url = os.path.normpath(resource_url)
+
         self._bucket_name = None
         self._artifact_path = None
 
@@ -16,6 +17,7 @@ class ResourceIdentity(object):
         self._search = None
         self._cloud_metadata = None
         self._artifact_name = None
+        self._metadata = None
 
     @property
     def bucket_name(self):
@@ -66,6 +68,13 @@ class ResourceIdentity(object):
             self._cloud_metadata = os.path.join(self.artifact_path, "_metadata_{0}.yaml".format(self.artifact_name))
 
         return self._cloud_metadata
+
+    @property
+    def metadata(self):
+        if not self._metadata:
+            self._metadata = os.path.join(self.resource_path, "_meta")
+
+        return self._metadata
 
     def _parse(self, resource_url):
         part_list = resource_url.split("/")
