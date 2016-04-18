@@ -64,19 +64,25 @@ class ArtifactTest(FunctionalTestBase):
             }) \
             .get(headers=self.auth)
 
-    def test_artifact_head_from_root(self):
+    def artifact_head_request(self, path, status_code, headers=None):
         self.route_tester \
             .artifact() \
-            .route_params(bucket_name="test", path="") \
-            .expect(204, headers={
+            .route_params(bucket_name="test", path=path) \
+            .expect(status_code, headers=headers) \
+            .head(headers=self.auth)
+
+    def test_artifact_head_from_root(self):
+            self.artifact_head_request("", 204, headers={
                 "Link": [
                     "/test/artifact/empty; rel=item; title=artifact",
                     "/test/artifact/test; rel=item; title=artifact",
                     "/test/artifact/dir/; rel=collection; title=a collection of artifacts",
                     "/test/artifact/this/; rel=collection; title=a collection of artifacts"
                 ]
-            }) \
-            .head(headers=self.auth)
+            })
+
+    def test_head_no_permissions(self):
+        self.artifact_head_request("dir/test", 401)
 
     def test_artifact_upload(self):
         self.route_tester.artifact() \
