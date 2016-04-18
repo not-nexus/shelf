@@ -49,7 +49,7 @@ class LinkManager(object):
             Assigns individual link to pyshelf.context.Context.link_list.
 
             Args:
-                artifact_path(base)
+                artifact_path(string)
         """
         identity = self.container.resource_identity_factory \
             .from_cloud_identifier(artifact_path)
@@ -67,4 +67,20 @@ class LinkManager(object):
             }
         ]
 
+        self.context.link_list = link_list
+
+    def assign_metadata(self, metadata_path):
+        """
+            Assigns an individual link for a metadata resource to pyshelf.context.Context.link_list
+
+            Args:
+                metadata_path(string)
+        """
+        link_list = [
+            {
+                "path": metadata_path,
+                "type": "self",
+                "title": "metadata"
+            }
+        ]
         self.context.link_list = link_list

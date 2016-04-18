@@ -14,6 +14,13 @@ class ArtifactTest(FunctionalTestBase):
             .expect(200, "hello world\n", headers={"Link": link}) \
             .get(headers=self.auth)
 
+    def test_artifact_no_permissions(self):
+        self.route_tester \
+            .artifact() \
+            .route_params(bucket_name="test", path="dir/test") \
+            .expect(401, "Permission Denied\n") \
+            .get(headers=self.auth)
+
     def test_artifact_get_none(self):
         self.route_tester \
             .artifact() \
@@ -56,6 +63,20 @@ class ArtifactTest(FunctionalTestBase):
                 ]
             }) \
             .get(headers=self.auth)
+
+    def test_artifact_head_from_root(self):
+        self.route_tester \
+            .artifact() \
+            .route_params(bucket_name="test", path="") \
+            .expect(204, headers={
+                "Link": [
+                    "/test/artifact/empty; rel=item; title=artifact",
+                    "/test/artifact/test; rel=item; title=artifact",
+                    "/test/artifact/dir/; rel=collection; title=a collection of artifacts",
+                    "/test/artifact/this/; rel=collection; title=a collection of artifacts"
+                ]
+            }) \
+            .head(headers=self.auth)
 
     def test_artifact_upload(self):
         self.route_tester.artifact() \

@@ -1,6 +1,5 @@
 import yaml
 from fnmatch import fnmatch
-import os
 from pyshelf.cloud.cloud_exceptions import ArtifactNotFoundError
 
 
