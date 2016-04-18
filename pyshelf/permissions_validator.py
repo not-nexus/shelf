@@ -59,7 +59,7 @@ class PermissionsValidator(object):
             path = self.container.request.path
             artifact_path = self.container.resource_identity.cloud
 
-            if artifact_key_filter.is_private(artifact_path):
+            if artifact_key_filter.is_reserved(artifact_path):
                 self.container.context.add_error(ErrorCode.INVALID_ARTIFACT_NAME)
                 return allowed
 
