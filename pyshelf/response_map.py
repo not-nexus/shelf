@@ -189,10 +189,6 @@ def map_context_error(context):
     """
     if ErrorCode.INVALID_SEARCH_CRITERIA in context.errors:
         return create_400(ErrorCode.BAD_REQUEST, context.errors[ErrorCode.INVALID_SEARCH_CRITERIA])
-    elif ErrorCode.FORBIDDEN in context.errors:
-        return create_403(ErrorCode.FORBIDDEN, context.error[ErrorCode.FORBIDDEN])
-    elif ErrorCode.PERMISSION_DENIED in context.errors:
-        return create_401(ErrorCode.PERMISSION_DENIED, context.error[ErrorCode.PERMISSION_DENIED])
     elif ErrorCode.INVALID_ARTIFACT_NAME in context.errors:
         return create_403(ErrorCode.INVALID_ARTIFACT_NAME, "Artifact and directories names that BEGIN "
                 "with an underscore are reserved as private and cannot be accessed or created. This of "
