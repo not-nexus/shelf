@@ -9,7 +9,7 @@ class ArtifactKeyFilterTest(UnitTestBase):
         return key
 
     def run_is_private(self, name, result=True):
-        self.assertEquals(result, akfilter._is_private(name))
+        self.assertEquals(result, akfilter.is_private(name))
 
     def test_to_path_list(self):
         key_list = [

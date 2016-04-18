@@ -107,10 +107,10 @@ def _is_metadata(path):
 
 
 def _is_not_private(path):
-    return not _is_private(path)
+    return not is_private(path)
 
 
-def _is_private(path):
+def is_private(path):
     # If it starts with an underscore or
     # any of the parts of the path start
     # with an underscore it is considered
