@@ -43,6 +43,7 @@ def get_meta(name="test", path="/test/artifact/test", version="1"):
         }
     }
 
+
 def get_meta_elastic(name="test", path="/test/artifact/test", version="1"):
     return get_meta(name, path, version).values()
 
@@ -56,6 +57,9 @@ def send_meta():
     d.pop("md5Hash")
     d.pop("artifactName")
     d.pop("artifactPath")
+    for key, val in d.iteritems():
+        if key == "name":
+            val.pop(key)
     return d
 
 

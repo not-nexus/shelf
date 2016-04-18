@@ -19,6 +19,14 @@ def get_path(container, bucket_name, path):
     return response
 
 
+@artifact.route("/<bucket_name>/artifact/<path:path>", methods=["HEAD"])
+@decorators.foundation
+def get_links(container, bucket_name, path):
+    container.link_manager.assign_single(container.request.path)
+    response = container.context_response_mapper.to_response(None, 204)
+    return response
+
+
 @artifact.route("/<bucket_name>/artifact/<path:path>", methods=["POST"])
 @decorators.foundation_headers
 def create_artifact(container, bucket_name, path):
@@ -32,7 +40,7 @@ def create_artifact(container, bucket_name, path):
     return response
 
 
-@artifact.route("/<bucket_name>/artifact/<path:path>/_meta", methods=["GET"])
+@artifact.route("/<bucket_name>/artifact/<path:path>/_meta", methods=["GET", "HEAD"])
 @decorators.foundation
 def get_artifact_meta_route(container, bucket_name, path):
     return get_artifact_meta(container, bucket_name, path)

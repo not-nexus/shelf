@@ -1,0 +1,83 @@
+{
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "buckets": {
+            "type": "object",
+            "patternProperties": {
+                ".*": {
+                    "$ref": "#/$types/bucketCredentials",
+                    "description": "Each of these should be keyed by the name of the bucket"
+                }
+            }
+        },
+        "bulkUpdateLogDirectory": {
+            "type": "string",
+            "description": "The directory you would like logs to be placed when doing a bulk update."
+        },
+        "elasticsearch": {
+            "type": "object",
+            "allOf": [
+                {
+                    "$ref": "#/$types/credentials"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "connectionString": {
+                            "type": "string",
+                            "description": "How to connect to the index we wish to use for elastic search.  For example: http://localhost:9200/metadata"
+                        },
+                        "region": {
+                            "type": "string",
+                            "enum": [
+                                "ap-northeast-1",
+                                "ap-northeast-2",
+                                "ap-southeast-1",
+                                "ap-southeast-2",
+                                "eu-central-1",
+                                "eu-west-1",
+                                "sa-east-1",
+                                "us-east-1",
+                                "us-west-1",
+                                "us-west-2"
+                            ]
+                        }
+                    }
+                }
+            ],
+            "required": [
+                "connectionString"
+            ]
+        }
+    },
+    "required": [
+        "buckets",
+        "elasticsearch"
+    ],
+    "$types": {
+        "credentials": {
+            "type": "object",
+            "properties": {
+                "accessKey": {
+                    "type": "string"
+                },
+                "secretKey": {
+                    "type": "string"
+                }
+            }
+        },
+        "bucketCredentials": {
+            "allOf": [
+                {
+                    "$ref": "#/$types/credentials"
+                }
+            ],
+            "required": [
+                "accessKey",
+                "secretKey"
+            ]
+        }
+    },
+    "$schema": "http://json-schema.org/draft-04/schema#"
+}

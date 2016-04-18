@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+# Search root of bucket for build=10
+endpoint="localhost:8080/<bucket>/artifact/_search"
+curl -i -L -H "Content-Type: application/json" -H "Authorization: XXXXXXXXXXXXXXXXXXXXXX" -X POST \
+-d '{"search": "build=10"}' "$endpoint"
+
+# Search root of bucket and sort version field using version sort
+endpoint="localhost:8080/<bucket>/artifact/_search"
+curl -i -L -H "Content-Type: application/json" -H "Authorization: XXXXXXXXXXXXXXXXXXXXXX" -X POST \
+-d '{"search": ["version~=1.1", "build=1*"], "sort": "version, VER"}' "$endpoint"
+
+# Search with path and version search
+endpoint="localhost:8080/<bucket>/artifact/<path>/_search"
+curl -i -L -H "Content-Type: application/json" -H "Authorization: XXXXXXXXXXXXXXXXXXXXXX" -X POST \
+-d '{"search": "version~=1"}' "$endpoint"

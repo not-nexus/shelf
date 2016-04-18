@@ -4,6 +4,7 @@ import os
 import yaml
 import errno
 import copy
+from jsonschema import ValidationError
 
 
 class ConfigureTest(pyproctor.TestBase):
@@ -35,8 +36,8 @@ class ConfigureTest(pyproctor.TestBase):
         with open(self.path, "w") as f:
             f.write(contents)
 
-    def run_app(self):
-        configure.app(self.app, self.path)
+    def run_app_config(self):
+        configure.app_config(self.app.config, self.path)
 
     def test_app(self):
         config = {
@@ -47,14 +48,20 @@ class ConfigureTest(pyproctor.TestBase):
                     "secretKey": "supersecretkeywhichcanalsobewhateveriwant"
                 }
             },
-            "elasticSearchConnectionString": "http://localhost:9200/metadata"
+            "elasticsearch": {
+                "connectionString": "http://localhost:9200/metadata",
+                "region": "us-east-1",
+                "accessKey": "blahdiddyblah",
+                "secretKey": "sneakyAlphaNumericKey"
+            }
         }
         self.write_config(config)
         # To make sure it doens't overwrite it
         self.app.config["hello"] = "hi"
         expected = copy.deepcopy(config)
         expected["hello"] = "hi"
-        self.run_app()
+        expected["bulkUpdateLogDirectory"] = "/var/log/bucket-update"
+        self.run_app_config()
         self.assertEqual(expected, self.app.config)
 
     def test_config_value_error(self):
@@ -68,20 +75,22 @@ class ConfigureTest(pyproctor.TestBase):
                     "secretKey": "freeTibet"
                 }
             },
-            "elasticSearchConnectionString": "http://localhost:9200/metadata"
+            "elasticsearch": {
+                "connectionString": "http://localhost:9200/metadata"
+            }
         }
         self.write_config(config)
-        with self.assertRaises(ValueError):
-            self.run_app()
+        with self.assertRaises(ValidationError):
+            self.run_app_config()
 
     def test_config_empty(self):
         config = {}
         self.write_config(config)
-        with self.assertRaises(ValueError):
-            self.run_app()
+        with self.assertRaises(ValidationError):
+            self.run_app_config()
 
     def test_config_no_buckets(self):
-        config = {"buckets": {}, "elasticSearchConnectionString": "test"}
+        config = {"buckets": {}, "elasticsearch": {}}
         self.write_config(config)
-        with self.assertRaises(ValueError):
-            self.run_app()
+        with self.assertRaises(ValidationError):
+            self.run_app_config()

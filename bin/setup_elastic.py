@@ -1,22 +1,28 @@
 from pyshelf.search.metadata import Metadata
-from elasticsearch import Elasticsearch
-from urlparse import urlparse
+import yaml
+import os
+from pyshelf.search.connection import Connection
 
 
 class ElasticInitializer(object):
-    def __init__(self, connection_string):
-        parsed = urlparse(connection_string)
-        url = parsed.scheme + "://" + parsed.netloc
-        self.index = parsed.path[1:]
-        self.es = Elasticsearch(url)
+    def __init__(self, config_path):
+        self.config_path = config_path
 
     def initialize(self):
-        Metadata.init(using=self.ex, index=self.index)
-        self.es.indices.refresh(index=self.index)
+        config = self.read_config()
+        connection = Connection(config["connectionString"],
+                config.get("accessKey"), config.get("secretKey"), config.get("region"))
+        connection.indices.create(index=connection.es_index, ignore=400)
+        Metadata.init(using=connection, index=connection.es_index)
+        connection.indices.refresh(index=connection.es_index)
 
+    def read_config(self):
+        with open(self.config_path) as cf:
+            config = yaml.load(cf.read())
 
-with open("config.yaml") as cf:
-    config = cf.read()
+            return config.get("elasticsearch")
 
-elastic = ElasticInitializer(config.get("elasticSearchConnectionString"))
+bin_dir = os.path.dirname(os.path.realpath(__file__))
+config_path = os.path.realpath(os.path.join(bin_dir, "../config.yaml"))
+elastic = ElasticInitializer(config_path)
 elastic.initialize()

@@ -1,28 +1,41 @@
-from pyshelf.container import Container
-import flask
+import os.path
+import json
+import jsonschema
 
 
-def get_container():
-    container = None
-    if hasattr(flask, "g") and flask.g:
-        container = getattr(flask.g, "container", None)
-        if not container:
-            container = Container(flask.current_app, flask.request)
-            flask.g.container = container
-
-    return container
-
-
-def default_to_list(value):
+def create_path(*args):
     """
-        Encapsulates non-list objects in a list for easy parsing.
+        Gets the full absolute path based on the arguments provided.  The part
+        it adds at the beginning is the path to the root of this repository.
+
+        WARNING: Do not start one of your path sections with a "/" otherwise that
+        is expected to be an absolute path.
 
         Args:
-            value(object): value to be returned as is if it is a list or encapsulated in a list if not.
+            *args(List(basestring)): Each part is a segment of the same path.
     """
-    if not isinstance(value, list) and value is not None:
-        value = [value]
-    elif value is None:
-        value = []
+    directory_of_this_file = os.path.dirname(os.path.realpath(__file__))
+    full_path = os.path.join(directory_of_this_file, "../", *args)
+    full_path = os.path.realpath(full_path)
+    return full_path
 
-    return value
+
+def validate_json(schema_path, data):
+    """
+        Validates data against schema.
+
+        Args:
+            schema_path(string)
+            data(type outlined schema)
+
+        Raises:
+            jsonschema.ValidationError: if data does not match schema
+            IOError: if schema_path is invalid
+            jsonschema.SchemaError: if schema is flawed
+    """
+    schema_path = create_path(schema_path)
+    with open(schema_path, "r") as file:
+        schema = file.read()
+
+    schema = json.loads(schema)
+    jsonschema.validate(data, schema)

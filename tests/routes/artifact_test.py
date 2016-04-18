@@ -5,8 +5,8 @@ from tests.functional_test_base import FunctionalTestBase
 class ArtifactTest(FunctionalTestBase):
     def test_artifact_get_path(self):
         link = [
-            "/test/artifact/test; rel=self; title=test",
-            "/test/artifact/test/_meta; rel=metadata; title=metadata"
+            "/test/artifact/test; rel=self; title=artifact",
+            "/test/artifact/test/_meta; rel=related; title=metadata"
         ]
         self.route_tester \
             .artifact() \
@@ -21,13 +21,6 @@ class ArtifactTest(FunctionalTestBase):
             .expect(404, self.RESPONSE_404) \
             .get(headers=self.auth)
 
-    def test_no_bucket(self):
-        self.route_tester \
-            .artifact() \
-            .route_params(bucket_name="ufo", path="john-travolta") \
-            .expect(500, self.response_500()) \
-            .get(headers=self.auth)
-
     def test_no_permission_file(self):
         self.route_tester \
             .artifact() \
@@ -40,7 +33,7 @@ class ArtifactTest(FunctionalTestBase):
             .artifact() \
             .route_params(bucket_name="test", path=path) \
             .expect(204, headers={
-                "Link": "/test/artifact/dir/dir2/dir3/dir4/test5; rel=child; title=dir/dir2/dir3/dir4/test5"
+                "Link": "/test/artifact/dir/dir2/dir3/dir4/test5; rel=item; title=artifact"
             }) \
             .get(headers=self.auth)
 
@@ -56,16 +49,13 @@ class ArtifactTest(FunctionalTestBase):
             .route_params(bucket_name="test", path="") \
             .expect(204, headers={
                 "Link": [
-                    "/test/artifact/empty; rel=child; title=empty",
-                    "/test/artifact/test; rel=child; title=test",
-                    "/test/artifact/dir/; rel=child; title=dir/",
-                    "/test/artifact/this/; rel=child; title=this/"
+                    "/test/artifact/empty; rel=item; title=artifact",
+                    "/test/artifact/test; rel=item; title=artifact",
+                    "/test/artifact/dir/; rel=collection; title=a collection of artifacts",
+                    "/test/artifact/this/; rel=collection; title=a collection of artifacts"
                 ]
             }) \
             .get(headers=self.auth)
-
-    def test_artifact_get_artifact_list_no_trailing_slash(self):
-        self.artifact_get_list("dir/dir2/dir3/dir4")
 
     def test_artifact_upload(self):
         self.route_tester.artifact() \
@@ -97,3 +87,17 @@ class ArtifactTest(FunctionalTestBase):
             .route_params(bucket_name="test", path="_test") \
             .expect(403, self.RESPONSE_INVALID_NAME) \
             .post(data={"file": (StringIO("file contents"), "test.txt")}, headers=self.auth)
+
+    def test_bucket_configuration_doesnt_exist(self):
+        self.route_tester \
+            .artifact() \
+            .route_params(bucket_name="lol-this-doesnt-exist", path="hello/there") \
+            .expect(404, self.RESPONSE_404) \
+            .get(headers=self.auth)
+
+    def test_bucket_doesnt_exist(self):
+        self.route_tester \
+            .artifact() \
+            .route_params(bucket_name="thisBucketDoesntExistLol", path="hello/there") \
+            .expect(500, self.response_500()) \
+            .get(headers=self.auth)

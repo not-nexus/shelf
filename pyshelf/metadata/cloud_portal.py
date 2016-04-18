@@ -1,4 +1,5 @@
 import copy
+from pyshelf.cloud.cloud_exceptions import ArtifactNotFoundError
 
 
 class CloudPortal(object):
@@ -39,9 +40,18 @@ class CloudPortal(object):
                 dict
         """
         with self.container.create_cloud_storage() as storage:
-            raw_meta = storage.get_artifact_as_string(cloud_identifier)
-            meta = self.codec.deserialize(raw_meta)
+            meta = None
 
+            try:
+                raw_meta = storage.get_artifact_as_string(cloud_identifier)
+                meta = self.codec.deserialize(raw_meta)
+            except ArtifactNotFoundError:
+                pass
+
+            # I don't do this inside the except because
+            # if an empty string is returned as the metadata
+            # then it will deserialize to None instead of
+            # an empty dict.
             if not meta:
                 meta = {}
 

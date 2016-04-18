@@ -9,7 +9,21 @@ class ArtifactKeyFilterTest(UnitTestBase):
         return key
 
     def run_is_private(self, name, result=True):
-        self.assertEquals(result, akfilter._is_private(self.key(name)))
+        self.assertEquals(result, akfilter._is_private(name))
+
+    def test_to_path_list(self):
+        key_list = [
+            self.key("/hello"),
+            self.key("/hello/goodbye")
+        ]
+
+        expected_list = [
+            "/hello",
+            "/hello/goodbye"
+        ]
+
+        actual_list = akfilter.to_path_list(key_list)
+        self.assertEqual(expected_list, actual_list)
 
     def test_is_private_keys(self):
         self.run_is_private("_keys")
@@ -23,17 +37,13 @@ class ArtifactKeyFilterTest(UnitTestBase):
     def test_is_private_other_dir(self):
         self.run_is_private("/blah/_hello/hi")
 
-    def assert_keys_match(self, expected_name_list, filtered_key_list):
-        filtered_name_list = [key.name for key in filtered_key_list]
-        self.assertEqual(expected_name_list, filtered_name_list)
-
     def test_private(self):
-        key_list = [
-            self.key("/sup/_man"),
-            self.key("/blah/hello"),
-            self.key("_keys/kyle"),
-            self.key("/this/one/fine"),
-            self.key("/blah/_metadata_20"),
+        path_list = [
+            "/sup/_man",
+            "/blah/hello",
+            "_keys/kyle",
+            "/this/one/fine",
+            "/blah/_metadata_20",
         ]
 
         expected_list = [
@@ -42,14 +52,14 @@ class ArtifactKeyFilterTest(UnitTestBase):
             "/blah/_metadata_20",
         ]
 
-        filtered_key_list = akfilter.private(key_list)
-        self.assert_keys_match(expected_list, filtered_key_list)
+        filtered_path_list = akfilter.private(path_list)
+        self.assertEqual(expected_list, filtered_path_list)
 
     def test_metadata(self):
-        key_list = [
-            self.key("/blah/_metadata_20"),
-            self.key("_key/blah"),
-            self.key("/blah/_blah/_more_blah"),
+        path_list = [
+            "/blah/_metadata_20",
+            "_key/blah",
+            "/blah/_blah/_more_blah",
         ]
 
         expected_list = [
@@ -57,30 +67,30 @@ class ArtifactKeyFilterTest(UnitTestBase):
             "/blah/_blah/_more_blah",
         ]
 
-        filtered_key_list = akfilter.metadata(key_list)
-        self.assert_keys_match(expected_list, filtered_key_list)
+        filtered_path_list = akfilter.metadata(path_list)
+        self.assertEqual(expected_list, filtered_path_list)
 
     def test_not_metadata(self):
-        key_list = [
-            self.key("/blah/_metadata_20"),
-            self.key("_key/blah"),
-            self.key("/blah/_blah/_more_blah"),
+        path_list = [
+            "/blah/_metadata_20",
+            "_key/blah",
+            "/blah/_blah/_more_blah",
         ]
 
         expected_list = [
             "/blah/_metadata_20",
         ]
 
-        filtered_key_list = akfilter.not_metadata(key_list)
-        self.assert_keys_match(expected_list, filtered_key_list)
+        filtered_path_list = akfilter.not_metadata(path_list)
+        self.assertEqual(expected_list, filtered_path_list)
 
     def test_all_private(self):
-        key_list = [
-            self.key("/sup/_man"),
-            self.key("/blah/hello"),
-            self.key("_keys/kyle"),
-            self.key("/this/one/fine"),
-            self.key("/blah/_metadata_20"),
+        path_list = [
+            "/sup/_man",
+            "/blah/hello",
+            "_keys/kyle",
+            "/this/one/fine",
+            "/blah/_metadata_20",
         ]
 
         expected_list = [
@@ -88,5 +98,21 @@ class ArtifactKeyFilterTest(UnitTestBase):
             "/this/one/fine",
         ]
 
-        filtered_key_list = akfilter.all_private(key_list)
-        self.assert_keys_match(expected_list, filtered_key_list)
+        filtered_path_list = akfilter.all_private(path_list)
+        self.assertEqual(expected_list, filtered_path_list)
+
+    def test_directories(self):
+        path_list = [
+            "/sup",
+            "directory1/",
+            "/blah/hello",
+            "directory2/",
+        ]
+
+        expected_list = [
+            "/sup",
+            "/blah/hello"
+        ]
+
+        filtered_path_list = akfilter.directories(path_list)
+        self.assertEqual(expected_list, filtered_path_list)

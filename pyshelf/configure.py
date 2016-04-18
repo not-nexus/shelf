@@ -2,32 +2,21 @@ import logging
 import sys
 from pyshelf.request_log_filter import RequestLogFilter
 import yaml
+from pyshelf import utils
+import os
 
 
-def app(app, config_path):
+def app_config(existing_config, config_path):
     with open(config_path, "r") as f:
         content = f.read()
         config = yaml.load(content)
 
-    if not config.get("buckets"):
-        raise ValueError("config.yaml requires buckets heading for list of buckets with associated keys.")
+    utils.validate_json("schemas/config.json", config)
 
-    for key, val in config.get("buckets").iteritems():
-        required = {
-            "accessKey": val.get("accessKey"),
-            "secretKey": val.get("secretKey")
-        }
-        _validate_dict(required)
+    if not config.get("bulkUpdateLogDirectory"):
+        config["bulkUpdateLogDirectory"] = "/var/log/bucket-update"
 
-    required = {"elasticSearchConnectionString": config.get("elasticSearchConnectionString")}
-    _validate_dict(required)
-
-    app.config.update(config)
-
-
-def _validate_dict(required):
-    if not all(required.values()):
-        raise ValueError("config.yaml did not have all required settings: " + ", ".join(required.keys()))
+    existing_config.update(config)
 
 
 def logger(logger, log_level_name):
@@ -40,3 +29,10 @@ def logger(logger, log_level_name):
     handler.addFilter(RequestLogFilter())
     logger.addHandler(handler)
     logger.setLevel(log_level)
+
+
+def app(app):
+    config_path = os.path.dirname(os.path.realpath(__file__)) + "/../config.yaml"
+    app_config(app.config, config_path)
+    log_level_name = app.config.get("logLevel", "DEBUG")
+    logger(app.logger, log_level_name)

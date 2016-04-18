@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
-endpoint="localhost:8080/kyle-long/artifact/hello-world/_meta"
-curl -i -L -H "Content-Type: application/json" -H "Authorization: 190a64931e6e49ccb9917c7f32a29d19" -X PUT \
--d '{"tag":{"value": "test", "immutable": false}, "tag1":{"value": "test","immutable": true}}' "$endpoint"
+endpoint="localhost:8080/<bucket>/artifact/<path>/_meta"
+curl -i -L -H "Content-Type: application/json" -H "Authorization: XXXXXXXXXXXXXXXXXXXXXX" -X PUT \
+-d '{"version":{"value": "1.0", "immutable": false}, "build":{"value": "1","immutable": true}}' "$endpoint"

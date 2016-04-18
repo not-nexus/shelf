@@ -3,6 +3,7 @@ from tests.search.test_wrapper import TestWrapper as SearchTestWrapper
 from pyshelf.search.type import Type as SearchType
 from pyshelf.search.sort_type import SortType
 from pyshelf.search.sort_flag import SortFlag
+from pyshelf.search.connection import Connection
 import tests.metadata_utils as utils
 
 
@@ -150,3 +151,15 @@ class ManagerTest(UnitTestBase):
             utils.get_meta("thing", "/thing", "1.2")
         ]
         self.assertEqual(results, expected)
+
+    def test_utils(self):
+        connection = Connection("http://localhost:9200/index", "test", "test", "test")
+        host = connection.transport.hosts[0]
+        self.assertEqual("localhost", host["host"])
+        self.assertEqual(9200, host["port"])
+        self.assertEqual("index", connection.es_index)
+        auth = connection.transport.get_connection().session.auth
+        self.assertEqual("test", auth.aws_access_key)
+        self.assertEqual("test", auth.aws_secret_access_key)
+        self.assertEqual("localhost", auth.aws_host)
+        self.assertEqual("test", auth.aws_region)
