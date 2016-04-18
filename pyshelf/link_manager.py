@@ -68,19 +68,3 @@ class LinkManager(object):
         ]
 
         self.context.link_list = link_list
-
-    def assign_metadata(self, metadata_path):
-        """
-            Assigns an individual link for a metadata resource to pyshelf.context.Context.link_list
-
-            Args:
-                metadata_path(string)
-        """
-        link_list = [
-            {
-                "path": metadata_path,
-                "type": "self",
-                "title": "metadata"
-            }
-        ]
-        self.context.link_list = link_list

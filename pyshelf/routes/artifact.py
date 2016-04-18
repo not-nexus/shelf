@@ -47,7 +47,7 @@ def get_artifact_meta_route(container, bucket_name, path):
 
 
 def get_artifact_meta(container, bucket_name, path):
-    container.link_manager.assign_metadata(container.request.path)
+    container.link_manager.assign_single(path)
     metadata = container.metadata.manager.metadata
     response = container.context_response_mapper.to_response(metadata, 200)
     return response

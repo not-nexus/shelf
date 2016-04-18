@@ -10,7 +10,8 @@ class MetadataTest(FunctionalTestBase):
             .route_params(bucket_name="test", path="test") \
             .expect(200, headers={
                 "Link": [
-                    "/test/artifact/test/_meta; rel=self; title=metadata"
+                    "/test/artifact/test; rel=self; title=artifact",
+                    "/test/artifact/test/_meta; rel=related; title=metadata"
                 ]
             }) \
             .head(headers=self.auth)
