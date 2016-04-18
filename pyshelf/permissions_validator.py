@@ -1,6 +1,8 @@
 import yaml
 from fnmatch import fnmatch
 from pyshelf.cloud.cloud_exceptions import ArtifactNotFoundError
+from pyshelf import artifact_key_filter
+from pyshelf.error_code import ErrorCode
 
 
 class PermissionsValidator(object):
@@ -55,6 +57,11 @@ class PermissionsValidator(object):
         if self.permissions:
             method = self.container.request.method
             path = self.container.request.path
+            artifact_path = self.container.resource_identity.cloud
+
+            if artifact_key_filter._is_private(artifact_path):
+                self.container.context.add_error(ErrorCode.INVALID_ARTIFACT_NAME)
+                return allowed
 
             # Note: at this point searches only require the existance of any permissions for a bucket.
             # TODO: Perhaps implement separate listing permissions for searching to make search permissions explicit.
@@ -82,6 +89,10 @@ class PermissionsValidator(object):
         access = False
         dir_path = self.container.resource_identity.artifact_path
         artifact_path = self.container.resource_identity.cloud
+
+        # This ensures our directory comparison has a '/' at the end to conform with fnmatch.
+        if not dir_path.endswith("/"):
+            dir_path = dir_path + "/"
 
         for p in permissions:
             if fnmatch(artifact_path, p) or fnmatch(dir_path, p):

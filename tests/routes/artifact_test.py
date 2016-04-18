@@ -18,7 +18,7 @@ class ArtifactTest(FunctionalTestBase):
         self.route_tester \
             .artifact() \
             .route_params(bucket_name="test", path="dir/test") \
-            .expect(401, "Permission Denied\n") \
+            .expect(401, self.RESPONSE_401) \
             .get(headers=self.auth)
 
     def test_artifact_get_none(self):
@@ -32,7 +32,7 @@ class ArtifactTest(FunctionalTestBase):
         self.route_tester \
             .artifact() \
             .route_params(bucket_name="test", path="billy-bob-thorton") \
-            .expect(401, "Permission Denied\n") \
+            .expect(401, self.RESPONSE_401) \
             .get(headers={"Authorization": "bkdjfaojdklfjakdjHELLOWORLDlajdfjkadjok"})
 
     def artifact_get_list(self, path):
@@ -93,7 +93,7 @@ class ArtifactTest(FunctionalTestBase):
     def test_artifact_upload_no_permissions(self):
         self.route_tester.artifact() \
             .route_params(bucket_name="test", path="dir/test") \
-            .expect(401, "Permission Denied\n") \
+            .expect(401, self.RESPONSE_401) \
             .post(data={"file": (StringIO("file contents"), "test.txt")}, headers=self.auth)
 
     def test_artifact_upload_existing_artifact(self):
@@ -121,4 +121,18 @@ class ArtifactTest(FunctionalTestBase):
             .artifact() \
             .route_params(bucket_name="thisBucketDoesntExistLol", path="hello/there") \
             .expect(500, self.response_500()) \
+            .get(headers=self.auth)
+
+    def test_private_artifact(self):
+        self.route_tester \
+            .artifact() \
+            .route_params(bucket_name="test", path="dir/dir2/_secret") \
+            .expect(403, self.RESPONSE_INVALID_NAME) \
+            .get(headers=self.auth)
+
+    def test_non_private_artifact(self):
+        self.route_tester \
+            .artifact() \
+            .route_params(bucket_name="test", path="dir/dir2/not_secret") \
+            .expect(200, "You can see this though\n") \
             .get(headers=self.auth)

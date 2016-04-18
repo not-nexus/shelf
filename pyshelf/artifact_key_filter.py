@@ -115,7 +115,7 @@ def _is_private(path):
     # any of the parts of the path start
     # with an underscore it is considered
     # private
-    return bool(re.search("^_|/_(?!metadata)", path))
+    return bool(re.search("^_(?!metadata)|/_(?!metadata)", path))
 
 
 def _is_not_directory(path):
