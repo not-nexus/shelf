@@ -13,21 +13,22 @@ from tests.metadata.comparator import Comparator as MetadataComparator
 from pyshelf.resource_identity import ResourceIdentity
 from tests.metadata_builder import MetadataBuilder
 from tests.test_base import TestBase
+from pyshelf.error_code import ErrorCode
 
 
 class FunctionalTestBase(TestBase):
     RESPONSE_404 = {
         "message": "Resource not found",
-        "code": "resource_not_found"
+        "code": ErrorCode.RESOURCE_NOT_FOUND
     }
 
     RESPONSE_403 = {
-        "code": "forbidden",
+        "code": ErrorCode.FORBIDDEN,
         "message": "Forbidden"
     }
 
     RESPONSE_401 = {
-        "code": "permission_denied",
+        "code": ErrorCode.PERMISSION_DENIED,
         "message": "Permission denied"
     }
 
@@ -35,12 +36,17 @@ class FunctionalTestBase(TestBase):
         "message": "Artifact and directories names that BEGIN with an underscore are reserved as private "
                    "and cannot be accessed or created. This of course exludes _search and _meta which are "
                    "not part of the artifact path itself.",
-        "code": "invalid_artifact_name"
+        "code": ErrorCode.INVALID_ARTIFACT_NAME
     }
 
     RESPONSE_DUPLICATE = {
-        "code": "duplicate_artifact",
+        "code": ErrorCode.DUPLICATE_ARTIFACT,
         "message": "Artifact by name test already exists in current directory"
+    }
+
+    RESPONSE_INVALID_FORMAT = {
+        "code": ErrorCode.BAD_REQUEST,
+        "message": "Request must be in JSON format and also be either an array or an object.",
     }
 
     CONFIG = {

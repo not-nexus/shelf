@@ -36,7 +36,7 @@ class MetadataTest(FunctionalTestBase):
         self.route_tester \
             .metadata() \
             .route_params(bucket_name="test", path="dir/dir2/dir3/nest-test") \
-            .expect(400) \
+            .expect(400, self.RESPONSE_INVALID_FORMAT) \
             .put(data='{"lol": ...}', headers=self.auth)
 
     def test_empty_metadata(self):
