@@ -44,25 +44,33 @@ class LinkManager(object):
                 "title": title
             })
 
-    def assign_single(self, artifact_path):
+    def assign_single(self, artifact_path, artifact_rel_type=None, metadata_rel_type=None):
         """
             Assigns individual link to pyshelf.context.Context.link_list.
 
             Args:
                 artifact_path(string)
+                artifact_rel_type(string|None): Optionaly set artifact rel type for link
+                metadata_rel_type(string|None): Optionaly set metadata rel type for link
         """
+        # Defaults rel types for an artifact link
+        if artifact_rel_type is None:
+            artifact_rel_type = "self"
+        if metadata_rel_type is None:
+            metadata_rel_type = "related"
+
         identity = self.container.resource_identity_factory \
             .from_cloud_identifier(artifact_path)
 
         link_list = [
             {
                 "path": identity.resource_url,
-                "type": "self",
+                "type": artifact_rel_type,
                 "title": "artifact"
             },
             {
                 "path": identity.metadata,
-                "type": "related",
+                "type": metadata_rel_type,
                 "title": "metadata"
             }
         ]
