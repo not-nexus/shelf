@@ -121,19 +121,21 @@ def delete_metadata_property(container, bucket_name, path, item):
 
 @artifact.route("/<bucket_name>/artifact/_search", methods=["POST"])
 @decorators.foundation
-def root_search(container, bucket_name):
-    response = search(container)
+@decorators.decode_request
+def root_search(container, bucket_name, data):
+    response = search(container, data)
     return response
 
 
 @artifact.route("/<bucket_name>/artifact/<path:path>/_search", methods=["POST"])
 @decorators.foundation
-def path_search(container, bucket_name, path):
-    response = search(container)
+@decorators.decode_request
+def path_search(container, bucket_name, path, data):
+    response = search(container, data)
     return response
 
 
-def search(container):
+def search(container, criteria):
     """
         Does a search with the given criteria.
 
@@ -143,7 +145,6 @@ def search(container):
         Returns:
             Flask response
     """
-    criteria = request.get_json(force=True)
     container.search_portal.search(criteria)
 
     if container.context.has_error():
