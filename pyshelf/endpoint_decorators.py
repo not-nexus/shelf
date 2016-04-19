@@ -3,7 +3,6 @@ import json
 from pyshelf.get_container import get_container
 import pyshelf.response_map as response_map
 from pyshelf.cloud.cloud_exceptions import BucketNotFoundError
-from werkzeug.exceptions import BadRequest
 
 """
     This module contains decorator functions that are commonly
