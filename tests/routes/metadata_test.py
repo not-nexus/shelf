@@ -32,6 +32,13 @@ class MetadataTest(FunctionalTestBase):
             .put(data=meta_utils.send_meta(), headers=self.auth)
         self.assert_metadata_matches("/test/artifact/dir/dir2/dir3/nest-test/_meta")
 
+    def test_put_metadata_invalid_json(self):
+        self.route_tester \
+            .metadata() \
+            .route_params(bucket_name="test", path="dir/dir2/dir3/nest-test") \
+            .expect(400, self.RESPONSE_INVALID_FORMAT) \
+            .put(data='{"lol": ...}', headers=self.auth)
+
     def test_empty_metadata(self):
         self.route_tester \
             .metadata() \

@@ -24,6 +24,8 @@ The following is the response from this endpoint. Again, immutable items can onl
     HTTP/1.0 201 CREATED
     Content-Type: application/json
     Content-Length: 205
+    Link: /bucket-name/artifact/hello-world rel=related; title=artifact
+    Link: /bucket-name/artifact/hello-world/_meta; rel=self; title=metadata
     Server: Werkzeug/0.11.3 Python/2.7.10
     Date: Wed, 09 Mar 2016 22:07:50 GMT
 
@@ -33,10 +35,13 @@ The following is the response from this endpoint. Again, immutable items can onl
             "value": "cd62151eefb59da744549d26a79e2717",
             "immutable": true
         },
-         "tag": {
+        "tag": {
+            "name": "tag",
             "immutable": true,
              "value": "never edit this stuff"
-        }, "tag1": {
+        },
+        "tag1": {
+            "name": "tag1",
             "immutable": false,
             "value": "test"
         }
@@ -52,6 +57,8 @@ The following is a request and response for all metadata for a particular artifa
     HTTP/1.0 200 OK
     Content-Type: application/json
     Content-Length: 205
+    Link: /bucket-name/artifact/hello-world; rel=related; title=artifact
+    Link: /bucket-name/artifact/hello-world/_meta; rel=self; title=metadata
     Server: Werkzeug/0.11.3 Python/2.7.10
     Date: Wed, 09 Mar 2016 22:02:56 GMT
 
