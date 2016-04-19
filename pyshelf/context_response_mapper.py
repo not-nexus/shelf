@@ -1,4 +1,5 @@
 from flask import Response
+import json
 from pyshelf.cloud.stream_iterator import StreamIterator
 
 
@@ -20,6 +21,9 @@ class ContextResponseMapper(object):
             response = Response()
 
             if body:
+                # Serialize body if it is json content type
+                if content_type == "application/json":
+                    body = json.dumps(body)
                 response.set_data(body)
 
         # Letting flask default it otherwise

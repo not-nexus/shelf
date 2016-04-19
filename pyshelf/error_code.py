@@ -6,3 +6,4 @@ class ErrorCode(object):
     FORBIDDEN = "forbidden"
     INVALID_SEARCH_CRITERIA = "invalid_search_criteria"
     BAD_REQUEST = "bad_request"
+    PERMISSION_DENIED = "permission_denied"
