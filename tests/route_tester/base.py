@@ -58,8 +58,9 @@ class Base(object):
         """
             Performs a GET request on the test client and asserts the response.
 
-            Arg:
-                data(None or dict): data for GET request.
+            Args:
+                data(dict | None): data for request.
+                headers(dict | None): headers for request.
         """
         data = self._encode(data)
         response = self.test_client.get(self.endpoint, data=data, headers=headers)
@@ -69,8 +70,9 @@ class Base(object):
         """
             Performs a POST request on the test client and asserts the response.
 
-            Arg:
-                data(dict): data for POST request.
+            Args:
+                data(dict | None): data for request.
+                headers(dict | None): headers for request.
         """
         data = self._encode(data)
         response = self.test_client.post(self.endpoint, data=data, headers=headers)
@@ -80,8 +82,9 @@ class Base(object):
         """
             Performs a PUT request on the test client and asserts the response.
 
-            Arg:
-                data(dict): data for PUT request.
+            Args:
+                data(dict | None): data for request.
+                headers(dict | None): headers for request.
         """
         data = self._encode(data)
         response = self.test_client.put(self.endpoint, data=data, headers=headers)
@@ -91,11 +94,24 @@ class Base(object):
         """
             Performs a DELETE request on the test client and asserts the response.
 
-            Arg:
-                data(None or dict): data for DELETE request.
+            Args:
+                data(dict | None): data for request.
+                headers(dict | None): headers for request.
         """
         data = self._encode(data)
         response = self.test_client.delete(self.endpoint, data=data, headers=headers)
+        self._assert(response)
+
+    def head(self, data=None, headers=None):
+        """
+            Permforms a HEAD request on the test client and asserts the response.
+
+            Args:
+                data(dict | None): data for request.
+                headers(dict | None): headers for request.
+        """
+        data = self._encode(data)
+        response = self.test_client.head(self.endpoint, data=data, headers=headers)
         self._assert(response)
 
     def _assert(self, actual_response):

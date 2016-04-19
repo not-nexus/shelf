@@ -4,6 +4,18 @@ from pyshelf.error_code import ErrorCode
 
 
 class MetadataTest(FunctionalTestBase):
+    def test_head_metadata(self):
+        self.route_tester \
+            .metadata() \
+            .route_params(bucket_name="test", path="test") \
+            .expect(200, headers={
+                "Link": [
+                    "/test/artifact/test; rel=related; title=artifact",
+                    "/test/artifact/test/_meta; rel=self; title=metadata"
+                ]
+            }) \
+            .head(headers=self.auth)
+
     def test_get_metadata(self):
         self.route_tester \
             .metadata() \

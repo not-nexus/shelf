@@ -17,4 +17,8 @@ class Context(object):
         self.errors[code] = message
 
     def has_error(self):
+        """
+            Returns:
+                boolean: whether error exists on context or not.
+        """
         return len(self.errors) > 0

@@ -61,7 +61,7 @@ def create_404(error_code=ErrorCode.RESOURCE_NOT_FOUND, msg="Resource not found"
 
 def create_400(error_code=ErrorCode.BAD_REQUEST, msg="Bad request"):
     """
-        Creates response wiih 400 status code.
+        Creates response with 400 status code.
 
         args:
             error_code(pyshelf.error_code.ErrorCode):
@@ -74,6 +74,26 @@ def create_400(error_code=ErrorCode.BAD_REQUEST, msg="Bad request"):
         "code": error_code,
         "message": msg,
         "status_code": 400
+    }
+
+    return vnd_error(error)
+
+
+def create_401(error_code=ErrorCode.PERMISSION_DENIED, msg="Permission denied"):
+    """
+        Creates response with 401 status code.
+
+        args:
+            error_code(pyshelf.error_code.ErrorCode):
+            msg(string)
+
+        Returns:
+            pyshelf.json_response.JsonResponse
+    """
+    error = {
+        "code": error_code,
+        "message": msg,
+        "status_code": 401
     }
 
     return vnd_error(error)
@@ -169,6 +189,10 @@ def map_context_error(context):
     """
     if ErrorCode.INVALID_SEARCH_CRITERIA in context.errors:
         return create_400(ErrorCode.BAD_REQUEST, context.errors[ErrorCode.INVALID_SEARCH_CRITERIA])
+    elif ErrorCode.INVALID_ARTIFACT_NAME in context.errors:
+        return create_403(ErrorCode.INVALID_ARTIFACT_NAME, "Artifact and directories names that BEGIN "
+                "with an underscore are reserved as private and cannot be accessed or created. This of "
+                "course exludes _search and _meta which are not part of the artifact path itself.")
 
 
 def map_metadata_result_errors(result):

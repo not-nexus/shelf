@@ -26,8 +26,15 @@ class FunctionalTestBase(TestBase):
         "message": "Forbidden"
     }
 
+    RESPONSE_401 = {
+        "code": "permission_denied",
+        "message": "Permission denied"
+    }
+
     RESPONSE_INVALID_NAME = {
-        "message": "The artifact name provided is not allowable. Please remove leading underscores.",
+        "message": "Artifact and directories names that BEGIN with an underscore are reserved as private "
+                   "and cannot be accessed or created. This of course exludes _search and _meta which are "
+                   "not part of the artifact path itself.",
         "code": "invalid_artifact_name"
     }
 
@@ -121,16 +128,27 @@ class FunctionalTestBase(TestBase):
         self.create_auth_key()
 
     def setup_artifacts(self):
-        key = Key(self.test_bucket, "test")
-        key.set_contents_from_string("hello world")
-        nested_key = Key(self.test_bucket, "/dir/dir2/dir3/nest-test")
-        nested_key.set_contents_from_string("hello world")
-        artifact_list = Key(self.test_bucket, "/dir/dir2/dir3/dir4/test5")
-        artifact_list.set_contents_from_string("")
-        thing_key = Key(self.test_bucket, "empty")
-        thing_key.set_contents_from_string("hello world")
-        empty_meta = Key(self.test_bucket, "/_metadata_empty.yaml")
-        empty_meta.set_contents_from_string("")
+        self.create_key(self.test_bucket, "test", contents="hello world")
+        self.create_key(self.test_bucket, "/dir/dir2/dir3/dir4/test5")
+        self.create_key(self.test_bucket, "/dir/dir2/dir3/nest-test", contents="hello world")
+        self.create_key(self.test_bucket, "empty", contents="hello world")
+        self.create_key(self.test_bucket, "/_metadata_empty.yaml")
+        self.create_key(self.test_bucket, "/dir/dir2/_secret", "No one should see this")
+        self.create_key(self.test_bucket, "/dir/dir2/not_secret", "You can see this though")
+
+    def create_key(self, bucket, artifact_name, contents=None):
+        """
+            Creates an artifact in moto.
+
+            Args:
+                bucket(boto.s3.bucket.Bucket)
+                artifact_name(string)
+                contents(string | None)
+        """
+        if contents is None:
+            contents = ""
+        key = Key(bucket, artifact_name)
+        key.set_contents_from_string(contents)
 
     def setup_metadata(self):
         self.add_metadata("/test/artifact/test")

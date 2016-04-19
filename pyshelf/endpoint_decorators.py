@@ -1,5 +1,4 @@
 import functools
-import flask
 import json
 from pyshelf.get_container import get_container
 import pyshelf.response_map as response_map
@@ -140,9 +139,12 @@ class EndpointDecorators(object):
         def wrapper(container, *args, **kwargs):
             try:
                 if not container.permissions_validator.allowed():
-                    response = flask.Response()
-                    response.set_data("Permission Denied")
-                    response.status_code = 401
+                    response = None
+                    if container.context.has_error():
+                        response = response_map.map_context_error(container.context)
+                    else:
+                        response = response_map.create_401()
+
                     return response
             except BucketNotFoundError as e:
                 return response_map.map_exception(e)

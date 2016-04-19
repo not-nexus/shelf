@@ -47,7 +47,10 @@ def get_artifact_meta_route(container, bucket_name, path):
 
 
 def get_artifact_meta(container, bucket_name, path):
-    return response_map.create_200(container.metadata.manager.metadata)
+    container.link_manager.assign_single(path)
+    metadata = container.metadata.manager.metadata
+    response = container.context_response_mapper.to_response(metadata, 200)
+    return response
 
 
 @artifact.route("/<bucket_name>/artifact/<path:path>/_meta", methods=["PUT"])

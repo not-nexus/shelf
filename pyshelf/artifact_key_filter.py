@@ -94,6 +94,20 @@ def directories(path_list):
     return new_list
 
 
+def is_reserved(path):
+    """
+        Determines if path is private or is metadata.
+
+        Args:
+            path(string)
+
+        Returns:
+            boolean: whether path is reserved or not.
+    """
+    reserved = bool(_is_private(path) or _is_metadata(path))
+    return reserved
+
+
 def _is_not_metadata(path):
     return not _is_metadata(path)
 
@@ -115,7 +129,7 @@ def _is_private(path):
     # any of the parts of the path start
     # with an underscore it is considered
     # private
-    return bool(re.search("^_|/_(?!metadata)", path))
+    return bool(re.search("^_(?!metadata)|/_(?!metadata)", path))
 
 
 def _is_not_directory(path):

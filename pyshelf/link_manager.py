@@ -49,20 +49,28 @@ class LinkManager(object):
             Assigns individual link to pyshelf.context.Context.link_list.
 
             Args:
-                artifact_path(base)
+                artifact_path(string)
         """
         identity = self.container.resource_identity_factory \
             .from_cloud_identifier(artifact_path)
 
+        artifact_rel_type = "related"
+        metadata_rel_type = "related"
+
+        if identity.resource_url == self.request.path:
+            artifact_rel_type = "self"
+        else:
+            metadata_rel_type = "self"
+
         link_list = [
             {
                 "path": identity.resource_url,
-                "type": "self",
+                "type": artifact_rel_type,
                 "title": "artifact"
             },
             {
                 "path": identity.metadata,
-                "type": "related",
+                "type": metadata_rel_type,
                 "title": "metadata"
             }
         ]

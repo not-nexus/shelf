@@ -1,9 +1,7 @@
 from boto.s3.connection import S3Connection
 from boto.s3.key import Key
-import re
 from pyshelf.cloud.stream_iterator import StreamIterator
-from pyshelf.cloud.cloud_exceptions import \
-    ArtifactNotFoundError, BucketNotFoundError, DuplicateArtifactError, InvalidNameError
+from pyshelf.cloud.cloud_exceptions import ArtifactNotFoundError, BucketNotFoundError, DuplicateArtifactError
 
 
 class Storage(object):
@@ -53,10 +51,6 @@ class Storage(object):
                 fp(file): File to be uploaded
 
         """
-        a = "/{0}".format(artifact_name)
-        match = re.search('\/_', a)
-        if match:
-            raise InvalidNameError(artifact_name)
         bucket = self._get_bucket(self.bucket_name)
         if bucket.get_key(artifact_name) is not None:
             raise DuplicateArtifactError(artifact_name)
