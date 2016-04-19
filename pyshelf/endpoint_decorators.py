@@ -157,7 +157,14 @@ class EndpointDecorators(object):
     def decode_request(self, func):
         """
             Will decode and inject the data if it is valid json
-            otherwise a error will be returned.
+            and either a dict or a list.  Otherwise a
+            error response is returned.
+
+            Args:
+                func(function)
+
+            Returns:
+                function
         """
         @functools.wraps(func)
         def wrapper(container, *args, **kwargs):
@@ -168,8 +175,10 @@ class EndpointDecorators(object):
                 kwargs["data"] = data
                 response = func(container, *args, **kwargs)
             else:
-                container.logger.warning("Request was not valid json: {0}".format(data))
-                response = response_map.create_400(msg="Request must be in JSON format")
+                container.logger.warning("Request was not valid: {0}".format(data))
+                response = response_map.create_400(
+                    msg="Request must be in JSON format and also be either an array or an object."
+                )
 
             return response
 
