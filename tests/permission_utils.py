@@ -4,7 +4,7 @@ VALID_KEY = "190a64931e6e49ccb9917c7f32a29d19"
 def get_permissions_all():
     return """
         name: 'Andy Gertjejansen'
-        token: {}
+        token: {0}
         write:
           - '/*'
         read:
@@ -14,7 +14,7 @@ def get_permissions_all():
 def get_permissions_readonly():
     return """
         name: 'Andy Gertjejansen'
-        token: {}
+        token: {0}
         write:
           - ''
         read:
@@ -24,7 +24,7 @@ def get_permissions_readonly():
 def get_permissions_func_test():
     return """
         name: 'Andy Gertjejansen'
-        token: {}
+        token: {0}
         write:
           - '/'
           - '/dir/dir2/'
