@@ -1,7 +1,6 @@
 from flask import request, Blueprint
 from pyshelf.endpoint_decorators import decorators
 import pyshelf.response_map as response_map
-import json
 
 artifact = Blueprint("artifact", __name__)
 
@@ -55,8 +54,8 @@ def get_artifact_meta(container, bucket_name, path):
 
 @artifact.route("/<bucket_name>/artifact/<path:path>/_meta", methods=["PUT"])
 @decorators.foundation_headers
-def update_artifact_meta(container, bucket_name, path):
-    data = json.loads(request.data)
+@decorators.decode_request
+def update_artifact_meta(container, bucket_name, path, data):
     manager = container.metadata.manager
     manager.try_update(data)
     response = get_artifact_meta(container, bucket_name, path)
@@ -83,8 +82,8 @@ def get_metadata_property(container, bucket_name, path, item):
 
 @artifact.route("/<bucket_name>/artifact/<path:path>/_meta/<item>", methods=["POST", "PUT"])
 @decorators.foundation_headers
-def create_metadata_property(container, bucket_name, path, item):
-    data = json.loads(request.data)
+@decorators.decode_request
+def create_metadata_property(container, bucket_name, path, item, data):
     manager = container.metadata.manager
     exists = (item in manager.metadata)
     result = None

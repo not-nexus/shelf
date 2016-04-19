@@ -3,6 +3,7 @@ import json
 from pyshelf.get_container import get_container
 import pyshelf.response_map as response_map
 from pyshelf.cloud.cloud_exceptions import BucketNotFoundError
+from werkzeug.exceptions import BadRequest
 
 """
     This module contains decorator functions that are commonly
@@ -150,6 +151,27 @@ class EndpointDecorators(object):
                 return response_map.map_exception(e)
 
             return func(container, *args, **kwargs)
+
+        return wrapper
+
+    def decode_request(self, func):
+        """
+            Will decode and inject the data if it is valid json
+            otherwise a error will be returned.
+        """
+        @functools.wraps(func)
+        def wrapper(container, *args, **kwargs):
+            response = None
+            data = container.request.get_json(force=True)
+
+            if isinstance(data, (list, dict)):
+                kwargs["data"] = data
+                response = func(container, *args, **kwargs)
+            else:
+                container.logger.warning("Request was not valid json: {0}".format(data))
+                response = response_map.create_400(msg="Request must be in JSON format")
+
+            return response
 
         return wrapper
 
