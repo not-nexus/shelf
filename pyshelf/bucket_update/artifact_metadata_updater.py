@@ -2,7 +2,7 @@ class ArtifactMetadataUpdater(object):
     def __init__(self, container, identity):
         """
             Args:
-                bucket_container(pyshelf.metadata.bucket_container.BucketContainer)
+                container(pyshelf.metadata.bucket_container.BucketContainer)
                 identity(pyshelf.resource_identity.ResourceIdentity)
         """
         self.container = container
@@ -23,12 +23,13 @@ class ArtifactMetadataUpdater(object):
             metadata is in a usable state.  In other words, all required
             properties are populated.
         """
-        portal = self.container.cloud_portal
+        cloud_portal = self.container.cloud_portal
         initializer = self.container.initializer
-        metadata = portal.load(self.identity.cloud_metadata)
+
+        metadata = cloud_portal.load(self.identity.cloud_metadata)
 
         if initializer.needs_update(metadata):
             metadata = initializer.update(self.identity, metadata)
-            portal.update(self.identity.cloud_metadata, metadata)
+            cloud_portal.update(self.identity.cloud_metadata, metadata)
 
         self._metadata = metadata
