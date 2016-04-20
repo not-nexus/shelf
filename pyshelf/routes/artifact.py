@@ -31,14 +31,9 @@ def get_links(container, bucket_name, path):
 def upload_artifact(container, bucket_name, path):
     file_storage = request.files['file']
     container.artifact_manager.upload_artifact(path, file_storage)
-    response = None
-
-    if container.context.has_error():
-        response = response_map.map_context_error(container.context)
-    else:
-        response = response_map.create_201()
-        response = container.context_response_mapper.to_response(response.data, response.status_code)
-        response.headers["Location"] = container.request.path
+    response = response_map.create_201()
+    response = container.context_response_mapper.to_response(response.data, response.status_code)
+    response.headers["Location"] = container.request.path
 
     return response
 
