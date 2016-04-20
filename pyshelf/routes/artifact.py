@@ -38,6 +38,7 @@ def upload_artifact(container, bucket_name, path):
     else:
         response = response_map.create_201()
         response = container.context_response_mapper.to_response(response.data, response.status_code)
+        response.headers["Location"] = container.request.path
 
     return response
 
@@ -62,6 +63,7 @@ def update_artifact_meta(container, bucket_name, path, data):
     manager = container.metadata.manager
     manager.try_update(data)
     response = get_artifact_meta(container, bucket_name, path)
+    response.headers["Location"] = container.request.path
     return response
 
 

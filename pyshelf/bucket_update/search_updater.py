@@ -78,9 +78,7 @@ class SearchUpdater(object):
         """
         identity = self.container.resource_identity_factory \
             .from_cloud_identifier(path)
-        updater = ArtifactMetadataUpdater(
-            self.bucket_container,
-            identity)
+        updater = ArtifactMetadataUpdater(self.bucket_container, identity)
         updater.run()
         bulk_update[identity.search] = updater.metadata
 
