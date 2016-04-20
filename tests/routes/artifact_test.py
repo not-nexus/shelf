@@ -87,14 +87,36 @@ class ArtifactTest(FunctionalTestBase):
     def test_artifact_upload(self):
         self.route_tester.artifact() \
             .route_params(bucket_name="test", path="test-2") \
-            .expect(201, {"success": True}, headers={"Location": "http://localhost/test/artifact/test-2"}) \
+            .expect(201, {"success": True}, headers={
+                "Link": [
+                    "/test/artifact/test-2; rel=self; title=artifact",
+                    "/test/artifact/test-2/_meta; rel=related; title=metadata"
+                ]
+            }) \
             .post(data={"file": (StringIO("file contents"), "test.txt")}, headers=self.auth)
 
-    def test_artifact_upload_other_bucket(self):
+    def test_artifact_upload_and_immediate_search(self):
         self.route_tester.artifact() \
             .route_params(bucket_name="bucket2", path="nick-drake") \
-            .expect(201, {"success": True}, headers={"Location": "http://localhost/bucket2/artifact/nick-drake"}) \
+            .expect(201, {"success": True}, headers={
+                "Link": [
+                    "/bucket2/artifact/nick-drake; rel=self; title=artifact",
+                    "/bucket2/artifact/nick-drake/_meta; rel=related; title=metadata"
+                ]
+            }) \
             .post(data={"file": (StringIO("file contents"), "nick-drake.txt")}, headers=self.auth)
+
+        # By default index gets refreshed every second but that is too long for tests
+        self.search_wrapper.refresh_index()
+
+        self.route_tester.search() \
+            .route_params(bucket_name="bucket2", path="") \
+            .expect(204, headers={
+                "Link": [
+                    "/bucket2/artifact/nick-drake; rel=item; title=artifact",
+                ]
+            }) \
+            .post(data={"search": "artifactPath=/bucket2/artifact/nick-drake"}, headers=self.auth)
 
     def test_artifact_upload_no_permissions(self):
         self.route_tester.artifact() \
