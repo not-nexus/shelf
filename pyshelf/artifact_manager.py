@@ -1,4 +1,7 @@
-class ArtifactListManager(object):
+from pyshelf.metadata.artifact_metadata_updater import ArtifactMetadataUpdater
+
+
+class ArtifactManager(object):
     def __init__(self, container):
         self.container = container
         self.link_manager = self.container.link_manager
@@ -30,3 +33,21 @@ class ArtifactListManager(object):
                 self.link_manager.assign_single(content.key.name)
 
         return content
+
+    def upload_artifact(self, path, file_storage):
+        """
+            Uploads artifact and assigns links to context.
+
+            Args:
+                path(string): path or name of artifact.
+                file_storage(werkzeug.datastructures.FileStorage): file from request.
+        """
+        with self.container.create_bucket_storage() as storage:
+            identity = self.container.resource_identity_factory.from_cloud_identifier(path)
+            storage.upload_artifact(path, file_storage)
+            updater = ArtifactMetadataUpdater(
+                self.container.metadata.bucket_container.cloud_portal,
+                self.container.metadata.bucket_container.initializer,
+                identity)
+            updater.run()
+            self.link_manager.assign_single(path)

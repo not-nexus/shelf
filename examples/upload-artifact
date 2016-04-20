@@ -2,5 +2,5 @@
 
 echo "testing file upload with a simple txt file. Woot woot!" > ./upload-test.txt
 endpoint="http://localhost:8080/<bucket>/artifact/<path>"
-curl -i -L -H -k "Authorization: XXXXXXXXXXXXXXXXXXXXXXXXX" -F "file=@./upload-test.txt" "$endpoint"
+curl -i -L -H "Authorization: XXXXXXXXXXXXXXXXXXXXXXXXX" -F "file=@./upload-test.txt" "$endpoint"
 rm ./upload-test.txt

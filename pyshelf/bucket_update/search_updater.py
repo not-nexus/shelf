@@ -1,5 +1,5 @@
 import pyshelf.artifact_key_filter as filters
-from pyshelf.bucket_update.artifact_metadata_updater import ArtifactMetadataUpdater
+from pyshelf.metadata.artifact_metadata_updater import ArtifactMetadataUpdater
 from pprint import pformat
 import gc
 
@@ -78,7 +78,10 @@ class SearchUpdater(object):
         """
         identity = self.container.resource_identity_factory \
             .from_cloud_identifier(path)
-        updater = ArtifactMetadataUpdater(self.bucket_container, identity)
+        updater = ArtifactMetadataUpdater(
+            self.bucket_container.cloud_portal,
+            self.bucket_container.initializer,
+            identity)
         updater.run()
         bulk_update[identity.search] = updater.metadata
 
