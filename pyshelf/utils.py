@@ -39,3 +39,23 @@ def validate_json(schema_path, data):
 
     schema = json.loads(schema)
     jsonschema.validate(data, schema)
+
+
+def get_bucket_config(config, name):
+    """
+        Pulls correct bucket config from application config based on name/alias.
+
+        Args:
+            config(dict)
+            name(string): bucket name or bucket alias
+
+        Returns:
+            dict | None: config for bucket or None if not found
+    """
+    bucket_config = None
+
+    for bucket in config["buckets"]:
+        if bucket["name"] == name or bucket.get("alias") == name:
+            bucket_config = bucket
+
+    return bucket_config
