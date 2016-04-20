@@ -41,6 +41,5 @@ class ArtifactManager(object):
         """
         with self.container.create_bucket_storage() as storage:
             storage.upload_artifact(path, file_storage)
-            metadata = self.container.metadata.manager.metadata
-            self.container.metadata.manager.try_update(metadata)
+            self.container.metadata.manager.write()
             self.link_manager.assign_single(path)
