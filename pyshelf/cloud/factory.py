@@ -17,6 +17,6 @@ class Factory(object):
             self.logger.warning("Access keys for {0} are not in your config.".format(bucket_name))
             raise BucketConfigurationNotFound(bucket_name)
 
-        storage = Storage(bucket_config["accessKey"], bucket_config["secretKey"], bucket_name, self.logger)
+        storage = Storage(bucket_config["accessKey"], bucket_config["secretKey"], bucket_config["name"], self.logger)
 
         return storage
