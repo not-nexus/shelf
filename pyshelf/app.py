@@ -30,7 +30,8 @@ def format_response(response):
     if response.status_code == 404:
         response = response_map.create_404()
 
-    data = response.get_data()
-    data += "\n"
-    response.set_data(data)
+    if response.headers["Content-Type"] == "application/json":
+        data = response.get_data()
+        data += "\n"
+        response.set_data(data)
     return response

@@ -11,7 +11,7 @@ class ArtifactTest(FunctionalTestBase):
         self.route_tester \
             .artifact() \
             .route_params(bucket_name="test", path="test") \
-            .expect(200, "hello world\n", headers={"Link": link}) \
+            .expect(200, "hello world", headers={"Link": link}) \
             .get(headers=self.auth)
 
     def test_artifact_no_permissions(self):
@@ -162,5 +162,5 @@ class ArtifactTest(FunctionalTestBase):
         self.route_tester \
             .artifact() \
             .route_params(bucket_name="test", path="dir/dir2/not_secret") \
-            .expect(200, "You can see this though\n") \
+            .expect(200, "You can see this though") \
             .get(headers=self.auth)
