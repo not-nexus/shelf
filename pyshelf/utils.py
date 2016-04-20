@@ -1,6 +1,7 @@
 import os.path
 import json
 import jsonschema
+import collections
 
 
 def create_path(*args):
@@ -47,7 +48,7 @@ def get_bucket_config(config, name):
 
         Args:
             config(dict)
-            name(string): bucket name or bucket alias
+            name(string): bucket name or bucket reference name
 
         Returns:
             dict | None: config for bucket or None if not found
@@ -55,7 +56,31 @@ def get_bucket_config(config, name):
     bucket_config = None
 
     for bucket in config["buckets"]:
-        if bucket["name"] == name or bucket.get("alias") == name:
+        if bucket["name"] == name or bucket.get("referenceName") == name:
             bucket_config = bucket
 
     return bucket_config
+
+
+def validate_bucket_config(config):
+    """
+        Verifies that there is no overlap in referance name and bucket name.
+
+        Args:
+            config(dict)
+
+        Raises:
+            ValueError
+    """
+    name_list = []
+
+    for bucket in config["buckets"]:
+        if bucket["name"] == bucket.get("referenceName") or bucket.get("referenceName") is None:
+            name_list.append(bucket["name"])
+        else:
+            name_list.extend([bucket["name"], bucket["referenceName"]])
+
+    unique_list = list(set(name_list))
+
+    if collections.Counter(name_list) != collections.Counter(unique_list):
+        raise ValueError("Error in bucket config. Overlapping bucket names and reference names.")

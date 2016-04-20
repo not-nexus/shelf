@@ -47,7 +47,7 @@ class ConfigureTest(pyproctor.TestBase):
                     # can't stop seeing WhichCanalSobe
                     "secretKey": "supersecretkeywhichcanalsobewhateveriwant",
                     "name": "myBucket",
-                    "alias": "test"
+                    "referenceName": "test"
                 }
             ],
             "elasticsearch": {
@@ -66,7 +66,7 @@ class ConfigureTest(pyproctor.TestBase):
         self.run_app_config()
         self.assertEqual(expected, self.app.config)
 
-    def test_config_value_error(self):
+    def test_config_validation_error(self):
         config = {
             "buckets": [
                 {
@@ -87,14 +87,25 @@ class ConfigureTest(pyproctor.TestBase):
         with self.assertRaises(ValidationError):
             self.run_app_config()
 
-    def test_config_empty(self):
-        config = {}
+    def test_config_value_error(self):
+        config = {
+            "buckets": [
+                {
+                    "secretKey": "ft",
+                    "accessKey": "ft",
+                    "name": "myBucket"
+                },
+                {
+                    "accessKey": "ft",
+                    "secretKey": "ft",
+                    "name": "myOtherBucket",
+                    "referenceName": "myBucket"
+                }
+            ],
+            "elasticsearch": {
+                "connectionString": "http://localhost:9200/metadata"
+            }
+        }
         self.write_config(config)
-        with self.assertRaises(ValidationError):
-            self.run_app_config()
-
-    def test_config_no_buckets(self):
-        config = {"buckets": {}, "elasticsearch": {}}
-        self.write_config(config)
-        with self.assertRaises(ValidationError):
+        with self.assertRaises(ValueError):
             self.run_app_config()

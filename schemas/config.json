@@ -75,9 +75,9 @@
                 {
                     "type": "object",
                     "properties": {
-                        "alias": {
+                        "referenceName": {
                             "type": "string",
-                            "description": "Alias of bucket."
+                            "description": "Name to reference the  bucket by."
                         },
                         "name": {
                             "type": "string",

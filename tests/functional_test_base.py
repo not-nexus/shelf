@@ -58,7 +58,7 @@ class FunctionalTestBase(TestBase):
             },
             {
                 "name": "bucket2",
-                "alias": "b2",
+                "referenceName": "b2",
                 "accessKey": "test",
                 "secretKey": "test"
             },

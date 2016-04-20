@@ -12,6 +12,7 @@ def app_config(existing_config, config_path):
         config = yaml.load(content)
 
     utils.validate_json("schemas/config.json", config)
+    utils.validate_bucket_config(config)
 
     if not config.get("bulkUpdateLogDirectory"):
         config["bulkUpdateLogDirectory"] = "/var/log/bucket-update"
