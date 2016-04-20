@@ -1,4 +1,4 @@
-class ArtifactListManager(object):
+class ArtifactManager(object):
     def __init__(self, container):
         self.container = container
         self.link_manager = self.container.link_manager
@@ -30,3 +30,16 @@ class ArtifactListManager(object):
                 self.link_manager.assign_single(content.key.name)
 
         return content
+
+    def upload_artifact(self, path, file_storage):
+        """
+            Uploads artifact and assigns links to context.
+
+            Args:
+                path(string): path or name of artifact.
+                file_storage(werkzeug.datastructures.FileStorage): file from request.
+        """
+        with self.container.create_bucket_storage() as storage:
+            storage.upload_artifact(path, file_storage)
+            self.container.metadata.manager.write()
+            self.link_manager.assign_single(path)

@@ -2,8 +2,6 @@ from pyshelf.metadata.mapper import Mapper
 from pyshelf.metadata.wrapper import Wrapper
 from pyshelf.metadata.manager import Manager
 from pyshelf.metadata.yaml_codec import YamlCodec
-from pyshelf.metadata.cloud_portal import CloudPortal
-from pyshelf.metadata.initializer import Initializer
 from pyshelf.metadata.bucket_container import BucketContainer
 
 

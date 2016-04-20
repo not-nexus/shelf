@@ -1,7 +1,7 @@
 from uuid import uuid4
 from pyshelf.permissions_validator import PermissionsValidator
 from pyshelf.cloud.factory import Factory
-from pyshelf.artifact_list_manager import ArtifactListManager
+from pyshelf.artifact_manager import ArtifactManager
 from pyshelf.search.container import Container as SearchContainer
 from pyshelf.search_portal import SearchPortal
 from pyshelf.link_mapper import LinkMapper
@@ -30,7 +30,7 @@ class Container(object):
         # services
         self._permissions_validator = None
         self._cloud_factory = None
-        self._artifact_list_manager = None
+        self._artifact_manager = None
         self._search = None
         self._link_mapper = None
         self._context = None
@@ -64,11 +64,11 @@ class Container(object):
         return self._cloud_factory
 
     @property
-    def artifact_list_manager(self):
-        if not self._artifact_list_manager:
-            self._artifact_list_manager = ArtifactListManager(self)
+    def artifact_manager(self):
+        if not self._artifact_manager:
+            self._artifact_manager = ArtifactManager(self)
 
-        return self._artifact_list_manager
+        return self._artifact_manager
 
     @property
     def search(self):

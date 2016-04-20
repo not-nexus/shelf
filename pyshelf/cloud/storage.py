@@ -42,21 +42,23 @@ class Storage(object):
         stream = StreamIterator(key)
         return stream
 
-    def upload_artifact(self, artifact_name, fp):
+    def upload_artifact(self, artifact_name, file_storage):
         """
             Uploads an artifact. If directory does not exist in path it will be created.
 
             Args:
-                artifact_name(string): Full path to upload artifact to
-                fp(file): File to be uploaded
+                artifact_name(string): Full path to upload artifact to.
+                file_storage(werkzeug.datastructures.FileStorage): File to be uploaded.
 
         """
         bucket = self._get_bucket(self.bucket_name)
+
         if bucket.get_key(artifact_name) is not None:
             raise DuplicateArtifactError(artifact_name)
+
         key = Key(bucket, artifact_name)
         self.logger.debug("Commencing upload of {0}".format(artifact_name))
-        key.set_contents_from_file(fp)
+        key.set_contents_from_file(file_storage)
 
     def get_artifact_as_string(self, path):
         """

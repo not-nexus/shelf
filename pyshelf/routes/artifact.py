@@ -9,7 +9,7 @@ artifact = Blueprint("artifact", __name__)
 @artifact.route("/<bucket_name>/artifact/<path:path>", methods=["GET"])
 @decorators.foundation
 def get_path(container, bucket_name, path):
-    stream = container.artifact_list_manager.get_artifact(path)
+    stream = container.artifact_manager.get_artifact(path)
     status_code = 204
     if stream:
         status_code = 200
@@ -28,13 +28,12 @@ def get_links(container, bucket_name, path):
 
 @artifact.route("/<bucket_name>/artifact/<path:path>", methods=["POST"])
 @decorators.foundation_headers
-def create_artifact(container, bucket_name, path):
-    response = None
-    with container.create_bucket_storage() as storage:
-        file = request.files['file']
-        storage.upload_artifact(path, file)
-        response = response_map.create_201()
-        response.headers["Location"] = container.request.path
+def upload_artifact(container, bucket_name, path):
+    file_storage = request.files['file']
+    container.artifact_manager.upload_artifact(path, file_storage)
+    response = response_map.create_201()
+    response = container.context_response_mapper.to_response(response.data, response.status_code)
+    response.headers["Location"] = container.request.path
 
     return response
 
