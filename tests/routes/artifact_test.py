@@ -1,5 +1,7 @@
 from StringIO import StringIO
+import os
 from tests.functional_test_base import FunctionalTestBase
+import tarfile
 
 
 class ArtifactTest(FunctionalTestBase):
@@ -94,6 +96,26 @@ class ArtifactTest(FunctionalTestBase):
                 ]
             }) \
             .post(data={"file": (StringIO("file contents"), "test.txt")}, headers=self.auth)
+
+    def test_tar(self):
+        with open("test.txt", "w") as f:
+            f.write("file contents")
+
+        with tarfile.open("test.tar.gz", mode="w:gz") as tar:
+            tar.add("test.txt")
+
+        with tarfile.open("test.tar.gz", mode="") as tar:
+            file_stream = StringIO(tar.read())
+
+        self.route_tester.artifact() \
+            .route_params(bucket_name="test", path="test.tar.gz") \
+            .expect(201, {"success": True}) \
+            .post(data={"file": (file_stream, "test.tar.gz")}, headers=self.auth)
+
+        response = self.test_client.get("/test/artifact/test.tar.gz", headers=self.auth)
+        self.assertEqual(response.data, "test")
+        os.remove("test.txt")
+        os.remove("test.tar.gz")
 
     def test_artifact_upload_and_immediate_search(self):
         self.route_tester.artifact() \

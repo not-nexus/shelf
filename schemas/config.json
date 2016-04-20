@@ -3,13 +3,13 @@
     "additionalProperties": false,
     "properties": {
         "buckets": {
-            "type": "object",
-            "patternProperties": {
-                ".*": {
-                    "$ref": "#/$types/bucketCredentials",
+            "type": "array",
+            "items": [
+                {
+                    "$ref": "#/$types/bucket",
                     "description": "Each of these should be keyed by the name of the bucket"
                 }
-            }
+            ]
         },
         "bulkUpdateLogDirectory": {
             "type": "string",
@@ -67,15 +67,29 @@
                 }
             }
         },
-        "bucketCredentials": {
+        "bucket": {
             "allOf": [
                 {
                     "$ref": "#/$types/credentials"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "alias": {
+                            "type": "string",
+                            "description": "Alias of bucket."
+                        },
+                        "name": {
+                            "type": "string",
+                            "description": "S3 bucket name."
+                        }
+                    }
                 }
             ],
             "required": [
                 "accessKey",
-                "secretKey"
+                "secretKey",
+                "name"
             ]
         }
     },

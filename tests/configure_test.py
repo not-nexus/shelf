@@ -41,13 +41,15 @@ class ConfigureTest(pyproctor.TestBase):
 
     def test_app(self):
         config = {
-            "buckets": {
-                "myBucket": {
+            "buckets": [
+                {
                     "accessKey": "whateveriwanthere",
                     # can't stop seeing WhichCanalSobe
-                    "secretKey": "supersecretkeywhichcanalsobewhateveriwant"
+                    "secretKey": "supersecretkeywhichcanalsobewhateveriwant",
+                    "name": "myBucket",
+                    "alias": "test"
                 }
-            },
+            ],
             "elasticsearch": {
                 "connectionString": "http://localhost:9200/metadata",
                 "region": "us-east-1",
@@ -66,15 +68,17 @@ class ConfigureTest(pyproctor.TestBase):
 
     def test_config_value_error(self):
         config = {
-            "buckets": {
-                "myBucket": {
-                    "secretKey": "ffffffffffffffffffungal"
+            "buckets": [
+                {
+                    "secretKey": "ffffffffffffffffffungal",
+                    "name": "myBucket"
                 },
-                "myOtherBucket": {
+                {
                     "accessKey": "imGaGaGonnaMakeYouSoup",
-                    "secretKey": "freeTibet"
+                    "secretKey": "freeTibet",
+                    "name": "myOtherBucket"
                 }
-            },
+            ],
             "elasticsearch": {
                 "connectionString": "http://localhost:9200/metadata"
             }
