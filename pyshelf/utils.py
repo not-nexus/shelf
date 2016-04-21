@@ -1,7 +1,6 @@
 import os.path
 import json
 import jsonschema
-import collections
 
 
 def create_path(*args):
@@ -82,5 +81,5 @@ def validate_bucket_config(config):
 
     unique_list = list(set(name_list))
 
-    if collections.Counter(name_list) != collections.Counter(unique_list):
+    if len(name_list) != len(unique_list):
         raise ValueError("Error in bucket config. Overlapping bucket names and reference names.")
