@@ -12,11 +12,11 @@ class Factory(object):
         # Although bucketName exists in the config provided it is not
         # required and is not used because we want the ability to change
         # buckets when we want.
-        bucket_config = utils.get_bucket_config(self.config, bucket_name)
-        if bucket_config is None:
+        bc = utils.get_bucket_config(self.config, bucket_name)
+        if bc is None:
             self.logger.warning("Access keys for {0} are not in your config.".format(bucket_name))
             raise BucketConfigurationNotFound(bucket_name)
 
-        storage = Storage(bucket_config["accessKey"], bucket_config["secretKey"], bucket_config["name"], self.logger)
+        storage = Storage(bc["accessKey"], bc["secretKey"], bc["name"], self.logger)
 
         return storage
