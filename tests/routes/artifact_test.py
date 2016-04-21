@@ -164,3 +164,11 @@ class ArtifactTest(FunctionalTestBase):
             .route_params(bucket_name="test", path="dir/dir2/not_secret") \
             .expect(200, "You can see this though") \
             .get(headers=self.auth)
+
+    # This tests that a 404 is returned when a bucket has a ref name and you use the full name
+    def test_bucket_no_ref(self):
+        self.route_tester \
+            .artifact() \
+            .route_params(bucket_name="bucket2", path="nick-drake") \
+            .expect(404, self.RESPONSE_404) \
+            .get(headers=self.auth)
