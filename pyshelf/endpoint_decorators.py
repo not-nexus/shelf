@@ -2,8 +2,7 @@ import functools
 import json
 from pyshelf.get_container import get_container
 import pyshelf.response_map as response_map
-from pyshelf.cloud.cloud_exceptions import BucketNotFoundError, BucketConfigurationNotFound
-from pyshelf import utils
+from pyshelf.cloud.cloud_exceptions import BucketNotFoundError
 
 """
     This module contains decorator functions that are commonly
@@ -126,10 +125,6 @@ class EndpointDecorators(object):
         def wrapper(*args, **kwargs):
             container = get_container()
             container.bucket_name = kwargs.get("bucket_name")
-
-            # Ensure bucket exists in config and reference name is used if available.
-            if not utils.validate_bucket(container.app.config, container.bucket_name):
-                raise BucketConfigurationNotFound(container.bucket_name)
 
             result = func(container, *args, **kwargs)
             return result
