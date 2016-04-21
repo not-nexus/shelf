@@ -30,15 +30,17 @@ class Container(object):
     @property
     def bucket_container(self):
         """
-            Args:
-                bucket_name(basestring)
-
             Returns:
                 pyshelf.metadata.bucket_container.BucketContainer
         """
         if not self._bucket_container:
+            bucket_name = self.config.get("referenceName")
+
+            if bucket_name is None:
+                bucket_name = self.config["name"]
+
             self._bucket_container = BucketContainer(
-                self.config["name"],
+                bucket_name,
                 self.codec,
                 self.mapper,
                 self.cloud_factory
