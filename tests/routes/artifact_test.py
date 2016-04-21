@@ -87,7 +87,7 @@ class ArtifactTest(FunctionalTestBase):
     def test_artifact_upload(self):
         self.route_tester.artifact() \
             .route_params(bucket_name="test", path="test-2") \
-            .expect(201, {"success": True}, headers={
+            .expect(201, headers={
                 "Link": [
                     "/test/artifact/test-2; rel=self; title=artifact",
                     "/test/artifact/test-2/_meta; rel=related; title=metadata"
@@ -98,7 +98,7 @@ class ArtifactTest(FunctionalTestBase):
     def test_artifact_upload_and_immediate_search_with_bucket_alias(self):
         self.route_tester.artifact() \
             .route_params(bucket_name="b2", path="nick-drake") \
-            .expect(201, {"success": True}, headers={
+            .expect(201, headers={
                 "Link": [
                     "/b2/artifact/nick-drake; rel=self; title=artifact",
                     "/b2/artifact/nick-drake/_meta; rel=related; title=metadata"

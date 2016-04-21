@@ -123,12 +123,8 @@ def create_201():
     """
         Creates a 201 response
     """
-    body = {
-        "success": True
-    }
     response = JsonResponse()
     response.status_code = 201
-    response.set_data(body)
     return response
 
 
