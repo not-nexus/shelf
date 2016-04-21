@@ -13,6 +13,7 @@ def app_config(existing_config, config_path):
 
     utils.validate_json("schemas/config.json", config)
     utils.validate_bucket_config(config)
+    config = utils.assign_reference_name(config)
 
     if not config.get("bulkUpdateLogDirectory"):
         config["bulkUpdateLogDirectory"] = "/var/log/bucket-update"

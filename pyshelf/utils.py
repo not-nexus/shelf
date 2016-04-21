@@ -104,3 +104,20 @@ def validate_bucket(config, bucket_name):
             return True
 
     return False
+
+
+def assign_reference_name(config):
+    """
+        Assigns bucket name to reference name if reference name doesn't exist.
+
+        Args:
+            config(dict)
+
+        Returns:
+            dict: formatted config
+    """
+    for bucket in config["buckets"]:
+        if bucket.get("referenceName") is None:
+            bucket["referenceName"] = bucket["name"]
+
+    return config

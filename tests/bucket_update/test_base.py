@@ -15,7 +15,8 @@ class TestBase(FunctionalTestBase):
             "secretKey": "321CBA",
             "elasticsearch": FunctionalTestBase.CONFIG["elasticsearch"],
             "logLevel": logging.INFO,
-            "chunkSize": 10
+            "chunkSize": 10,
+            "referenceName": "test"
         }
 
         self.logger = self.create_logger()

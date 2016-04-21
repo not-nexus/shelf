@@ -34,13 +34,8 @@ class Container(object):
                 pyshelf.metadata.bucket_container.BucketContainer
         """
         if not self._bucket_container:
-            bucket_name = self.config.get("referenceName")
-
-            if bucket_name is None:
-                bucket_name = self.config["name"]
-
             self._bucket_container = BucketContainer(
-                bucket_name,
+                self.config["referenceName"],
                 self.codec,
                 self.mapper,
                 self.cloud_factory
@@ -121,7 +116,7 @@ class Container(object):
                 pyshelf.resource_identity_factory.ResourceIdentityFactory
         """
         if not self._resource_identity_factory:
-            builder = ArtifactPathBuilder(self.config["name"])
+            builder = ArtifactPathBuilder(self.config["referenceName"])
             path_converter = PathConverter(builder)
             self._resource_identity_factory = ResourceIdentityFactory(path_converter)
 
