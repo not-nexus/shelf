@@ -1,0 +1,2 @@
+v1.0 - Initial release.
+v2.0 - Added bucket reference name and metadata initialization at the time of artifact creation.
