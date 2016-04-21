@@ -33,7 +33,7 @@ class Runner(object):
                 "chunkSize": self.config["chunkSize"],
                 "bulkUpdateLogDirectory": self.config["bulkUpdateLogDirectory"]
             })
-            self.container.logger.info("Starting process for bucket {0}".format(bucket_config["name"]))
+            self.container.logger.info("Starting process for bucket {0}".format(bucket_config["referenceName"]))
             self._run_process(bucket_config)
 
     @property
@@ -52,7 +52,7 @@ class Runner(object):
         for bucket in self.all_bucket_list:
             # This is because I would like the bucket data to be in a particular
             # format
-            if not requested_bucket_list or bucket["name"] in requested_bucket_list:
+            if not requested_bucket_list or bucket["referenceName"] in requested_bucket_list:
                 bucket_list.append(bucket)
 
         return bucket_list

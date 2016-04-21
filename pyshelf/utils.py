@@ -83,3 +83,41 @@ def validate_bucket_config(config):
 
     if len(name_list) != len(unique_list):
         raise ValueError("Error in bucket config. Overlapping bucket names and reference names.")
+
+
+def validate_bucket(config, bucket_name):
+    """
+        Validates the bucket_name passed in with the request is a valid bucket_name
+        and a ref name is used if one is configured.
+
+        Args:
+            config(dict)
+            bucket_name(string)
+
+        Returns:
+            boolean: whether bucket is found and correct name is used.
+    """
+    for bucket in config["buckets"]:
+        if bucket_name == bucket["name"] and bucket.get("referenceName") is None:
+            return True
+        elif bucket_name == bucket.get("referenceName"):
+            return True
+
+    return False
+
+
+def assign_reference_name(config):
+    """
+        Assigns bucket name to reference name if reference name doesn't exist.
+
+        Args:
+            config(dict)
+
+        Returns:
+            dict: formatted config
+    """
+    for bucket in config["buckets"]:
+        if bucket.get("referenceName") is None:
+            bucket["referenceName"] = bucket["name"]
+
+    return config

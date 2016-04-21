@@ -18,7 +18,8 @@ class UtilsTest(UnitTestBase):
             "connectionString": "http://localhost:9200/metadata",
         },
         "accessKey": "KKKKKKKKKKKKKKKKKKKK",
-        "secretKey": "KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK"
+        "secretKey": "KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK",
+        "referenceName": "kyle-long"
     }
 
     EXPECTED_ANDY = {
@@ -30,7 +31,8 @@ class UtilsTest(UnitTestBase):
             "connectionString": "http://localhost:9200/metadata",
         },
         "accessKey": "AAAAAAAAAAAAAAAAAAAA",
-        "secretKey": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+        "secretKey": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        "referenceName": "ag"
     }
 
     def setUp(self):
@@ -67,7 +69,7 @@ class UtilsTest(UnitTestBase):
         self.run_and_assert_both_buckets(None)
 
     def test_with_comma_separated_bucket_list(self):
-        self.run_and_assert_both_buckets("kyle-long, andy-gertjejansen")
+        self.run_and_assert_both_buckets("kyle-long, ag")
 
     def test_single_bucket_only(self):
         self.execute(bucket="kyle-long", verbose=True)

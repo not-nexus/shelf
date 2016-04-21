@@ -23,7 +23,7 @@ def run(args):
     # a no-op and its easiest to use it in the subprocesses
     # because then it also automatically configures child
     # loggers such as boto and elasticsearch
-    handler = logging.StreamHandler(stream=sys.stdout)
+    handler = logging.StreamHandler(sys.stdout)
     logger = logging.getLogger("update-search-index")
     logger.addHandler(handler)
     logger.setLevel(log_level)

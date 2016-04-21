@@ -1,6 +1,5 @@
 from pyshelf.cloud.storage import Storage
 from pyshelf import utils
-from pyshelf.cloud.cloud_exceptions import BucketConfigurationNotFound
 
 
 class Factory(object):
@@ -13,10 +12,6 @@ class Factory(object):
         # required and is not used because we want the ability to change
         # buckets when we want.
         bc = utils.get_bucket_config(self.config, bucket_name)
-        if bc is None:
-            self.logger.warning("Access keys for {0} are not in your config.".format(bucket_name))
-            raise BucketConfigurationNotFound(bucket_name)
-
         storage = Storage(bc["accessKey"], bc["secretKey"], bc["name"], self.logger)
 
         return storage

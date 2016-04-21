@@ -9,3 +9,4 @@ buckets:
         name: andy-gertjejansen
         accessKey: AAAAAAAAAAAAAAAAAAAA
         secretKey: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        referenceName: ag
