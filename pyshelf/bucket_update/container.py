@@ -57,9 +57,9 @@ class Container(object):
             # recreate a different config format in order  to
             # use the cloud factory.
             config = {
-                "buckets": {
-                    self.config["name"]: self.config
-                }
+                "buckets": [
+                    self.config
+                ]
             }
             self._cloud_factory = CloudFactory(config, self.logger)
 

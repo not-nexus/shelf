@@ -39,3 +39,47 @@ def validate_json(schema_path, data):
 
     schema = json.loads(schema)
     jsonschema.validate(data, schema)
+
+
+def get_bucket_config(config, name):
+    """
+        Pulls correct bucket config from application config based on name/alias.
+
+        Args:
+            config(dict)
+            name(string): bucket name or bucket reference name
+
+        Returns:
+            dict | None: config for bucket or None if not found
+    """
+    bucket_config = None
+
+    for bucket in config["buckets"]:
+        if bucket["name"] == name or bucket.get("referenceName") == name:
+            bucket_config = bucket
+
+    return bucket_config
+
+
+def validate_bucket_config(config):
+    """
+        Verifies that there is no overlap in referance name and bucket name.
+
+        Args:
+            config(dict)
+
+        Raises:
+            ValueError
+    """
+    name_list = []
+
+    for bucket in config["buckets"]:
+        if bucket["name"] == bucket.get("referenceName") or bucket.get("referenceName") is None:
+            name_list.append(bucket["name"])
+        else:
+            name_list.extend([bucket["name"], bucket["referenceName"]])
+
+    unique_list = list(set(name_list))
+
+    if len(name_list) != len(unique_list):
+        raise ValueError("Error in bucket config. Overlapping bucket names and reference names.")

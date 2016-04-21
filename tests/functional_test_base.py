@@ -50,20 +50,24 @@ class FunctionalTestBase(TestBase):
     }
 
     CONFIG = {
-        "buckets": {
-            "test": {
+        "buckets": [
+            {
+                "name": "test",
                 "accessKey": "test",
                 "secretKey": "test"
             },
-            "bucket2": {
+            {
+                "name": "bucket2",
+                "referenceName": "b2",
                 "accessKey": "test",
                 "secretKey": "test"
             },
-            "thisBucketDoesntExistLol": {
+            {
+                "name": "thisBucketDoesntExistLol",
                 "accessKey": "fail",
                 "secretKey": "fail"
             }
-        },
+        ],
         "elasticsearch": {
             "connectionString": "http://localhost:9200/metadata",
         }

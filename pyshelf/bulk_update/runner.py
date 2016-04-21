@@ -37,7 +37,7 @@ class Runner(object):
             self._run_process(bucket_config)
 
     @property
-    def all_buckets(self):
+    def all_bucket_list(self):
         return self.config["buckets"]
 
     def _run_process(self, config):
@@ -49,11 +49,10 @@ class Runner(object):
 
     def _find_bucket_list(self, requested_bucket_list=None):
         bucket_list = []
-        for name, bucket_config in self.all_buckets.iteritems():
+        for bucket in self.all_bucket_list:
             # This is because I would like the bucket data to be in a particular
             # format
-            if not requested_bucket_list or name in requested_bucket_list:
-                bucket_config["name"] = name
-                bucket_list.append(bucket_config)
+            if not requested_bucket_list or bucket["name"] in requested_bucket_list:
+                bucket_list.append(bucket)
 
         return bucket_list

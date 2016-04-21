@@ -95,13 +95,13 @@ class ArtifactTest(FunctionalTestBase):
             }) \
             .post(data={"file": (StringIO("file contents"), "test.txt")}, headers=self.auth)
 
-    def test_artifact_upload_and_immediate_search(self):
+    def test_artifact_upload_and_immediate_search_with_bucket_alias(self):
         self.route_tester.artifact() \
-            .route_params(bucket_name="bucket2", path="nick-drake") \
+            .route_params(bucket_name="b2", path="nick-drake") \
             .expect(201, {"success": True}, headers={
                 "Link": [
-                    "/bucket2/artifact/nick-drake; rel=self; title=artifact",
-                    "/bucket2/artifact/nick-drake/_meta; rel=related; title=metadata"
+                    "/b2/artifact/nick-drake; rel=self; title=artifact",
+                    "/b2/artifact/nick-drake/_meta; rel=related; title=metadata"
                 ]
             }) \
             .post(data={"file": (StringIO("file contents"), "nick-drake.txt")}, headers=self.auth)
@@ -110,13 +110,13 @@ class ArtifactTest(FunctionalTestBase):
         self.search_wrapper.refresh_index()
 
         self.route_tester.search() \
-            .route_params(bucket_name="bucket2", path="") \
+            .route_params(bucket_name="b2", path="") \
             .expect(204, headers={
                 "Link": [
-                    "/bucket2/artifact/nick-drake; rel=item; title=artifact",
+                    "/b2/artifact/nick-drake; rel=item; title=artifact",
                 ]
             }) \
-            .post(data={"search": "artifactPath=/bucket2/artifact/nick-drake"}, headers=self.auth)
+            .post(data={"search": "artifactPath=/b2/artifact/nick-drake"}, headers=self.auth)
 
     def test_artifact_upload_no_permissions(self):
         self.route_tester.artifact() \
