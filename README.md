@@ -17,15 +17,18 @@ We are still in heavy development. You can see a full list of support in [docs](
 Configuration
 -------------
 
-It is required that a config.yaml exist in the root of the repository.  This will provide information for connecting to AWS.
+It is required that a config.yaml exist in the root of the repository.  This will provide information for connecting to AWS. Not the bucket reference name acts as an alias for referencing the bucket.
 
 Note: If you are using Elasticsearch via AWS and your Elasticsearch domain is restricted use the last 3 lines of the example config to support IAM authentication. Otherwise omit the aforementioned config lines.
 
     buckets:
-        bucket_name:
+        -
+            name: bucket-name
+            referenceName: bn
             accessKey: XXXXXXXXXXXXXXXXXXXX
             secretKey: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-        bucket_name_2:
+        -
+            name: bucket_name_2
             accessKey: XXXXXXXXXXXXXXXXXXXX
             secretKey: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     elasticsearch:
