@@ -53,6 +53,7 @@ class FunctionalTestBase(TestBase):
         "buckets": [
             {
                 "name": "test",
+                "referenceName": "test",
                 "accessKey": "test",
                 "secretKey": "test"
             },
@@ -64,6 +65,7 @@ class FunctionalTestBase(TestBase):
             },
             {
                 "name": "thisBucketDoesntExistLol",
+                "referenceName": "thisBucketDoesntExistLol",
                 "accessKey": "fail",
                 "secretKey": "fail"
             }
