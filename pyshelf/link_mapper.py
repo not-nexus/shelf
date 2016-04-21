@@ -10,7 +10,7 @@ class LinkMapper(object):
         return self._build_link(url, rel, title)
 
     def _build_link(self, path, rel, title):
-        return "{0}; rel={1}; title={2}".format(path, rel, title)
+        return "<{0}>; rel={1}; title={2}".format(path, rel, title)
 
     def _format_link_list(self, link_list):
         new_link_list = []
