@@ -8,7 +8,7 @@ class SearchTest(FunctionalTestBase):
             .route_params(bucket_name="test", path="") \
             .expect(204, headers={
                 "Link": [
-                    "</test/artifact/test>; rel=item; title=artifact",
+                    "</test/artifact/test>; rel=\"item\"; title=\"artifact\"",
                 ]
             }) \
             .post({
@@ -21,8 +21,8 @@ class SearchTest(FunctionalTestBase):
             .route_params(bucket_name="test", path="") \
             .expect(204, headers={
                 "Link": [
-                    "</test/artifact/thing>; rel=item; title=artifact",
-                    "</test/artifact/test>; rel=item; title=artifact"
+                    "</test/artifact/thing>; rel=\"item\"; title=\"artifact\"",
+                    "</test/artifact/test>; rel=\"item\"; title=\"artifact\""
                 ]
             }) \
             .post({
@@ -35,9 +35,9 @@ class SearchTest(FunctionalTestBase):
             .route_params(bucket_name="test", path="") \
             .expect(204, headers={
                 "Link": [
-                    "</test/artifact/dir/dir2/Test>; rel=item; title=artifact",
-                    "</test/artifact/test>; rel=item; title=artifact",
-                    "</test/artifact/dir/dir2/dir3/nest-test>; rel=item; title=artifact"
+                    "</test/artifact/dir/dir2/Test>; rel=\"item\"; title=\"artifact\"",
+                    "</test/artifact/test>; rel=\"item\"; title=\"artifact\"",
+                    "</test/artifact/dir/dir2/dir3/nest-test>; rel=\"item\"; title=\"artifact\""
                 ]
             }) \
             .post({
@@ -50,11 +50,11 @@ class SearchTest(FunctionalTestBase):
             .route_params(bucket_name="test", path="") \
             .expect(204, headers={
                 "Link": [
-                    "</test/artifact/blah>; rel=item; title=artifact",
-                    "</test/artifact/a>; rel=item; title=artifact",
-                    "</test/artifact/zzzz>; rel=item; title=artifact",
-                    "</test/artifact/this/that/other>; rel=item; title=artifact",
-                    "</test/artifact/thing>; rel=item; title=artifact",
+                    "</test/artifact/blah>; rel=\"item\"; title=\"artifact\"",
+                    "</test/artifact/a>; rel=\"item\"; title=\"artifact\"",
+                    "</test/artifact/zzzz>; rel=\"item\"; title=\"artifact\"",
+                    "</test/artifact/this/that/other>; rel=\"item\"; title=\"artifact\"",
+                    "</test/artifact/thing>; rel=\"item\"; title=\"artifact\"",
                 ]
             }) \
             .post({
@@ -68,11 +68,11 @@ class SearchTest(FunctionalTestBase):
             .route_params(bucket_name="test", path="") \
             .expect(204, headers={
                 "Link": [
-                    "</test/artifact/this/that/other>; rel=item; title=artifact",
-                    "</test/artifact/thing>; rel=item; title=artifact",
-                    "</test/artifact/blah>; rel=item; title=artifact",
-                    "</test/artifact/a>; rel=item; title=artifact",
-                    "</test/artifact/zzzz>; rel=item; title=artifact"
+                    "</test/artifact/this/that/other>; rel=\"item\"; title=\"artifact\"",
+                    "</test/artifact/thing>; rel=\"item\"; title=\"artifact\"",
+                    "</test/artifact/blah>; rel=\"item\"; title=\"artifact\"",
+                    "</test/artifact/a>; rel=\"item\"; title=\"artifact\"",
+                    "</test/artifact/zzzz>; rel=\"item\"; title=\"artifact\""
                 ]
             }) \
             .post({
@@ -86,11 +86,11 @@ class SearchTest(FunctionalTestBase):
             .route_params(bucket_name="test", path="") \
             .expect(204, headers={
                 "Link": [
-                    "</test/artifact/this/that/other>; rel=item; title=artifact",
-                    "</test/artifact/thing>; rel=item; title=artifact",
-                    "</test/artifact/a>; rel=item; title=artifact",
-                    "</test/artifact/blah>; rel=item; title=artifact",
-                    "</test/artifact/zzzz>; rel=item; title=artifact"
+                    "</test/artifact/this/that/other>; rel=\"item\"; title=\"artifact\"",
+                    "</test/artifact/thing>; rel=\"item\"; title=\"artifact\"",
+                    "</test/artifact/a>; rel=\"item\"; title=\"artifact\"",
+                    "</test/artifact/blah>; rel=\"item\"; title=\"artifact\"",
+                    "</test/artifact/zzzz>; rel=\"item\"; title=\"artifact\""
                 ]
             }) \
             .post({
@@ -108,7 +108,7 @@ class SearchTest(FunctionalTestBase):
             .route_params(bucket_name="test", path="dir/dir2") \
             .expect(204, headers={
                 "Link": [
-                    "</test/artifact/dir/dir2/Test>; rel=item; title=artifact"
+                    "</test/artifact/dir/dir2/Test>; rel=\"item\"; title=\"artifact\""
                 ]
             }) \
             .post({
