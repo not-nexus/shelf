@@ -1,3 +1,5 @@
 v1.0 - Initial release.
 v2.0 - Added bucket reference name and metadata initialization at the time of artifact creation.
 v2.1 - Corrected bucket ref name to work with bucket update, removed unnecessary body of 201 response on artifact creation, and fixed link format to match specifications.
+v2.2 - Fix for bulk update and bucket name/reference name where metadata was
+not updated if the reference name was changed
