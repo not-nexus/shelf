@@ -65,3 +65,47 @@ class SearchUpdaterTest(TestBase):
         logger.info = Mock()
         updater = self.container.search_updater
         updater.run()
+
+    def run_chunk(self, chunk_size, path_list, expected_list):
+        search_updater = self.container.search_updater
+        search_updater.chunk_size = chunk_size
+        actual_list = []
+        for chunk in search_updater._chunk(path_list):
+            actual_list.append(chunk)
+
+        self.assertEqual(expected_list, actual_list)
+
+    def test_less_than_chunk(self):
+        path_list = [
+            "abc123",
+            "abc124",
+        ]
+
+        expected_list = [
+            [
+                "abc123",
+                "abc124"
+            ]
+        ]
+
+        self.run_chunk(3, path_list, expected_list)
+
+    def test_more_than_chunk(self):
+        path_list = [1, 2, 3, 4]
+
+        expected_list = [
+            [1, 2, 3],
+            [4]
+        ]
+
+        self.run_chunk(3, path_list, expected_list)
+
+    def test_exactly_chunk(self):
+        path_list = [1, 2, 3, 4, 5, 6]
+
+        expected_list = [
+            [1, 2, 3],
+            [4, 5, 6]
+        ]
+
+        self.run_chunk(3, path_list, expected_list)
