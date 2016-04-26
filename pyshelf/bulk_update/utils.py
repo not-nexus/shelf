@@ -1,4 +1,5 @@
 import logging
+import os
 import sys
 import pyshelf.configure as configure
 from pyshelf.bulk_update.container import Container
@@ -42,6 +43,7 @@ def _configure(args, logger_name):
         Args:
             args(dict)
             logger_name(string)
+            file_name(string | None)
 
         Returns:
             pyshelf.bulk_update.container.Container
@@ -56,7 +58,7 @@ def _configure(args, logger_name):
     # a no-op and its easiest to use it in the subprocesses
     # because then it also automatically configures child
     # loggers such as boto and elasticsearch
-    handler = logging.StreamHandler(sys.stdout)
+    handler = _get_logging_handler(logger_name, args.get("--log-directory"))
     logger = logging.getLogger(logger_name)
     logger.addHandler(handler)
     logger.setLevel(log_level)
@@ -72,3 +74,25 @@ def _configure(args, logger_name):
     container = Container(config, logger)
 
     return container
+
+
+def _get_logging_handler(logger_name, directory=None):
+    """
+        Configures logger handler. Creates a logging.FileHandler if directory is given
+        or a logging.StreamHandler if directory not given.
+
+        Args:
+            logger_name(string)
+            directory(string | None): Log output directory
+    """
+    handler = None
+
+    if directory is not None:
+        file_name = os.path.join(directory, logger_name + ".log")
+        handler = logging.FileHandler(file_name)
+        formatter = logging.Formatter(fmt="%(asctime)s:%(name)s:%(levelname)s:%(message)s")
+        handler.setFormatter(formatter)
+    else:
+        handler = logging.StreamHandler(sys.stdout)
+
+    return handler

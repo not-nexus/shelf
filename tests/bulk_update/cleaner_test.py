@@ -6,11 +6,12 @@ import os
 
 
 class CleanerTest(FunctionalTestBase):
-    def execute(self, verbose=False):
+    def execute(self, log_dir=None, verbose=False):
         path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "../data/functional_test_config.yaml")
         args = {
             "<config-path>": path,
-            "--verbose": verbose
+            "--verbose": verbose,
+            "--log-directory": log_dir
         }
         run_clean(args)
 
@@ -33,10 +34,14 @@ class CleanerTest(FunctionalTestBase):
             "/reallyold/artifact/ancient"
         ]
         resource_list = self.add_stale_docs(path_list)
-        self.execute(verbose=True)
+        log_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), "../data/logging-dir")
+        self.execute(log_dir=log_dir, verbose=True)
 
         actual = []
         for resource in resource_list:
             actual.append(self.search_wrapper.get_metadata(resource))
 
         self.assertEquals(actual, [None, None])
+        log_file = os.path.join(log_dir, "clean-search-index.log")
+        self.assertTrue(os.path.exists(log_file))
+        os.remove(log_file)
