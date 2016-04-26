@@ -33,15 +33,34 @@ class CleanerTest(FunctionalTestBase):
             "/old/artifact/old",
             "/reallyold/artifact/ancient"
         ]
-        resource_list = self.add_stale_docs(path_list)
+
+        # These artifacts are setup in moto in functional test.
+        # Making sure only the appropriate documents are deleted.
+        existing_list = [
+            "/test/artifact/test",
+            "/test/artifact/dir/dir2/dir3/nest-test"
+        ]
+
+        self.add_stale_docs(path_list)
         log_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), "../data/logging-dir")
         self.execute(log_dir=log_dir, verbose=True)
 
-        actual = []
-        for resource in resource_list:
-            actual.append(self.search_wrapper.get_metadata(resource))
-
-        self.assertEquals(actual, [None, None])
+        self.assert_docs(path_list, [])
+        self.assert_docs(existing_list, existing_list)
         log_file = os.path.join(log_dir, "clean-search-index.log")
         self.assertTrue(os.path.exists(log_file))
         os.remove(log_file)
+
+    def assert_docs(self, path_list, expected):
+        actual = []
+
+        for path in path_list:
+            resource_id = ResourceIdentity(path)
+            metadata = self.search_wrapper.get_metadata(resource_id.search)
+
+            if metadata is not None:
+                for prop in metadata.to_dict()["property_list"]:
+                    if prop["name"] == "artifactPath":
+                        actual.append(prop["value"])
+
+        self.assertEquals(actual, expected)
