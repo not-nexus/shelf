@@ -62,7 +62,7 @@ class UpdateManager(object):
             Returns:
                 int: number of documents deleted from Elasticsearch.
         """
-        self.logger.debug("Executing the following query for removing old documents from {0} index: {1}"
+        self.logger.debug("Executing the following query for removing old documents from {0}. {1}"
                 .format(self.index, query))
 
         # Doing a bulk operation here via the elasticsearch library.

@@ -17,7 +17,7 @@ class SearchUpdater(object):
         """
         self.container = container
         self.bucket_container = self.container.bucket_container
-        self.chunk_size = self.container.config["chunkSize"]
+        self.chunk_size = self.container.config.get("chunkSize")
         self.logger = self.container.logger
         self.update_manager = self.container.search_container.update_manager
 

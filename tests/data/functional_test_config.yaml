@@ -1,0 +1,12 @@
+elasticsearch:
+    connectionString: http://localhost:9200/metadata
+buckets:
+    -
+        name: test
+        accessKey: KKKKKKKKKKKKKKKKKKKK
+        secretKey: KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK
+    -
+        name: bucket2
+        accessKey: AAAAAAAAAAAAAAAAAAAA
+        secretKey: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        referenceName: b2

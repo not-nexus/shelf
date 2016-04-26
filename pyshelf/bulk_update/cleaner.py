@@ -13,19 +13,22 @@ class Cleaner(object):
         """
             Runs search index cleaning process.
         """
-        id_list = self.bucket_container.search_updater.load_id_list()
-        self.bucket_container.update_manager.remove_unlisted_documents(id_list)
-
-    def load_id_list(self):
         id_list = []
+        bucket_container = None
 
         for bucket in self.config["buckets"]:
             # Creating bucket container per bucket
-            c = utils.create_bucket_container(bucket, self.container.logger)
-            path_list = c.search_updater.load_path_list()
+            bucket.update({
+                "elasticsearch": self.config["elasticsearch"]
+            })
+            bucket_container = utils.create_bucket_container(bucket, self.container.logger)
+            path_list = bucket_container.search_updater.load_path_list()
+            self.container.logger.debug("Gathering existant artifacts for {0}".format(bucket["referenceName"]))
 
             for path in path_list:
-                identity = c.resource_identity_factory.from_cloud_identifier(path)
+                identity = bucket_container.resource_identity_factory.from_cloud_identifier(path)
                 id_list.append(identity.search)
 
-        return id_list
+        update_manager = bucket_container.search_container.update_manager
+        response = update_manager.remove_unlisted_documents(id_list)
+        self.container.logger.debug("Successfuly cleaned search index. {0} old documents deleted".format(response))
