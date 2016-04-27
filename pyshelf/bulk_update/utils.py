@@ -1,7 +1,10 @@
 import logging
+import os
 import sys
 import pyshelf.configure as configure
 from pyshelf.bulk_update.container import Container
+from pyshelf.bulk_update.index_pruner import IndexPruner
+from pyshelf import background_utils
 
 
 def run(args):
@@ -44,3 +47,28 @@ def run(args):
 
     container = Container(config, logger)
     container.runner.run(bucket_list)
+
+
+def run_search_prune(args):
+    """
+        Runs search cleanup based on given config file.
+
+        Args:
+            args(dict)
+    """
+    log_level = logging.INFO
+
+    if args["--verbose"]:
+        log_level = logging.DEBUG
+
+    config = {
+        "logLevel": log_level
+    }
+    configure.app_config(config, args["<config-path>"])
+
+    log_name = "prune-search-index"
+    log_file = os.path.join(config["bulkUpdateLogDirectory"], log_name + ".log")
+    logger = background_utils.configure_file_logger(log_name, log_file, log_level)
+
+    pruner = IndexPruner(config, logger)
+    pruner.run()

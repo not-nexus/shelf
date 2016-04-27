@@ -29,6 +29,40 @@ class UpdateManager(object):
 
         return self._bulk_delete(query)
 
+    def remove_unlisted_documents_wildcard(self, key, value_list):
+        """
+            Removes all documents that do not match the query built.
+
+            Args:
+                key(string): key of metadata property to use to query.
+                value_list(list[string]): list of values to match against
+
+            Returns:
+                int: number of records that were deleted
+
+            Example:
+                remove_unlisted_documents_wildcard("artifactPath", ["/test/artifact/*"])
+                In this example all documents that don't match artifactPath=/test/artifact/*
+                are pruned.
+        """
+        query = None
+
+        for value in value_list:
+            nested_query = Q(SearchType.MATCH, property_list__name=key)
+            nested_query &= Q(SearchType.WILDCARD, property_list__value=value)
+            q = Q("nested", path="property_list", query=nested_query)
+
+            if not query:
+                query = q
+            else:
+                query |= q
+
+        # Inverting the query so any matches are spared from pruning
+        query = ~Q(query)
+        query = Search(using=self.connection).index(self.index).query(query).to_dict()
+
+        return self._bulk_delete(query)
+
     def remove_unlisted_documents_per_bucket(self, ex_key_list, bucket_name):
         """
             Removes any documents with keys not enumerated in the ex_key_list associated with the supplied bucket.
@@ -62,7 +96,7 @@ class UpdateManager(object):
             Returns:
                 int: number of documents deleted from Elasticsearch.
         """
-        self.logger.debug("Executing the following query for removing old documents from {0} index: {1}"
+        self.logger.debug("Executing the following query for removing old documents from {0}. {1}"
                 .format(self.index, query))
 
         # Doing a bulk operation here via the elasticsearch library.
