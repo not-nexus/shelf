@@ -90,6 +90,18 @@ class SearchTest(FunctionalTestBase):
             }) \
             .post({}, headers=self.auth)
 
+    def test_just_sort(self):
+        self.route_tester \
+            .search() \
+            .route_params(bucket_name="test", path="/dir/dir2") \
+            .expect(204, headers={
+                "Link": [
+                    "</test/artifact/dir/dir2/dir3/nest-test>; rel=\"item\"; title=\"artifact\"",
+                    "</test/artifact/dir/dir2/Test>; rel=\"item\"; title=\"artifact\""
+                ]
+            }) \
+            .post({"sort": "version, VER"}, headers=self.auth)
+
     def test_version_search_and_sort(self):
         # Starts with lower version 1.2 and ends with 1.19.
         self.route_tester \
