@@ -50,13 +50,12 @@ class UpdateManager(object):
         for value in value_list:
             nested_query = Q(SearchType.MATCH, property_list__name=key)
             nested_query &= Q(SearchType.WILDCARD, property_list__value=value)
+            q = Q("nested", path="property_list", query=nested_query)
 
-            # Initialize the query.... You would  think you can init query = ~Q() and then use
-            # the |= operator but that does not work. You have to wrap the query at the end.
             if not query:
-                query = Q("nested", path="property_list", query=nested_query)
+                query = q
             else:
-                query |= Q("nested", path="property_list", query=nested_query)
+                query |= q
 
         # Inverting the query so any matches are spared from pruning
         query = ~Q(query)
