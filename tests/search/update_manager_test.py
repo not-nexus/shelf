@@ -41,6 +41,20 @@ class UpdateManagerTest(UnitTestBase):
         self.assertEqual(utils.get_meta_elastic("other", "/other/artifact/other"),
                 self.test_wrapper.get_metadata("other").to_dict()["property_list"])
 
+    def test_remove_documents_wildcard(self):
+        val_list = [
+            "/test/artifact/*"
+        ]
+        deleted = self.update_manager.remove_documents_wildcard("artifactPath", val_list)
+        self.assertEqual(1, deleted)
+        self.assertEqual(utils.get_meta_elastic("delete"),
+                self.test_wrapper.get_metadata("delete").to_dict()["property_list"])
+        self.assertEqual(utils.get_meta_elastic("old"),
+                self.test_wrapper.get_metadata("old").to_dict()["property_list"])
+        self.assertEqual(utils.get_meta_elastic("test_key"),
+                self.test_wrapper.get_metadata("test_key").to_dict()["property_list"])
+        self.assertEqual(None, self.test_wrapper.get_metadata("other"))
+
     def test_bulk_update(self):
         data = {
             "test_key": {
