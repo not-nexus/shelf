@@ -31,9 +31,19 @@ class UpdateManager(object):
 
     def remove_unlisted_documents_wildcard(self, key, value_list):
         """
-            Removes all documents that are not returned in the query built using the key and value list.
-            A set of wildcard queries are built. Ex. remove_documents_wildcard(artifactPath, ["/test/artifact/*"])
-            This would delete all documents not part of the test bucket.
+            Removes all documents that do not match the query built.
+
+            Args:
+                key(string): key of metadata property to use to query.
+                value_list(list[string]): list of values to match against
+
+            Returns:
+                int: number of records that were deleted
+
+            Example:
+                remove_unlisted_documents_wildcard("artifactPath", ["/test/artifact/*"])
+                In this example all documents that don't match artifactPath=/test/artifact/*
+                are pruned.
         """
         query = None
 
@@ -41,11 +51,14 @@ class UpdateManager(object):
             nested_query = Q(SearchType.MATCH, property_list__name=key)
             nested_query &= Q(SearchType.WILDCARD, property_list__value=value)
 
+            # Initialize the query.... You would  think you can init query = ~Q() and then use
+            # the |= operator but that does not work. You have to wrap the query at the end.
             if not query:
                 query = Q("nested", path="property_list", query=nested_query)
             else:
                 query |= Q("nested", path="property_list", query=nested_query)
 
+        # Inverting the query so any matches are spared from pruning
         query = ~Q(query)
         query = Search(using=self.connection).index(self.index).query(query).to_dict()
 

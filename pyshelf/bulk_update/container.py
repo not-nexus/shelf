@@ -17,7 +17,6 @@ class Container(object):
         self.logger = logger
 
         self._runner = None
-        self._cleaner = None
 
     @property
     def runner(self):
