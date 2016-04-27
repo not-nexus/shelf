@@ -1,4 +1,4 @@
-indexPruneLogDirectory: tests/data/logging-dir
+bulkUpdateLogDirectory: tests/data/logging-dir
 elasticsearch:
     connectionString: http://localhost:9200/metadata
 buckets:

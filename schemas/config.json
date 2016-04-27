@@ -49,10 +49,6 @@
             "required": [
                 "connectionString"
             ]
-        },
-        "indexPruneLogDirectory": {
-            "type": "string",
-            "description": "The directory you would like logs to be placed when doing a search index prune."
         }
     },
     "required": [

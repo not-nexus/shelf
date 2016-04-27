@@ -18,9 +18,6 @@ def app_config(existing_config, config_path):
     if not config.get("bulkUpdateLogDirectory"):
         config["bulkUpdateLogDirectory"] = "/var/log/bucket-update"
 
-    if not config.get("indexPruneLogDirectory"):
-        config["indexPruneLogDirectory"] = "/var/log/index-prune"
-
     existing_config.update(config)
 
 
