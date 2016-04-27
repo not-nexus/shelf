@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 import docopt
-from pyshelf.bulk_update.utils import run_clean
+from pyshelf.bulk_update.utils import run_search_prune
 
-doc = """Usage: ./clean-search-index [options] <config-path>
+doc = """Usage: ./prune-search-index [options] <config-path>
 
     Options:
         -v --verbose                If set, the log level will be set to DEBUG.
@@ -15,4 +15,4 @@ doc = """Usage: ./clean-search-index [options] <config-path>
 """
 
 args = docopt.docopt(doc)
-run_clean(args)
+run_search_prune(args)

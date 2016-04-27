@@ -1,19 +1,18 @@
 from tests.functional_test_base import FunctionalTestBase
-from pyshelf.bulk_update.utils import run_clean
+from pyshelf.bulk_update.utils import run_search_prune
 from pyshelf.resource_identity import ResourceIdentity
 import tests.metadata_utils as meta_utils
 import os
 
 
-class CleanerTest(FunctionalTestBase):
-    def execute(self, log_dir=None, verbose=False):
+class IndexPrunerTest(FunctionalTestBase):
+    def execute(self, verbose=False):
         path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "../data/functional_test_config.yaml")
         args = {
             "<config-path>": path,
             "--verbose": verbose,
-            "--log-directory": log_dir
         }
-        run_clean(args)
+        run_search_prune(args)
 
     def add_stale_docs(self, path_list):
         resource_list = []
@@ -28,7 +27,7 @@ class CleanerTest(FunctionalTestBase):
 
         return resource_list
 
-    def test_run_clean(self):
+    def test_run_prune(self):
         path_list = [
             "/old/artifact/old",
             "/reallyold/artifact/ancient"
@@ -42,12 +41,12 @@ class CleanerTest(FunctionalTestBase):
         ]
 
         self.add_stale_docs(path_list)
-        log_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), "../data/logging-dir")
-        self.execute(log_dir=log_dir, verbose=True)
+        self.execute(verbose=True)
 
         self.assert_docs(path_list, [])
         self.assert_docs(existing_list, existing_list)
-        log_file = os.path.join(log_dir, "clean-search-index.log")
+        log_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), "../data/logging-dir")
+        log_file = os.path.join(log_dir, "prune-search-index.log")
         self.assertTrue(os.path.exists(log_file))
         os.remove(log_file)
 
@@ -63,4 +62,4 @@ class CleanerTest(FunctionalTestBase):
                     if prop["name"] == "artifactPath":
                         actual.append(prop["value"])
 
-        self.assertEquals(actual, expected)
+        self.assertEquals(expected, actual)

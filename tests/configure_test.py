@@ -63,6 +63,7 @@ class ConfigureTest(pyproctor.TestBase):
         expected = copy.deepcopy(config)
         expected["hello"] = "hi"
         expected["bulkUpdateLogDirectory"] = "/var/log/bucket-update"
+        expected["indexPruneLogDirectory"] = "/var/log/index-prune"
         self.run_app_config()
         self.assertEqual(expected, self.app.config)
 

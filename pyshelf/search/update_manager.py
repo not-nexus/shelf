@@ -29,18 +29,24 @@ class UpdateManager(object):
 
         return self._bulk_delete(query)
 
-    def remove_documents_wildcard(self, key, value_list):
+    def remove_unlisted_documents_wildcard(self, key, value_list):
         """
             Removes all documents that are not returned in the query built using the key and value list.
             A set of wildcard queries are built. Ex. remove_documents_wildcard(artifactPath, ["/test/artifact/*"])
             This would delete all documents not part of the test bucket.
         """
-        nested_query = Q(SearchType.MATCH, property_list__name=key)
+        query = None
 
         for value in value_list:
+            nested_query = Q(SearchType.MATCH, property_list__name=key)
             nested_query &= Q(SearchType.WILDCARD, property_list__value=value)
 
-        query = ~Q("nested", path="property_list", query=nested_query)
+            if not query:
+                query = Q("nested", path="property_list", query=nested_query)
+            else:
+                query |= Q("nested", path="property_list", query=nested_query)
+
+        query = ~Q(query)
         query = Search(using=self.connection).index(self.index).query(query).to_dict()
 
         return self._bulk_delete(query)

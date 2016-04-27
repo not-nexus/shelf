@@ -19,17 +19,6 @@ def _create_container(bucket_config):
     log_level = bucket_config["logLevel"]
     _configure_logger("elasticsearch", filename, log_level)
     logger = _configure_logger(bucket_config["name"], filename, log_level)
-    return create_bucket_container(bucket_config, logger)
-
-
-def create_bucket_container(bucket_config, logger):
-    """
-        Creates pyshelf.bucket_update.container.Container
-
-        Args:
-            bucket_config(dict)
-            logger(logging.Logger)
-    """
     container = Container(bucket_config, logger)
     return container
 

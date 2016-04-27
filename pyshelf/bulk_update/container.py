@@ -1,5 +1,4 @@
 from pyshelf.bulk_update.runner import Runner
-from pyshelf.bulk_update.cleaner import Cleaner
 
 
 class Container(object):
@@ -30,14 +29,3 @@ class Container(object):
             self._runner = Runner(self)
 
         return self._runner
-
-    @property
-    def cleaner(self):
-        """
-            Returns:
-                pyshelf.bulk_update.cleaner.Cleaner
-        """
-        if not self._cleaner:
-            self._cleaner = Cleaner(self)
-
-        return self._cleaner
