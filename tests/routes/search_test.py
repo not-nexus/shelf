@@ -61,6 +61,35 @@ class SearchTest(FunctionalTestBase):
                 "search": "version~=1.1"
             }, headers=self.auth)
 
+    def test_empty_search(self):
+        self.route_tester \
+            .search() \
+            .route_params(bucket_name="test", path="") \
+            .expect(204, headers={
+                "Link": [
+                    "</test/artifact/blah>; rel=\"item\"; title=\"artifact\"",
+                    "</test/artifact/a>; rel=\"item\"; title=\"artifact\"",
+                    "</test/artifact/zzzz>; rel=\"item\"; title=\"artifact\"",
+                    "</test/artifact/dir/dir2/Test>; rel=\"item\"; title=\"artifact\"",
+                    "</test/artifact/this/that/other>; rel=\"item\"; title=\"artifact\"",
+                    "</test/artifact/thing>; rel=\"item\"; title=\"artifact\"",
+                    "</test/artifact/test>; rel=\"item\"; title=\"artifact\"",
+                    "</test/artifact/dir/dir2/dir3/nest-test>; rel=\"item\"; title=\"artifact\""
+                ]
+            }) \
+            .post({}, headers=self.auth)
+
+    def test_empty_search_path(self):
+        self.route_tester \
+            .search() \
+            .route_params(bucket_name="test", path="/dir/dir2/dir3") \
+            .expect(204, headers={
+                "Link": [
+                    "</test/artifact/dir/dir2/dir3/nest-test>; rel=\"item\"; title=\"artifact\""
+                ]
+            }) \
+            .post({}, headers=self.auth)
+
     def test_version_search_and_sort(self):
         # Starts with lower version 1.2 and ends with 1.19.
         self.route_tester \
@@ -141,5 +170,6 @@ class SearchTest(FunctionalTestBase):
         self.search_with_bad_criteria({"search": "imCool"}, msg)
 
     def test_search_escaped_equal_criteria(self):
-        msg = "u'imCool\\\\=notCoolDude' is not of type u'array', u'imCool\\\\=notCoolDude' does not match u'(?<!\\\\\\\\)='"
+        msg = "u'imCool\\\\=notCoolDude' is not of type u'array', "
+        msg += "u'imCool\\\\=notCoolDude' does not match u'(?<!\\\\\\\\)='"
         self.search_with_bad_criteria({"search": "imCool\=notCoolDude"}, msg)
