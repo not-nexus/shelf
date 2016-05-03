@@ -146,8 +146,6 @@ def search(container, criteria=None):
     if not criteria:
         criteria = {}
 
-    print criteria
-
     container.search_portal.search(criteria)
 
     if container.context.has_error():
