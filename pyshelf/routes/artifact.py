@@ -121,14 +121,14 @@ def delete_metadata_property(container, bucket_name, path, item):
 @artifact.route("/<bucket_name>/artifact/_search", methods=["POST"])
 @decorators.foundation
 def root_search(container, bucket_name):
-    response = search(container, container.request.get_json(force=True))
+    response = search(container, container.request.get_json(silent=True, force=True))
     return response
 
 
 @artifact.route("/<bucket_name>/artifact/<path:path>/_search", methods=["POST"])
 @decorators.foundation
 def path_search(container, bucket_name, path):
-    response = search(container, container.request.get_json(force=True))
+    response = search(container, container.request.get_json(silent=True, force=True))
     return response
 
 

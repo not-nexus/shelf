@@ -66,7 +66,7 @@ class Base(object):
         response = self.test_client.get(self.endpoint, data=data, headers=headers)
         self._assert(response)
 
-    def post(self, data, headers=None):
+    def post(self, data=None, headers=None):
         """
             Performs a POST request on the test client and asserts the response.
 
@@ -78,7 +78,7 @@ class Base(object):
         response = self.test_client.post(self.endpoint, data=data, headers=headers)
         self._assert(response)
 
-    def put(self, data, headers=None):
+    def put(self, data=None, headers=None):
         """
             Performs a PUT request on the test client and asserts the response.
 
