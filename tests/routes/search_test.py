@@ -77,7 +77,7 @@ class SearchTest(FunctionalTestBase):
                     "</test/artifact/dir/dir2/dir3/nest-test>; rel=\"item\"; title=\"artifact\""
                 ]
             }) \
-            .post({}, headers=self.auth)
+            .post(data={}, headers=self.auth)
 
     def test_empty_search_path(self):
         self.route_tester \
