@@ -69,8 +69,8 @@ The permissions are as follows:
 As you can see this individual is granted access as they have full read and write access.
 You can also grant specific access using the following glob syntax.
 
-    - "/test/*"
-    - "/test/file"
+    - /test/\*
+    - /test/file
 
 
 Development
@@ -102,7 +102,7 @@ To run the tests with a coverage report:
 
     pyproctor --coverage --source=pyshelf/
 
-Currently we run some scripted tests when a new version is deployed. The script contains the following:
+Currently we run some manual tests when a new version is deployed. Examples:
 * Run all standard operations. Simple upload and download. Put bulk metadata and item. Get the metadata and metadata property. Then finally we search on the metadata.
 
 * Run large file upload (we prefer to do this from the same availability zone and region as our API)
