@@ -107,7 +107,7 @@ Currently we run some scripted tests when a new version is deployed. The script 
 
 * Run large file upload (we prefer to do this from the same availability zone and region as our API)
 
-    ```dd if=/dev/urandom of=random.img count=1024 bs=5M
-    curl -H "Authorization: XXXX" -F "file=@./random.img" api.shelf.example.com/bucket/artifact/random.img```
+        dd if=/dev/urandom of=random.img count=1024 bs=5M
+        curl -H "Authorization: XXXX" -F "file=@./random.img" api.shelf.example.com/bucket/artifact/random.img
 
 * Run upload and abruptly cancel mid-upload
