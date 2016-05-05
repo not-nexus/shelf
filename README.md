@@ -23,21 +23,21 @@ Note:
 * The bucket reference name acts as an alias for referencing the bucket. If a reference name is added it must be used to reference the bucket.
 * If you are using Elasticsearch via AWS the region portion of the Elasticsearch config is required and the AWS keys are only required when the Elasticsearch Domain access policy requires keys.
 
-    buckets:
-        -
-            name: bucket-name
-            referenceName: bn
+        buckets:
+            -
+                name: bucket-name
+                referenceName: bn
+                accessKey: XXXXXXXXXXXXXXXXXXXX
+                secretKey: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+            -
+                name: bucket_name_2
+                accessKey: XXXXXXXXXXXXXXXXXXXX
+                secretKey: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+        elasticsearch:
+            connectionString: http://localhost:9200/index
+            region: us-east-1
             accessKey: XXXXXXXXXXXXXXXXXXXX
             secretKey: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-        -
-            name: bucket_name_2
-            accessKey: XXXXXXXXXXXXXXXXXXXX
-            secretKey: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-    elasticsearch:
-        connectionString: http://localhost:9200/index
-        region: us-east-1
-        accessKey: XXXXXXXXXXXXXXXXXXXX
-        secretKey: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 Permissions
 -----------
