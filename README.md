@@ -69,8 +69,8 @@ The permissions are as follows:
 As you can see this individual is granted access as they have full read and write access.
 You can also grant specific access using the following glob syntax.
 
-    - /test/\*
-    - /test/file
+    -"/test/*"
+    -"/test/file"
 
 
 Development
