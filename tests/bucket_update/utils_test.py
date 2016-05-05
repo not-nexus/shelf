@@ -4,6 +4,7 @@ from tests.unit_test_base import UnitTestBase
 import logging
 import os.path
 import pyshelf.bucket_update.utils as utils
+from pyshelf import background_utils
 from pyshelf.bucket_update.container import Container
 import os
 import glob
@@ -21,7 +22,7 @@ class UtilsTest(UnitTestBase):
             os.remove(f)
 
     def test_create_container(self):
-        _configure_logger = self.mock_configure_logger()
+        configure_file_logger = self.mock_configure_logger()
         bucket_config = {
             "name": "my-test-bucket",
             "logLevel": logging.INFO,
@@ -33,7 +34,7 @@ class UtilsTest(UnitTestBase):
         container = utils._create_container(bucket_config)
         self.assertIsInstance(container, Container)
 
-        arg_list = _configure_logger.call_args_list
+        arg_list = configure_file_logger.call_args_list
         first = arg_list[0][0]
         second = arg_list[1][0]
         log_file = self.directory + "/my-test-bucket.log"
@@ -42,9 +43,9 @@ class UtilsTest(UnitTestBase):
 
     def mock_configure_logger(self):
         logger = logging.getLogger()
-        _configure_logger = Mock(return_value=logger)
-        MonkeyPatcher.patch(utils, "_configure_logger", _configure_logger)
-        return _configure_logger
+        configure_file_logger = Mock(return_value=logger)
+        MonkeyPatcher.patch(background_utils, "configure_file_logger", configure_file_logger)
+        return configure_file_logger
 
     def test_update_search_index(self):
         container = type("FakeContainer", (object,), {})()
@@ -58,7 +59,7 @@ class UtilsTest(UnitTestBase):
         self.assertTrue(container.search_updater.run.called)
 
     def test_configure_logger(self):
-        logger = utils._configure_logger("super-unique-name", self.directory + "/lol.log", logging.DEBUG)
+        logger = background_utils.configure_file_logger("super-unique-name", self.directory + "/lol.log", logging.DEBUG)
         handler = logger.handlers[0]
         self.assertIsInstance(handler, logging.FileHandler)
         self.assertEqual("super-unique-name", logger.name)

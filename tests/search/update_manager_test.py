@@ -27,8 +27,6 @@ class UpdateManagerTest(UnitTestBase):
         self.assertEqual(None, self.test_wrapper.get_metadata("delete"))
         self.assertEqual(None, self.test_wrapper.get_metadata("old"))
         self.assertEqual(None, self.test_wrapper.get_metadata("other"))
-        self.assertEqual(utils.get_meta_elastic("test_key"),
-                self.test_wrapper.get_metadata("test_key").to_dict()["property_list"])
 
     def test_remove_old_docs_per_bucket(self):
         key_list = ["test_key"]
@@ -36,10 +34,14 @@ class UpdateManagerTest(UnitTestBase):
         self.assertEqual(2, deleted)
         self.assertEqual(None, self.test_wrapper.get_metadata("delete"))
         self.assertEqual(None, self.test_wrapper.get_metadata("old"))
-        self.assertEqual(utils.get_meta_elastic("test_key"),
-                self.test_wrapper.get_metadata("test_key").to_dict()["property_list"])
-        self.assertEqual(utils.get_meta_elastic("other", "/other/artifact/other"),
-                self.test_wrapper.get_metadata("other").to_dict()["property_list"])
+
+    def test_remove_documents_wildcard(self):
+        val_list = [
+            "/test/artifact/*"
+        ]
+        deleted = self.update_manager.remove_unlisted_documents_wildcard("artifactPath", val_list)
+        self.assertEqual(1, deleted)
+        self.assertEqual(None, self.test_wrapper.get_metadata("other"))
 
     def test_bulk_update(self):
         data = {

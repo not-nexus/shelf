@@ -120,30 +120,32 @@ def delete_metadata_property(container, bucket_name, path, item):
 
 @artifact.route("/<bucket_name>/artifact/_search", methods=["POST"])
 @decorators.foundation
-@decorators.decode_request
-def root_search(container, bucket_name, data):
-    response = search(container, data)
+def root_search(container, bucket_name):
+    response = search(container, container.request.get_json(silent=True, force=True))
     return response
 
 
 @artifact.route("/<bucket_name>/artifact/<path:path>/_search", methods=["POST"])
 @decorators.foundation
-@decorators.decode_request
-def path_search(container, bucket_name, path, data):
-    response = search(container, data)
+def path_search(container, bucket_name, path):
+    response = search(container, container.request.get_json(silent=True, force=True))
     return response
 
 
-def search(container, criteria):
+def search(container, criteria=None):
     """
         Does a search with the given criteria.
 
         Args:
             container(pyshelf.container.Container)
+            criteria(dict | None)
 
         Returns:
             Flask response
     """
+    if not criteria:
+        criteria = {}
+
     container.search_portal.search(criteria)
 
     if container.context.has_error():

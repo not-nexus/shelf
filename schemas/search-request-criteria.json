@@ -36,9 +36,6 @@
             "type": "integer"
         }
     },
-    "required": [
-        "search"
-    ],
     "$types": {
         "sortString": {
             "description": "The field should come first, and all flags/types should come afterwards in a comma separated list.  Example: myVersion, VERSION, DESC",

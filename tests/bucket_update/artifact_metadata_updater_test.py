@@ -6,7 +6,13 @@ from pyshelf.metadata.keys import Keys
 
 
 class ArtifactMetadataUpdaterTest(TestBase):
-    def test_run_initialization_needed(self):
+    def test_run_initialization_always(self):
+        """
+            Important that whenever this runs it always
+            reinitializes.  Specifically this is because
+            somebody may change the referenceName.  In that
+            case it must be updated to be the new artifactPath
+        """
         path = "/test/artifact/my/fake/path"
         identity = ResourceIdentity(path)
         metadata = {
@@ -14,8 +20,14 @@ class ArtifactMetadataUpdaterTest(TestBase):
                 "name": "lol",
                 "value": "whatever",
                 "immutable": False,
+            },
+            Keys.PATH: {
+                "name": Keys.PATH,
+                "value": "/testing-api-bucket/artifact/my/fake/path",
+                "immutable": True
             }
         }
+
         builder = MetadataBuilder(metadata)
 
         # Specifically setting it instead of
@@ -44,5 +56,12 @@ class ArtifactMetadataUpdaterTest(TestBase):
         for key in expected_keys:
             if key not in new_metadata:
                 self.fail("Key {0} was not initialized".format(key))
+
+        expected_artifact_path = {
+            "name": Keys.PATH,
+            "value": path,
+            "immutable": True
+        }
+        self.assertEqual(expected_artifact_path, new_metadata["artifactPath"])
 
         self.assertEqual(updater.metadata, new_metadata)

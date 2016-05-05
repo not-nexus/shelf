@@ -87,10 +87,5 @@ class SearchUpdater(object):
             A generate that will (with each yield) return the next
             chunk of artifact paths that should be processed
         """
-        # Defaulting index is important here if path_list is
-        # empty
-        index = 0
         for index in range(0, len(path_list), self.chunk_size):
             yield path_list[index: index + self.chunk_size]
-
-        yield path_list[index:]
