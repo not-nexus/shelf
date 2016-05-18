@@ -9,7 +9,7 @@ class StorageTest(TestBase):
         self.storage = Storage("FakeAccessKey", "FakeSecretKey", "FakeBucketName", logger)
 
     def test_to_utc(self):
-        date_string = "Wed, 18 May 2016 16:03:10 CDT"
+        date_string = "Wed, 18 May 2016 16:03:10 CST"
         expected_string = "2016-05-18T21:03:10Z"
         new_date_string = self.storage._to_utc(date_string)
         self.assertEqual(expected_string, new_date_string)
