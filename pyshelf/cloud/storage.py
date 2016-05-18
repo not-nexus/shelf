@@ -10,6 +10,7 @@ class Storage(object):
         self.secret_key = secret_key
         self.bucket_name = bucket_name
         self.logger = logger
+        self.key_map = {}
 
     def connect(self):
         self.logger.debug("Attempting to establish connection")
@@ -124,12 +125,17 @@ class Storage(object):
         return keys
 
     def _get_key(self, artifact_name):
+        if artifact_name in self.key_map:
+            return self.key_map
+
         bucket = self._get_bucket(self.bucket_name)
         self.logger.debug("Attempting to get artifact {0}".format(artifact_name))
         key = bucket.get_key(artifact_name)
         if key is None:
             self.logger.error("Artifact {0} does not exist in bucket {0}".format(artifact_name, self.bucket_name))
             raise ArtifactNotFoundError(artifact_name)
+
+        self.key_map[artifact_name] = key
         return key
 
     def _get_bucket(self, bucket_name):
