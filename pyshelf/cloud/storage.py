@@ -2,6 +2,8 @@ from boto.s3.connection import S3Connection
 from boto.s3.key import Key
 from pyshelf.cloud.stream_iterator import StreamIterator
 from pyshelf.cloud.cloud_exceptions import ArtifactNotFoundError, BucketNotFoundError, DuplicateArtifactError
+import dateutil.tz
+from datetime import datetime
 
 
 class Storage(object):
@@ -89,6 +91,20 @@ class Storage(object):
             key = Key(bucket, path)
         key.set_contents_from_string(data)
 
+    def get_created_date(self, path):
+        """
+            Gets the created date for an artifact.
+
+            Args:
+                path(basestring): The path to the artifact.
+
+            Returns:
+                basestring: date string in UTC ISO 8601 format.
+        """
+        key = self._get_key(path)
+        date = self._to_utc(key.date)
+        return date
+
     def get_etag(self, path):
         """
             Gets md5Hash of file.
@@ -145,6 +161,38 @@ class Storage(object):
             self.logger.error("Bucket {0} does not exist".format(bucket_name))
             raise BucketNotFoundError(bucket_name)
         return bucket
+
+    def _to_utc(self, date_string):
+        """
+            Converts an AWS date formated string to a
+            ISO 8601 formatted string in UTC.
+
+            Args:
+                date_string(basestring): Example "Wed, 18 May 2016 22:03:10 GMT"
+
+            Returns:
+                basestring: Example "2016-05-18T22:03:10Z"
+        """
+        # assuming the last 3 characters are a timezone
+        # abbreviation
+        abbreviation = date_string[-3:]
+        tz = dateutil.tz.gettz(abbreviation)
+        utc_tz = dateutil.tz.gettz("UTC")
+        # Even though I specify that there will be a timezone
+        # abbreviation (%Z) it still will not be timezone aware
+        # It is ignored until python 3
+        dt = datetime.strptime(date_string, "%a, %d %b %Y %X %Z")
+        # Making timezone aware
+        dt = dt.replace(tzinfo=tz)
+        # Make the time match UTC
+        utc_datetime = dt - dt.utcoffset()
+        # Force date to know it is UTC now
+        utc_datetime.replace(tzinfo=utc_tz)
+        # Using ISO 8601 format
+        utc_string = utc_datetime.isoformat()
+        # Replacing the offset section with Z
+        utc_string = utc_string[:-6] + "Z"
+        return utc_string
 
     def __enter__(self):
         """ For use in "with" syntax"""
