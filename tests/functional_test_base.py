@@ -15,8 +15,8 @@ from tests.metadata_builder import MetadataBuilder
 from tests.test_base import TestBase
 from pyshelf.error_code import ErrorCode
 from pyproctor import MonkeyPatcher
-from pyshelf.cloud.storage import Storage
 from mock import Mock
+from pyshelf.metadata.initializer import Initializer
 
 
 class FunctionalTestBase(TestBase):
@@ -96,8 +96,8 @@ class FunctionalTestBase(TestBase):
             solution was to patch _to_utc to always return
             the same date.
         """
-        to_utc = Mock(return_value=meta_utils.CREATED_DATE)
-        MonkeyPatcher.patch(Storage, "_to_utc", to_utc)
+        get_created_date = Mock(return_value=meta_utils.CREATED_DATE)
+        MonkeyPatcher.patch(Initializer, "_get_created_date", get_created_date)
 
     @property
     def metadata_comparator(self):
