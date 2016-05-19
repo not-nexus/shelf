@@ -143,7 +143,7 @@ class Storage(object):
 
     def _get_key(self, artifact_name):
         if artifact_name in self.key_map:
-            return self.key_map
+            return self.key_map[artifact_name]
 
         bucket = self._get_bucket(self.bucket_name)
         self.logger.debug("Attempting to get artifact {0}".format(artifact_name))
