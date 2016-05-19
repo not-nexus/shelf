@@ -2,8 +2,9 @@ from boto.s3.connection import S3Connection
 from boto.s3.key import Key
 from pyshelf.cloud.stream_iterator import StreamIterator
 from pyshelf.cloud.cloud_exceptions import ArtifactNotFoundError, BucketNotFoundError, DuplicateArtifactError
-import dateutil.tz
 from datetime import datetime
+import email.utils
+import time
 
 
 class Storage(object):
@@ -167,36 +168,20 @@ class Storage(object):
             Converts an AWS date formated string to a
             ISO 8601 formatted string in UTC.
 
+
             Args:
-                date_string(basestring): Example "Wed, 18 May 2016 22:03:10 GMT"
+                date_string(basestring): Expected to be in RFC 822
+                    format.  https://tools.ietf.org/html/rfc2616#section-3.3.1.
+                    For example "Wed, 18 May 2016 22:03:10 GMT"
 
             Returns:
                 basestring: Example "2016-05-18T22:03:10Z"
         """
-        # assuming the last 3 characters are a timezone
-        # abbreviation
-        abbreviation = date_string[-3:]
-        tz = dateutil.tz.gettz(abbreviation)
-        utc_tz = dateutil.tz.gettz("UTC")
-        # Even though I specify that there will be a timezone
-        # abbreviation (%Z) it still will not be timezone aware
-        # It is ignored until python 3
-        #
-        # https://bugs.python.org/issue22377
-        # Removing the timezone since it will not match unless
-        # it is GMT, UTC or the current time zone.
-        date_string = date_string[:-4]
-        dt = datetime.strptime(date_string, "%a, %d %b %Y %X")
-        # Making timezone aware
-        dt = dt.replace(tzinfo=tz)
-        # Make the time match UTC
-        utc_datetime = dt - dt.utcoffset()
-        # Force date to know it is UTC now
-        utc_datetime.replace(tzinfo=utc_tz)
-        # Using ISO 8601 format
-        utc_string = utc_datetime.isoformat()
-        # Replacing the offset section with Z
-        utc_string = utc_string[:-6] + "Z"
+        parts = email.utils.parsedate_tz(date_string)
+        t = time.mktime(parts[:9])
+        t = t - parts[9]
+        dt = datetime.fromtimestamp(t)
+        utc_string = dt.isoformat() + "Z"
         return utc_string
 
     def __enter__(self):
