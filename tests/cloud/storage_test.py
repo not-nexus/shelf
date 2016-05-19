@@ -12,7 +12,7 @@ class StorageTest(TestBase):
         from datetime import datetime
 
         date_string = "Wed, 18 May 2016 16:03:10 CST"
-        datetime.strptime(date_string, "%a, %d %b %Y %X %Z")
+        datetime.strptime(date_string, "%a, %d %b %Y %X")
 
     #  def test_to_utc(self):
     #      date_string = "Wed, 18 May 2016 16:03:10 CST"
