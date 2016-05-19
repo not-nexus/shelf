@@ -178,6 +178,15 @@ class Storage(object):
                 basestring: Example "2016-05-18T22:03:10Z"
         """
         parts = email.utils.parsedate_tz(date_string)
+        if parts[9] is None:
+            message = "Unable to parse timezone for string {0}".format(date_string)
+            # This logging exists in the event we are not running through
+            # the API.
+            self.logger.error(message)
+            # To ensure that the user gets a 500 so that they are
+            # able to investigate further (instead of silently failing)
+            raise ValueError(message)
+
         t = time.mktime(parts[:9])
         t = t - parts[9]
         dt = datetime.fromtimestamp(t)
