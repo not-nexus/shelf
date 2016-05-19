@@ -31,14 +31,21 @@ class Initializer(object):
         required = [
             Keys.MD5,
             Keys.PATH,
-            Keys.NAME
+            Keys.NAME,
+            Keys.CREATED_DATE
         ]
 
-        for key in required:
-            if key not in metadata:
-                return True
+        needs_update = True
+        # Sets use the iterable functionality of the thing passed to
+        # it to build the set.  In the case of a dict it will return
+        # the keys.  In the case of a List it will use the items.
+        # This line checks to see if the required set is a not a subset
+        # of the metadata keys.  In other words, if the required list has
+        # a key that is not in the metadata set.
+        if set(required) <= set(metadata):
+            needs_update = False
 
-        return False
+        return needs_update
 
     def update(self, identity, metadata):
         """
@@ -55,6 +62,10 @@ class Initializer(object):
         with self.container.create_cloud_storage() as storage:
             etag = storage.get_etag(identity.cloud)
             metadata[Keys.MD5] = self.mapper.create_response_property(Keys.MD5, etag, True)
+
+            if Keys.CREATED_DATE not in metadata:
+                created = storage.get_created_date(identity.cloud)
+                metadata[Keys.CREATED_DATE] = self.mapper.create_response_property(Keys.CREATED_DATE, created, True)
 
         metadata[Keys.PATH] = self.mapper.create_response_property(Keys.PATH, identity.resource_path, True)
         metadata[Keys.NAME] = self.mapper.create_response_property(Keys.NAME, identity.artifact_name, True)

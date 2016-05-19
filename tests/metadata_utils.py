@@ -1,4 +1,8 @@
+from pyshelf.metadata.keys import Keys
+
+
 MD5 = "5eb63bbbe01eeed093cb22bb8f5acdc3"
+CREATED_DATE = "2016-05-19T15:29:34Z"
 
 
 def get_meta_item():
@@ -21,18 +25,23 @@ def get_meta(name="test", path="/test/artifact/test", version="1"):
             "value": "test1",
             "immutable": True
         },
+        "createdDate": {
+            "name": Keys.CREATED_DATE,
+            "value": CREATED_DATE,
+            "immutable": True
+        },
         "md5Hash": {
-            "name": "md5Hash",
+            "name": Keys.MD5,
             "value": MD5,
             "immutable": True
         },
         "artifactName": {
-            "name": "artifactName",
+            "name": Keys.NAME,
             "value": name,
             "immutable": True
         },
         "artifactPath": {
-            "name": "artifactPath",
+            "name": Keys.PATH,
             "value": path,
             "immutable": True
         },
@@ -49,17 +58,23 @@ def get_meta_elastic(name="test", path="/test/artifact/test", version="1"):
 
 
 def get_md5Hash():
-    return get_meta()["md5Hash"]
+    return get_meta()[Keys.MD5]
 
 
 def send_meta():
+    """
+        This function is used to generate metadata that will
+        be PUT back to the metadata endpoint but removes things
+        that will be initialized which also happen to be
+        immutable.
+
+        See pyshelf.metadata.initializer.Initializer
+    """
     d = get_meta()
-    d.pop("md5Hash")
-    d.pop("artifactName")
-    d.pop("artifactPath")
-    for key, val in d.iteritems():
-        if key == "name":
-            val.pop(key)
+    del d[Keys.NAME]
+    del d[Keys.MD5]
+    del d[Keys.PATH]
+    del d[Keys.CREATED_DATE]
     return d
 
 
