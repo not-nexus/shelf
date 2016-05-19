@@ -39,6 +39,15 @@ class MetadataTest(FunctionalTestBase):
             .put(data='{"lol": ...}', headers=self.auth)
 
     def test_empty_metadata(self):
+        """
+            This will ensure that things are initialized
+            correctly.
+
+            See pyshelf.metadata.initializer.Initializer
+
+            For the "empty" artifact see
+            tests.functional_test_base.FunctionalTestBase.setup_artifacts
+        """
         self.route_tester \
             .metadata() \
             .route_params(bucket_name="test", path="empty") \

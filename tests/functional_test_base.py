@@ -14,6 +14,9 @@ from pyshelf.resource_identity import ResourceIdentity
 from tests.metadata_builder import MetadataBuilder
 from tests.test_base import TestBase
 from pyshelf.error_code import ErrorCode
+from pyproctor import MonkeyPatcher
+from pyshelf.cloud.storage import Storage
+from mock import Mock
 
 
 class FunctionalTestBase(TestBase):
@@ -83,6 +86,18 @@ class FunctionalTestBase(TestBase):
         self.test_client = app.test_client()
         self._route_tester = None
         self._metadata_comparator = None
+        self.setup_storage()
+
+    def setup_storage(self):
+        """
+            This is important for comparing metadata later
+            on because we "assertEqual" but the date would
+            be different every time the test was run.  The
+            solution was to patch _to_utc to always return
+            the same date.
+        """
+        to_utc = Mock(return_value=meta_utils.CREATED_DATE)
+        MonkeyPatcher.patch(Storage, "_to_utc", to_utc)
 
     @property
     def metadata_comparator(self):
@@ -143,6 +158,8 @@ class FunctionalTestBase(TestBase):
         self.create_key(self.test_bucket, "test", contents="hello world")
         self.create_key(self.test_bucket, "/dir/dir2/dir3/dir4/test5")
         self.create_key(self.test_bucket, "/dir/dir2/dir3/nest-test", contents="hello world")
+        # "empty" has an empty metadata file.  This is used when testing initialization
+        # of metadata
         self.create_key(self.test_bucket, "empty", contents="hello world")
         self.create_key(self.test_bucket, "/_metadata_empty.yaml")
         self.create_key(self.test_bucket, "/dir/dir2/_secret", "No one should see this")
@@ -208,6 +225,7 @@ class FunctionalTestBase(TestBase):
     def tearDown(self):
         self.moto_s3.stop()
         self.search_wrapper.teardown_metadata()
+        super(TestBase, self).tearDown()
 
     def response_500(self, message=None):
         if not message:
