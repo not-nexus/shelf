@@ -5,3 +5,5 @@ v2.2 - Fix for bulk update and bucket name/reference name where metadata was
 not updated if the reference name was changed
 v3.0 - Add the ability to do a search with no body (essentially a wildcard path search), added a script which prunes the search index of old reference or
 bucket names, also minor bug fixes.
+v4.0 - Added createdDate which will automatically be added to metadata when an
+artifact is created
