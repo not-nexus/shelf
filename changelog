@@ -7,3 +7,6 @@ v3.0 - Add the ability to do a search with no body (essentially a wildcard path 
 bucket names, also minor bug fixes.
 v4.0 - Added createdDate which will automatically be added to metadata when an
 artifact is created
+v5.0 - createdDate again but this time with a simpler implementation (that
+doesn't account for actual create date of existing items).  This has to do
+with a limitation in boto/s3.
