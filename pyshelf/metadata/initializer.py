@@ -1,4 +1,5 @@
 from pyshelf.metadata.keys import Keys
+from datetime import datetime
 
 
 class Initializer(object):
@@ -63,11 +64,15 @@ class Initializer(object):
             etag = storage.get_etag(identity.cloud)
             metadata[Keys.MD5] = self.mapper.create_response_property(Keys.MD5, etag, True)
 
-            if Keys.CREATED_DATE not in metadata:
-                created = storage.get_created_date(identity.cloud)
-                metadata[Keys.CREATED_DATE] = self.mapper.create_response_property(Keys.CREATED_DATE, created, True)
+        if Keys.CREATED_DATE not in metadata:
+            created = self._get_created_date()
+            metadata[Keys.CREATED_DATE] = self.mapper.create_response_property(Keys.CREATED_DATE, created, True)
 
         metadata[Keys.PATH] = self.mapper.create_response_property(Keys.PATH, identity.resource_path, True)
         metadata[Keys.NAME] = self.mapper.create_response_property(Keys.NAME, identity.artifact_name, True)
 
         return metadata
+
+    def _get_created_date(self):
+        created_date = datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
+        return created_date
