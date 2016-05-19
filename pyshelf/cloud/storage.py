@@ -181,7 +181,12 @@ class Storage(object):
         # Even though I specify that there will be a timezone
         # abbreviation (%Z) it still will not be timezone aware
         # It is ignored until python 3
-        dt = datetime.strptime(date_string, "%a, %d %b %Y %X %Z")
+        #
+        # https://bugs.python.org/issue22377
+        # Removing the timezone since it will not match unless
+        # it is GMT, UTC or the current time zone.
+        date_string = date_string[:-4]
+        dt = datetime.strptime(date_string, "%a, %d %b %Y %X")
         # Making timezone aware
         dt = dt.replace(tzinfo=tz)
         # Make the time match UTC
