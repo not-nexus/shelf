@@ -4,13 +4,25 @@ from urlparse import urlparse
 
 
 class Connection(Elasticsearch):
-    def __init__(self, connection_string, access_key=None, secret_key=None, region=None):
+    def __init__(self, connection_string, access_key=None, secret_key=None, region=None, upper_result_limit=None):
+        """
+            Args:
+                connection_string(string): Elasticsearch connection string <host>:<port>
+                access_key(string | None): Cloud provider access key if using Elasticsearch as a provided service
+                secret_key(string | None): Cloud provider secret access key
+                region(string | None): Cloud provider region
+                upper_result_limit(int | None): Upper limit for search results. Defaults to 1000.
+        """
         self.connection_string = connection_string
         self._es_index = None
         self._es_host = None
         self._es_port = None
         self._parse_url()
         self._init_connection(access_key, secret_key, region)
+
+        if not upper_result_limit:
+            upper_result_limit = 1000
+        self.upper_result_limit = upper_result_limit
 
     @property
     def es_index(self):
