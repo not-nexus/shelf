@@ -21,7 +21,7 @@ class Connection(Elasticsearch):
         self._init_connection(access_key, secret_key, region)
 
         if not upper_result_limit:
-            upper_result_limit = 1000
+            upper_result_limit = 10000
         self.upper_result_limit = upper_result_limit
 
     @property
