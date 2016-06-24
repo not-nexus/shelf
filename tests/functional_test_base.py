@@ -75,6 +75,7 @@ class FunctionalTestBase(TestBase):
         ],
         "elasticsearch": {
             "connectionString": "http://localhost:9200/metadata",
+            "upperSearchResultLimit": 100
         }
     }
 

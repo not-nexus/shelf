@@ -9,6 +9,7 @@ class Manager(object):
         self.search_container = search_container
         self.connection = self.search_container.connection
         self.index = self.search_container.connection.es_index
+        self.upper_limit = self.search_container.connection.upper_result_limit
 
     def search(self, criteria, key_list=None):
         """
@@ -24,6 +25,9 @@ class Manager(object):
         """
         query = self._build_query(criteria.get("search"))
         query = Search(using=self.connection).index(self.index).sort("_uid").query(query)
+        # Using python splicing on a query is the same as using {from: 0, size: 50} in an elasticsearch query
+        # the upper_limit is gathered from the elasticsearch config
+        query = query[0:self.upper_limit]
         self.search_container.logger.debug("Executing the following search query: {0}".format(query.to_dict()))
         search_results = query.execute()
         search_formatter = SearchFormatter(criteria, search_results, key_list)

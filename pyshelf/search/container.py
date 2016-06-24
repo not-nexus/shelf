@@ -30,7 +30,12 @@ class Container(object):
     @property
     def connection(self):
         if not self._connection:
-            self._connection = Connection(self.config["connectionString"],
-                    self.config.get("accessKey"), self.config.get("secretKey"), self.config.get("region"))
+            self._connection = Connection(
+                self.config["connectionString"],
+                self.config.get("accessKey"),
+                self.config.get("secretKey"),
+                self.config.get("region"),
+                self.config.get("upperSearchResultLimit")
+            )
 
         return self._connection

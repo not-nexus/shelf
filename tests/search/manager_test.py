@@ -41,7 +41,7 @@ class ManagerTest(UnitTestBase):
             ]
         })
         expected = [utils.get_meta()]
-        self.assertEqual(results, expected)
+        self.assertEqual(expected, results)
 
     def test_no_match(self):
         results = self.manager.search({
@@ -53,7 +53,7 @@ class ManagerTest(UnitTestBase):
                 }
             ]
         })
-        self.assertEqual(results, [])
+        self.assertEqual([], results)
 
     def test_tilde_search_and_sort(self):
         results = self.manager.search({
@@ -94,8 +94,14 @@ class ManagerTest(UnitTestBase):
                 }
             ]
         }, ["artifactPath"])
-        self.assertEqual(results[0], {"artifactPath": {"name": "artifactPath", "value": "/test/artifact/test",
-            "immutable": True}})
+        expected = {
+            "artifactPath": {
+                "name": "artifactPath",
+                "value": "/test/artifact/test",
+                "immutable": True
+            }
+        }
+        self.assertEqual(expected, results[0])
 
     def test_dumb_tilde_search(self):
         results = self.manager.search({
@@ -119,7 +125,7 @@ class ManagerTest(UnitTestBase):
             utils.get_meta()
         ]
 
-        self.assertEqual(results, expected)
+        self.assertEqual(expected, results)
 
     def test_sorted_desc_and_asc(self):
         results = self.manager.search({
@@ -150,7 +156,24 @@ class ManagerTest(UnitTestBase):
             utils.get_meta("zzzz", "/zzzz", "1.19"),
             utils.get_meta("thing", "/thing", "1.2")
         ]
-        self.assertEqual(results, expected)
+        self.assertEqual(expected, results)
+
+    def test_more_then_ten_results(self):
+        data = []
+
+        # In setup 6 documents have already been added. Making an even 20.
+        for i in range(14):
+            data.append(utils.get_meta("mutli-test{0}".format(str(i))))
+
+        self.test_wrapper.setup_metadata(data)
+        results = self.manager.search({
+            "search": [{
+                "field": "artifactName",
+                "search_type": SearchType.WILDCARD,
+                "value": "*"
+            }]
+        })
+        self.assertEqual(20, len(results))
 
     def test_utils(self):
         connection = Connection("http://localhost:9200/index", "test", "test", "test")

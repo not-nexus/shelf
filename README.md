@@ -22,6 +22,7 @@ It is required that a config.yaml exist in the root of the repository.  This wil
 Note:
 * The bucket reference name acts as an alias for referencing the bucket. If a reference name is added it must be used to reference the bucket.
 * If you are using Elasticsearch via AWS the region portion of the Elasticsearch config is required and the AWS keys are only required when the Elasticsearch Domain access policy requires keys.
+* `upperSearchResultLimit` is another optional Elasticsearch config option. It defaults to 10000 if not set. It limits the number of search results returned. We currently do not support pagination.
 
         buckets:
             -
@@ -38,6 +39,7 @@ Note:
             region: us-east-1
             accessKey: XXXXXXXXXXXXXXXXXXXX
             secretKey: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+            upperSearchResultLimit: 50000
 
 Permissions
 -----------
