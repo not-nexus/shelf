@@ -94,8 +94,14 @@ class ManagerTest(UnitTestBase):
                 }
             ]
         }, ["artifactPath"])
-        self.assertEqual({"artifactPath": {"name": "artifactPath", "value": "/test/artifact/test",
-            "immutable": True}}, results[0])
+        expected = {
+            "artifactPath": {
+                "name": "artifactPath",
+                "value": "/test/artifact/test",
+                "immutable": True
+            }
+        }
+        self.assertEqual(expected, results[0])
 
     def test_dumb_tilde_search(self):
         results = self.manager.search({
