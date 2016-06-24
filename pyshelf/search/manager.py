@@ -28,7 +28,6 @@ class Manager(object):
         # Using python splicing on a query is the same as using {from: 0, size: 50} in an elasticsearch query
         # the upper_limit is gathered from the elasticsearch config
         query = query[0:self.upper_limit]
-        print self.upper_limit
         self.search_container.logger.debug("Executing the following search query: {0}".format(query.to_dict()))
         search_results = query.execute()
         search_formatter = SearchFormatter(criteria, search_results, key_list)
