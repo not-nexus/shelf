@@ -10,3 +10,6 @@ artifact is created
 v5.0 - createdDate again but this time with a simpler implementation (that
 doesn't account for actual create date of existing items).  This has to do
 with a limitation in boto/s3.
+v5.1 - Fix for a bug where we only ever returned 10 results because
+elasticsearch paginates by default.  Added option to be able to configure
+and default to a more reasonable number.
