@@ -9,4 +9,5 @@ API
 Other
 =====
 
-* [bulk update](bulk-update.md) - Rebuild search index from scratch.
+* [Bulk Update](bulk-update.md) - Rebuild search index from scratch.
+* [Advanced Search Examples](api/advanced-search-examples.md).

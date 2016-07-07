@@ -91,3 +91,5 @@ Here is an example of a search with multiple sort criteria.
     Content-Length: 0
     Server: Werkzeug/0.11.3 Python/2.7.10
     Date: Wed, 09 Mar 2016 21:51:40 GMT
+
+For more examples see [advanced search examples](advanced-search-examples.md).
