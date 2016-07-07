@@ -10,4 +10,4 @@ Other
 =====
 
 * [Bulk Update](bulk-update.md) - Rebuild search index from scratch.
-* [Advanced Search Examples](api/advanced-search-examples.md).
+* [Advanced Search Examples](api/advanced-search-examples.md) - More complicated searching strategies.
