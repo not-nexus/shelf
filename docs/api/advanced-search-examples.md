@@ -110,9 +110,20 @@ To spell it out, we want:
 * Sort for buildNumber descending (as a secondary sort) 
 * Only get three links back
 
-| build       | tested         | version       |
-|-------------|----------------|---------------|
-| 3 ![][good] | false ![][bad] | 1.1 ![][good] |
+The below table represent a sample set of artifacts (and what their metadata
+is set to) sorted and specifying whether it meets the criteria in the above
+search.
 
-[good]: check.jpg
-[bad]: x.jpg
+| tested       | version    | buildNumber      | Included (in the top 3) |
+|--------------|------------|------------------|-------------------------|
+| true ![][y]  | 1.9 ![][y] | 10 ![][y]        | ![][y]                  |
+| true ![][y]  | 1.9 ![][y] | 9 ![][y]         | ![][y]                  |
+| true ![][y]  | 1.8 ![][y] | 10 ![][y]        | ![][y]                  |
+| true ![][y]  | 1.5 ![][y] | 8 ![][y]         | ![][n]                  |
+| true ![][y]  | 2.0 ![][n] | 3 ![][y]         | ![][n]                  |
+| true ![][y]  | 1.3 ![][y] | (not set) ![][n] | ![][n]                  |
+| false ![][n] | 1.1 ![][y] | 5 ![][y]         | ![][n]                  |
+| true ![][y]  | 1.0 ![][n] | 4 ![][y]         | ![][n]                  |
+
+[y]: check.jpg
+[n]: x.jpg
