@@ -111,7 +111,7 @@ To spell it out, we want:
 * Only get three links back
 
 The below table represent a sample set of artifacts (and what their metadata
-is set to) sorted and specifying whether it meets the criteria in the above
+is set to) that are sorted and specifying whether it meets the criteria in the above
 search.
 
 | tested       | version    | buildNumber      | Included (in the top 3) |
