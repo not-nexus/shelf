@@ -8,4 +8,3 @@ class ErrorCode(object):
     BAD_REQUEST = "bad_request"
     PERMISSION_DENIED = "permission_denied"
     INVALID_REQUEST_DATA_FORMAT = "invalid_request_data_format"
-    INVALID_REQUEST_DATA = "invalid_request_data"

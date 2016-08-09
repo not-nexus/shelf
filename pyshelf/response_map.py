@@ -183,8 +183,6 @@ def map_context_error(context):
         Returns:
             flask Response
     """
-    if ErrorCode.INVALID_REQUEST_DATA in context.errors:
-        return create_400(ErrorCode.INVALID_REQUEST_DATA, context.errors[ErrorCode.INVALID_REQUEST_DATA])
     if ErrorCode.INVALID_SEARCH_CRITERIA in context.errors:
         return create_400(ErrorCode.INVALID_SEARCH_CRITERIA, context.errors[ErrorCode.INVALID_SEARCH_CRITERIA])
     elif ErrorCode.INVALID_ARTIFACT_NAME in context.errors:
