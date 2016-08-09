@@ -34,7 +34,14 @@ class SchemaValidator(object):
             Returns:
                 string: formatted error message.
         """
-        msg_list = [error_item.message for error_item in error.context]
-        msg = ", ".join(msg_list)
+        msg = None
+
+        if error.context:
+            msg_list = [error_item.message for error_item in error.context]
+            msg = ", ".join(msg_list)
+        else:
+            # jsonschema provides no good way to just grab the summation of
+            # issue as it does when there is an error context so I built it.
+            msg = "{0} is not of {1} {2}".format(error.instance, error.validator, error.validator_value)
 
         return msg

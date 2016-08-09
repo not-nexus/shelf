@@ -48,8 +48,8 @@ class FunctionalTestBase(TestBase):
     }
 
     RESPONSE_INVALID_FORMAT = {
-        "code": ErrorCode.BAD_REQUEST,
-        "message": "Request must be in JSON format and also be either an array or an object.",
+        "code": ErrorCode.INVALID_REQUEST_DATA_FORMAT,
+        "message": "Data sent with request must be in JSON format and also be either an array or an object.",
     }
 
     CONFIG = {

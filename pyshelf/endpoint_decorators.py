@@ -1,8 +1,10 @@
 import functools
 import json
+from pyshelf.error_code import ErrorCode
 from pyshelf.get_container import get_container
 import pyshelf.response_map as response_map
 from pyshelf.cloud.cloud_exceptions import BucketNotFoundError
+from jsonschema import ValidationError
 
 """
     This module contains decorator functions that are commonly
@@ -154,34 +156,56 @@ class EndpointDecorators(object):
 
         return wrapper
 
-    def decode_request(self, func):
+    def decode_request(self, container):
         """
-            Will decode and inject the data if it is valid json
-            and either a dict or a list.  Otherwise a
-            error response is returned.
+            Decodes data from flask request.
+            Only accepts array or object as valid JSON.
 
             Args:
-                func(function)
+                container(pyshelf.container.Container)
+
+            Returns:
+                object | None: decoded JSON from request. None if invalid.
+        """
+        data = container.request.get_json(silent=True, force=True)
+
+        if not isinstance(data, (list, dict)):
+            container.context.add_error(ErrorCode.INVALID_REQUEST_DATA_FORMAT)
+            data = None
+
+        return data
+
+    def validate_request(self, schema_path):
+        """
+            Decodes and validates request data against schema.
+            Is meant to be used after decode_request.
+
+            Args:
+                schema_path(string)
 
             Returns:
                 function
         """
-        @functools.wraps(func)
-        def wrapper(container, *args, **kwargs):
-            response = None
-            data = container.request.get_json(force=True)
+        def validation_decorator(func):
+            @functools.wraps(func)
+            def wrapper(container, *args, **kwargs):
+                data = self.decode_request(container)
 
-            if isinstance(data, (list, dict)):
-                kwargs["data"] = data
-                response = func(container, *args, **kwargs)
-            else:
-                container.logger.warning("Request was not valid: {0}".format(data))
-                response = response_map.create_400(
-                    msg="Request must be in JSON format and also be either an array or an object."
-                )
+                if container.context.has_error():
+                    return response_map.map_context_error(container.context)
+                else:
+                    try:
+                        container.schema_validator.validate(schema_path, data)
+                    except ValidationError as e:
+                        msg = container.schema_validator.format_error(e)
+                        response = response_map.create_400(ErrorCode.INVALID_REQUEST_DATA_FORMAT, msg)
 
-            return response
+                        return response
 
-        return wrapper
+                return func(container, data=data, *args, **kwargs)
+
+            return wrapper
+
+        return validation_decorator
 
 decorators = EndpointDecorators()

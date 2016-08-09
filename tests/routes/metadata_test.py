@@ -31,6 +31,16 @@ class MetadataTest(FunctionalTestBase):
             .put(data=meta_utils.send_meta(), headers=self.auth)
         self.assert_metadata_matches("/test/artifact/dir/dir2/dir3/nest-test/_meta")
 
+    def test_put_metadata_invalid_request_data(self):
+        self.route_tester \
+            .metadata() \
+            .route_params(bucket_name="test", path="dir/dir2/dir3/nest-test") \
+            .expect(400, {
+                "code": "invalid_request_data_format",
+                "message": "{u'notValue': u'biluga'} is not of additionalProperties False"
+            }) \
+            .put(data={"something": {"notValue": "biluga"}}, headers=self.auth)
+
     def test_put_metadata_invalid_json(self):
         self.route_tester \
             .metadata() \
@@ -105,6 +115,16 @@ class MetadataTest(FunctionalTestBase):
             .expect(200, meta_utils.get_meta()["tag"]) \
             .put(data=meta_utils.get_meta()["tag"], headers=self.auth)
         self.assert_metadata_matches("/test/artifact/test/_meta")
+
+    def test_put_metadata_item_poor_format(self):
+        self.route_tester \
+            .metadata_item() \
+            .route_params(bucket_name="test", path="test", item="tag") \
+            .expect(400, {
+                "code": "invalid_request_data_format",
+                "message": "[u'value', u'name'] is not of type object"
+            }) \
+            .put(data=["value", "name"], headers=self.auth)
 
     def test_delete_metadata_item(self):
         self.route_tester.metadata_item() \
