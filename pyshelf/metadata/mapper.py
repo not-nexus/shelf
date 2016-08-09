@@ -67,3 +67,25 @@ class Mapper(object):
             "value": value,
             "immutable": immutable
         }
+
+    def from_response_property(self, metadata_property):
+        """
+            Maps a metadata property from a response. At
+            this poinnt it basically defaults immutable if it is
+            not there.
+
+            Args:
+                metadata_property(dict)
+        """
+        if metadata_property.get("immutable") is None:
+            metadata_property["immutable"] = False
+
+    def from_response(self, metadata):
+        """
+            Maps bulk metadata from response.
+
+            Args:
+                metadata(Dict{dict})
+        """
+        for value in metadata.values():
+            self.from_response_property(value)
