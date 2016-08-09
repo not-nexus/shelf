@@ -18,12 +18,12 @@
         },
         "immutable": {
             "type": "boolean",
-            "default": false,
             "description": "If true, you are unable to alter this value"
         }
     },
     "required": [
-        "value"
+        "value",
+        "immutable"
     ],
     "$schema": "http://json-schema.org/draft-04/schema#"
 }

@@ -92,6 +92,13 @@ class MetadataTest(FunctionalTestBase):
             .post(data=meta_utils.get_meta_item(), headers=self.auth)
         self.assert_metadata_matches("/test/artifact/test/_meta")
 
+    def test_post_metadata_item_ignore_name(self):
+        self.route_tester \
+            .metadata_item() \
+            .route_params(bucket_name="test", path="test", item="tag2") \
+            .expect(201, {"immutable": False, "name": "tag2", "value": "value"}) \
+            .post(data={"value": "value", "name": "notName", "immutable": False}, headers=self.auth)
+
     def test_post_existing_metadata_item(self):
         self.route_tester \
             .metadata_item() \

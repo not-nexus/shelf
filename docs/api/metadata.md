@@ -3,6 +3,9 @@ Metadata
 
 ####Our api supports mutable and immutable metadata for artifacts. You can request, update, create, and delete metadata and particular metdata items.
 
+Notes about metadata:
+* It is acceptable to send a request with the name duplicated in the metadata. The name within the metadata property object will be ignored. It will always use the one provided in the URL or in the case of a bulk update the one provided as the property keys.
+
 The following is an example of updating all metadata for an artifact. This will only overwrite mutable items. The response to this request is identical to doing a GET on the same route.
 
     PUT /bucket-name/artifact/hello-world/_meta
