@@ -64,7 +64,7 @@ class MetadataTest(FunctionalTestBase):
             .route_params(bucket_name="test", path="dir/dir2/dir3/nest-test") \
             .expect(400, {
                 "code": "invalid_request_data_format",
-                "message": "{u'notValue': u'biluga'} is not of additionalProperties False"
+                "message": "u'value' is a required property. Failed on instance {\"notValue\": \"biluga\"}."
             }) \
             .put(data={"something": {"notValue": "biluga"}}, headers=self.auth)
 
@@ -164,7 +164,7 @@ class MetadataTest(FunctionalTestBase):
             .route_params(bucket_name="test", path="test", item="tag") \
             .expect(400, {
                 "code": "invalid_request_data_format",
-                "message": "[u'value', u'name'] is not of type object"
+                "message": "[u'value', u'name'] is not of type u'object'. Failed on instance [\"value\", \"name\"]."
             }) \
             .put(data=["value", "name"], headers=self.auth)
 

@@ -1,4 +1,5 @@
 import pyshelf.utils as utils
+import json
 
 
 class SchemaValidator(object):
@@ -40,8 +41,6 @@ class SchemaValidator(object):
             msg_list = [error_item.message for error_item in error.context]
             msg = ", ".join(msg_list)
         else:
-            # jsonschema provides no good way to just grab the summation of
-            # issue as it does when there is an error context so I built it.
-            msg = "{0} is not of {1} {2}".format(error.instance, error.validator, error.validator_value)
+            msg = "{0}. Failed on instance {1}.".format(error.message, json.dumps(error.instance))
 
         return msg
