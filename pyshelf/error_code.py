@@ -7,3 +7,4 @@ class ErrorCode(object):
     INVALID_SEARCH_CRITERIA = "invalid_search_criteria"
     BAD_REQUEST = "bad_request"
     PERMISSION_DENIED = "permission_denied"
+    INVALID_REQUEST_DATA_FORMAT = "invalid_request_data_format"

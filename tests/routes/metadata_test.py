@@ -31,6 +31,44 @@ class MetadataTest(FunctionalTestBase):
             .put(data=meta_utils.send_meta(), headers=self.auth)
         self.assert_metadata_matches("/test/artifact/dir/dir2/dir3/nest-test/_meta")
 
+    def test_put_metadata_default_immutable_ignore_extra_properties(self):
+        metadata = {
+            "version": {
+                "value": "1"
+            },
+            "tag": {
+                "value": "test",
+                "name": "FAKENAME"
+            },
+            "otherThing": {
+                "value": "test",
+                "somRandomThing": "iHaveAComplexCuzIGetIgnored"
+            }
+        }
+        expect_metadata = meta_utils.get_meta(name="nest-test", path="/test/artifact/dir/dir2/dir3/nest-test")
+        expect_metadata["otherThing"] = {
+            "name": "otherThing",
+            "value": "test",
+            "immutable": False
+        }
+
+        self.route_tester \
+            .metadata() \
+            .route_params(bucket_name="test", path="dir/dir2/dir3/nest-test") \
+            .expect(200, expect_metadata) \
+            .put(data=metadata, headers=self.auth)
+        self.assert_metadata_matches("/test/artifact/dir/dir2/dir3/nest-test/_meta")
+
+    def test_put_metadata_invalid_request_data(self):
+        self.route_tester \
+            .metadata() \
+            .route_params(bucket_name="test", path="dir/dir2/dir3/nest-test") \
+            .expect(400, {
+                "code": "invalid_request_data_format",
+                "message": "u'value' is a required property. Failed on instance {\"notValue\": \"biluga\"}."
+            }) \
+            .put(data={"something": {"notValue": "biluga"}}, headers=self.auth)
+
     def test_put_metadata_invalid_json(self):
         self.route_tester \
             .metadata() \
@@ -82,6 +120,13 @@ class MetadataTest(FunctionalTestBase):
             .post(data=meta_utils.get_meta_item(), headers=self.auth)
         self.assert_metadata_matches("/test/artifact/test/_meta")
 
+    def test_post_metadata_item_default_immutable_ignore_extra(self):
+        self.route_tester \
+            .metadata_item() \
+            .route_params(bucket_name="test", path="test", item="tag2") \
+            .expect(201, {"immutable": False, "name": "tag2", "value": "value"}) \
+            .post(data={"value": "value", "name": "FAKE", "randomThing": "someRandomThing"}, headers=self.auth)
+
     def test_post_existing_metadata_item(self):
         self.route_tester \
             .metadata_item() \
@@ -98,6 +143,14 @@ class MetadataTest(FunctionalTestBase):
             .put(data=meta_utils.get_meta_item(), headers=self.auth)
         self.assert_metadata_matches("/test/artifact/test/_meta")
 
+    def test_put_metadata_item_default_immutable(self):
+        self.route_tester \
+            .metadata_item() \
+            .route_params(bucket_name="test", path="test", item="tag2") \
+            .expect(201, {"immutable": False, "name": "tag2", "value": "test"}) \
+            .put(data={"value": "test"}, headers=self.auth)
+        self.assert_metadata_matches("/test/artifact/test/_meta")
+
     def test_put_metadata_existing_item(self):
         self.route_tester \
             .metadata_item() \
@@ -105,6 +158,16 @@ class MetadataTest(FunctionalTestBase):
             .expect(200, meta_utils.get_meta()["tag"]) \
             .put(data=meta_utils.get_meta()["tag"], headers=self.auth)
         self.assert_metadata_matches("/test/artifact/test/_meta")
+
+    def test_put_metadata_item_poor_format(self):
+        self.route_tester \
+            .metadata_item() \
+            .route_params(bucket_name="test", path="test", item="tag") \
+            .expect(400, {
+                "code": "invalid_request_data_format",
+                "message": "[u'value', u'name'] is not of type u'object'. Failed on instance [\"value\", \"name\"]."
+            }) \
+            .put(data=["value", "name"], headers=self.auth)
 
     def test_delete_metadata_item(self):
         self.route_tester.metadata_item() \

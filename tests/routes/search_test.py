@@ -172,7 +172,7 @@ class SearchTest(FunctionalTestBase):
             .search() \
             .route_params(bucket_name="test", path="") \
             .expect(400, {
-                "code": "bad_request",
+                "code": "invalid_search_criteria",
                 "message": msg
             }) \
             .post(data, headers=self.auth)

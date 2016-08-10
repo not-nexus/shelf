@@ -1,0 +1,10 @@
+{
+    "type": "object",
+    "decsription": "Object containing request-metadata-properties keyed by their name.",
+    "patternProperties": {
+        ".*": {
+            "$ref": "file:schemas/request-metadata-property.json"
+        }
+    },
+    "$schema": "http://json-schema.org/draft-04/schema#"
+}

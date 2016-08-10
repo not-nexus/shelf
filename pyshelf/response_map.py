@@ -184,11 +184,16 @@ def map_context_error(context):
             flask Response
     """
     if ErrorCode.INVALID_SEARCH_CRITERIA in context.errors:
-        return create_400(ErrorCode.BAD_REQUEST, context.errors[ErrorCode.INVALID_SEARCH_CRITERIA])
+        return create_400(ErrorCode.INVALID_SEARCH_CRITERIA, context.errors[ErrorCode.INVALID_SEARCH_CRITERIA])
     elif ErrorCode.INVALID_ARTIFACT_NAME in context.errors:
         return create_403(ErrorCode.INVALID_ARTIFACT_NAME, "Artifact and directories names that BEGIN "
                 "with an underscore are reserved as private and cannot be accessed or created. This of "
                 "course exludes _search and _meta which are not part of the artifact path itself.")
+    elif ErrorCode.INVALID_REQUEST_DATA_FORMAT in context.errors:
+        return create_400(
+            ErrorCode.INVALID_REQUEST_DATA_FORMAT,
+            msg="Data sent with request must be in JSON format and also be either an array or an object."
+        )
 
 
 def map_metadata_result_errors(result):
