@@ -13,3 +13,6 @@ with a limitation in boto/s3.
 v5.1 - Fix for a bug where we only ever returned 10 results because
 elasticsearch paginates by default.  Added option to be able to configure
 and default to a more reasonable number.
+v6 - Improve metadata validation and error messages. Default immutable on
+metadata properties if it is not there. Ignore additional properties on
+metadata.
