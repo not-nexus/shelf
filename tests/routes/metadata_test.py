@@ -31,7 +31,7 @@ class MetadataTest(FunctionalTestBase):
             .put(data=meta_utils.send_meta(), headers=self.auth)
         self.assert_metadata_matches("/test/artifact/dir/dir2/dir3/nest-test/_meta")
 
-    def test_put_metadata_default_immutable(self):
+    def test_put_metadata_default_immutable_ignore_extra_properties(self):
         metadata = {
             "version": {
                 "value": "1"
@@ -41,7 +41,8 @@ class MetadataTest(FunctionalTestBase):
                 "name": "FAKENAME"
             },
             "otherThing": {
-                "value": "test"
+                "value": "test",
+                "somRandomThing": "iHaveAComplexCuzIGetIgnored"
             }
         }
         expect_metadata = meta_utils.get_meta(name="nest-test", path="/test/artifact/dir/dir2/dir3/nest-test")
@@ -119,12 +120,12 @@ class MetadataTest(FunctionalTestBase):
             .post(data=meta_utils.get_meta_item(), headers=self.auth)
         self.assert_metadata_matches("/test/artifact/test/_meta")
 
-    def test_post_metadata_item_default_immutable_ignore_name(self):
+    def test_post_metadata_item_default_immutable_ignore_extra(self):
         self.route_tester \
             .metadata_item() \
             .route_params(bucket_name="test", path="test", item="tag2") \
             .expect(201, {"immutable": False, "name": "tag2", "value": "value"}) \
-            .post(data={"value": "value", "name": "FAKE"}, headers=self.auth)
+            .post(data={"value": "value", "name": "FAKE", "randomThing": "someRandomThing"}, headers=self.auth)
 
     def test_post_existing_metadata_item(self):
         self.route_tester \

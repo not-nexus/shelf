@@ -85,8 +85,15 @@ class Mapper(object):
         """
         mapped_metadata_property = deepcopy(metadata_property)
 
+        # Defaulting immutable
         if mapped_metadata_property.get("immutable") is None:
             mapped_metadata_property["immutable"] = False
+
+        # Grabbing only the values we care about.
+        mapped_metadata_property = self.create_cloud_property(
+            mapped_metadata_property["value"],
+            mapped_metadata_property["immutable"]
+        )
 
         return mapped_metadata_property
 
