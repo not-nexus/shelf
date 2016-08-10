@@ -53,7 +53,7 @@ def get_artifact_meta(container, bucket_name, path):
 
 @artifact.route("/<bucket_name>/artifact/<path:path>/_meta", methods=["PUT"])
 @decorators.foundation_headers
-@decorators.decode_request
+@decorators.validate_request("schemas/request-metadata.json")
 def update_artifact_meta(container, bucket_name, path, data):
     manager = container.metadata.manager
     manager.try_update(data)
@@ -81,7 +81,7 @@ def get_metadata_property(container, bucket_name, path, item):
 
 @artifact.route("/<bucket_name>/artifact/<path:path>/_meta/<item>", methods=["POST", "PUT"])
 @decorators.foundation_headers
-@decorators.decode_request
+@decorators.validate_request("schemas/request-metadata-property.json")
 def create_metadata_property(container, bucket_name, path, item, data):
     manager = container.metadata.manager
     exists = (item in manager.metadata)
@@ -121,14 +121,18 @@ def delete_metadata_property(container, bucket_name, path, item):
 @artifact.route("/<bucket_name>/artifact/_search", methods=["POST"])
 @decorators.foundation
 def root_search(container, bucket_name):
-    response = search(container, container.request.get_json(silent=True, force=True))
+    data = container.request.get_json(silent=True, force=True)
+    response = search(container, data)
+
     return response
 
 
 @artifact.route("/<bucket_name>/artifact/<path:path>/_search", methods=["POST"])
 @decorators.foundation
 def path_search(container, bucket_name, path):
-    response = search(container, container.request.get_json(silent=True, force=True))
+    data = container.request.get_json(silent=True, force=True)
+    response = search(container, data)
+
     return response
 
 

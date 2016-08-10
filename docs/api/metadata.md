@@ -3,6 +3,11 @@ Metadata
 
 ####Our api supports mutable and immutable metadata for artifacts. You can request, update, create, and delete metadata and particular metdata items.
 
+Notes about metadata:
+* It is acceptable to send a request with the name duplicated in the metadata property object. The name within the metadata property object will be ignored. It will always use the one provided in the URL or in the case of a bulk update the one provided as the metadata property object's key.
+* It is also acceptable to send extra properties in the metadata. They will simply be ignored.
+* The property `immutable` is optional and defaulted to `false` if not provided.
+
 The following is an example of updating all metadata for an artifact. This will only overwrite mutable items. The response to this request is identical to doing a GET on the same route.
 
     PUT /bucket-name/artifact/hello-world/_meta
@@ -14,7 +19,6 @@ The following is an example of updating all metadata for an artifact. This will 
             "value": "never edit this stuff"
         },
          "tag1": {
-            "immutable": false,
             "value": "test"
         }
     }
@@ -98,12 +102,13 @@ You can request particular metadata items for an artifact.
 
 ----
 
-The following is an example of a PUT/POST request for a particular metadata item. The only difference between a POST and a PUT is that the latter will update existing mutable items.
+The following is an example of a PUT/POST request for a particular metadata item (reminder immutable is defaulted to false if not present).
+The only difference between a POST and a PUT is that the latter will update existing mutable items.
 
     POST /bucket-name/artifact/hello-world/_meta/tag2 HTTP/1.1
     Authorization: supersecuretoken=
 
-    {"immutable": false, "value": "edit this stuff"}
+    {"value": "edit this stuff"}
 
 And the response..
 
@@ -126,7 +131,7 @@ Since this is mutable, you are able to update this item with a PUT request.
     Server: Werkzeug/0.11.3 Python/2.7.10
     Date: Wed, 09 Mar 2016 22:23:00 GMT
 
-    {"immutable": false, "value": "edit this stuff"}
+    {"value": "edit this stuff with this stuff"}
 
 ----
 

@@ -1,4 +1,5 @@
 import pyshelf.utils as utils
+import json
 
 
 class SchemaValidator(object):
@@ -34,7 +35,12 @@ class SchemaValidator(object):
             Returns:
                 string: formatted error message.
         """
-        msg_list = [error_item.message for error_item in error.context]
-        msg = ", ".join(msg_list)
+        msg = None
+
+        if error.context:
+            msg_list = [error_item.message for error_item in error.context]
+            msg = ", ".join(msg_list)
+        else:
+            msg = "{0}. Failed on instance {1}.".format(error.message, json.dumps(error.instance))
 
         return msg
