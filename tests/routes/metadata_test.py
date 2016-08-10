@@ -31,6 +31,33 @@ class MetadataTest(FunctionalTestBase):
             .put(data=meta_utils.send_meta(), headers=self.auth)
         self.assert_metadata_matches("/test/artifact/dir/dir2/dir3/nest-test/_meta")
 
+    def test_put_metadata_default_immutable(self):
+        metadata = {
+            "version": {
+                "value": "1"
+            },
+            "tag": {
+                "value": "test",
+                "name": "FAKENAME"
+            },
+            "otherThing": {
+                "value": "test"
+            }
+        }
+        expect_metadata = meta_utils.get_meta(name="nest-test", path="/test/artifact/dir/dir2/dir3/nest-test")
+        expect_metadata["otherThing"] = {
+            "name": "otherThing",
+            "value": "test",
+            "immutable": False
+        }
+
+        self.route_tester \
+            .metadata() \
+            .route_params(bucket_name="test", path="dir/dir2/dir3/nest-test") \
+            .expect(200, expect_metadata) \
+            .put(data=metadata, headers=self.auth)
+        self.assert_metadata_matches("/test/artifact/dir/dir2/dir3/nest-test/_meta")
+
     def test_put_metadata_invalid_request_data(self):
         self.route_tester \
             .metadata() \
@@ -92,12 +119,12 @@ class MetadataTest(FunctionalTestBase):
             .post(data=meta_utils.get_meta_item(), headers=self.auth)
         self.assert_metadata_matches("/test/artifact/test/_meta")
 
-    def test_post_metadata_item_ignore_name(self):
+    def test_post_metadata_item_default_immutable_ignore_name(self):
         self.route_tester \
             .metadata_item() \
             .route_params(bucket_name="test", path="test", item="tag2") \
             .expect(201, {"immutable": False, "name": "tag2", "value": "value"}) \
-            .post(data={"value": "value", "name": "notName", "immutable": False}, headers=self.auth)
+            .post(data={"value": "value", "name": "FAKE"}, headers=self.auth)
 
     def test_post_existing_metadata_item(self):
         self.route_tester \
@@ -113,6 +140,14 @@ class MetadataTest(FunctionalTestBase):
             .route_params(bucket_name="test", path="test", item="tag2") \
             .expect(201, {"immutable": False, "name": "tag2", "value": "test"}) \
             .put(data=meta_utils.get_meta_item(), headers=self.auth)
+        self.assert_metadata_matches("/test/artifact/test/_meta")
+
+    def test_put_metadata_item_default_immutable(self):
+        self.route_tester \
+            .metadata_item() \
+            .route_params(bucket_name="test", path="test", item="tag2") \
+            .expect(201, {"immutable": False, "name": "tag2", "value": "test"}) \
+            .put(data={"value": "test"}, headers=self.auth)
         self.assert_metadata_matches("/test/artifact/test/_meta")
 
     def test_put_metadata_existing_item(self):

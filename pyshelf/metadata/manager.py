@@ -68,7 +68,9 @@ class Manager(object):
             Returns:
                 pyshelf.metadata.result.Result
         """
+        data = self.container.mapper.from_response(data)
         old_meta = copy.deepcopy(self.metadata)
+
         for key, val in old_meta.iteritems():
             new_meta = data.get(key)
 
@@ -143,6 +145,7 @@ class Manager(object):
 
     def _try_update_property_with_result(self, key, value, result):
         if not self.metadata.is_immutable(key):
+            value = self.container.mapper.from_response_property(value)
             self.metadata[key] = value
             self.write()
             result.value = value

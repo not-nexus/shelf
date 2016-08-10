@@ -1,3 +1,6 @@
+from copy import deepcopy
+
+
 class Mapper(object):
     def to_response(self, metadata):
         """
@@ -67,3 +70,39 @@ class Mapper(object):
             "value": value,
             "immutable": immutable
         }
+
+    def from_response_property(self, metadata_property):
+        """
+            Maps a metadata property from a response. At
+            this point it basically defaults immutable if it is
+            not there.
+
+            Args:
+                metadata_property(dict)
+
+            Returns:
+                dict
+        """
+        mapped_metadata_property = deepcopy(metadata_property)
+
+        if mapped_metadata_property.get("immutable") is None:
+            mapped_metadata_property["immutable"] = False
+
+        return mapped_metadata_property
+
+    def from_response(self, metadata):
+        """
+            Maps bulk metadata from response.
+
+            Args:
+                metadata(Dict{dict})
+
+            Returns:
+                Dict{dict}
+        """
+        mapped_metadata = deepcopy(metadata)
+
+        for key in mapped_metadata:
+            mapped_metadata[key] = self.from_response_property(mapped_metadata[key])
+
+        return mapped_metadata
