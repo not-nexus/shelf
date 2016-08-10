@@ -18,7 +18,7 @@ The following is an example of updating all metadata for an artifact. This will 
             "immutable": true,
             "value": "never edit this stuff"
         },
-         "tag1": {
+        "tag1": {
             "value": "test"
         }
     }
@@ -72,10 +72,11 @@ The following is a request and response for all metadata for a particular artifa
             "value": "cd62151eefb59da744549d26a79e2717",
             "immutable": true
         },
-         "tag": {
+        "tag": {
             "immutable": true,
              "value": "never edit this stuff"
-        }, "tag1": {
+        },
+        "tag1": {
             "immutable": true,
             "value": "test"
         }
