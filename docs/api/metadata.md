@@ -5,6 +5,7 @@ Metadata
 
 Notes about metadata:
 * It is acceptable to send a request with the name duplicated in the metadata property object. The name within the metadata property object will be ignored. It will always use the one provided in the URL or in the case of a bulk update the one provided as the metadata property object's key.
+* It is also acceptable to send extra properties in the metadata. They will simply be ignored.
 * The property `immutable` is optional and defaulted to `false` if not provided.
 
 The following is an example of updating all metadata for an artifact. This will only overwrite mutable items. The response to this request is identical to doing a GET on the same route.
