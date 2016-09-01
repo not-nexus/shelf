@@ -16,3 +16,7 @@ and default to a more reasonable number.
 v6 - Improve metadata validation and error messages. Default immutable on
 metadata properties if it is not there. Ignore additional properties on
 metadata.
+v6.1 - Sort blows up if metadata property that doesn't exist is sorted on.
+This was fixed in this release. Now it is sorted as None. Which results in
+results without the property that is being sorted on to be first in ASC sorts
+and last in DESC sorts.
