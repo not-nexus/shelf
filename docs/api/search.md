@@ -27,10 +27,10 @@ Sort criteria:
 * The sort criteria must start with the field name.
 * The default sort type is ascending. If multiple sort types are given the last is used.
 * With multi-sorts the first sort takes precedence.
-* If a property that does not exist is sorted on it is treated as None.
-    * Ex. if you sort on buildNumber and a result returned does not have a buildNumber
-    metadata property, this artifact will be returned first on an ASC search and last on a
-    DESC search.
+* If a property that does not exist is sorted on it is treated as `None`.
+    * Ex. if you sort on `buildNumber` and a result returned does not have a `buildNumber`
+    metadata property, this artifact will be returned first on an `ASC` search and last on a
+    `DESC` search.
 
 Limit:
 ------
