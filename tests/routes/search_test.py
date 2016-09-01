@@ -90,6 +90,27 @@ class SearchTest(FunctionalTestBase):
             }) \
             .post({}, headers=self.auth)
 
+    def test_sort_metadata_property_does_not_exist(self):
+        # Ensuring we don't blow up on a sort like this.
+        # This was a bug cataloged https://github.com/kyle-long/pyshelf/issues/61
+        # and changelog release v6.1
+        self.route_tester \
+            .search() \
+            .route_params(bucket_name="test", path="") \
+            .expect(204, headers={
+                "Link": [
+                    "</test/artifact/blah>; rel=\"item\"; title=\"artifact\"",
+                    "</test/artifact/a>; rel=\"item\"; title=\"artifact\"",
+                    "</test/artifact/zzzz>; rel=\"item\"; title=\"artifact\"",
+                    "</test/artifact/dir/dir2/Test>; rel=\"item\"; title=\"artifact\"",
+                    "</test/artifact/this/that/other>; rel=\"item\"; title=\"artifact\"",
+                    "</test/artifact/thing>; rel=\"item\"; title=\"artifact\"",
+                    "</test/artifact/test>; rel=\"item\"; title=\"artifact\"",
+                    "</test/artifact/dir/dir2/dir3/nest-test>; rel=\"item\"; title=\"artifact\""
+                ]
+            }) \
+            .post({"sort": "THINGS"}, headers=self.auth)
+
     def test_just_sort(self):
         self.route_tester \
             .search() \

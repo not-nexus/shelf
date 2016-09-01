@@ -1,6 +1,4 @@
 from distutils.version import LooseVersion
-from pyshelf.search.sort_type import SortType
-from pyshelf.search.sort_flag import SortFlag
 from pyshelf.search.type import Type as SearchType
 
 
@@ -17,8 +15,6 @@ class Formatter(object):
                                 all fields will be returned.
         """
         self.search_criteria = criteria.get("search")
-        # Sort criteria must be reversed to ensure first sort criteria takes precedence
-        self.sort_criteria = reversed(criteria.get("sort", []))
         self.search_results = search_results
         self.key_list = key_list
         self.version_search = self._get_version_search()
@@ -33,12 +29,15 @@ class Formatter(object):
         result_list = self._normalize_result_list(self.search_results.hits)
         filtered_results = self._filter_metadata(result_list)
         filtered_results = self._filter_metadata_properties(filtered_results)
-        return self._sort_results(filtered_results)
+        return filtered_results
 
     def _get_version_search(self):
         """
             Determines if a version search has been requested and stores the
             field and value if so for future result filtering.
+
+            Returns:
+                dict
         """
         version_search = {}
 
@@ -131,30 +130,6 @@ class Formatter(object):
             return filtered_list
 
         return filtered_results
-
-    def _sort_results(self, formatted_results):
-        """
-            Sorts results based on sort criteria.
-
-            Args:
-                formatted_results(List[dict]): Result set as formatted by self._filter_metadata.
-
-            Returns:
-                List[dict]: sorted results.
-        """
-        for criteria in self.sort_criteria:
-            reverse = False
-            if SortType.DESC == criteria["sort_type"]:
-                reverse = True
-
-            val = lambda k: k[criteria["field"]]["value"]
-
-            if criteria.get("flag_list") and SortFlag.VERSION in criteria.get("flag_list"):
-                formatted_results.sort(key=lambda k: LooseVersion(val(k)), reverse=reverse)
-            else:
-                formatted_results.sort(key=val, reverse=reverse)
-
-        return formatted_results
 
     def _normalize_result_list(self, result_list):
         """
