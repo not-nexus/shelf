@@ -90,6 +90,13 @@ class SearchTest(FunctionalTestBase):
             }) \
             .post({}, headers=self.auth)
 
+    def test_sort_no_metadata(self):
+        self.route_tester \
+            .search() \
+            .route_params(bucket_name="test", path="") \
+            .expect(204) \
+            .post({"sort": "THINGS"}, headers=self.auth)
+
     def test_just_sort(self):
         self.route_tester \
             .search() \
