@@ -142,17 +142,22 @@ class Formatter(object):
             Returns:
                 List[dict]: sorted results.
         """
+        # Function that sorts results. Returns None if field being sorted on does not exist.
+        # This causes results without the field that is being sorted by to be at the end
+        # of the sort results on a DESC sort and beginning of ASC sort.
+        # Used def as opposed to lambda because of my linter complained about assigning a lambda.
+        def sort(result):
+            return result.get(criteria["field"], {}).get("value")
+
         for criteria in self.sort_criteria:
             reverse = False
             if SortType.DESC == criteria["sort_type"]:
                 reverse = True
 
-            val = lambda k: k[criteria["field"]]["value"]
-
             if criteria.get("flag_list") and SortFlag.VERSION in criteria.get("flag_list"):
-                formatted_results.sort(key=lambda k: LooseVersion(val(k)), reverse=reverse)
+                formatted_results.sort(key=lambda k: LooseVersion(sort(k)), reverse=reverse)
             else:
-                formatted_results.sort(key=val, reverse=reverse)
+                formatted_results.sort(key=sort, reverse=reverse)
 
         return formatted_results
 
