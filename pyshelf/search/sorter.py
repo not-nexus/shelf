@@ -10,6 +10,7 @@ class Sorter(object):
 
             Args:
                 data(List[dict]): Data to sort using given sort criteria.
+                sort_criteria(schemas/sort-criteria.json): sort criteria.
 
             Returns:
                 List[dict]: sorted results.
