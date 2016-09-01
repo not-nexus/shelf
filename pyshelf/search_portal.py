@@ -10,6 +10,10 @@ class SearchPortal(object):
         This class is the link between the request/view and the search layer.
     """
     def __init__(self, container):
+        """
+            Args:
+                container(pyshelf.container.Container)
+        """
         self.container = container
         self.search_manager = self.container.search.manager
         self.search_parser = self.container.search_parser
@@ -38,7 +42,12 @@ class SearchPortal(object):
         criteria["search"].append(search_path)
 
         formatted_criteria = self.search_parser.from_request(criteria)
+        sort_criteria = formatted_criteria.get("sort", [])
         results = self.search_manager.search(formatted_criteria)
+
+        if sort_criteria:
+            results = self.container.search.sorter.sort(results, sort_criteria)
+
         artifact_list = self._list_artifacts(results, criteria.get("limit"))
         self.link_manager.assign_listing(artifact_list)
 

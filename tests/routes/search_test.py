@@ -90,41 +90,25 @@ class SearchTest(FunctionalTestBase):
             }) \
             .post({}, headers=self.auth)
 
-    def test_sort_no_metadata(self):
-        # Adding metadata tag THINGS to test artifact to ensure it comes first
-        # on DESC search.
-        self.route_tester \
-            .metadata_item() \
-            .route_params(bucket_name="test", path="test", item="THINGS") \
-            .expect(201) \
-            .put(data={"value": "just stuff"}, headers=self.auth)
-        self.assert_metadata_matches("/test/artifact/test/_meta")
-
-        link_list = [
-            "</test/artifact/test>; rel=\"item\"; title=\"artifact\"",
-            "</test/artifact/blah>; rel=\"item\"; title=\"artifact\"",
-            "</test/artifact/a>; rel=\"item\"; title=\"artifact\"",
-            "</test/artifact/zzzz>; rel=\"item\"; title=\"artifact\"",
-            "</test/artifact/dir/dir2/Test>; rel=\"item\"; title=\"artifact\"",
-            "</test/artifact/this/that/other>; rel=\"item\"; title=\"artifact\"",
-            "</test/artifact/thing>; rel=\"item\"; title=\"artifact\"",
-            "</test/artifact/dir/dir2/dir3/nest-test>; rel=\"item\"; title=\"artifact\""
-        ]
-
-        # test artifact is first result
+    def test_sort_metadata_property_does_not_exist(self):
+        # Ensuring we don't blow up on a sort like this.
+        # This was a bug cataloged AGI-1346 and changelog release v6.1
         self.route_tester \
             .search() \
             .route_params(bucket_name="test", path="") \
-            .expect(204, headers={"Link": link_list}) \
-            .post({"sort": "THINGS, DESC"}, headers=self.auth)
-
-        # test artifact is last result
-        link_list.append(link_list.pop(0))
-        self.route_tester \
-            .search() \
-            .route_params(bucket_name="test", path="") \
-            .expect(204, headers={"Link": link_list}) \
-            .post({"sort": "THINGS, ASC"}, headers=self.auth)
+            .expect(204, headers={
+                "Link": [
+                    "</test/artifact/blah>; rel=\"item\"; title=\"artifact\"",
+                    "</test/artifact/a>; rel=\"item\"; title=\"artifact\"",
+                    "</test/artifact/zzzz>; rel=\"item\"; title=\"artifact\"",
+                    "</test/artifact/dir/dir2/Test>; rel=\"item\"; title=\"artifact\"",
+                    "</test/artifact/this/that/other>; rel=\"item\"; title=\"artifact\"",
+                    "</test/artifact/thing>; rel=\"item\"; title=\"artifact\"",
+                    "</test/artifact/test>; rel=\"item\"; title=\"artifact\"",
+                    "</test/artifact/dir/dir2/dir3/nest-test>; rel=\"item\"; title=\"artifact\""
+                ]
+            }) \
+            .post({"sort": "THINGS"}, headers=self.auth)
 
     def test_just_sort(self):
         self.route_tester \
