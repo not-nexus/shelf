@@ -59,8 +59,8 @@ We are searching for any artifact named test in the requested bucket. Here is th
 
     HTTP/1.0 204 NO CONTENT
     Content-Type: text/html; charset=utf-8
-    Link: /bucket-name/artifact/test; rel=item; title=artifact
-    Link: /bucket-name/artifact/dir/test; rel=item; title=artifact
+    Link: </bucket-name/artifact/test>; rel="item"; title="artifact"
+    Link: </bucket-name/artifact/dir/test>; rel="item"; title="artifact"
     Content-Length: 0
     Server: Werkzeug/0.11.3 Python/2.7.10
     Date: Wed, 09 Mar 2016 21:51:40 GMT
@@ -88,10 +88,10 @@ Here is an example of a search with multiple sort criteria.
 
     HTTP/1.0 204 NO CONTENT
     Content-Type: text/html; charset=utf-8
-    Link: /bucket-name/artifact/application-dir/a; rel=item; title=artifact
-    Link: /bucket-name/artifact/application-dir/b; rel=item; title=artifact
-    Link: /bucket-name/artifact/application-dir/c; rel=item; title=artifact
-    Link: /bucket-name/artifact/application-dir/d; rel=item; title=artifact
+    Link: </bucket-name/artifact/application-dir/a>; rel="item"; title="artifact"
+    Link: </bucket-name/artifact/application-dir/b>; rel="item"; title="artifact"
+    Link: </bucket-name/artifact/application-dir/c>; rel="item"; title="artifact"
+    Link: </bucket-name/artifact/application-dir/d>; rel="item"; title="artifact"
     Content-Length: 0
     Server: Werkzeug/0.11.3 Python/2.7.10
     Date: Wed, 09 Mar 2016 21:51:40 GMT
