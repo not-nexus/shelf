@@ -26,7 +26,7 @@ For an artifact that represents a directory you will receive back header links f
     HTTP/1.0 204 NO CONTENT
     Content-Type: text/html; charset=utf-8
     Link: </bucket-name/artifact/dir/hello-world>; rel="item"; title="artifact"
-    Link: </bucket-name/artifact/dir/; rel="self"; title="a collection of metadata"
+    Link: </bucket-name/artifact/dir/; rel="self">; title="a collection of metadata"
     Content-Length: 0
     Server: Werkzeug/0.11.3 Python/2.7.10
     Date: Wed, 09 Mar 2016 21:51:40 GMT
