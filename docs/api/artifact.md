@@ -52,7 +52,8 @@ To get the same artifact back you can use get on the same path.
 
      HTTP/1.0 200 OK
      Content-Type: application/octet-stream
-     Link: </bucket-name/artifact/hello-world>; rel="self"; title="hello-world", </bucket-name/artifact/hello-world/_meta>; rel="metadata"; title="metadata"
+     Link: </bucket-name/artifact/hello-world>; rel="self"; title="hello-world"
+     Link: </bucket-name/artifact/hello-world/_meta>; rel="metadata"; title="metadata"
      Content-Length: 74
      Server: Werkzeug/0.11.2 Python/2.7.9
      Date: Sun, 20 Dec 2015 23:12:21 GMT
