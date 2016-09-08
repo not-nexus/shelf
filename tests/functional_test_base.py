@@ -122,6 +122,8 @@ class FunctionalTestBase(TestBase):
             Args:
                 resource_url(basestring): The full path to the resource from the APIs
                     perspective
+                bucket_name(basestring): Optional.  The name of the bucket the artifact
+                    will be stored in.
 
             Raises:
                 AssertionError
