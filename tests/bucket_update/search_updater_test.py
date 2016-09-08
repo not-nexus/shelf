@@ -43,7 +43,7 @@ class SearchUpdaterTest(TestBase):
         # then manually delete it in S3 and then run bucket-update
         # really really quick.
         self.search_wrapper.refresh_index()
-
+        
         # Running actual code
         runner = self.container.search_updater
         runner.run()
@@ -52,6 +52,29 @@ class SearchUpdaterTest(TestBase):
         # search and cloud
         self.assert_metadata_matches(add_builder.identity.resource_url)
         self.assert_metadata_matches(update_search_builder.identity.resource_url)
+
+        # This should have been deleted
+        should_be_deleted = self.search_wrapper.get_metadata(delete_builder.identity.search)
+        self.assertEqual(None, should_be_deleted)
+    
+    def test_multiple_in_same_directory(self):
+        delete_builder = None
+        for index in range(1, 100):
+            builder = self.create_metadata_builder() \
+                .property("version", index) \
+                .resource_url("/test/artifact/image/{0}".format(index))
+            if index == 50: 
+                delete_builder = builder
+            else:
+                self.add_cloud(builder)
+                self.add_cloud_artifact(builder)
+
+            self.add_search(builder)
+
+        self.search_wrapper.refresh_index()
+        
+        runner = self.container.search_updater
+        runner.run()
 
         # This should have been deleted
         should_be_deleted = self.search_wrapper.get_metadata(delete_builder.identity.search)
