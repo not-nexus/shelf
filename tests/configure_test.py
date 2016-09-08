@@ -114,9 +114,13 @@ class ConfigureTest(pyproctor.TestBase):
             self.run_app_config()
 
     def test_configure_app(self):
+        dirname_mock = Mock(return_value="dir")
+        pyproctor.MonkeyPatcher.patch(os.path, "dirname", dirname_mock)
         self.app.logger = Mock()
+        configure.app_config = Mock()
         configure.app(self.app)
         log_level = logging.getLevelName("DEBUG")
         calls = self.app.logger.addHandler.mock_calls
         self.assertEqual(1, len(calls))
         self.app.logger.setLevel.assert_called_with(log_level)
+        configure.app_config.assert_called_with({}, "dir/../config.yaml")
