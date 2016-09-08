@@ -13,20 +13,20 @@ class SearchUpdaterTest(TestBase):
         # metadata only in the cloud should be added to search
         add_builder = self.create_metadata_builder() \
             .property("test", "test") \
-            .resource_url("/test/artifact/kyle-test/add")
+            .resource_url("/test-refname/artifact/kyle-test/add")
         self.add_cloud(add_builder)
         self.add_cloud_artifact(add_builder)
 
         # metadata only in the search layer should be deleted.
         delete_builder = self.create_metadata_builder() \
-            .resource_url("/test/artifact/lyle-test/delete-me")
+            .resource_url("/test-refname/artifact/lyle-test/delete-me")
 
         self.add_search(delete_builder)
 
         # metadata in both should get updated
         update_search_builder = self.create_metadata_builder() \
             .property("lol", "not-lol") \
-            .resource_url("/test/artifact/jyle-test/needs-update")
+            .resource_url("/test-refname/artifact/jyle-test/needs-update")
 
         update_cloud_builder = update_search_builder \
             .copy() \
@@ -50,31 +50,8 @@ class SearchUpdaterTest(TestBase):
 
         # These two artifacts should have identity metadata in both
         # search and cloud
-        self.assert_metadata_matches(add_builder.identity.resource_url)
-        self.assert_metadata_matches(update_search_builder.identity.resource_url)
-
-        # This should have been deleted
-        should_be_deleted = self.search_wrapper.get_metadata(delete_builder.identity.search)
-        self.assertEqual(None, should_be_deleted)
-    
-    def test_multiple_in_same_directory(self):
-        delete_builder = None
-        for index in range(1, 100):
-            builder = self.create_metadata_builder() \
-                .property("version", index) \
-                .resource_url("/test/artifact/image/{0}".format(index))
-            if index == 50: 
-                delete_builder = builder
-            else:
-                self.add_cloud(builder)
-                self.add_cloud_artifact(builder)
-
-            self.add_search(builder)
-
-        self.search_wrapper.refresh_index()
-        
-        runner = self.container.search_updater
-        runner.run()
+        self.assert_metadata_matches(add_builder.identity.resource_url, "test")
+        self.assert_metadata_matches(update_search_builder.identity.resource_url, "test")
 
         # This should have been deleted
         should_be_deleted = self.search_wrapper.get_metadata(delete_builder.identity.search)

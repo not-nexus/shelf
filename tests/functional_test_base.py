@@ -110,7 +110,7 @@ class FunctionalTestBase(TestBase):
 
         return self._metadata_comparator
 
-    def assert_metadata_matches(self, resource_url):
+    def assert_metadata_matches(self, resource_url, bucket_name=None):
         """
             Makes the assumption that mock_s3 has been
             enabled (done in configure_moto).
@@ -126,7 +126,18 @@ class FunctionalTestBase(TestBase):
             Raises:
                 AssertionError
         """
-        self.metadata_comparator.compare(resource_url)
+        if not bucket_name:
+            identity = ResourceIdentity(resource_url)
+            for bucket_config in FunctionalTestBase.CONFIG["buckets"]:
+                # identity.bucket_name is actually reference name.
+                # TODO: Rename this.
+                if identity.bucket_name == bucket_config["referenceName"]:
+                    bucket_name = bucket_config["name"]
+
+        if not bucket_name:
+            self.fail("bucket_name was not provided and we failed to look it up via FunctionalTestBase.CONFIG")
+
+        self.metadata_comparator.compare(resource_url, bucket_name)
 
     @classmethod
     def setUpClass(cls):
