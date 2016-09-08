@@ -25,12 +25,6 @@ class DuplicateArtifactError(CloudStorageException):
         super(DuplicateArtifactError, self).__init__(message, ErrorCode.DUPLICATE_ARTIFACT)
 
 
-class InvalidNameError(CloudStorageException):
-    def __init__(self, name):
-        message = "The artifact name provided is not allowable. Please remove leading underscores."
-        super(InvalidNameError, self).__init__(message, ErrorCode.INVALID_ARTIFACT_NAME)
-
-
 class BucketConfigurationNotFound(CloudStorageException):
     def __init__(self, bucket_name):
         message = "Could not find configuration for bucket {0}".format(bucket_name)
