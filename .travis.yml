@@ -13,3 +13,10 @@ before_script:
 script: coverage run --source pyshelf/ -m unittest discover -p *_test.py tests -b
 after_success:
     - codecov
+notifications:
+    email:
+        recipients:
+            - andygertjejansen@outlook.com
+            - uilwen@gmail.com
+        on_success: always
+        on_failure: always
