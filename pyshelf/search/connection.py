@@ -55,9 +55,6 @@ class Connection(Elasticsearch):
         """
         self._parsed_url = urlparse(self.connection_string)
 
-        if not self._parsed_url.scheme:
-            self._parsed_url.scheme = "http"
-
     def _init_connection(self, access_key=None, secret_key=None, region=None):
         """
             Configures Elasticsearch connection object.
