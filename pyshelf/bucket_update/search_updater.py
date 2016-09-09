@@ -58,8 +58,11 @@ class SearchUpdater(object):
             all_id_list = all_id_list + bulk_update.keys()
 
         self.logger.info("Deleting anything in search that is not in this list {0}".format(pformat(all_id_list)))
-        self.update_manager.remove_unlisted_documents_per_bucket(all_id_list, self.container.config["name"])
-        self.logger.info("Update of bucket {0} has been completed".format(self.container.config["name"]))
+        deleted = self.update_manager.remove_unlisted_documents_per_bucket(all_id_list, self.container.config["referenceName"])
+        self.logger.info("Update of reference name {0} has been completed.  Deleted {1} documents.".format(
+            self.container.config["referenceName"],
+            deleted
+        ))
 
     def add_artifact_metadata(self, path, bulk_update):
         """

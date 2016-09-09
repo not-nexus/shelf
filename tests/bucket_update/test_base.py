@@ -16,7 +16,7 @@ class TestBase(FunctionalTestBase):
             "elasticsearch": FunctionalTestBase.CONFIG["elasticsearch"],
             "logLevel": logging.INFO,
             "chunkSize": 10,
-            "referenceName": "test"
+            "referenceName": "test-refname"
         }
 
         self.logger = self.create_logger()
