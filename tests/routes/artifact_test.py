@@ -81,6 +81,14 @@ class ArtifactTest(FunctionalTestBase):
                 ]
             })
 
+    def test_head_request_on_artifact(self):
+        self.artifact_head_request("/test", 200, headers={
+            "Link": [
+                "</test/artifact/test>; rel=\"self\"; title=\"artifact\"",
+                "</test/artifact/test/_meta>; rel=\"related\"; title=\"metadata\""
+            ]
+        })
+
     def test_head_no_permissions(self):
         self.artifact_head_request("dir/test", 401)
 

@@ -18,14 +18,6 @@ def get_path(container, bucket_name, path):
     return response
 
 
-@artifact.route("/<bucket_name>/artifact/<path:path>", methods=["HEAD"])
-@decorators.foundation
-def get_links(container, bucket_name, path):
-    container.link_manager.assign_single(container.request.path)
-    response = container.context_response_mapper.to_response(None, 204)
-    return response
-
-
 @artifact.route("/<bucket_name>/artifact/<path:path>", methods=["POST"])
 @decorators.foundation_headers
 def upload_artifact(container, bucket_name, path):
