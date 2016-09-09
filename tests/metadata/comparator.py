@@ -31,9 +31,9 @@ class Comparator(object):
     def index(self):
         return self._es_connection_parts.path[1:]
 
-    def compare(self, resource_url):
+    def compare(self, resource_url, bucket_name):
         identity = ResourceIdentity(resource_url)
-        cloud_portal = self.factory.create_cloud_portal(identity.bucket_name)
+        cloud_portal = self.factory.create_cloud_portal(bucket_name)
         cloud_metadata = cloud_portal.load(identity.cloud_metadata)
         if not cloud_metadata:
             self.fail("Failed to find metadata in cloud for {0}".format(identity.cloud_metadata))

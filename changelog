@@ -20,3 +20,6 @@ v6.1 - Sort blows up if metadata property that doesn't exist is sorted on.
 This was fixed in this release. Now it is sorted as None. Which results in
 results without the property that is being sorted on to be first in ASC sorts
 and last in DESC sorts.
+v6.2 - Fixed a bug with bulk update for the search layer where nothing was being
+deleted because it was using the bucket name in the path instead of the
+reference name (which is how it is stored).
