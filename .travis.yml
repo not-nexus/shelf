@@ -19,5 +19,3 @@ notifications:
             - andygertjejansen@outlook.com
             - uilwen@gmail.com
             - fidian@rumkin.com
-        on_success: always
-        on_failure: always
