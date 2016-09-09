@@ -21,6 +21,15 @@ def get_permissions_readonly():
           - '/*'""".format(VALID_KEY)
 
 
+def get_permissions_no_name():
+    return """
+        token: {0}
+        write:
+          - ''
+        read:
+          - '/*'""".format(VALID_KEY)
+
+
 def get_permissions_func_test():
     return """
         name: 'Andy Gertjejansen'

@@ -8,7 +8,7 @@ class Factory(object):
     def __init__(self, logger):
         self.logger = logger
 
-    def create_fake_container(self, bucket_name):
+    def create_fake_container(self, bucket_name=None):
         # Trailing comma in the tuple is important otherwise it is interpretted
         # as a grouping and just returns the type "object"
         fake_container = type("FakeMetadataContainer", (object,), {})()

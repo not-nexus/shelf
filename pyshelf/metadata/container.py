@@ -1,5 +1,4 @@
 from pyshelf.metadata.mapper import Mapper
-from pyshelf.metadata.wrapper import Wrapper
 from pyshelf.metadata.manager import Manager
 from pyshelf.metadata.yaml_codec import YamlCodec
 from pyshelf.metadata.bucket_container import BucketContainer
@@ -15,13 +14,6 @@ class Container(object):
         self._manager = None
         self._yaml_codec = None
         self._bucket_container = None
-
-    def create_wrapper(self, metadata):
-        """
-            Returns:
-                pyshelf.metadata.wrapper.Wrapper
-        """
-        return Wrapper(metadata)
 
     @property
     def mapper(self):

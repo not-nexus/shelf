@@ -1,6 +1,4 @@
 import pyproctor
-import logging
-import sys
 
 
 class TestBase(pyproctor.TestBase):

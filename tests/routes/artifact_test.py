@@ -82,7 +82,7 @@ class ArtifactTest(FunctionalTestBase):
             })
 
     def test_head_request_on_artifact(self):
-        self.artifact_head_request("/test", 200, headers={
+        self.artifact_head_request("/test", 204, headers={
             "Link": [
                 "</test/artifact/test>; rel=\"self\"; title=\"artifact\"",
                 "</test/artifact/test/_meta>; rel=\"related\"; title=\"metadata\""

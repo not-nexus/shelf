@@ -31,6 +31,19 @@ class MetadataTest(FunctionalTestBase):
             .put(data=meta_utils.send_meta(), headers=self.auth)
         self.assert_metadata_matches("/test/artifact/dir/dir2/dir3/nest-test/_meta")
 
+    def test_put_metadata_omit_property_ensure_it_is_deleted(self):
+        meta = meta_utils.send_meta()
+        del meta["version"]
+        expect_metadata = meta_utils.get_meta(name="nest-test", path="/test/artifact/dir/dir2/dir3/nest-test")
+        del expect_metadata["version"]
+
+        self.route_tester \
+            .metadata() \
+            .route_params(bucket_name="test", path="dir/dir2/dir3/nest-test") \
+            .expect(200, expect_metadata) \
+            .put(data=meta, headers=self.auth)
+        self.assert_metadata_matches("/test/artifact/dir/dir2/dir3/nest-test/_meta")
+
     def test_put_metadata_default_immutable_ignore_extra_properties(self):
         metadata = {
             "version": {
@@ -119,6 +132,13 @@ class MetadataTest(FunctionalTestBase):
             .expect(201, {"immutable": False, "name": "tag2", "value": "test"}) \
             .post(data=meta_utils.get_meta_item(), headers=self.auth)
         self.assert_metadata_matches("/test/artifact/test/_meta")
+
+    def test_put_metadata_item_immutable_error(self):
+        self.route_tester \
+            .metadata_item() \
+            .route_params(bucket_name="test", path="test", item="md5Hash") \
+            .expect(403, {"code": "forbidden", "message": "Cannot update immutable metadata."}) \
+            .put(data=meta_utils.get_meta_item(), headers=self.auth)
 
     def test_post_metadata_item_default_immutable_ignore_extra(self):
         self.route_tester \
