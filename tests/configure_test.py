@@ -116,8 +116,9 @@ class ConfigureTest(pyproctor.TestBase):
     def test_configure_app(self):
         dirname_mock = Mock(return_value="dir")
         pyproctor.MonkeyPatcher.patch(os.path, "dirname", dirname_mock)
+        app_config_mock = Mock()
+        pyproctor.MonkeyPatcher.patch(configure, "app_config", app_config_mock)
         self.app.logger = Mock()
-        configure.app_config = Mock()
         configure.app(self.app)
         log_level = logging.getLevelName("DEBUG")
         calls = self.app.logger.addHandler.mock_calls
