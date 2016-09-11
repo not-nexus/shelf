@@ -32,6 +32,8 @@ class ArtifactManager(object):
             Returns:
                 List[string]: List of artifacts for collection of artifacts.
         """
+        artifact_list = []
+
         with self.container.create_bucket_storage() as storage:
             if path[-1] != "/":
                 directory_path = path + "/"
@@ -47,7 +49,7 @@ class ArtifactManager(object):
             else:
                 self.link_manager.assign_single(path)
 
-            return artifact_list
+        return artifact_list
 
     def upload_artifact(self, path, file_storage):
         """

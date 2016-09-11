@@ -1,4 +1,3 @@
-from pyshelf.metadata.wrapper import Wrapper
 from pyshelf.metadata.result import Result
 from pyshelf.metadata.error_code import ErrorCode
 import copy
@@ -30,7 +29,7 @@ class Manager(object):
         """
         if not self._metadata:
             data = self.load()
-            self._metadata = Wrapper(data)
+            self._metadata = self.container.create_wrapper(data)
 
         return self._metadata
 
