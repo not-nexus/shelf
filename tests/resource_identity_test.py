@@ -1,5 +1,7 @@
 import pyproctor
 from pyshelf.resource_identity import ResourceIdentity
+from mock import Mock
+from pyshelf.resource_identity_factory import ResourceIdentityFactory
 
 
 class ResourceIdentityTest(pyproctor.TestBase):
@@ -61,3 +63,11 @@ class ResourceIdentityTest(pyproctor.TestBase):
         path = "_meta/lol/_meta"
         identity = ResourceIdentity(path)
         self.assertEqual([''], identity._part_list)
+
+    def test_resource_id_factory_from_cloud_id(self):
+        path_converter_mock = Mock()
+        path_converter_mock.from_cloud_metadata = Mock(return_value="ref/artifact/test/_metadata_test.yaml")
+        id_factory = ResourceIdentityFactory(path_converter_mock)
+        identity = id_factory.from_cloud_metadata_identifier("ref/artifact/test/_meta")
+        self.assertEqual("ref", identity.bucket_name)
+        self.assertEqual("/test", identity.artifact_path)

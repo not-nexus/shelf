@@ -5,6 +5,8 @@ import yaml
 import errno
 import copy
 from jsonschema import ValidationError
+from mock import Mock
+import logging
 
 
 class ConfigureTest(pyproctor.TestBase):
@@ -15,6 +17,7 @@ class ConfigureTest(pyproctor.TestBase):
         self.app.config = {}
 
     def tearDown(self):
+        super(ConfigureTest, self).tearDown()
         # This appears to be the most pythonic way to do it
         # instead of calling the os.path.exists.  Discussion
         # about it here:
@@ -109,3 +112,16 @@ class ConfigureTest(pyproctor.TestBase):
         self.write_config(config)
         with self.assertRaises(ValueError):
             self.run_app_config()
+
+    def test_configure_app(self):
+        dirname_mock = Mock(return_value="dir")
+        pyproctor.MonkeyPatcher.patch(os.path, "dirname", dirname_mock)
+        app_config_mock = Mock()
+        pyproctor.MonkeyPatcher.patch(configure, "app_config", app_config_mock)
+        self.app.logger = Mock()
+        configure.app(self.app)
+        log_level = logging.getLevelName("DEBUG")
+        calls = self.app.logger.addHandler.mock_calls
+        self.assertEqual(1, len(calls))
+        self.app.logger.setLevel.assert_called_with(log_level)
+        configure.app_config.assert_called_with({}, "dir/../config.yaml")

@@ -1,11 +1,7 @@
-from pyshelf.metadata.yaml_codec import YamlCodec
-from pyshelf.metadata.mapper import Mapper
-from pyshelf.metadata.cloud_portal import CloudPortal
 from pyshelf.resource_identity import ResourceIdentity
 from urlparse import urlparse
 from pyshelf.search.metadata import Metadata
 from elasticsearch import Elasticsearch
-from pyshelf.cloud.storage import Storage
 from tests.metadata.factory import Factory
 
 

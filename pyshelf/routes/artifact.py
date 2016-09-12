@@ -5,24 +5,28 @@ import pyshelf.response_map as response_map
 artifact = Blueprint("artifact", __name__)
 
 
-@artifact.route("/<bucket_name>/artifact/", methods=["GET"], defaults={"path": "/"})
-@artifact.route("/<bucket_name>/artifact/<path:path>", methods=["GET"])
+@artifact.route("/<bucket_name>/artifact/", methods=["GET", "HEAD"], defaults={"path": "/"})
+@artifact.route("/<bucket_name>/artifact/<path:path>", methods=["GET", "HEAD"])
 @decorators.foundation
 def get_path(container, bucket_name, path):
-    stream = container.artifact_manager.get_artifact(path)
+    """
+        Flask automatically maps HEAD requests to GET endpoint. We added it to the list of methods
+        to be more explicit. We handle it differently to avoid initiating the downloading of an
+        artifact as it is unnecessary.
+    """
+    content = None
     status_code = 204
-    if stream:
+
+    if container.request.method == "HEAD":
+        container.artifact_manager.assign_artifact_links(path)
+    else:
+        content = container.artifact_manager.get_artifact(path)
+
+    if content:
         status_code = 200
 
-    response = container.context_response_mapper.to_response(stream, status_code)
-    return response
+    response = container.context_response_mapper.to_response(content, status_code)
 
-
-@artifact.route("/<bucket_name>/artifact/<path:path>", methods=["HEAD"])
-@decorators.foundation
-def get_links(container, bucket_name, path):
-    container.link_manager.assign_single(container.request.path)
-    response = container.context_response_mapper.to_response(None, 204)
     return response
 
 

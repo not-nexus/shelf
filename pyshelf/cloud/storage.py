@@ -43,6 +43,22 @@ class Storage(object):
         stream = StreamIterator(key)
         return stream
 
+    def artifact_exists(self, artifact_name):
+        """
+            Ensures artifact exists. This just wraps `self._get_key` which
+            uses `bucket.get_key` from boto. Boto does a HEAD request to
+            validate an artifact exists and returns None if it does not,
+            a `Key` object if it does. Our `_get_key` function raises an
+            `ArtifactNotFoundError` if get_key returns `None`.
+
+            Args:
+                artifact_name: Path to artifact in question.
+
+            Raises:
+                ArtifactNotFoundError
+        """
+        self._get_key(artifact_name)
+
     def upload_artifact(self, artifact_name, file_storage):
         """
             Uploads an artifact. If directory does not exist in path it will be created.

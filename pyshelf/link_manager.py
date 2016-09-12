@@ -31,9 +31,6 @@ class LinkManager(object):
                 rel_type = "collection"
                 title = "a collection of artifacts"
 
-            if resource_path == self.request.path:
-                rel_type = "self"
-
             self._add_link(resource_path, rel_type, title)
 
     def _add_link(self, path, rel_type, title):

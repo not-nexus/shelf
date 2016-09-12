@@ -14,6 +14,26 @@ class ArtifactManager(object):
                 pyshelf.cloud.StreamIterator|None
         """
         content = None
+        artifact_list = self.assign_artifact_links(path)
+
+        if not artifact_list:
+            with self.container.create_bucket_storage() as storage:
+                content = storage.get_artifact(path)
+
+        return content
+
+    def assign_artifact_links(self, path):
+        """
+            Assigns links for an artifact or collection or artifacts.
+
+            Args:
+                path(string): path or name of artifact.
+
+            Returns:
+                List[string]: List of artifacts for collection of artifacts.
+        """
+        artifact_list = []
+
         with self.container.create_bucket_storage() as storage:
             if path[-1] != "/":
                 directory_path = path + "/"
@@ -21,15 +41,20 @@ class ArtifactManager(object):
                 directory_path = path
 
             artifact_list = storage.get_directory_contents(directory_path, recursive=False)
-            if len(artifact_list) > 0:
+
+            if artifact_list:
                 self.container.logger.debug("Resource {0} is assumed to be a directory.".format(directory_path))
                 artifact_path_list = [artifact.name for artifact in artifact_list]
                 self.link_manager.assign_listing(artifact_path_list)
             else:
-                content = storage.get_artifact(path)
-                self.link_manager.assign_single(content.key.name)
+                # Artifact requested is not a directory so we want to
+                # make sure it exists before assigning the links or going further.
+                # If artifact does not exists an exception will be thrown and mapped
+                # to a 404 response.
+                storage.artifact_exists(path)
+                self.link_manager.assign_single(path)
 
-        return content
+        return artifact_list
 
     def upload_artifact(self, path, file_storage):
         """

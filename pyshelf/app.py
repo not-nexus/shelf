@@ -15,10 +15,7 @@ def generic_exception_handler(error):
     """
     response = None
     app.logger.exception(error)
-    if isinstance(error, CloudStorageException):
-        response = response_map.map_exception(error)
-    else:
-        response = response_map.create_500(msg="Internal server error")
+    response = response_map.map_exception(error)
 
     return response
 
