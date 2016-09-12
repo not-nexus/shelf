@@ -47,6 +47,11 @@ class ArtifactManager(object):
                 artifact_path_list = [artifact.name for artifact in artifact_list]
                 self.link_manager.assign_listing(artifact_path_list)
             else:
+                # Artifact requested is not a directory so we want to
+                # make sure it exists before assigning the links or going further.
+                # If artifact does not exists an exception will be thrown and mapped
+                # to a 404 response.
+                storage.artifact_exists(path)
                 self.link_manager.assign_single(path)
 
         return artifact_list
