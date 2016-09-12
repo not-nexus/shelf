@@ -89,6 +89,9 @@ class ArtifactTest(FunctionalTestBase):
             ]
         })
 
+    def test_head_request_no_artifact(self):
+        self.artifact_head_request("/LOL_DOES-nOtExist", 404)
+
     def test_head_no_permissions(self):
         self.artifact_head_request("dir/test", 401)
 
