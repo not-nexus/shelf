@@ -26,3 +26,6 @@ reference name (which is how it is stored).
 v6.3 - Fixed a bug similar to v6.1 but this only effected version searches.
 Version sorts required returning "0" when the property being sorted on
 was not there.
+v7.0 - In this release we got test coverage up 100%!! We changed
+HEAD requests on artifacts to avoid downloading artifacts. We also
+properly install pyproctor in the dev requirements file no longer using git.
