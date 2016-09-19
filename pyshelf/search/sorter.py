@@ -20,15 +20,23 @@ class Sorter(object):
         # of the sort results on a DESC sort and beginning of ASC sort.
         # Used def as opposed to lambda because of my linter complained about assigning a lambda.
         def standard_sort(result):
-            return result.get(criteria["field"], {}).get("value")
+            item = result.get(criteria["field"], {})
+            value = item.get("value")
+
+            return value
 
         # This sort only differs in two ways from the above. Rather then returning the default
         # `None` it returns "0" as this creates the proper sort order. Secondly, it uses
         # distutils.version.LooseVersion to facilitate the version sort.
         def version_sort(result):
-            version = LooseVersion(result.get(criteria["field"], {}).get("value", "0"))
+            value = standard_sort(result)
 
-            return version
+            if value is None:
+                value = "0"
+
+            loose_version = LooseVersion(value)
+
+            return loose_version
 
         # Criteria for sorting is reversed so the order is respected.
         # Basically the method we are using to search must started with the last
