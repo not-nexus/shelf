@@ -19,8 +19,24 @@ class Sorter(object):
         # This causes results without the field that is being sorted by to be at the end
         # of the sort results on a DESC sort and beginning of ASC sort.
         # Used def as opposed to lambda because of my linter complained about assigning a lambda.
-        def sort_result(result):
-            return result.get(criteria["field"], {}).get("value")
+        def standard_sort(result):
+            item = result.get(criteria["field"], {})
+            value = item.get("value")
+
+            return value
+
+        # This sort only differs in two ways from the above. Rather then returning the default
+        # `None` it returns "0" as this creates the proper sort order. Secondly, it uses
+        # distutils.version.LooseVersion to facilitate the version sort.
+        def version_sort(result):
+            value = standard_sort(result)
+
+            if value is None:
+                value = "0"
+
+            loose_version = LooseVersion(value)
+
+            return loose_version
 
         # Criteria for sorting is reversed so the order is respected.
         # Basically the method we are using to search must started with the last
@@ -32,9 +48,11 @@ class Sorter(object):
             if SortType.DESC == criteria["sort_type"]:
                 reverse = True
 
+            sort_func = standard_sort
+
             if criteria.get("flag_list") and SortFlag.VERSION in criteria.get("flag_list"):
-                data.sort(key=lambda k: LooseVersion(sort_result(k)), reverse=reverse)
-            else:
-                data.sort(key=sort_result, reverse=reverse)
+                sort_func = version_sort
+
+            data.sort(key=sort_func, reverse=reverse)
 
         return data
