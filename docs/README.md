@@ -11,3 +11,5 @@ Other
 
 * [Bulk Update](bulk-update.md) - Rebuild search index from scratch.
 * [Advanced Search Examples](api/advanced-search-examples.md) - More complicated searching strategies.
+* [Limitations](limitations.md) - What we do not support at the moment.
+* [Architectural Decisions](architectural-decisions.md) - Decisions and why we made them.
