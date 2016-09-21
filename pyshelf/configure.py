@@ -4,6 +4,7 @@ from pyshelf.request_log_filter import RequestLogFilter
 import yaml
 from pyshelf import utils
 import os
+from jsonschema import ValidationError
 
 
 def app_config(existing_config, config_path):
@@ -11,7 +12,13 @@ def app_config(existing_config, config_path):
         content = f.read()
         config = yaml.load(content)
 
-    utils.validate_json("schemas/config.json", config)
+    try:
+        utils.validate_json("schemas/config.json", config)
+    except ValidationError:
+        raise ValueError(
+            "{0} did not pass validation of json schema at schemas/config.json."
+            " The original ValidationError was swallowed to prevent logging of sensitive data.".format(config_path)
+        )
     utils.validate_bucket_config(config)
     config = utils.assign_reference_name(config)
 
