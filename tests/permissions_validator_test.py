@@ -23,7 +23,7 @@ class PermissionsValidatorTest(pyproctor.TestBase):
         container_mock = type(
             "FakeContainer",
             (),
-            {"request": request_mock, "create_bucket_storage": Mock(return_value=storage_mock), "logger": Mock()}
+            {"request": request_mock, "create_silent_bucket_storage": Mock(return_value=storage_mock), "logger": Mock()}
         )
         validator = PermissionsValidator(container_mock())
         self.asserts.json_equals(self.permissions_no_name, validator.permissions)
