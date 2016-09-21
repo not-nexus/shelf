@@ -14,7 +14,7 @@ Documentation
 
 [You can view a list of our capabilities and how to use the API provided here.](docs/README.md)
 
-[Here you can view a list of our limitations](docs/limitations.md)
+[Here you can view a list of our limitations.](docs/limitations.md)
 
 Configuration
 -------------
