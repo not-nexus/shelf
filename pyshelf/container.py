@@ -6,6 +6,7 @@ from pyshelf.context_response_mapper import ContextResponseMapper
 from pyshelf.link_manager import LinkManager
 from pyshelf.link_mapper import LinkMapper
 from pyshelf.metadata.container import Container as MetadataContainer
+from pyshelf.null_handler import NullHandler
 from pyshelf.path_converter import PathConverter
 from pyshelf.permissions_validator import PermissionsValidator
 from pyshelf.resource_identity_factory import ResourceIdentityFactory
@@ -62,7 +63,7 @@ class Container(object):
         """
         if not self._silent_logger:
             self._silent_logger = logging.Logger("SilentLogger")
-            self._silent_logger.addHandler(logging.NullHandler())
+            self._silent_logger.addHandler(NullHandler())
 
         return self._silent_logger
 
