@@ -68,6 +68,34 @@ class ConfigureTest(pyproctor.TestBase):
         self.run_app_config()
         self.assertEqual(expected, self.app.config)
 
+    def test_app_config_invalid_yaml(self):
+        contents = """
+        elasticsearch:
+        connectionString: http://localhost:9200/metadata
+        bulkUpdateLogDirectory: /var/log/bucket-update
+        buckets:
+        -
+            name: 1
+            referenceName: 1
+            accessKey: fake
+            {{ # this is invalid
+            secretKey: fake
+
+        """
+        with open(self.path, "w") as f:
+            f.write(contents)
+
+        with self.assertRaises(ValueError) as context:
+            self.run_app_config()
+
+        self.assertEqual("{0} contained invalid yaml".format(self.path), context.exception.message)
+
+    def test_app_config_config_does_not_exist(self):
+        with self.assertRaises(ValueError) as context:
+            self.run_app_config()
+
+        self.assertEqual("Could not find or open file {0}".format(self.path), context.exception.message)
+
     def test_config_validation_error(self):
         config = {
             "buckets": [
