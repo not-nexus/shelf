@@ -8,9 +8,14 @@ from jsonschema import ValidationError
 
 
 def app_config(existing_config, config_path):
-    with open(config_path, "r") as f:
-        content = f.read()
-        config = yaml.load(content)
+    try:
+        with open(config_path, "r") as f:
+            content = f.read()
+            config = yaml.load(content)
+    except IOError:
+        raise ValueError("Could not find or open file {0}".format(config_path))
+    except:
+        raise ValueError("{0} contained invalid yaml".format(config_path))
 
     try:
         utils.validate_against_schema("schemas/config.json", config)
