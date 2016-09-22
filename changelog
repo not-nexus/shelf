@@ -33,3 +33,5 @@ v8.0 - Changes to make sure we don't log sensitive information and added
 retries to elasticsearch if the connection times out.
 v8.1 - logging.NullHandler doesn't exist in python 2.6.6 so we added our
 own.
+v8.2 - Found a case where if the yaml was invalid for the config it would
+log sensitive data.  I now swallow that error as well.
