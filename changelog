@@ -29,3 +29,5 @@ was not there.
 v7.0 - In this release we got test coverage up 100%!! We changed
 HEAD requests on artifacts to avoid downloading artifacts. We also
 properly install pyproctor in the dev requirements file no longer using git.
+v8.0 - Changes to make sure we don't log sensitive information and added
+retries to elasticsearch if the connection times out.
