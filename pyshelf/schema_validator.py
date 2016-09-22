@@ -20,7 +20,7 @@ class SchemaValidator(object):
                 jsonschema.SchemaError: if schema is flawed
         """
         try:
-            utils.validate_json(schema_path, data)
+            utils.validate_against_schema(schema_path, data)
         except Exception as e:
             self.logger.exception(e)
             # Log then reraise exception

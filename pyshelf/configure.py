@@ -13,7 +13,7 @@ def app_config(existing_config, config_path):
         config = yaml.load(content)
 
     try:
-        utils.validate_json("schemas/config.json", config)
+        utils.validate_against_schema("schemas/config.json", config)
     except ValidationError:
         raise ValueError(
             "{0} did not pass validation of json schema at schemas/config.json."
