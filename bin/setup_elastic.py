@@ -1,7 +1,7 @@
 from pyshelf.search.metadata import Metadata
-import yaml
 import os
 from pyshelf.search.connection import Connection
+from pyshelf import configure
 
 
 class ElasticInitializer(object):
@@ -23,10 +23,8 @@ class ElasticInitializer(object):
         connection.indices.refresh(index=connection.es_index)
 
     def read_config(self):
-        with open(self.config_path) as cf:
-            config = yaml.load(cf.read())
-
-            return config.get("elasticsearch")
+        config = {}
+        configure.app_config(config, self.config_path)
 
 bin_dir = os.path.dirname(os.path.realpath(__file__))
 config_path = os.path.realpath(os.path.join(bin_dir, "../config.yaml"))
