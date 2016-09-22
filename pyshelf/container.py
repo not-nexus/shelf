@@ -1,19 +1,20 @@
-from uuid import uuid4
-from pyshelf.permissions_validator import PermissionsValidator
-from pyshelf.cloud.factory import Factory
 from pyshelf.artifact_manager import ArtifactManager
-from pyshelf.search.container import Container as SearchContainer
-from pyshelf.search_portal import SearchPortal
-from pyshelf.link_mapper import LinkMapper
+from pyshelf.artifact_path_builder import ArtifactPathBuilder
+from pyshelf.cloud.factory import Factory
 from pyshelf.context import Context
 from pyshelf.context_response_mapper import ContextResponseMapper
 from pyshelf.link_manager import LinkManager
-from pyshelf.artifact_path_builder import ArtifactPathBuilder
-from pyshelf.search_parser import SearchParser
-from pyshelf.resource_identity_factory import ResourceIdentityFactory
+from pyshelf.link_mapper import LinkMapper
 from pyshelf.metadata.container import Container as MetadataContainer
-from pyshelf.schema_validator import SchemaValidator
 from pyshelf.path_converter import PathConverter
+from pyshelf.permissions_validator import PermissionsValidator
+from pyshelf.resource_identity_factory import ResourceIdentityFactory
+from pyshelf.schema_validator import SchemaValidator
+from pyshelf.search.container import Container as SearchContainer
+from pyshelf.search_parser import SearchParser
+from pyshelf.search_portal import SearchPortal
+from uuid import uuid4
+import logging
 
 
 class Container(object):
@@ -44,10 +45,26 @@ class Container(object):
         self._metadata = None
         self._schema_validator = None
         self._path_converter = None
+        self._silent_logger = None
+        self._silent_cloud_factory = None
 
     @property
     def logger(self):
         return self.app.logger
+
+    @property
+    def silent_logger(self):
+        """
+            A logger that will not log anything.
+
+            Returns:
+                logging.Logger
+        """
+        if not self._silent_logger:
+            self._silent_logger = logging.Logger("SilentLogger")
+            self._silent_logger.addHandler(logging.NullHandler())
+
+        return self._silent_logger
 
     @property
     def permissions_validator(self):
@@ -62,6 +79,20 @@ class Container(object):
             self._cloud_factory = Factory(self.app.config, self.app.logger)
 
         return self._cloud_factory
+
+    @property
+    def silent_cloud_factory(self):
+        """
+            A factory whose objects it creates will not
+            log anything.
+
+            Returns:
+                pyshelf.cloud.factory.Factory
+        """
+        if not self._silent_cloud_factory:
+            self._silent_cloud_factory = Factory(self.app.config, self.silent_logger)
+
+        return self._silent_cloud_factory
 
     @property
     def artifact_manager(self):
@@ -79,6 +110,16 @@ class Container(object):
 
     def create_bucket_storage(self):
         return self.cloud_factory.create_storage(self.bucket_name)
+
+    def create_silent_bucket_storage(self):
+        """
+            Just like a normal Storage object except that the logger will
+            not log anything.
+
+            Returns:
+                pyshelf.cloud.storage.Storage
+        """
+        return self.silent_cloud_factory.create_storage(self.bucket_name)
 
     @property
     def link_mapper(self):

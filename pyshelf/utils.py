@@ -20,7 +20,7 @@ def create_path(*args):
     return full_path
 
 
-def validate_json(schema_path, data):
+def validate_against_schema(schema_path, data):
     """
         Validates data against schema.
 

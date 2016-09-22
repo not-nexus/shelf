@@ -4,7 +4,6 @@ import os
 import yaml
 import errno
 import copy
-from jsonschema import ValidationError
 from mock import Mock
 import logging
 
@@ -87,7 +86,7 @@ class ConfigureTest(pyproctor.TestBase):
             }
         }
         self.write_config(config)
-        with self.assertRaises(ValidationError):
+        with self.assertRaises(ValueError):
             self.run_app_config()
 
     def test_config_value_error(self):

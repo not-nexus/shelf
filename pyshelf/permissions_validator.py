@@ -29,7 +29,7 @@ class PermissionsValidator(object):
             self.authorization_token = authorization
 
             if authorization:
-                with self.container.create_bucket_storage() as storage:
+                with self.container.create_silent_bucket_storage() as storage:
                     try:
                         raw_permissions = storage.get_artifact_as_string("_keys/" + authorization)
                     except ArtifactNotFoundError:
