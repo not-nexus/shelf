@@ -31,3 +31,5 @@ HEAD requests on artifacts to avoid downloading artifacts. We also
 properly install pyproctor in the dev requirements file no longer using git.
 v8.0 - Changes to make sure we don't log sensitive information and added
 retries to elasticsearch if the connection times out.
+v8.1 - logging.NullHandler doesn't exist in python 2.6.6 so we added our
+own.
