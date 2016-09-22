@@ -67,11 +67,19 @@ class Connection(Elasticsearch):
 
         if access_key and secret_key and region:
             auth = AWSRequestsAuth(aws_access_key=access_key,
-                       aws_secret_access_key=secret_key,
-                       aws_host=self.es_host,
-                       aws_region=region,
-                       aws_service="es")
+                                   aws_secret_access_key=secret_key,
+                                   aws_host=self.es_host,
+                                   aws_region=region,
+                                   aws_service="es")
 
         hosts = [{"host": self.es_host, "port": self.es_port}]
-        super(Connection, self).__init__(hosts=hosts, http_auth=auth, use_ssl=ssl,
-                verify_certs=ssl, connection_class=RequestsHttpConnection)
+        super(Connection, self).__init__(
+            hosts=hosts,
+            http_auth=auth,
+            use_ssl=ssl,
+            verify_certs=ssl,
+            # So that if the connection times out it will attempt
+            # to connect again.
+            retry_on_timeout=True,
+            connection_class=RequestsHttpConnection
+        )
