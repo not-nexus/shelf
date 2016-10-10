@@ -68,10 +68,10 @@ class PermissionsValidator(object):
             if "/_search" in path:
                 allowed = True
             elif method in PermissionsValidator.REQUIRES_WRITE and "/artifact/" in path:
-                write = self.permissions.get("write")
+                write = self.permissions.get("write", [])
                 allowed = self._get_access(write)
             elif method in PermissionsValidator.REQUIRES_READ and "/artifact/" in path:
-                read = self.permissions.get("read")
+                read = self.permissions.get("read", [])
                 allowed = self._get_access(read)
 
         return allowed
@@ -81,7 +81,7 @@ class PermissionsValidator(object):
             Determines if key associated with request has proper access.
 
             Args:
-                permissions(dict): Permissions loaded from _keys directory of requested bucket.
+                permissions(list): Permissions loaded from _keys directory of requested bucket.
 
             Returns:
                 bool: sufficient permissions.
@@ -97,4 +97,5 @@ class PermissionsValidator(object):
         for p in permissions:
             if fnmatch(artifact_path, p) or fnmatch(dir_path, p):
                 return True
+
         return access

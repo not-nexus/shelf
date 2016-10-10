@@ -31,6 +31,13 @@ class MetadataTest(FunctionalTestBase):
             .put(data=meta_utils.send_meta(), headers=self.auth)
         self.assert_metadata_matches("/test/artifact/dir/dir2/dir3/nest-test/_meta")
 
+    def test_put_metadata_no_write(self):
+        self.route_tester \
+            .metadata() \
+            .route_params(bucket_name="test", path="dir/dir2/dir3/nest-test") \
+            .expect(401, self.RESPONSE_401) \
+            .put(data=meta_utils.send_meta(), headers=self.read_only_auth)
+
     def test_put_metadata_omit_property_ensure_it_is_deleted(self):
         meta = meta_utils.send_meta()
         del meta["version"]

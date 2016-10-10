@@ -219,12 +219,29 @@ class FunctionalTestBase(TestBase):
         self.search_wrapper.add_metadata(resource_id.search, data)
 
     def create_auth_key(self):
-        self.auth = utils.auth_header()
-        key_name = "_keys/{0}".format(self.auth["Authorization"])
+        # TODO: Revamp the permissions utils stuff. I am not
+        # a fan of how it works.
+        self.auth = self.setup_auth_token(utils.VALID_TOKEN)
+        self.read_only_auth = self.setup_auth_token(utils.READ_ONLY_TOKEN)
+
+    def setup_auth_token(self, token):
+        """
+            Sets up authorization key file in both functional test buckets.
+
+            Args:
+                token: string
+
+            Returns:
+                dict: Authorization header.
+        """
+        key_name = "_keys/{0}".format(token)
+        permissions = utils.get_permissions(token)
         auth_key = Key(self.test_bucket, key_name)
-        auth_key.set_contents_from_string(utils.get_permissions_func_test())
+        auth_key.set_contents_from_string(permissions)
         auth_bucket2 = Key(self.boto_connection.get_bucket("bucket2"), key_name)
-        auth_bucket2.set_contents_from_string(utils.get_permissions_func_test())
+        auth_bucket2.set_contents_from_string(permissions)
+
+        return utils.auth_header(token)
 
     def create_metadata_builder(self):
         return MetadataBuilder()
