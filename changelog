@@ -37,3 +37,6 @@ v8.2 - Found a case where if the yaml was invalid for the config it would
 log sensitive data.  I now swallow that error as well.
 v8.3 - Found one last case where it could log something sensitive in
 setup_elastic.py.  Now using common functionality.
+v8.4 - Fixed bug where if a permission was not specified at all (instead of as
+an empty array) it would blow up with a 500 instead of just giving a
+permission denied.
