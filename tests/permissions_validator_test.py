@@ -26,22 +26,37 @@ class PermissionsValidatorTest(pyproctor.TestBase):
         super(PermissionsValidatorTest, self).tearDown()
         self.moto_s3.stop()
 
-    def test_permissions_artifact_name(self):
+    def mock_container(self):
         container_mock = Mock()
-        storage_mock = Mock()
-        storage_mock.__enter__ = Mock(return_value=storage_mock)
-        storage_mock.__exit__ = Mock(return_value=False)
-        storage_mock.get_artifact_as_string = Mock(return_value=yaml.dump(self.permissions_no_name))
+        self.storage_mock = Mock()
+        self.storage_mock.__enter__ = Mock(return_value=self.storage_mock)
+        self.storage_mock.__exit__ = Mock(return_value=False)
+        artifact_path = "/test/artifact/test/file"
         request_mock = Mock()
         request_mock.headers = {"Authorization": "TOKEN"}
+        request_mock.method = "POST"
+        request_mock.path = artifact_path
+        resource_id = Mock()
+        resource_id.artifact_path = "/test/file"
+        resource_id.cloud = artifact_path
         container_mock = type(
             "FakeContainer",
             (),
-            {"request": request_mock, "create_silent_bucket_storage": Mock(return_value=storage_mock), "logger": Mock()}
+            {
+                "request": request_mock,
+                "create_silent_bucket_storage": Mock(return_value=self.storage_mock),
+                "logger": Mock(),
+                "resource_identity": resource_id
+            }
         )
-        validator = PermissionsValidator(container_mock())
+        return container_mock()
+
+    def test_permissions_artifact_name(self):
+        container_mock = self.mock_container()
+        self.storage_mock.get_artifact_as_string = Mock(return_value=yaml.dump(self.permissions_no_name))
+        validator = PermissionsValidator(container_mock)
         self.asserts.json_equals(self.permissions_no_name, validator.permissions)
-        storage_mock.get_artifact_as_string.assert_called_with("_keys/TOKEN")
+        self.storage_mock.get_artifact_as_string.assert_called_with("_keys/TOKEN")
         container_mock.logger.warning.assert_called_with("Name was not set in authorization token.")
 
     def test_no_artifact_not_logged(self):
@@ -100,3 +115,14 @@ class PermissionsValidatorTest(pyproctor.TestBase):
         # Make sure it didn't log the token.  The fact that it doesn't log
         # anything else is incidental.
         self.assertEqual("", catcher.output)
+
+    def test_no_write(self):
+        permissions_no_write = {
+            "name": "wick",
+            "token": "TOKEN",
+            "read": ["/*"]
+        }
+        container_mock = self.mock_container()
+        self.storage_mock.get_artifact_as_string = Mock(return_value=yaml.dump(permissions_no_write))
+        validator = PermissionsValidator(container_mock)
+        self.assertFalse(validator.allowed())
