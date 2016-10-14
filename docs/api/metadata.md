@@ -123,7 +123,7 @@ And the response..
 
 Since this is mutable, you are able to update this item with a PUT request.
 
-    PUT /bucket-name/artifact/hello-world/_meta/md5Hash HTTP/1.1
+    PUT /bucket-name/artifact/hello-world/_meta/tag2 HTTP/1.1
     Authorization: supersecuretoken=
 
     HTTP/1.0 201 CREATED
@@ -133,6 +133,20 @@ Since this is mutable, you are able to update this item with a PUT request.
     Date: Wed, 09 Mar 2016 22:23:00 GMT
 
     {"value": "edit this stuff with this stuff"}
+
+----
+
+The following is an example of a DELETE request for a particular metadata item. (Reminder: immutable items cannot be deleted.)
+
+    DELETE /bucket-name/artifact/hello-world/_meta/tag2 HTTP/1.1
+    Authorization: supersecuretoken=
+
+And the response...
+
+    HTTP/1.0 204 NO CONTENT
+    Content-Length: 0
+    Server: Werkzeug/0.11.3 Python/2.7.10
+    Date: Wed, 09 Mar 2016 22:23:00 GMT
 
 ----
 
