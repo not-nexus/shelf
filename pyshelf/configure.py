@@ -1,10 +1,12 @@
-import logging
-import sys
-from pyshelf.request_log_filter import RequestLogFilter
-import yaml
-from pyshelf import utils
-import os
 from jsonschema import ValidationError
+from pyshelf import utils
+from pyshelf.health import Health
+from pyshelf.request_log_filter import RequestLogFilter
+import logging
+import multiprocessing
+import os
+import sys
+import yaml
 
 
 def app_config(existing_config, config_path):
@@ -33,6 +35,11 @@ def app_config(existing_config, config_path):
     existing_config.update(config)
 
 
+def app_health(app):
+    manager = multiprocessing.Manager()
+    app.health = Health(app.config, manager)
+
+
 def logger(logger, log_level_name):
     log_level_name = log_level_name.upper()
     log_level = logging.getLevelName(log_level_name)
@@ -48,5 +55,6 @@ def logger(logger, log_level_name):
 def app(app):
     config_path = os.path.dirname(os.path.realpath(__file__)) + "/../config.yaml"
     app_config(app.config, config_path)
+    app_health(app)
     log_level_name = app.config.get("logLevel", "DEBUG")
     logger(app.logger, log_level_name)
