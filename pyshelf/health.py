@@ -17,7 +17,7 @@ class Health(object):
         self.elasticsearch = True
 
     def _get_ref_name_list(self):
-        all_list = [x["refName"] for x in self.config["buckets"]]
+        all_list = [x["referenceName"] for x in self.config["buckets"]]
 
         return all_list
 

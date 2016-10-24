@@ -9,19 +9,19 @@ class HealthTest(TestBase):
         self.config = {
             "buckets": [
                 {
-                    "refName": "hi"
+                    "referenceName": "hi"
                 },
                 {
-                    "refName": "hello"
+                    "referenceName": "hello"
                 },
                 {
-                    "refName": "other"
+                    "referenceName": "other"
                 },
                 {
-                    "refName": "four",
+                    "referenceName": "four",
                 },
                 {
-                    "refName": "five"
+                    "referenceName": "five"
                 }
             ]
         }
@@ -79,7 +79,7 @@ class HealthTest(TestBase):
         # I have to inflate the number of total buckets so that
         # I can have more than 0% but less than 20% failing.
         self.config["buckets"].append({
-            "refName": "six"
+            "referenceName": "six"
         })
 
         self.run_get_status(
