@@ -1,7 +1,9 @@
-import flask
-from pyshelf.routes.artifact import artifact
-import pyshelf.response_map as response_map
 from pyshelf.cloud.cloud_exceptions import CloudStorageException
+from pyshelf.json_response import JsonResponse
+from pyshelf.routes.artifact import artifact
+import flask
+import pyshelf.response_map as response_map
+from pyshelf.health_status import HealthStatus
 
 app = flask.Flask(__name__)
 app.register_blueprint(artifact)
@@ -31,4 +33,27 @@ def format_response(response):
         data = response.get_data()
         data += "\n"
         response.set_data(data)
+    return response
+
+
+@app.route("/canary", methods=["HEAD", "GET"])
+def canary():
+    h = app.health
+    status = h.get_status()
+    response = JsonResponse()
+
+    if "GET" == flask.request.method:
+        body = {
+            "status": status,
+            "search": h.elasticsearch,
+            "failingStorage": sorted(h.get_failing_ref_name_list()),
+            "passingStorage": sorted(h.get_passing_ref_name_list())
+        }
+
+        response.set_data(body)
+
+    if HealthStatus.OK != status:
+        # Service Unavailable.
+        response.status_code = 503
+
     return response

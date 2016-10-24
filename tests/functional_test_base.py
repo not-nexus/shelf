@@ -17,6 +17,7 @@ from pyshelf.error_code import ErrorCode
 from pyproctor import MonkeyPatcher
 from mock import Mock
 from pyshelf.metadata.initializer import Initializer
+from pyshelf.health import Health
 
 
 class FunctionalTestBase(TestBase):
@@ -81,6 +82,7 @@ class FunctionalTestBase(TestBase):
 
     def setUp(self):
         self.app = app
+        self.app.health = Health(self.app.config)
         self.setup_elastic()
         self.setup_moto()
         self.setup_metadata()
