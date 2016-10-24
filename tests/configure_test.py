@@ -154,7 +154,9 @@ class ConfigureTest(pyproctor.TestBase):
         configure.app_config.assert_called_with({}, "dir/../config.yaml")
 
     def test_configure_app_health(self):
-        app = type("FakeApp", (object,), {})
+        app = type("FakeApp", (object,), {
+            "config": {}
+        })
         configure.app_health(app)
 
         # Rather than test the exact value that gets assigned, I will just

@@ -35,7 +35,7 @@ def app_config(existing_config, config_path):
 
 
 def app_health(app):
-    app.health = Health()
+    app.health = Health(app.config)
 
 
 def logger(logger, log_level_name):
