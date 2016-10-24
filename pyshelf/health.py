@@ -13,13 +13,10 @@ class Health(object):
         self.refNames = {}
         self.elasticsearch = True
 
-    def _get_ref_name_list(self, success):
-        ref_name_list = []
-        for name, passing in self.refNames.iteritems():
-            if passing == success:
-                ref_name_list.append(name)
+    def _get_ref_name_list(self):
+        all_list = [x["refName"] for x in self.config["buckets"]]
 
-        return ref_name_list
+        return all_list
 
     def get_failing_ref_name_list(self):
         """
@@ -29,7 +26,12 @@ class Health(object):
             Returns:
                 List(basestring)
         """
-        return self._get_ref_name_list(False)
+        ref_name_list = []
+        for name, passing in self.refNames.iteritems():
+            if not passing:
+                ref_name_list.append(name)
+
+        return ref_name_list
 
     def get_passing_ref_name_list(self):
         """
@@ -42,7 +44,7 @@ class Health(object):
                 List(basestring)
         """
         failing_list = self.get_failing_ref_name_list()
-        all_list = [x["refName"] for x in self.config["buckets"]]
+        all_list = self._get_ref_name_list()
         passing_set = set(all_list) - set(failing_list)
 
         # So that everything returns a list.
