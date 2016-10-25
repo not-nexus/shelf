@@ -36,8 +36,8 @@ def format_response(response):
     return response
 
 
-@app.route("/canary", methods=["HEAD", "GET"])
-def canary():
+@app.route("/health", methods=["HEAD", "GET"])
+def health():
     h = app.health
     status = h.get_status()
     response = JsonResponse()

@@ -2,10 +2,10 @@ from tests.functional_test_base import FunctionalTestBase
 from pyshelf.health_status import HealthStatus
 
 
-class CanaryTest(FunctionalTestBase):
+class HealthTest(FunctionalTestBase):
     def test_ok(self):
         self.route_tester \
-            .canary() \
+            .health() \
             .expect(
                 200,
                 {
@@ -33,7 +33,7 @@ class CanaryTest(FunctionalTestBase):
             .post(headers=self.auth)
 
         self.route_tester \
-            .canary() \
+            .health() \
             .expect(
                 503,
                 {

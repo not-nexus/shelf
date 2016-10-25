@@ -1,5 +1,5 @@
 from tests.route_tester.artifact import Artifact
-from tests.route_tester.canary import Canary
+from tests.route_tester.health import Health
 from tests.route_tester.metadata import Metadata
 from tests.route_tester.metadata_item import MetadataItem
 from tests.route_tester.search import Search
@@ -22,5 +22,5 @@ class Tester(object):
     def search(self):
         return Search(self.test, self.test_client)
 
-    def canary(self):
-        return Canary(self.test, self.test_client)
+    def health(self):
+        return Health(self.test, self.test_client)
