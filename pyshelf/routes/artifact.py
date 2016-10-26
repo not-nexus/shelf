@@ -1,6 +1,7 @@
 from flask import request, Blueprint
 from pyshelf.endpoint_decorators import decorators
 import pyshelf.response_map as response_map
+import requests
 
 artifact = Blueprint("artifact", __name__)
 
@@ -154,7 +155,13 @@ def search(container, criteria=None):
     if not criteria:
         criteria = {}
 
-    container.search_portal.search(criteria)
+    try:
+        container.search_portal.search(criteria)
+    except requests.ConnectionError as ex:
+        container.app.health.elasticsearch = False
+        raise ex
+
+    container.app.health.elasticsearch = True
 
     if container.context.has_error():
         response = response_map.map_context_error(container.context)
