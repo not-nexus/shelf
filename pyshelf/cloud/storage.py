@@ -154,6 +154,26 @@ class Storage(object):
         self.key_map[artifact_name] = key
         return key
 
+    def is_accessible(self):
+        """
+            Makes sure that the bucket we are trying to access is accessible. This covers three things.
+
+            1. The bucket we attempted to get was configured, but it doesn't actually exist.
+            2. The credentials configured for the bucket are invalid.
+            3. We could not connect to S3 for some reason.
+
+            Returns:
+                boolean True if bucket is fully accessible.
+        """
+        accessible = True
+
+        try:
+            self._get_bucket(self.bucket_name)
+        except BucketNotFoundError:
+            accessible = False
+
+        return accessible
+
     def _get_bucket(self, bucket_name):
         self.logger.debug("Attempting to get bucket {0}".format(bucket_name))
         bucket = self.conn.lookup(self.bucket_name)
