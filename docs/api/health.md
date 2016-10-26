@@ -27,9 +27,11 @@ The status is a property in the response body and as a special `X-Status` header
 Usage
 -----
 
-At any time you can get the health of the service via a `GET` or `HEAD` request. This endpoint does *not* require authentication. If the health check is successful, a 200 will be returned.
+At any time you can get the health of the service via a `GET` or `HEAD` request. This endpoint does *not* require authentication.
 
      GET /health HTTP/1.1
+
+If the health check is successful, a 200 will be returned.
 
      HTTP/1.0 200 OK
      Content-Type: application/json
