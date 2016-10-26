@@ -3,7 +3,6 @@ import json
 from pyshelf.error_code import ErrorCode
 from pyshelf.get_container import get_container
 import pyshelf.response_map as response_map
-from pyshelf.cloud.cloud_exceptions import BucketNotFoundError
 from jsonschema import ValidationError
 
 """
@@ -38,6 +37,7 @@ class EndpointDecorators(object):
             func,
             self.injectcontainer,
             self.logtraffic,
+            self.validate_storage_accessible,
             self.auth
         )
 
@@ -48,6 +48,7 @@ class EndpointDecorators(object):
             func,
             self.injectcontainer,
             self.logheaders,
+            self.validate_storage_accessible,
             self.auth
         )
         return wrapper
@@ -133,6 +134,21 @@ class EndpointDecorators(object):
 
         return wrapper
 
+    def validate_storage_accessible(self, func):
+        @functools.wraps(func)
+        def wrapper(container, *args, **kwargs):
+            with container.create_silent_bucket_storage() as storage:
+                if storage.is_accessible():
+                    # In case it was previously failing, and it now passed.
+                    container.app.health.refNames[container.bucket_name] = True
+                else:
+                    container.app.health.refNames[container.bucket_name] = False
+                    return response_map.create_500()
+
+            return func(container, *args, **kwargs)
+
+        return wrapper
+
     def auth(self, func):
         """
             Attempts to authenticate the request and make sure the user has
@@ -140,17 +156,14 @@ class EndpointDecorators(object):
         """
         @functools.wraps(func)
         def wrapper(container, *args, **kwargs):
-            try:
-                if not container.permissions_validator.allowed():
-                    response = None
-                    if container.context.has_error():
-                        response = response_map.map_context_error(container.context)
-                    else:
-                        response = response_map.create_401()
+            if not container.permissions_validator.allowed():
+                response = None
+                if container.context.has_error():
+                    response = response_map.map_context_error(container.context)
+                else:
+                    response = response_map.create_401()
 
-                    return response
-            except BucketNotFoundError as e:
-                return response_map.map_exception(e)
+                return response
 
             return func(container, *args, **kwargs)
 

@@ -152,3 +152,15 @@ class ConfigureTest(pyproctor.TestBase):
         self.assertEqual(1, len(calls))
         self.app.logger.setLevel.assert_called_with(log_level)
         configure.app_config.assert_called_with({}, "dir/../config.yaml")
+
+    def test_configure_app_health(self):
+        app = type("FakeApp", (object,), {
+            "config": {}
+        })
+        configure.app_health(app)
+
+        # Rather than test the exact value that gets assigned, I will just
+        # attempt to use the "health" dict the way I would normally.
+
+        self.assertEqual(True, app.health.elasticsearch)
+        app.health.refNames["hello"] = False

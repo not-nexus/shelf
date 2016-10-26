@@ -16,7 +16,11 @@ class Base(object):
     @property
     def endpoint(self):
         if not self._endpoint:
-            self._endpoint = self.route.format(**self.params)
+            self._endpoint = self.route
+
+            if self.params:
+                self._endpoint = self.route.format(**self.params)
+
             # This is specifically for the search route but I cannot see any draw
             # backs with having this here.
             if re.search("//", self._endpoint):
