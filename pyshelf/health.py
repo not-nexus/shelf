@@ -6,15 +6,26 @@ class Health(object):
         Responsible for storing and analyzing the health of the
         API.
     """
-    def __init__(self, config):
+    def __init__(self, config, shared_manager):
         """
             Args:
                 config(schemas/config.json) Must conform to schema with one additional rule:
                     refName is required to be set.
+                shared_manager(multiprocessing.Manager) This is used to stored data between
+                    different threads (if multiple threads exist).
         """
         self.config = config
-        self.refNames = {}
-        self.elasticsearch = True
+        self.namespace = shared_manager.Namespace()
+        self.namespace.elasticsearch = True
+        self.refNames = shared_manager.dict()
+
+    @property
+    def elasticsearch(self):
+        return self.namespace.elasticsearch
+
+    @elasticsearch.setter
+    def elasticsearch(self, value):
+        self.namespace.elasticsearch = value
 
     def _get_ref_name_list(self):
         all_list = [x["referenceName"] for x in self.config["buckets"]]
@@ -30,7 +41,8 @@ class Health(object):
                 List(basestring)
         """
         ref_name_list = []
-        for name, passing in self.refNames.iteritems():
+        for name in self.refNames.keys():
+            passing = self.refNames[name]
             if not passing:
                 ref_name_list.append(name)
 

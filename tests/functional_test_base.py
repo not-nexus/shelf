@@ -1,23 +1,24 @@
-from moto import mock_s3
-from pyshelf.app import app
-import pyshelf.configure as configure
-import boto
 from boto.s3.key import Key
-import yaml
-import tests.metadata_utils as meta_utils
-import tests.permission_utils as utils
-from tests.route_tester.tester import Tester
-from tests.search.test_wrapper import TestWrapper as SearchTestWrapper
+from mock import Mock
+from moto import mock_s3
+from pyproctor import MonkeyPatcher
+from pyshelf.app import app
+from pyshelf.error_code import ErrorCode
+from pyshelf.health import Health
+from pyshelf.metadata.initializer import Initializer
+from pyshelf.resource_identity import ResourceIdentity
 from pyshelf.search.container import Container as SearchContainer
 from tests.metadata.comparator import Comparator as MetadataComparator
-from pyshelf.resource_identity import ResourceIdentity
 from tests.metadata_builder import MetadataBuilder
+from tests.route_tester.tester import Tester
+from tests.search.test_wrapper import TestWrapper as SearchTestWrapper
 from tests.test_base import TestBase
-from pyshelf.error_code import ErrorCode
-from pyproctor import MonkeyPatcher
-from mock import Mock
-from pyshelf.metadata.initializer import Initializer
-from pyshelf.health import Health
+import boto
+import multiprocessing
+import pyshelf.configure as configure
+import tests.metadata_utils as meta_utils
+import tests.permission_utils as utils
+import yaml
 
 
 class FunctionalTestBase(TestBase):
@@ -82,7 +83,8 @@ class FunctionalTestBase(TestBase):
 
     def setUp(self):
         self.app = app
-        self.app.health = Health(self.app.config)
+        manager = multiprocessing.Manager()
+        self.app.health = Health(self.app.config, manager)
         self.setup_elastic()
         self.setup_moto()
         self.setup_metadata()

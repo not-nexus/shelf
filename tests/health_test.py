@@ -1,6 +1,7 @@
-from tests.test_base import TestBase
 from pyshelf.health import Health
 from pyshelf.health_status import HealthStatus
+from tests.test_base import TestBase
+import multiprocessing
 
 
 class HealthTest(TestBase):
@@ -25,7 +26,8 @@ class HealthTest(TestBase):
                 }
             ]
         }
-        self.health = Health(self.config)
+        manager = multiprocessing.Manager()
+        self.health = Health(self.config, manager)
 
     def test_get_failing_ref_name_list(self):
         self.health.refNames = {
