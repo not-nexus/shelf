@@ -68,7 +68,7 @@ class FunctionalTestBase(TestBase):
                 "secretKey": "test"
             },
             {
-                "name": "thisBucketDoesntExistLol",
+                "name": "this-bucket-doesnt-exist-lol",
                 "referenceName": "thisBucketDoesntExistLol",
                 "accessKey": "fail",
                 "secretKey": "fail"
@@ -236,14 +236,25 @@ class FunctionalTestBase(TestBase):
             Returns:
                 dict: Authorization header.
         """
+        self.add_auth_token(token, "test")
+        self.add_auth_token(token, "bucket2")
+        return utils.auth_header(token)
+
+    def add_auth_token(self, token, bucket_name):
+        """
+            Adds an auth token to the bucket represented by the
+            bucket_name provided.  Note: This token must be defined
+            in tests.permission_utils.get_permissions
+
+            Args:
+                token(string)
+                bucket_name(string)
+        """
         key_name = "_keys/{0}".format(token)
         permissions = utils.get_permissions(token)
-        auth_key = Key(self.test_bucket, key_name)
+        bucket = self.boto_connection.get_bucket(bucket_name)
+        auth_key = Key(bucket, key_name)
         auth_key.set_contents_from_string(permissions)
-        auth_bucket2 = Key(self.boto_connection.get_bucket("bucket2"), key_name)
-        auth_bucket2.set_contents_from_string(permissions)
-
-        return utils.auth_header(token)
 
     def create_metadata_builder(self):
         return MetadataBuilder()

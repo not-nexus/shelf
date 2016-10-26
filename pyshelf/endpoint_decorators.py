@@ -150,8 +150,17 @@ class EndpointDecorators(object):
 
                     return response
             except BucketNotFoundError as e:
+                # This error is a bit misnamed. It could mean one of three things.
+                # 1. The bucket we attempted to get was configured, but it doesn't actually exist.
+                # 2. The credentials configured for the bucket are invalid.
+                # 3. We could not connect to S3 for some reason.
+                #
+                # In each case we would like to fail the health for that bucket.
+                container.app.health.refNames[container.bucket_name] = False
                 return response_map.map_exception(e)
 
+            # In case it was previously failing, and it now passed.
+            container.app.health.refNames[container.bucket_name] = True
             return func(container, *args, **kwargs)
 
         return wrapper

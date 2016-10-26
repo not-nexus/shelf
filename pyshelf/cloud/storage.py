@@ -158,7 +158,15 @@ class Storage(object):
         self.logger.debug("Attempting to get bucket {0}".format(bucket_name))
         bucket = self.conn.lookup(self.bucket_name)
         if bucket is None:
-            self.logger.error("Bucket {0} does not exist".format(bucket_name))
+            # This scenario could be one of three things.
+            #
+            # 1. The bucket we attempted to get was configured, but it doesn't actually exist.
+            # 2. The credentials configured for the bucket are invalid.
+            # 3. We could not connect to S3 for some reason.
+            self.logger.error(
+                "Bucket {0} does not exist or we failed to authenticate with the provided credentials or we were "
+                "simply unable to connect to S3.".format(bucket_name)
+            )
             raise BucketNotFoundError(bucket_name)
         return bucket
 

@@ -1,9 +1,10 @@
 from mock import Mock
+from pyproctor import MonkeyPatcher
 from pyshelf.health_status import HealthStatus
 from pyshelf.search.manager import Manager as SearchManager
 from tests.functional_test_base import FunctionalTestBase
 import requests
-from pyproctor import MonkeyPatcher
+import tests.permission_utils as utils
 
 
 class HealthTest(FunctionalTestBase):
@@ -85,8 +86,6 @@ class HealthTest(FunctionalTestBase):
             .get()
 
     def test_failure_for_non_existent_bucket(self):
-        self.fail("Incomplete functionality.  Cannot test it yet")  # TODO: Remove this when other tasks are complete
-
         self.route_tester \
             .search() \
             .route_params(bucket_name="thisBucketDoesntExistLol", path="") \
@@ -106,6 +105,33 @@ class HealthTest(FunctionalTestBase):
                     "passingStorage": [
                         "b2",
                         "test",
+                    ]
+                }
+            ) \
+            .get()
+
+        # Now make it exist suddenly so we can see it fixes the health.
+        self.boto_connection.create_bucket("this-bucket-doesnt-exist-lol")
+        self.add_auth_token(utils.VALID_TOKEN, "this-bucket-doesnt-exist-lol")
+
+        self.route_tester \
+            .search() \
+            .route_params(bucket_name="thisBucketDoesntExistLol", path="") \
+            .expect(204) \
+            .post(headers=self.auth)
+
+        self.route_tester \
+            .health() \
+            .expect(
+                200,
+                {
+                    "status": HealthStatus.OK,
+                    "search": True,
+                    "failingStorage": [],
+                    "passingStorage": [
+                        "b2",
+                        "test",
+                        "thisBucketDoesntExistLol",
                     ]
                 }
             ) \
