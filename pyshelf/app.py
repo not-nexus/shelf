@@ -41,6 +41,7 @@ def health():
     h = app.health
     status = h.get_status()
     response = JsonResponse()
+    response.headers["X-Status"] = status
 
     if "GET" == flask.request.method:
         body = {

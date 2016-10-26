@@ -30,6 +30,9 @@ class HealthTest(FunctionalTestBase):
                         # decided to be healthy unless it failed to connect.
                         "thisBucketDoesntExistLol",
                     ]
+                },
+                {
+                    "X-Status": HealthStatus.OK
                 }
             ) \
             .get()
