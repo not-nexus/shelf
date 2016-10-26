@@ -71,7 +71,7 @@ class Health(object):
 
         percent_failing = float(failing_count) / float(len(all_list)) * 100
 
-        if percent_failing > 0:
+        if percent_failing > 0 and self.elasticsearch:
             if percent_failing < 20:
                 status = HealthStatus.WARNING
             else:

@@ -109,3 +109,15 @@ class HealthTest(TestBase):
             },
             HealthStatus.CRITICAL
         )
+
+    def test_elasticsearch_unhealthy_with_failing_buckets_less_than_20_percent(self):
+        self.config["buckets"].append({
+            "referenceName": "six"
+        })
+        self.run_get_status(
+            False,
+            {
+                "four": False,
+            },
+            HealthStatus.CRITICAL
+        )
