@@ -8,6 +8,12 @@ import tests.permission_utils as utils
 
 
 class HealthTest(FunctionalTestBase):
+    def assert_health_ok(self):
+        self.route_tester \
+            .health() \
+            .expect(200) \
+            .get()
+
     def test_ok(self):
         self.route_tester \
             .health() \
@@ -136,3 +142,21 @@ class HealthTest(FunctionalTestBase):
                 }
             ) \
             .get()
+
+    def test_bucket_not_configured_does_not_cause_a_failure(self):
+        self.route_tester \
+            .search() \
+            .route_params(bucket_name="some-not-configured-bucket", path="") \
+            .expect(404) \
+            .post(headers=self.auth)
+
+        self.assert_health_ok()
+
+    def test_artifact_not_found_does_not_cause_a_failure(self):
+        self.route_tester \
+            .artifact() \
+            .route_params(bucket_name="test", path="nada") \
+            .expect(404) \
+            .get(headers=self.auth)
+
+        self.assert_health_ok()
