@@ -1,6 +1,5 @@
 from pyshelf.json_response import JsonResponse
-from pyshelf.cloud.cloud_exceptions import BucketNotFoundError, ArtifactNotFoundError, \
-    DuplicateArtifactError, BucketConfigurationNotFound
+from pyshelf.cloud.cloud_exceptions import ArtifactNotFoundError, DuplicateArtifactError, BucketConfigurationNotFound
 from pyshelf.error_code import ErrorCode
 from pyshelf.metadata.error_code import ErrorCode as MetadataErrorCode
 
@@ -165,8 +164,6 @@ def map_exception(e):
         return create_404(e.error_code, e.message)
     elif isinstance(e, DuplicateArtifactError):
         return create_403(e.error_code, e.message)
-    elif isinstance(e, BucketNotFoundError):
-        return create_500()
     elif isinstance(e, BucketConfigurationNotFound):
         return create_404()
 
@@ -186,9 +183,12 @@ def map_context_error(context):
     if ErrorCode.INVALID_SEARCH_CRITERIA in context.errors:
         return create_400(ErrorCode.INVALID_SEARCH_CRITERIA, context.errors[ErrorCode.INVALID_SEARCH_CRITERIA])
     elif ErrorCode.INVALID_ARTIFACT_NAME in context.errors:
-        return create_403(ErrorCode.INVALID_ARTIFACT_NAME, "Artifact and directories names that BEGIN "
-                "with an underscore are reserved as private and cannot be accessed or created. This of "
-                "course exludes _search and _meta which are not part of the artifact path itself.")
+        return create_403(
+            ErrorCode.INVALID_ARTIFACT_NAME,
+            "Artifact and directories names that BEGIN "
+            "with an underscore are reserved as private and cannot be accessed or created. This of "
+            "course exludes _search and _meta which are not part of the artifact path itself."
+        )
     elif ErrorCode.INVALID_REQUEST_DATA_FORMAT in context.errors:
         return create_400(
             ErrorCode.INVALID_REQUEST_DATA_FORMAT,

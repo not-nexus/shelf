@@ -1,22 +1,24 @@
-from moto import mock_s3
-from pyshelf.app import app
-import pyshelf.configure as configure
-import boto
 from boto.s3.key import Key
-import yaml
-import tests.metadata_utils as meta_utils
-import tests.permission_utils as utils
-from tests.route_tester.tester import Tester
-from tests.search.test_wrapper import TestWrapper as SearchTestWrapper
+from mock import Mock
+from moto import mock_s3
+from pyproctor import MonkeyPatcher
+from pyshelf.app import app
+from pyshelf.error_code import ErrorCode
+from pyshelf.health import Health
+from pyshelf.metadata.initializer import Initializer
+from pyshelf.resource_identity import ResourceIdentity
 from pyshelf.search.container import Container as SearchContainer
 from tests.metadata.comparator import Comparator as MetadataComparator
-from pyshelf.resource_identity import ResourceIdentity
 from tests.metadata_builder import MetadataBuilder
+from tests.route_tester.tester import Tester
+from tests.search.test_wrapper import TestWrapper as SearchTestWrapper
 from tests.test_base import TestBase
-from pyshelf.error_code import ErrorCode
-from pyproctor import MonkeyPatcher
-from mock import Mock
-from pyshelf.metadata.initializer import Initializer
+import boto
+import multiprocessing
+import pyshelf.configure as configure
+import tests.metadata_utils as meta_utils
+import tests.permission_utils as utils
+import yaml
 
 
 class FunctionalTestBase(TestBase):
@@ -67,7 +69,7 @@ class FunctionalTestBase(TestBase):
                 "secretKey": "test"
             },
             {
-                "name": "thisBucketDoesntExistLol",
+                "name": "this-bucket-doesnt-exist-lol",
                 "referenceName": "thisBucketDoesntExistLol",
                 "accessKey": "fail",
                 "secretKey": "fail"
@@ -81,6 +83,8 @@ class FunctionalTestBase(TestBase):
 
     def setUp(self):
         self.app = app
+        manager = multiprocessing.Manager()
+        self.app.health = Health(self.app.config, manager)
         self.setup_elastic()
         self.setup_moto()
         self.setup_metadata()
@@ -234,14 +238,25 @@ class FunctionalTestBase(TestBase):
             Returns:
                 dict: Authorization header.
         """
+        self.add_auth_token(token, "test")
+        self.add_auth_token(token, "bucket2")
+        return utils.auth_header(token)
+
+    def add_auth_token(self, token, bucket_name):
+        """
+            Adds an auth token to the bucket represented by the
+            bucket_name provided.  Note: This token must be defined
+            in tests.permission_utils.get_permissions
+
+            Args:
+                token(string)
+                bucket_name(string)
+        """
         key_name = "_keys/{0}".format(token)
         permissions = utils.get_permissions(token)
-        auth_key = Key(self.test_bucket, key_name)
+        bucket = self.boto_connection.get_bucket(bucket_name)
+        auth_key = Key(bucket, key_name)
         auth_key.set_contents_from_string(permissions)
-        auth_bucket2 = Key(self.boto_connection.get_bucket("bucket2"), key_name)
-        auth_bucket2.set_contents_from_string(permissions)
-
-        return utils.auth_header(token)
 
     def create_metadata_builder(self):
         return MetadataBuilder()
