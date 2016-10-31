@@ -5,7 +5,7 @@ You can check the health of shelf by using the health endpoint.
 
 **IMPORTANT NOTE**: This endpoint ONLY verifies that external dependencies work. This means connection and authentication to the search(elasticsearch) and cloud(AWS S3) layers. This was a conscious decision. We do not plan to add any more robust checks in the future since the health check must be fast and we don't want to maintain something that becomes needlessly complex.
 
-Note: The way the [health endpoint was designed](../architectural-desicions.md) health is recorded when failures or successes happen instead of each time that the health endpoint is called. That means that it is possible (for instance in the event of an AWS outage and recovery) that the health endpoint would report failing when it was actually passing or vise versa. These types of discrepancies are cleaned up natually the next time the search or cloud layer is invoked for a particular bucket.
+Note: The way the [health endpoint was designed](../architectural-desicions.md) health is recorded when failures or successes happen instead of each time that the health endpoint is called. That means that it is possible (for instance in the event of an AWS outage and recovery) that the health endpoint would report failing when it was actually passing or vise versa. These types of discrepancies are cleaned up naturally the next time the search or cloud layer is invoked for a particular bucket.
 
 Response Properties
 -------------------
