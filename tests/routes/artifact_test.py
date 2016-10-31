@@ -15,6 +15,10 @@ class ArtifactTest(FunctionalTestBase):
             .get(headers=self.auth)
 
     def test_artifact_no_permissions(self):
+        """
+            This tests to make sure that if we did not give permissions to
+            a particular path, it will still give a 401 Unauthorized.
+        """
         self.route_tester \
             .artifact() \
             .route_params(bucket_name="test", path="dir/test") \
