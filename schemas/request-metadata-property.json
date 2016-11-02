@@ -8,6 +8,9 @@
                 },
                 {
                     "type": "integer"
+                },
+                {
+                    "type": "boolean"
                 }
             ]
         },
