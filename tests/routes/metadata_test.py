@@ -154,6 +154,27 @@ class MetadataTest(FunctionalTestBase):
             .expect(201, {"immutable": False, "name": "tag2", "value": "value"}) \
             .post(data={"value": "value", "name": "FAKE", "randomThing": "someRandomThing"}, headers=self.auth)
 
+    def test_post_metadata_boolean_flow_test(self):
+        self.route_tester \
+            .metadata_item() \
+            .route_params(bucket_name="test", path="test", item="tag2") \
+            .expect(201, {"immutable": False, "name": "tag2", "value": True}) \
+            .post(data={"value": True, "name": "tag2", "immutable": False}, headers=self.auth)
+
+        # Search to ensure boolean can be searched.
+        self.search_wrapper.refresh_index()
+        self.route_tester \
+            .search() \
+            .route_params(bucket_name="test", path="") \
+            .expect(204, headers={
+                "Link": [
+                    "</test/artifact/test>; rel=\"item\"; title=\"artifact\"",
+                ]
+            }) \
+            .post({
+                "search": "tag2=true"
+            }, headers=self.auth)
+
     def test_post_existing_metadata_item(self):
         self.route_tester \
             .metadata_item() \
