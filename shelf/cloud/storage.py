@@ -1,7 +1,7 @@
 from boto.s3.connection import S3Connection
 from boto.s3.key import Key
-from pyshelf.cloud.stream_iterator import StreamIterator
-from pyshelf.cloud.cloud_exceptions import ArtifactNotFoundError, BucketNotFoundError, DuplicateArtifactError
+from shelf.cloud.stream_iterator import StreamIterator
+from shelf.cloud.cloud_exceptions import ArtifactNotFoundError, BucketNotFoundError, DuplicateArtifactError
 
 
 class Storage(object):
@@ -33,13 +33,13 @@ class Storage(object):
                     to download.
 
             Returns:
-                pyshelf.cloud.stream_iterator.StreamIterator: A object that
+                shelf.cloud.stream_iterator.StreamIterator: A object that
                     implements a generator interface so can be passed
                     directly into a response so long as the framework supports it.
         """
         key = self._get_key(artifact_name)
         self.logger.debug(
-            "Creating instance of pyshelf.cloud.stream_iterator.StreamIterator. Artifact {0}".format(artifact_name))
+            "Creating instance of shelf.cloud.stream_iterator.StreamIterator. Artifact {0}".format(artifact_name))
         stream = StreamIterator(key)
         return stream
 

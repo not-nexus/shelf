@@ -1,5 +1,5 @@
-import pyshelf.artifact_key_filter as filters
-from pyshelf.bucket_update.artifact_metadata_updater import ArtifactMetadataUpdater
+import shelf.artifact_key_filter as filters
+from shelf.bucket_update.artifact_metadata_updater import ArtifactMetadataUpdater
 from pprint import pformat
 import gc
 
@@ -13,7 +13,7 @@ class SearchUpdater(object):
     def __init__(self, container):
         """
             Args:
-                container(pyshelf.bucket_update.container.Container)
+                container(shelf.bucket_update.container.Container)
         """
         self.container = container
         self.bucket_container = self.container.bucket_container
@@ -76,7 +76,7 @@ class SearchUpdater(object):
                 path(basestring): Path to an artifact.  Not it's metadata
                 bulk_update(dict(schemas/metadata.json)): A structure that stores an artifact's
                     metadata and keys it based off of their search identifier.
-                    See pyshelf.resource_identifier.ResourceIdentifier for more
+                    See shelf.resource_identifier.ResourceIdentifier for more
                     information about identifiers.
         """
         identity = self.container.resource_identity_factory \

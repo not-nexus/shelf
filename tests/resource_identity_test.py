@@ -1,7 +1,7 @@
 import pyproctor
-from pyshelf.resource_identity import ResourceIdentity
+from shelf.resource_identity import ResourceIdentity
 from mock import Mock
-from pyshelf.resource_identity_factory import ResourceIdentityFactory
+from shelf.resource_identity_factory import ResourceIdentityFactory
 
 
 class ResourceIdentityTest(pyproctor.TestBase):

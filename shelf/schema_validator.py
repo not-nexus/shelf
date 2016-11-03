@@ -1,4 +1,4 @@
-import pyshelf.utils as utils
+import shelf.utils as utils
 import json
 
 

@@ -1,9 +1,9 @@
 from tests.unit_test_base import UnitTestBase
 from pyproctor import MonkeyPatcher
 from mock import Mock
-from pyshelf.bulk_update.runner import Runner
+from shelf.bulk_update.runner import Runner
 import os.path
-from pyshelf.bulk_update.utils import run
+from shelf.bulk_update.utils import run
 import logging
 from copy import deepcopy
 

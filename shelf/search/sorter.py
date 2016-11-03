@@ -1,6 +1,6 @@
 from distutils.version import LooseVersion
-from pyshelf.search.sort_type import SortType
-from pyshelf.search.sort_flag import SortFlag
+from shelf.search.sort_type import SortType
+from shelf.search.sort_flag import SortFlag
 
 
 class Sorter(object):

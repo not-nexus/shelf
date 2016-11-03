@@ -16,7 +16,7 @@ class PathConverter(object):
     def __init__(self, artifact_path_builder):
         """
             Args:
-                artifact_path_builder(pyshelf.artifact_path_builder.ArtifactPathBuilder)
+                artifact_path_builder(shelf.artifact_path_builder.ArtifactPathBuilder)
         """
         self.artifact_path_builder = artifact_path_builder
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import docopt
-from pyshelf.bulk_update.utils import run
+from shelf.bulk_update.utils import run
 
 doc = """Usage: ./update-search-index [options] <config-path>
 

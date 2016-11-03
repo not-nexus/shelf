@@ -1,6 +1,6 @@
-from pyshelf.cloud.storage import Storage
-from pyshelf import utils
-from pyshelf.cloud.cloud_exceptions import BucketConfigurationNotFound
+from shelf.cloud.storage import Storage
+from shelf import utils
+from shelf.cloud.cloud_exceptions import BucketConfigurationNotFound
 
 
 class Factory(object):

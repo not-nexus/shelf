@@ -1,10 +1,10 @@
 import pyproctor
 from moto import mock_s3
-from pyshelf.permissions_validator import PermissionsValidator
+from shelf.permissions_validator import PermissionsValidator
 from mock import Mock
 import yaml
 import boto
-from pyshelf.container import Container
+from shelf.container import Container
 from tests.stdout_catcher import StdoutCatcher
 import logging
 import sys

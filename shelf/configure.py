@@ -1,7 +1,7 @@
 from jsonschema import ValidationError
-from pyshelf import utils
-from pyshelf.health import Health
-from pyshelf.request_log_filter import RequestLogFilter
+from shelf import utils
+from shelf.health import Health
+from shelf.request_log_filter import RequestLogFilter
 import logging
 import multiprocessing
 import os

@@ -1,4 +1,4 @@
-from pyshelf.metadata.keys import Keys
+from shelf.metadata.keys import Keys
 from datetime import datetime
 
 
@@ -13,7 +13,7 @@ class Initializer(object):
     def __init__(self, container):
         """
             Args:
-                container(pyshelf.metadata.container.Container)
+                container(shelf.metadata.container.Container)
         """
         self.container = container
         self.mapper = self.container.mapper
@@ -55,7 +55,7 @@ class Initializer(object):
 
             Args:
                 metadata(schemas/metadata.json)
-                resource(pyshelf.resource_identity.ResourceIdentity)
+                resource(shelf.resource_identity.ResourceIdentity)
 
             Returns:
                 metadata(schemas/metadata.json): But updated

@@ -1,12 +1,12 @@
 import copy
-from pyshelf.cloud.cloud_exceptions import ArtifactNotFoundError
+from shelf.cloud.cloud_exceptions import ArtifactNotFoundError
 
 
 class CloudPortal(object):
     def __init__(self, container):
         """
             Args:
-                container(pyshelf.metadata.container.Container)
+                container(shelf.metadata.container.Container)
         """
         self.codec = container.yaml_codec
         self.mapper = container.mapper

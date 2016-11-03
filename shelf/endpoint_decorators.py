@@ -1,8 +1,8 @@
 import functools
 import json
-from pyshelf.error_code import ErrorCode
-from pyshelf.get_container import get_container
-import pyshelf.response_map as response_map
+from shelf.error_code import ErrorCode
+from shelf.get_container import get_container
+import shelf.response_map as response_map
 from jsonschema import ValidationError
 
 """
@@ -175,7 +175,7 @@ class EndpointDecorators(object):
             Only accepts array or object as valid JSON.
 
             Args:
-                container(pyshelf.container.Container)
+                container(shelf.container.Container)
 
             Returns:
                 object | None: decoded JSON from request. None if invalid.

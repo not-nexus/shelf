@@ -1,9 +1,9 @@
-from pyshelf.search.metadata import Metadata
+from shelf.search.metadata import Metadata
 from elasticsearch_dsl.query import Q
 from elasticsearch_dsl import Search
 from elasticsearch.helpers import scan, bulk
-from pyshelf.search.type import Type as SearchType
-from pyshelf.metadata.keys import Keys as MetadataKeys
+from shelf.search.type import Type as SearchType
+from shelf.metadata.keys import Keys as MetadataKeys
 
 
 class UpdateManager(object):
@@ -168,7 +168,7 @@ class UpdateManager(object):
                 key(string): Unique key that represents the unique id of the metadata document.
 
             Returns:
-                pyshelf.search.metadata.Metadata
+                shelf.search.metadata.Metadata
         """
         meta_doc = Metadata.get(id=key, index=self.index, using=self.connection, ignore=404)
 

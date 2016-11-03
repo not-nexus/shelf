@@ -1,6 +1,6 @@
 from tests.functional_test_base import FunctionalTestBase
 import tests.metadata_utils as meta_utils
-from pyshelf.error_code import ErrorCode
+from shelf.error_code import ErrorCode
 
 
 class MetadataTest(FunctionalTestBase):
@@ -101,7 +101,7 @@ class MetadataTest(FunctionalTestBase):
             This will ensure that things are initialized
             correctly.
 
-            See pyshelf.metadata.initializer.Initializer
+            See shelf.metadata.initializer.Initializer
 
             For the "empty" artifact see
             tests.functional_test_base.FunctionalTestBase.setup_artifacts

@@ -1,8 +1,8 @@
-from pyshelf.metadata.mapper import Mapper
-from pyshelf.metadata.manager import Manager
-from pyshelf.metadata.yaml_codec import YamlCodec
-from pyshelf.metadata.bucket_container import BucketContainer
-from pyshelf.metadata.wrapper import Wrapper
+from shelf.metadata.mapper import Mapper
+from shelf.metadata.manager import Manager
+from shelf.metadata.yaml_codec import YamlCodec
+from shelf.metadata.bucket_container import BucketContainer
+from shelf.metadata.wrapper import Wrapper
 
 
 class Container(object):
@@ -19,7 +19,7 @@ class Container(object):
     def create_wrapper(self, metadata):
         """
             Returns:
-                pyshelf.metadata.wrapper.Wrapper
+                shelf.metadata.wrapper.Wrapper
         """
         return Wrapper(metadata)
 
@@ -27,7 +27,7 @@ class Container(object):
     def mapper(self):
         """
             Returns:
-                pyshelf.metadata.mapper.Mapper
+                shelf.metadata.mapper.Mapper
         """
         if not self._mapper:
             self._mapper = Mapper()
@@ -38,7 +38,7 @@ class Container(object):
     def manager(self):
         """
             Returns:
-                pyshelf.metadata.manager.Manager
+                shelf.metadata.manager.Manager
         """
         if not self._manager:
             self._manager = Manager(self)
@@ -49,7 +49,7 @@ class Container(object):
     def yaml_codec(self):
         """
             Returns:
-                pyshelf.metadata.yaml_codec.YamlCodec
+                shelf.metadata.yaml_codec.YamlCodec
         """
         if not self._yaml_codec:
             self._yaml_codec = YamlCodec()
@@ -60,7 +60,7 @@ class Container(object):
     def bucket_container(self):
         """
             Returns:
-                pyshelf.metadata.bucket_container.BucketContainer
+                shelf.metadata.bucket_container.BucketContainer
         """
         if not self._bucket_container:
             self._bucket_container = BucketContainer(

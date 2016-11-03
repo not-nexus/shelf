@@ -1,8 +1,8 @@
 import yaml
 from fnmatch import fnmatch
-from pyshelf.cloud.cloud_exceptions import ArtifactNotFoundError
-from pyshelf import artifact_key_filter
-from pyshelf.error_code import ErrorCode
+from shelf.cloud.cloud_exceptions import ArtifactNotFoundError
+from shelf import artifact_key_filter
+from shelf.error_code import ErrorCode
 
 
 class PermissionsValidator(object):

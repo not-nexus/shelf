@@ -1,7 +1,7 @@
-from pyshelf.json_response import JsonResponse
-from pyshelf.cloud.cloud_exceptions import ArtifactNotFoundError, DuplicateArtifactError, BucketConfigurationNotFound
-from pyshelf.error_code import ErrorCode
-from pyshelf.metadata.error_code import ErrorCode as MetadataErrorCode
+from shelf.json_response import JsonResponse
+from shelf.cloud.cloud_exceptions import ArtifactNotFoundError, DuplicateArtifactError, BucketConfigurationNotFound
+from shelf.error_code import ErrorCode
+from shelf.metadata.error_code import ErrorCode as MetadataErrorCode
 
 
 def vnd_error(error):
@@ -25,10 +25,10 @@ def create_403(error_code, msg):
         Creates a 403 response using vnd.error
 
         args:
-            error_code(pyshelf.error_code.ErrorCode)
+            error_code(shelf.error_code.ErrorCode)
             msg(string)
         Returns:
-            pyshelf.json_response.JsonResponse
+            shelf.json_response.JsonResponse
     """
     error = {
         "code": error_code,
@@ -43,11 +43,11 @@ def create_404(error_code=ErrorCode.RESOURCE_NOT_FOUND, msg="Resource not found"
         Creates a 404 response.
 
         args:
-            error_code(pyshelf.error_code.ErrorCode):
+            error_code(shelf.error_code.ErrorCode):
             msg(string)
 
         Returns:
-            pyshelf.json_response.JsonResponse
+            shelf.json_response.JsonResponse
     """
     error = {
         "code": error_code,
@@ -63,11 +63,11 @@ def create_400(error_code=ErrorCode.BAD_REQUEST, msg="Bad request"):
         Creates response with 400 status code.
 
         args:
-            error_code(pyshelf.error_code.ErrorCode):
+            error_code(shelf.error_code.ErrorCode):
             msg(string)
 
         Returns:
-            pyshelf.json_response.JsonResponse
+            shelf.json_response.JsonResponse
     """
     error = {
         "code": error_code,
@@ -83,11 +83,11 @@ def create_401(error_code=ErrorCode.PERMISSION_DENIED, msg="Permission denied"):
         Creates response with 401 status code.
 
         args:
-            error_code(pyshelf.error_code.ErrorCode):
+            error_code(shelf.error_code.ErrorCode):
             msg(string)
 
         Returns:
-            pyshelf.json_response.JsonResponse
+            shelf.json_response.JsonResponse
     """
     error = {
         "code": error_code,
@@ -103,11 +103,11 @@ def create_500(error_code=ErrorCode.INTERNAL_SERVER_ERROR, msg="Internal server 
         Creates a 500 response using vnd.error
 
         Args:
-            error_code(pyshelf.error_code.ErrorCode):
+            error_code(shelf.error_code.ErrorCode):
             msg(string)
 
         Returns:
-            pyshelf.json_response.JsonResponse
+            shelf.json_response.JsonResponse
     """
     error = {
         "code": error_code,
@@ -172,10 +172,10 @@ def map_exception(e):
 
 def map_context_error(context):
     """
-        Maps errors set on pyshelf.context.Context
+        Maps errors set on shelf.context.Context
 
         Args:
-            context(pyshelf.context.Context)
+            context(shelf.context.Context)
 
         Returns:
             flask Response

@@ -1,6 +1,6 @@
 from flask import Response
 import json
-from pyshelf.cloud.stream_iterator import StreamIterator
+from shelf.cloud.stream_iterator import StreamIterator
 
 
 class ContextResponseMapper(object):

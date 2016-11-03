@@ -1,13 +1,13 @@
-from pyshelf.search.sort_type import SortType
-from pyshelf.search.sort_flag import SortFlag
-from pyshelf.search.type import Type as SearchType
+from shelf.search.sort_type import SortType
+from shelf.search.sort_flag import SortFlag
+from shelf.search.type import Type as SearchType
 import re
 
 
 class SearchParser(object):
     def from_request(self, request_criteria):
         """
-            Turns the given request into search criteria that can be consumed by pyshelf.search module.
+            Turns the given request into search criteria that can be consumed by shelf.search module.
 
             Args:
                 request_criteria(schemas/search-request-criteria.json): Criteria from request.
@@ -82,7 +82,7 @@ class SearchParser(object):
             sort_type = SortType.get_alias(sort_string)
             sort_flag = SortFlag.get_alias(sort_string)
 
-            # Only one pyshelf.search.sort_type.SortType can be used at once.
+            # Only one shelf.search.sort_type.SortType can be used at once.
             # We decided grabbing the last one makes the most sense if there are multiple.
             if sort_type:
                 sort_criteria["sort_type"] = sort_type

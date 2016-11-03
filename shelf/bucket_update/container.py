@@ -1,12 +1,12 @@
-from pyshelf.metadata.bucket_container import BucketContainer
-from pyshelf.metadata.yaml_codec import YamlCodec
-from pyshelf.cloud.factory import Factory as CloudFactory
-from pyshelf.search.container import Container as SearchContainer
-from pyshelf.metadata.mapper import Mapper
-from pyshelf.bucket_update.search_updater import SearchUpdater
-from pyshelf.resource_identity_factory import ResourceIdentityFactory
-from pyshelf.artifact_path_builder import ArtifactPathBuilder
-from pyshelf.path_converter import PathConverter
+from shelf.metadata.bucket_container import BucketContainer
+from shelf.metadata.yaml_codec import YamlCodec
+from shelf.cloud.factory import Factory as CloudFactory
+from shelf.search.container import Container as SearchContainer
+from shelf.metadata.mapper import Mapper
+from shelf.bucket_update.search_updater import SearchUpdater
+from shelf.resource_identity_factory import ResourceIdentityFactory
+from shelf.artifact_path_builder import ArtifactPathBuilder
+from shelf.path_converter import PathConverter
 
 
 class Container(object):
@@ -31,7 +31,7 @@ class Container(object):
     def bucket_container(self):
         """
             Returns:
-                pyshelf.metadata.bucket_container.BucketContainer
+                shelf.metadata.bucket_container.BucketContainer
         """
         if not self._bucket_container:
             self._bucket_container = BucketContainer(
@@ -47,7 +47,7 @@ class Container(object):
     def cloud_factory(self):
         """
             Returns:
-                pyshelf.cloud.factory.Factory
+                shelf.cloud.factory.Factory
         """
         if not self._cloud_factory:
             # TODO: This kind of sucks.  I shouldn't have to
@@ -66,7 +66,7 @@ class Container(object):
     def codec(self):
         """
             Returns:
-                pyshelf.metadata.yaml_codec.YamlCodec
+                shelf.metadata.yaml_codec.YamlCodec
         """
         if not self._codec:
             self._codec = YamlCodec()
@@ -77,7 +77,7 @@ class Container(object):
     def mapper(self):
         """
             Returns:
-                pyshelf.metadata.mapper.Mapper
+                shelf.metadata.mapper.Mapper
         """
         if not self._mapper:
             self._mapper = Mapper()
@@ -88,7 +88,7 @@ class Container(object):
     def search_container(self):
         """
             Returns:
-                pyshelf.search.container.Container
+                shelf.search.container.Container
         """
         if not self._search_container:
             self._search_container = SearchContainer(
@@ -102,7 +102,7 @@ class Container(object):
     def search_updater(self):
         """
             Returns:
-                pyshelf.bucket_update.search_updater
+                shelf.bucket_update.search_updater
         """
         if not self._search_updater:
             self._search_updater = SearchUpdater(self)
@@ -113,7 +113,7 @@ class Container(object):
     def resource_identity_factory(self):
         """
             Returns:
-                pyshelf.resource_identity_factory.ResourceIdentityFactory
+                shelf.resource_identity_factory.ResourceIdentityFactory
         """
         if not self._resource_identity_factory:
             builder = ArtifactPathBuilder(self.config["referenceName"])

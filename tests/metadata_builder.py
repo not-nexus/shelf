@@ -1,7 +1,7 @@
-from pyshelf.metadata.keys import Keys
+from shelf.metadata.keys import Keys
 from copy import deepcopy
-from pyshelf.resource_identity import ResourceIdentity
-from pyshelf.metadata.mapper import Mapper
+from shelf.resource_identity import ResourceIdentity
+from shelf.metadata.mapper import Mapper
 
 
 class MetadataBuilder(object):

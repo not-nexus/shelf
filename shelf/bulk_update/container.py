@@ -1,4 +1,4 @@
-from pyshelf.bulk_update.runner import Runner
+from shelf.bulk_update.runner import Runner
 
 
 class Container(object):
@@ -22,7 +22,7 @@ class Container(object):
     def runner(self):
         """
             Returns:
-                pyshelf.bulk_update.runner.Runner
+                shelf.bulk_update.runner.Runner
         """
         if not self._runner:
             self._runner = Runner(self)

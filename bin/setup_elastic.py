@@ -1,7 +1,7 @@
-from pyshelf.search.metadata import Metadata
+from shelf.search.metadata import Metadata
 import os
-from pyshelf.search.connection import Connection
-from pyshelf import configure
+from shelf.search.connection import Connection
+from shelf import configure
 
 
 class ElasticInitializer(object):

@@ -1,7 +1,7 @@
 import os
-from pyshelf.search.update_manager import UpdateManager
-from pyshelf.search.connection import Connection
-from pyshelf.metadata.keys import Keys as MetadataKeys
+from shelf.search.update_manager import UpdateManager
+from shelf.search.connection import Connection
+from shelf.metadata.keys import Keys as MetadataKeys
 
 
 class IndexPruner(object):

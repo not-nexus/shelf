@@ -1,5 +1,5 @@
-from pyshelf.health import Health
-from pyshelf.health_status import HealthStatus
+from shelf.health import Health
+from shelf.health_status import HealthStatus
 from tests.test_base import TestBase
 import multiprocessing
 

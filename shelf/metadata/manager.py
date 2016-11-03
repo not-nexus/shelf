@@ -1,5 +1,5 @@
-from pyshelf.metadata.result import Result
-from pyshelf.metadata.error_code import ErrorCode
+from shelf.metadata.result import Result
+from shelf.metadata.error_code import ErrorCode
 import copy
 
 
@@ -25,7 +25,7 @@ class Manager(object):
         """
             Can be used like a dict
 
-            Returns pyshelf.metadata.wrapper.Wrapper
+            Returns shelf.metadata.wrapper.Wrapper
         """
         if not self._metadata:
             data = self.load()
@@ -65,7 +65,7 @@ class Manager(object):
                 data(schemas/metadata.json)
 
             Returns:
-                pyshelf.metadata.result.Result
+                shelf.metadata.result.Result
         """
         data = self.container.mapper.from_response(data)
         old_meta = copy.deepcopy(self.metadata)
@@ -97,7 +97,7 @@ class Manager(object):
                 value(schemas/metadata-property.json)
 
             Returns:
-                pyshelf.metadata.result.Result
+                shelf.metadata.result.Result
         """
         result = Result()
         result = self._try_update_property_with_result(key, value, result)
@@ -113,7 +113,7 @@ class Manager(object):
                 value(schemas/metadata-property.json)
 
             Returns:
-                pyshelf.metadata.result.Result
+                shelf.metadata.result.Result
         """
         result = Result()
         if self.metadata.get(key):
@@ -131,7 +131,7 @@ class Manager(object):
                 key(string): Name of the metadata property
 
             Returns:
-                pyshelf.metadata.result.Result
+                shelf.metadata.result.Result
         """
         result = Result()
         if self.metadata.is_immutable(key):

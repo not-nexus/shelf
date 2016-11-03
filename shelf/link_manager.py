@@ -1,11 +1,11 @@
-import pyshelf.artifact_key_filter as filters
+import shelf.artifact_key_filter as filters
 
 
 class LinkManager(object):
     def __init__(self, container):
         """
             Args:
-                container(pyshelf.container.Container)
+                container(shelf.container.Container)
         """
         self.container = container
         self.bucket_name = self.container.bucket_name
@@ -15,7 +15,7 @@ class LinkManager(object):
 
     def assign_listing(self, path_list):
         """
-            Builds list of links and assigns it to pyshelf.context.Context.link_list
+            Builds list of links and assigns it to shelf.context.Context.link_list
 
             Args:
                 path_list(List(string)): List of cloud paths.
@@ -43,7 +43,7 @@ class LinkManager(object):
 
     def assign_single(self, artifact_path):
         """
-            Assigns individual link to pyshelf.context.Context.link_list.
+            Assigns individual link to shelf.context.Context.link_list.
 
             Args:
                 artifact_path(string)

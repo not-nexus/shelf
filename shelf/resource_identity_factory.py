@@ -1,11 +1,11 @@
-from pyshelf.resource_identity import ResourceIdentity
+from shelf.resource_identity import ResourceIdentity
 
 
 class ResourceIdentityFactory(object):
     def __init__(self, path_converter):
         """
             Args:
-                path_converter(pyshelf.path_converter.PathConverter)
+                path_converter(shelf.path_converter.PathConverter)
         """
         self.path_converter = path_converter
 
@@ -19,7 +19,7 @@ class ResourceIdentityFactory(object):
                 resource_url(basestring)
 
             Returns:
-                pyshelf.resource_identity.ResourceIdentity
+                shelf.resource_identity.ResourceIdentity
         """
         identity = ResourceIdentity(resource_url)
         return identity
@@ -34,7 +34,7 @@ class ResourceIdentityFactory(object):
                 cloud_identifier(basestring)
 
             Returns:
-                pyshelf.resource_identity.ResourceIdentity
+                shelf.resource_identity.ResourceIdentity
         """
         resource_url = self.path_converter.from_cloud(cloud_identifier)
         identity = self.from_resource_url(resource_url)
@@ -49,7 +49,7 @@ class ResourceIdentityFactory(object):
                 cloud_metadata_identifier(basestring)
 
             Returns:
-                pyshelf.resource_identity.ResourceIdentity
+                shelf.resource_identity.ResourceIdentity
         """
         resource_url = self.path_converter.from_cloud_metadata(cloud_metadata_identifier)
         identity = self.from_resource_url(resource_url)

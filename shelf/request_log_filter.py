@@ -1,5 +1,5 @@
 import logging
-from pyshelf.get_container import get_container
+from shelf.get_container import get_container
 
 
 class RequestLogFilter(logging.Filter):

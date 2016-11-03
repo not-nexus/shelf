@@ -1,6 +1,6 @@
 from tests.test_base import TestBase
 from mock import Mock, MagicMock
-from pyshelf.search.container import Container as SearchContainer
+from shelf.search.container import Container as SearchContainer
 
 
 class UnitTestBase(TestBase):

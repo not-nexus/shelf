@@ -1,4 +1,4 @@
-from pyshelf.error_code import ErrorCode
+from shelf.error_code import ErrorCode
 
 
 class CloudStorageException(Exception):

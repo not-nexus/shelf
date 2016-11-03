@@ -1,6 +1,6 @@
 from flask import request, Blueprint
-from pyshelf.endpoint_decorators import decorators
-import pyshelf.response_map as response_map
+from shelf.endpoint_decorators import decorators
+import shelf.response_map as response_map
 import requests
 
 artifact = Blueprint("artifact", __name__)
@@ -146,7 +146,7 @@ def search(container, criteria=None):
         Does a search with the given criteria.
 
         Args:
-            container(pyshelf.container.Container)
+            container(shelf.container.Container)
             criteria(dict | None)
 
         Returns:

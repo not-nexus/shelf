@@ -1,4 +1,4 @@
-from pyshelf.health_status import HealthStatus
+from shelf.health_status import HealthStatus
 
 
 class Health(object):

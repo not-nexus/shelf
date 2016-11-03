@@ -1,5 +1,5 @@
 import multiprocessing
-from pyshelf.bucket_update.utils import update_search_index
+from shelf.bucket_update.utils import update_search_index
 
 
 class Runner(object):
@@ -10,7 +10,7 @@ class Runner(object):
     def __init__(self, container):
         """
             Args:
-                container(pyshelf.bulk_update.container.Container)
+                container(shelf.bulk_update.container.Container)
         """
         self.container = container
         self.config = container.config

@@ -11,9 +11,9 @@ class SortFlag(object):
         """
             Determines if passed in flag is a SortFlag or an alias of a SortFlag.
             Args:
-                alias(string): pyshelf.search.sort_flag.SortFlag alias.
+                alias(string): shelf.search.sort_flag.SortFlag alias.
 
             Returns:
-                pyshelf.search.sort_flag.SortFlag or None: returns None if invalid alias.
+                shelf.search.sort_flag.SortFlag or None: returns None if invalid alias.
         """
         return SortFlag.ALIASES.get(alias.upper())

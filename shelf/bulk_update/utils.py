@@ -1,10 +1,10 @@
 import logging
 import os
 import sys
-import pyshelf.configure as configure
-from pyshelf.bulk_update.container import Container
-from pyshelf.bulk_update.index_pruner import IndexPruner
-from pyshelf import background_utils
+import shelf.configure as configure
+from shelf.bulk_update.container import Container
+from shelf.bulk_update.index_pruner import IndexPruner
+from shelf import background_utils
 
 
 def run(args):

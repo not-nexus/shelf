@@ -1,7 +1,7 @@
 from elasticsearch_dsl.query import Q
 from elasticsearch_dsl import Search
-from pyshelf.search.formatter import Formatter as SearchFormatter
-from pyshelf.search.type import Type as SearchType
+from shelf.search.formatter import Formatter as SearchFormatter
+from shelf.search.type import Type as SearchType
 
 
 class Manager(object):

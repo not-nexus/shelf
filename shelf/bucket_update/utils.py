@@ -1,6 +1,6 @@
-from pyshelf.bucket_update.container import Container
+from shelf.bucket_update.container import Container
 import os.path
-from pyshelf import background_utils
+from shelf import background_utils
 
 
 def update_search_index(bucket_config):

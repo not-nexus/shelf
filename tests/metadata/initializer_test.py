@@ -1,5 +1,5 @@
 from tests.unit_test_base import UnitTestBase
-from pyshelf.metadata.initializer import Initializer
+from shelf.metadata.initializer import Initializer
 
 
 class InitializerTest(UnitTestBase):

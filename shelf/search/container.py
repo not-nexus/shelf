@@ -1,7 +1,7 @@
-from pyshelf.search.update_manager import UpdateManager
-from pyshelf.search.manager import Manager
-from pyshelf.search.connection import Connection
-from pyshelf.search.sorter import Sorter
+from shelf.search.update_manager import UpdateManager
+from shelf.search.manager import Manager
+from shelf.search.connection import Connection
+from shelf.search.sorter import Sorter
 
 
 class Container(object):
@@ -19,7 +19,7 @@ class Container(object):
     def update_manager(self):
         """
             Returns:
-                pyshelf.search.update_manager.UpdateManager
+                shelf.search.update_manager.UpdateManager
         """
         if not self._update_manager:
             self._update_manager = UpdateManager(self.logger, self.connection)
@@ -30,7 +30,7 @@ class Container(object):
     def manager(self):
         """
             Returns:
-                pyshelf.search.manager.Manager
+                shelf.search.manager.Manager
         """
         if not self._manager:
             self._manager = Manager(self)
@@ -41,7 +41,7 @@ class Container(object):
     def sorter(self):
         """
             Returns:
-                pyshelf.search.sorter.Sorter
+                shelf.search.sorter.Sorter
         """
         if not self._sorter:
             self._sorter = Sorter()
@@ -52,7 +52,7 @@ class Container(object):
     def connection(self):
         """
             Returns:
-                pyshelf.search.connection.Connection
+                shelf.search.connection.Connection
         """
         if not self._connection:
             self._connection = Connection(

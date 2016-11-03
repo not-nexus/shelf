@@ -1,5 +1,5 @@
-from pyshelf.metadata.cloud_portal import CloudPortal
-from pyshelf.metadata.initializer import Initializer
+from shelf.metadata.cloud_portal import CloudPortal
+from shelf.metadata.initializer import Initializer
 
 
 class BucketContainer(object):
@@ -12,9 +12,9 @@ class BucketContainer(object):
         """
             Args:
                 bucket_name(basestring)
-                yaml_codec(pyshelf.metadata.yaml_codec.YamlCodec)
-                mapper(pyshelf.metadata.mapper.Mapper)
-                cloud_factory(pyshelf.cloud.factory.Factory)
+                yaml_codec(shelf.metadata.yaml_codec.YamlCodec)
+                mapper(shelf.metadata.mapper.Mapper)
+                cloud_factory(shelf.cloud.factory.Factory)
         """
         self.yaml_codec = yaml_codec
         self.mapper = mapper
@@ -28,7 +28,7 @@ class BucketContainer(object):
     def cloud_portal(self):
         """
             Returns:
-                pyshelf.metadata.cloud_portal.CloudPortal
+                shelf.metadata.cloud_portal.CloudPortal
         """
         if not self._cloud_portal:
             self._cloud_portal = CloudPortal(self)
@@ -39,7 +39,7 @@ class BucketContainer(object):
     def initializer(self):
         """
             Returns:
-                pyshelf.metadata.initializer.Initializer
+                shelf.metadata.initializer.Initializer
         """
         if not self._initializer:
             self._initializer = Initializer(self)
@@ -49,6 +49,6 @@ class BucketContainer(object):
     def create_cloud_storage(self):
         """
             Returns:
-                pyshelf.cloud.storage.Storage
+                shelf.cloud.storage.Storage
         """
         return self.cloud_factory.create_storage(self.bucket_name)

@@ -1,5 +1,5 @@
 from tests.unit_test_base import UnitTestBase
-from pyshelf.artifact_path_builder import ArtifactPathBuilder
+from shelf.artifact_path_builder import ArtifactPathBuilder
 
 
 class ArtifactPathBuilderTest(UnitTestBase):

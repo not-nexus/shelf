@@ -1,5 +1,5 @@
 from distutils.version import LooseVersion
-from pyshelf.search.type import Type as SearchType
+from shelf.search.type import Type as SearchType
 
 
 class Formatter(object):
@@ -9,7 +9,7 @@ class Formatter(object):
 
             Args:
                 criteria(dict): This contains the search and sort criteria as outlined on
-                                pyshelf.search.manager.Manager.search.
+                                shelf.search.manager.Manager.search.
                 search_results(List[elasticsearch_dsl.result.Result]): List of search results.
                 key_list(list): list of keys to include in filtered results if list is not passed
                                 all fields will be returned.

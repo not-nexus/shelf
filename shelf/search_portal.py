@@ -1,7 +1,7 @@
-from pyshelf.metadata.keys import Keys as MetadataKeys
-from pyshelf.resource_identity import ResourceIdentity
-from pyshelf.search import utils
-from pyshelf.error_code import ErrorCode
+from shelf.metadata.keys import Keys as MetadataKeys
+from shelf.resource_identity import ResourceIdentity
+from shelf.search import utils
+from shelf.error_code import ErrorCode
 from jsonschema import ValidationError
 
 
@@ -12,7 +12,7 @@ class SearchPortal(object):
     def __init__(self, container):
         """
             Args:
-                container(pyshelf.container.Container)
+                container(shelf.container.Container)
         """
         self.container = container
         self.search_manager = self.container.search.manager

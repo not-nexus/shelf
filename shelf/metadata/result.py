@@ -18,7 +18,7 @@ class Result(object):
             Adds an error to the list.
 
             Args:
-                code(pyshelf.metadata.error_code.ErrorCode)
+                code(shelf.metadata.error_code.ErrorCode)
         """
         self.error_code_list.append(code)
 
@@ -27,7 +27,7 @@ class Result(object):
             Checks if we have a particular error code.
 
             Args:
-                code(pyshelf.metadata.error_code.ErrorCode)
+                code(shelf.metadata.error_code.ErrorCode)
 
             Returns:
                 boolean

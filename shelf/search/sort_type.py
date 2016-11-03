@@ -14,9 +14,9 @@ class SortType(object):
         """
             Determines if passed in alias is a SortType or an alias of a SortType.
             Args:
-                alias(string): pyshelf.search.sort_type.SortType alias.
+                alias(string): shelf.search.sort_type.SortType alias.
 
             Returns:
-                pyshelf.search.sort_type.SortType or None: returns None if invalid alias.
+                shelf.search.sort_type.SortType or None: returns None if invalid alias.
         """
         return SortType.ALIASES.get(alias.upper())

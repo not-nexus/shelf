@@ -1,4 +1,4 @@
-from pyshelf.search.metadata import Metadata
+from shelf.search.metadata import Metadata
 
 
 class TestWrapper(object):

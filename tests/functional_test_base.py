@@ -2,12 +2,12 @@ from boto.s3.key import Key
 from mock import Mock
 from moto import mock_s3
 from pyproctor import MonkeyPatcher
-from pyshelf.app import app
-from pyshelf.error_code import ErrorCode
-from pyshelf.health import Health
-from pyshelf.metadata.initializer import Initializer
-from pyshelf.resource_identity import ResourceIdentity
-from pyshelf.search.container import Container as SearchContainer
+from shelf.app import app
+from shelf.error_code import ErrorCode
+from shelf.health import Health
+from shelf.metadata.initializer import Initializer
+from shelf.resource_identity import ResourceIdentity
+from shelf.search.container import Container as SearchContainer
 from tests.metadata.comparator import Comparator as MetadataComparator
 from tests.metadata_builder import MetadataBuilder
 from tests.route_tester.tester import Tester
@@ -15,7 +15,7 @@ from tests.search.test_wrapper import TestWrapper as SearchTestWrapper
 from tests.test_base import TestBase
 import boto
 import multiprocessing
-import pyshelf.configure as configure
+import shelf.configure as configure
 import tests.metadata_utils as meta_utils
 import tests.permission_utils as utils
 import yaml

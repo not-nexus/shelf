@@ -1,9 +1,9 @@
-from pyshelf.cloud.cloud_exceptions import CloudStorageException
-from pyshelf.health_status import HealthStatus
-from pyshelf.json_response import JsonResponse
-from pyshelf.routes.artifact import artifact
+from shelf.cloud.cloud_exceptions import CloudStorageException
+from shelf.health_status import HealthStatus
+from shelf.json_response import JsonResponse
+from shelf.routes.artifact import artifact
 import flask
-import pyshelf.response_map as response_map
+import shelf.response_map as response_map
 
 app = flask.Flask(__name__)
 app.register_blueprint(artifact)

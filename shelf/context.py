@@ -11,7 +11,7 @@ class Context(object):
             Adds error to context with optional message.
 
             Args:
-                code(pyshelf.error_code.ErrorCode)
+                code(shelf.error_code.ErrorCode)
                 message(string | None)
         """
         self.errors[code] = message

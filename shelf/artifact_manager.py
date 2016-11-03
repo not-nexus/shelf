@@ -11,7 +11,7 @@ class ArtifactManager(object):
                 path(string): path or name of artifact.
 
             Returns:
-                pyshelf.cloud.StreamIterator|None
+                shelf.cloud.StreamIterator|None
         """
         content = None
         artifact_list = self.assign_artifact_links(path)

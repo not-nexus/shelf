@@ -1,6 +1,6 @@
 import pyproctor
 from mock import Mock
-from pyshelf.container import Container
+from shelf.container import Container
 
 
 class ContainerTest(pyproctor.TestBase):

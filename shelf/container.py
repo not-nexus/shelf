@@ -1,19 +1,19 @@
-from pyshelf.artifact_manager import ArtifactManager
-from pyshelf.artifact_path_builder import ArtifactPathBuilder
-from pyshelf.cloud.factory import Factory
-from pyshelf.context import Context
-from pyshelf.context_response_mapper import ContextResponseMapper
-from pyshelf.link_manager import LinkManager
-from pyshelf.link_mapper import LinkMapper
-from pyshelf.metadata.container import Container as MetadataContainer
-from pyshelf.null_handler import NullHandler
-from pyshelf.path_converter import PathConverter
-from pyshelf.permissions_validator import PermissionsValidator
-from pyshelf.resource_identity_factory import ResourceIdentityFactory
-from pyshelf.schema_validator import SchemaValidator
-from pyshelf.search.container import Container as SearchContainer
-from pyshelf.search_parser import SearchParser
-from pyshelf.search_portal import SearchPortal
+from shelf.artifact_manager import ArtifactManager
+from shelf.artifact_path_builder import ArtifactPathBuilder
+from shelf.cloud.factory import Factory
+from shelf.context import Context
+from shelf.context_response_mapper import ContextResponseMapper
+from shelf.link_manager import LinkManager
+from shelf.link_mapper import LinkMapper
+from shelf.metadata.container import Container as MetadataContainer
+from shelf.null_handler import NullHandler
+from shelf.path_converter import PathConverter
+from shelf.permissions_validator import PermissionsValidator
+from shelf.resource_identity_factory import ResourceIdentityFactory
+from shelf.schema_validator import SchemaValidator
+from shelf.search.container import Container as SearchContainer
+from shelf.search_parser import SearchParser
+from shelf.search_portal import SearchPortal
 from uuid import uuid4
 import logging
 
@@ -88,7 +88,7 @@ class Container(object):
             log anything.
 
             Returns:
-                pyshelf.cloud.factory.Factory
+                shelf.cloud.factory.Factory
         """
         if not self._silent_cloud_factory:
             self._silent_cloud_factory = Factory(self.app.config, self.silent_logger)
@@ -118,7 +118,7 @@ class Container(object):
             not log anything.
 
             Returns:
-                pyshelf.cloud.storage.Storage
+                shelf.cloud.storage.Storage
         """
         return self.silent_cloud_factory.create_storage(self.bucket_name)
 
@@ -196,7 +196,7 @@ class Container(object):
     def metadata(self):
         if not self._metadata:
             if not self.bucket_name:
-                raise Exception("bucket_name must exist to create pyshelf.metadata.container.Container")
+                raise Exception("bucket_name must exist to create shelf.metadata.container.Container")
 
             self._metadata = MetadataContainer(
                 self.bucket_name,

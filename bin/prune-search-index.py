@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import docopt
-from pyshelf.bulk_update.utils import run_search_prune
+from shelf.bulk_update.utils import run_search_prune
 
 doc = """Usage: ./prune-search-index [options] <config-path>
 

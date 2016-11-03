@@ -1,6 +1,6 @@
 #!/usr/bin/env python
-from pyshelf.app import app
-from pyshelf import configure
+from shelf.app import app
+from shelf import configure
 configure.app(app)
 
 if __name__ == "__main__":

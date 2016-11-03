@@ -2,8 +2,8 @@ class ArtifactMetadataUpdater(object):
     def __init__(self, bucket_container, identity):
         """
             Args:
-                bucket_container(pyshelf.metadata.bucket_container.BucketContainer)
-                identity(pyshelf.resource_identity.ResourceIdentity)
+                bucket_container(shelf.metadata.bucket_container.BucketContainer)
+                identity(shelf.resource_identity.ResourceIdentity)
         """
         self.bucket_container = bucket_container
         self.identity = identity

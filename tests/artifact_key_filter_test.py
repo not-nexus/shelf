@@ -1,4 +1,4 @@
-import pyshelf.artifact_key_filter as akfilter
+import shelf.artifact_key_filter as akfilter
 from tests.unit_test_base import UnitTestBase
 
 
