@@ -1,4 +1,4 @@
-pyshelf
+Shelf
 =======
 
 [![Build Status](https://travis-ci.org/kyle-long/pyshelf.svg?branch=master)](https://travis-ci.org/kyle-long/pyshelf)
@@ -104,7 +104,7 @@ To run the tests:
 
 To run the tests with a coverage report:
 
-    pyproctor --coverage --source=pyshelf/
+    pyproctor --coverage --source=shelf/
 
 Currently we run some manual tests when a new version is deployed. Examples:
 * Run all standard operations. Simple upload and download. Put bulk metadata and item. Get the metadata and metadata property. Then finally we search on the metadata.

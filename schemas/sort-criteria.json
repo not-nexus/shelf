@@ -13,13 +13,13 @@
                     "ASC",
                     "DESC"
                 ],
-                "description": "Type of sort. See pyshelf.search.sort_type.SortType"
+                "description": "Type of sort. See shelf.search.sort_type.SortType"
             },
             "sort_flag": {
                 "enum": [
                     "VERSION"
                 ],
-                "description": "Additional sort critieria. See pyshelf.search.sort_flag.SortFlag"
+                "description": "Additional sort critieria. See shelf.search.sort_flag.SortFlag"
             }
         },
         "required": [

@@ -1,4 +1,4 @@
 Examples
 ========
 
-The examples directory contains examples on using pyshelf api via curl.
+The examples directory contains examples on using Shelf api via curl.
