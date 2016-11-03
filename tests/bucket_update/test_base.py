@@ -1,7 +1,7 @@
 from tests.functional_test_base import FunctionalTestBase
 import logging
 from boto.s3.key import Key
-from pyshelf.bucket_update.container import Container
+from shelf.bucket_update.container import Container
 from tests.metadata.factory import Factory
 import sys
 

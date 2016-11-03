@@ -1,7 +1,7 @@
 from mock import Mock
 from pyproctor import MonkeyPatcher
-from pyshelf.health_status import HealthStatus
-from pyshelf.search.manager import Manager as SearchManager
+from shelf.health_status import HealthStatus
+from shelf.search.manager import Manager as SearchManager
 from tests.functional_test_base import FunctionalTestBase
 import requests
 import tests.permission_utils as utils

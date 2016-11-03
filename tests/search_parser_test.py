@@ -1,10 +1,10 @@
 from tests.unit_test_base import UnitTestBase
-from pyshelf.search_parser import SearchParser
-from pyshelf.search.sort_type import SortType
-from pyshelf.search.sort_flag import SortFlag
-from pyshelf.search.type import Type as SearchType
+from shelf.search_parser import SearchParser
+from shelf.search.sort_type import SortType
+from shelf.search.sort_flag import SortFlag
+from shelf.search.type import Type as SearchType
 import tests.metadata_utils as utils
-from pyshelf.search_portal import SearchPortal
+from shelf.search_portal import SearchPortal
 from mock import Mock
 
 

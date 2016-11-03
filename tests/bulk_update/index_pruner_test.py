@@ -1,6 +1,6 @@
 from tests.functional_test_base import FunctionalTestBase
-from pyshelf.bulk_update.utils import run_search_prune
-from pyshelf.resource_identity import ResourceIdentity
+from shelf.bulk_update.utils import run_search_prune
+from shelf.resource_identity import ResourceIdentity
 import tests.metadata_utils as meta_utils
 import os
 

@@ -1,7 +1,7 @@
 from tests.unit_test_base import UnitTestBase
 from tests.search.test_wrapper import TestWrapper as SearchTestWrapper
-from pyshelf.search.type import Type as SearchType
-from pyshelf.search.connection import Connection
+from shelf.search.type import Type as SearchType
+from shelf.search.connection import Connection
 import tests.metadata_utils as utils
 
 

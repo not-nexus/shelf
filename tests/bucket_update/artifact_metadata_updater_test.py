@@ -1,8 +1,8 @@
 from tests.bucket_update.test_base import TestBase
-from pyshelf.resource_identity import ResourceIdentity
-from pyshelf.bucket_update.artifact_metadata_updater import ArtifactMetadataUpdater
+from shelf.resource_identity import ResourceIdentity
+from shelf.bucket_update.artifact_metadata_updater import ArtifactMetadataUpdater
 from tests.metadata_builder import MetadataBuilder
-from pyshelf.metadata.keys import Keys
+from shelf.metadata.keys import Keys
 
 
 class ArtifactMetadataUpdaterTest(TestBase):

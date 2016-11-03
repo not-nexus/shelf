@@ -1,6 +1,6 @@
-from pyshelf.resource_identity import ResourceIdentity
+from shelf.resource_identity import ResourceIdentity
 from urlparse import urlparse
-from pyshelf.search.metadata import Metadata
+from shelf.search.metadata import Metadata
 from elasticsearch import Elasticsearch
 from tests.metadata.factory import Factory
 

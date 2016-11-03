@@ -1,4 +1,4 @@
-from pyshelf.metadata.keys import Keys
+from shelf.metadata.keys import Keys
 
 
 MD5 = "5eb63bbbe01eeed093cb22bb8f5acdc3"
@@ -68,7 +68,7 @@ def send_meta():
         that will be initialized which also happen to be
         immutable.
 
-        See pyshelf.metadata.initializer.Initializer
+        See shelf.metadata.initializer.Initializer
     """
     d = get_meta()
     del d[Keys.NAME]

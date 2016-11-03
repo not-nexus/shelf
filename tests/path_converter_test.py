@@ -1,6 +1,6 @@
 from tests.unit_test_base import UnitTestBase
-from pyshelf.artifact_path_builder import ArtifactPathBuilder
-from pyshelf.path_converter import PathConverter
+from shelf.artifact_path_builder import ArtifactPathBuilder
+from shelf.path_converter import PathConverter
 
 
 class PathConverterTest(UnitTestBase):

@@ -1,7 +1,7 @@
 from mock import Mock
 from pyproctor import MonkeyPatcher
-from pyshelf.bucket_update.utils import update_search_index
-from pyshelf.bulk_update.runner import Runner
+from shelf.bucket_update.utils import update_search_index
+from shelf.bulk_update.runner import Runner
 from tests.unit_test_base import UnitTestBase
 import multiprocessing
 

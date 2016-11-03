@@ -1,5 +1,5 @@
 import pyproctor
-from pyshelf.search.connection import Connection
+from shelf.search.connection import Connection
 
 
 class ConnectionTest(pyproctor.TestBase):

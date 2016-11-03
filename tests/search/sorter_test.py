@@ -1,8 +1,8 @@
 from tests.unit_test_base import UnitTestBase
-from pyshelf.search.sort_flag import SortFlag
-from pyshelf.search.sort_type import SortType
+from shelf.search.sort_flag import SortFlag
+from shelf.search.sort_type import SortType
 import tests.metadata_utils as utils
-from pyshelf.search.sorter import Sorter
+from shelf.search.sorter import Sorter
 from copy import deepcopy
 
 

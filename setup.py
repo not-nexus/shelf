@@ -22,9 +22,9 @@ config = {
         'mock',
         "moto",
     ],
-    'packages': ['pyshelf'],
+    'packages': ['shelf'],
     'scripts': [],
-    'name': 'pyshelf'
+    'name': 'shelf'
 }
 
 setup(**config)

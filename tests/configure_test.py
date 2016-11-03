@@ -1,5 +1,5 @@
 import pyproctor
-import pyshelf.configure as configure
+import shelf.configure as configure
 import os
 import yaml
 import errno

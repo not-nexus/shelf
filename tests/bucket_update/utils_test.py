@@ -3,9 +3,9 @@ from pyproctor import MonkeyPatcher
 from tests.unit_test_base import UnitTestBase
 import logging
 import os.path
-import pyshelf.bucket_update.utils as utils
-from pyshelf import background_utils
-from pyshelf.bucket_update.container import Container
+import shelf.bucket_update.utils as utils
+from shelf import background_utils
+from shelf.bucket_update.container import Container
 import os
 import glob
 

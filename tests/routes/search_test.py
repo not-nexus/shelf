@@ -92,7 +92,7 @@ class SearchTest(FunctionalTestBase):
 
     def test_sort_metadata_property_does_not_exist(self):
         # Ensuring we don't blow up on a sort like this.
-        # This was a bug cataloged https://github.com/kyle-long/pyshelf/issues/61
+        # This was a bug cataloged https://github.com/kyle-long/shelf/issues/61
         # and changelog release v6.1
         self.route_tester \
             .search() \

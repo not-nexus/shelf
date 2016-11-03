@@ -1,7 +1,7 @@
-from pyshelf.metadata.yaml_codec import YamlCodec
-from pyshelf.metadata.mapper import Mapper
-from pyshelf.metadata.cloud_portal import CloudPortal
-from pyshelf.cloud.storage import Storage
+from shelf.metadata.yaml_codec import YamlCodec
+from shelf.metadata.mapper import Mapper
+from shelf.metadata.cloud_portal import CloudPortal
+from shelf.cloud.storage import Storage
 
 
 class Factory(object):

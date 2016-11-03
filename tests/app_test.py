@@ -1,5 +1,5 @@
 import pyproctor
-from pyshelf.app import generic_exception_handler
+from shelf.app import generic_exception_handler
 import json
 
 

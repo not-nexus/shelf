@@ -1,5 +1,5 @@
 import pyproctor
-from pyshelf.cloud.storage import Storage
+from shelf.cloud.storage import Storage
 from mock import Mock
 
 
