@@ -40,3 +40,6 @@ setup_elastic.py.  Now using common functionality.
 v8.4 - Fixed bug where if a permission was not specified at all (instead of as
 an empty array) it would blow up with a 500 instead of just giving a
 permission denied.
+v9.0 - Adding a health check endpoint. Fixed a bug where we were the api would
+reject a request to metadata if the value was a boolean. Also started the
+rename from pyshelf -> shelf.
