@@ -13,7 +13,7 @@ Sorting and some searching is by the API instead of in Elasticsearch
 
 Currently, the sorting, the limiting and some of the searching for the [search functionality](api/search.md) is done by our API.  This was done for two reasons.
 
-1. The metadata in Elasticsearch is structured in such a way that we can't sort on it.  This was an oversight and we have [an issue](https://github.com/kyle-long/pyshelf/issues/72) logged of just this thing.
+1. The metadata in Elasticsearch is structured in such a way that we can't sort on it.  This was an oversight and we have [an issue](https://github.com/not-nexus/shelf/issues/72) logged of just this thing.
 2. [Version sort/search](api/search.md). Stock Elasticsearch does not seem to have this capability (especially the specific rules for how we wanted it to work).
 
 Health check only sets success or fail as they happen instead of every time the health check is called
