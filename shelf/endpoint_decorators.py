@@ -14,7 +14,7 @@ from jsonschema import ValidationError
 class EndpointDecorators(object):
     # Headers that should be redacted when logged.
     REDACTED_HEADERS = [
-        "Authorization"
+        "authorization"
     ]
 
     def merge(self, func, *decorator_list):
@@ -130,7 +130,7 @@ class EndpointDecorators(object):
                 # Werkzueg.DataStructures.EnvironHeaders are immutable.
                 # Cannot copy and change, so chose to redact and log this way.
                 for key, value in headers.iteritems():
-                    if key in EndpointDecorators.REDACTED_HEADERS:
+                    if key.lower() in EndpointDecorators.REDACTED_HEADERS:
                         value = "REDACTED"
 
                     redacted_headers.append("{0}: {1}".format(key, value))

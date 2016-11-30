@@ -16,7 +16,9 @@ class EndpointDecoratorSTest(pyproctor.TestBase):
         request_mock = type("FakeRequest", (), {
             "headers": {
                 "Authorization": "This better not be logged this way.",
-                "SafeStuff": "This better be logged this way"
+                "SafeStuff": "This better be logged this way",
+                "authorization": "not this",
+                "auThOrIzAtion": "not this"
             }
         })
         mock_container = type("FakeContainer", (), {
@@ -29,5 +31,8 @@ class EndpointDecoratorSTest(pyproctor.TestBase):
             pass
 
         test_log_headers(mock_container)
-        logger_mock.info.assert_called_with("RESPONSE HEADERS : \nSafeStuff: "
-                "This better be logged this way\nAuthorization: REDACTED")
+        logger_mock.info.assert_called_with("RESPONSE HEADERS : \n"
+                "authorization: REDACTED\n"
+                "auThOrIzAtion: REDACTED\n"
+                "SafeStuff: This better be logged this way\n"
+                "Authorization: REDACTED")
