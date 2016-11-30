@@ -3,7 +3,7 @@ from shelf.endpoint_decorators import decorators
 from mock import Mock
 
 
-class EndpointDecoratorSTest(pyproctor.TestBase):
+class EndpointDecoratorsTest(pyproctor.TestBase):
     def test_authorization_header_is_not_logged(self):
         """
             Very simple test. We found out the Authorization header was being
