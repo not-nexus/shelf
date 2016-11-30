@@ -12,6 +12,11 @@ from jsonschema import ValidationError
 
 
 class EndpointDecorators(object):
+    # Headers that should be redacted when logged.
+    REDACTED_HEADERS = [
+        "Authorization"
+    ]
+
     def merge(self, func, *decorator_list):
         """
             What this does is wraps a list of decorators provided
@@ -109,12 +114,25 @@ class EndpointDecorators(object):
         def wrapper(container, *args, **kwargs):
             request = container.request
 
-            def log(message, data):
-                container.logger.info("{0} : \n {1}".format(message, data))
+            def log_headers(message, headers):
+                redacted_headers = []
 
-            log("REQUEST HEADERS", request.headers)
+                # Iterating through Werkzueg.DataStructures.EnvironHeaders
+                # and creating a simple dictionary with redacted data and then
+                # logging that. This is because EvironHeaders are immutable
+                # and don't allow you to copy.
+                for key, value in headers.iteritems():
+                    if key in EndpointDecorators.REDACTED_HEADERS:
+                        value = "REDACTED"
+
+                    redacted_headers.append("{0}: {1}".format(key, value))
+
+                container.logger.info("{0} : \n{1}".format(message, "\n".join(redacted_headers)))
+
+            log_headers("REQUEST HEADERS", request.headers)
             response = func(container, *args, **kwargs)
-            log("RESPONSE HEADERS", response.headers)
+            log_headers("RESPONSE HEADERS", request.headers)
+
             return response
 
         return wrapper
@@ -220,5 +238,6 @@ class EndpointDecorators(object):
             return wrapper
 
         return validation_decorator
+
 
 decorators = EndpointDecorators()
