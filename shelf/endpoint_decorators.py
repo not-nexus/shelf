@@ -115,12 +115,20 @@ class EndpointDecorators(object):
             request = container.request
 
             def log_headers(message, headers):
+                """
+                    Log function specifically for logging headers.
+                    Redacts any items in EndpointDecorators.REDACTED_HEADERS.
+
+                    Args:
+                        message(string)
+                        headers(dict) - Note this is written to handle immutable
+                                        dictionary types such as
+                                        Werkzueg.DataStructures.EnvironHeaders.
+                """
                 redacted_headers = []
 
-                # Iterating through Werkzueg.DataStructures.EnvironHeaders
-                # and creating a simple dictionary with redacted data and then
-                # logging that. This is because EvironHeaders are immutable
-                # and don't allow you to copy.
+                # Werkzueg.DataStructures.EnvironHeaders are immutable.
+                # Cannot copy and change, so chose to redact and log this way.
                 for key, value in headers.iteritems():
                     if key in EndpointDecorators.REDACTED_HEADERS:
                         value = "REDACTED"
