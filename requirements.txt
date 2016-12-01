@@ -8,3 +8,5 @@ elasticsearch-dsl<2.0.0
 jsonschema==2.5.1
 aws-requests-auth==0.2.5
 docopt
+fuzzywuzzy==0.14.0
+python-Levenshtein==0.12.0
