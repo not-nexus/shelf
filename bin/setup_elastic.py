@@ -10,6 +10,7 @@ class ElasticInitializer(object):
 
     def initialize(self):
         config = self.read_config()
+        config = config["elasticsearch"]
         connection = Connection(config["connectionString"],
                                 config.get("accessKey"),
                                 config.get("secretKey"),
@@ -25,6 +26,9 @@ class ElasticInitializer(object):
     def read_config(self):
         config = {}
         configure.app_config(config, self.config_path)
+
+        return config
+
 
 bin_dir = os.path.dirname(os.path.realpath(__file__))
 config_path = os.path.realpath(os.path.join(bin_dir, "../config.yaml"))
