@@ -4,7 +4,6 @@ from shelf.error_code import ErrorCode
 from shelf.get_container import get_container
 import shelf.response_map as response_map
 from jsonschema import ValidationError
-from fuzzywuzzy import fuzz
 
 """
     This module contains decorator functions that are commonly
@@ -13,11 +12,10 @@ from fuzzywuzzy import fuzz
 
 
 class EndpointDecorators(object):
-    # Headers that should be redacted with associated fuzzy match ratio.
-    # This is to allow expansion to other headers in the future if necessary.
-    REDACTED_HEADERS = {
-        "authorization": 50
-    }
+    # Headers that should be redacted when logged.
+    REDACTED_HEADERS = [
+        "authorization"
+    ]
 
     def merge(self, func, *decorator_list):
         """
@@ -131,17 +129,11 @@ class EndpointDecorators(object):
 
                 # Werkzueg.DataStructures.EnvironHeaders are immutable.
                 # Cannot copy and change, so chose to redact and log this way.
-                for header_name, value in headers.iteritems():
-                    for header_to_redact, ratio in EndpointDecorators.REDACTED_HEADERS.iteritems():
-                        # Using partial ratio with a > 50 as a match yieled
-                        # the best results. Partial ratio catches stuff like
-                        # "auth" where as ratio does not. I decided to use
-                        # fuzzywuzzy because the amount of time to do this
-                        # check is paltry.
-                        if fuzz.partial_ratio(header_name, header_to_redact) > ratio:
-                            value = "REDACTED"
+                for key, value in headers.iteritems():
+                    if key.lower() in EndpointDecorators.REDACTED_HEADERS:
+                        value = "REDACTED"
 
-                    redacted_headers.append("{0}: {1}".format(header_name, value))
+                    redacted_headers.append("{0}: {1}".format(key, value))
 
                 container.logger.info("{0} : \n{1}".format(message, "\n".join(redacted_headers)))
 
