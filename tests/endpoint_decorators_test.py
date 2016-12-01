@@ -9,7 +9,7 @@ class EndpointDecoratorsTest(pyproctor.TestBase):
             Very simple test. We found out the Authorization header was being
             logged by endpoint decorators. The only function that logs headers
             is decorators.logheaders, so this is testing that function. It
-            must redact any headers added to the REDACED_HEADERS list.
+            must redact any headers added to the REDACTED_HEADERS list.
         """
         logger_mock = Mock()
         logger_mock.info = Mock()
