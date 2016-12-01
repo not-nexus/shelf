@@ -12,6 +12,11 @@ from jsonschema import ValidationError
 
 
 class EndpointDecorators(object):
+    # Headers that should be redacted when logged.
+    REDACTED_HEADERS = [
+        "authorization"
+    ]
+
     def merge(self, func, *decorator_list):
         """
             What this does is wraps a list of decorators provided
@@ -109,12 +114,33 @@ class EndpointDecorators(object):
         def wrapper(container, *args, **kwargs):
             request = container.request
 
-            def log(message, data):
-                container.logger.info("{0} : \n {1}".format(message, data))
+            def log_headers(message, headers):
+                """
+                    Log function specifically for logging headers.
+                    Redacts any items in EndpointDecorators.REDACTED_HEADERS.
 
-            log("REQUEST HEADERS", request.headers)
+                    Args:
+                        message(string)
+                        headers(dict) - Note this is written to handle immutable
+                                        dictionary types such as
+                                        Werkzueg.DataStructures.EnvironHeaders.
+                """
+                redacted_headers = []
+
+                # Werkzueg.DataStructures.EnvironHeaders are immutable.
+                # Cannot copy and change, so chose to redact and log this way.
+                for key, value in headers.iteritems():
+                    if key.lower() in EndpointDecorators.REDACTED_HEADERS:
+                        value = "REDACTED"
+
+                    redacted_headers.append("{0}: {1}".format(key, value))
+
+                container.logger.info("{0} : \n{1}".format(message, "\n".join(redacted_headers)))
+
+            log_headers("REQUEST HEADERS", request.headers)
             response = func(container, *args, **kwargs)
-            log("RESPONSE HEADERS", response.headers)
+            log_headers("RESPONSE HEADERS", request.headers)
+
             return response
 
         return wrapper
@@ -220,5 +246,6 @@ class EndpointDecorators(object):
             return wrapper
 
         return validation_decorator
+
 
 decorators = EndpointDecorators()
