@@ -43,3 +43,5 @@ permission denied.
 v9.0 - Adding a health check endpoint. Fixed a bug where we were the api would
 reject a request to metadata if the value was a boolean. Also started the
 rename from pyshelf -> shelf.
+v9.1 - Redacting authorization header from the logs to allow log shipping
+without exposing secrets.
