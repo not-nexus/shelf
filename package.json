@@ -1,7 +1,7 @@
 {
-    "name": "",
+    "name": "shelf",
     "version": "1.0.0",
-    "description": "",
+    "description": "REST API for AWS S3 meant to be an interface to immutable artifact storage.",
     "main": "lib/index.js",
     "scripts": {
         "test": "script/test",
@@ -12,8 +12,20 @@
         "url": "git+https://github.com/not-nexus/shelf.git"
     },
     "keywords": [
+        "shelf",
+        "rest",
+        "immutable",
+        "artifact",
+        "artefact",
+        "s3",
+        "api"
     ],
-    "author": "",
+    "author": "Kyle Long <uilwen@gmail.com>",
+    "contributors": [
+        "Andy Gertjejansen <AndyGertjejansen@outlook.com>",
+        "Derek Mayer <GoogilyBoogily@users.noreply.github.com>",
+        "Tyler Akins <fidian@rumkin.com>"
+    ],
     "license": "MIT",
     "bugs": {
         "url": "https://github.com/not-nexus/shelf/issues"
