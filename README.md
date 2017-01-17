@@ -1,8 +1,11 @@
 Shelf
 =======
 
-[![Build Status](https://travis-ci.org/not-nexus/shelf.svg?branch=master)](https://travis-ci.org/not-nexus/shelf)
-[![codecov.io](https://codecov.io/github/not-nexus/shelf/coverage.svg?branch=master)](https://codecov.io/github/not-nexus/shelf?branch=master)
+[![npm version][npm-badge]][npm-link]
+[![Build Status][travis-badge]][travis-link]
+[![Dependencies][dependencies-badge]][dependencies-link]
+[![Dev Dependencies][devdependencies-badge]][devdependencies-link]
+[![codecov.io][codecov-badge]][codecov-link]
 
 A REST API for AWS S3 meant to be an interface to immutable artifact storage.
 
@@ -115,3 +118,15 @@ Currently we run some manual tests when a new version is deployed. Examples:
         curl -H "Authorization: XXXX" -F "file=@./random.img" api.shelf.example.com/bucket/artifact/random.img
 
 * Run upload and abruptly cancel mid-upload
+
+
+[codecov-badge]: https://img.shields.io/codecov/c/github/not-nexus/shelf/master.svg
+[codecov-link]: https://codecov.io/github/not-nexus/shelf?branch=master
+[dependencies-badge]: https://img.shields.io/david/not-nexus/shelf.svg
+[dependencies-link]: https://david-dm.org/not-nexus/shelf
+[devdependencies-badge]: https://img.shields.io/david/dev/not-nexus/shelf.svg
+[devdependencies-link]: https://david-dm.org/not-nexus/shelf#info=devDependencies
+[npm-badge]: https://img.shields.io/npm/v/shelf.svg
+[npm-link]: https://npmjs.org/package/shelf
+[travis-badge]: https://img.shields.io/travis/not-nexus/shelf/master.svg
+[travis-link]: http://travis-ci.org/not-nexus/shelf

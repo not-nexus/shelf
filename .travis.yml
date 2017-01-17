@@ -1,7 +1,13 @@
-language: python
-python:
-    - 2.7
-    - 2.6
+language: node_js
+node_js:
+    - "4.0"
+    - "4"
+    - "5.0"
+    - "5"
+    - "6.0"
+    - "6"
+before_install:
+    - npm install -g npm@latest
 install:
     - source utils/init-environment
     - pip install codecov
@@ -10,11 +16,3 @@ services:
 # This is required for elasticsearch
 before_script:
     - sleep 10
-script: coverage run --source shelf/ -m unittest discover -p *_test.py tests -b
-after_success:
-    - codecov
-notifications:
-    email:
-        recipients:
-            - andygertjejansen@outlook.com
-            - uilwen@gmail.com
