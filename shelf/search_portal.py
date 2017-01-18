@@ -36,7 +36,7 @@ class SearchPortal(object):
             self.container.context.add_error(ErrorCode.INVALID_SEARCH_CRITERIA, msg)
             return
 
-        search_path = "{0}={1}*".format(MetadataKeys.PATH, self.resource_id.resource_path)
+        search_path = "{0}={1}/*".format(MetadataKeys.PATH, self.resource_id.resource_path)
         criteria["search"] = utils.default_to_list(criteria.get("search"))
         criteria["sort"] = utils.default_to_list(criteria.get("sort"))
         criteria["search"].append(search_path)
