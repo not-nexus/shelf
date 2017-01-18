@@ -207,18 +207,27 @@ class SearchTest(FunctionalTestBase):
         msg += "u'imCool\\\\=notCoolDude' does not match u'(?<!\\\\\\\\)='"
         self.search_with_bad_criteria({"search": "imCool\=notCoolDude"}, msg)
 
+    # Testing to make sure issue #63 is fixed.
+    # (https://github.com/not-nexus/shelf/issues/63)
     def test_path_search_doesnt_match_artifact(self):
+        self.run_path_search_on_directory("/test")
+
+    def test_path_search_doesnt_match_artifact_trailing_slash(self):
+        self.run_path_search_on_directory("/test/")
+
+    def run_path_search_on_directory(self, path):
         self.add_metadata("/test/artifact/test/alsoATest")
         self.add_metadata("/test/artifact/test_lol")
         self.search_wrapper.refresh_index()
         self.route_tester \
             .search() \
-            .route_params(bucket_name="test", path="/test") \
-            .expect(204, headers={
-                "Link": [
-                    "</test/artifact/test/alsoATest>; rel=\"item\"; title=\"artifact\""
-                ]
+            .route_params(bucket_name="test", path=path) \
+            .expect(204,
+                headers={
+                    "Link": [
+                        "</test/artifact/test/alsoATest>; rel=\"item\"; title=\"artifact\""
+                    ]
             }) \
-            .post({
-                "search": "artifactName=*"
-            }, headers=self.auth)
+            .post(
+                headers=self.auth
+            )
