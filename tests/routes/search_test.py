@@ -206,3 +206,19 @@ class SearchTest(FunctionalTestBase):
         msg = "u'imCool\\\\=notCoolDude' is not of type u'array', "
         msg += "u'imCool\\\\=notCoolDude' does not match u'(?<!\\\\\\\\)='"
         self.search_with_bad_criteria({"search": "imCool\=notCoolDude"}, msg)
+
+    def test_path_search_doesnt_match_artifact(self):
+        self.add_metadata("/test/artifact/test/alsoATest")
+        self.add_metadata("/test/artifact/test_lol")
+        self.search_wrapper.refresh_index()
+        self.route_tester \
+            .search() \
+            .route_params(bucket_name="test", path="/test") \
+            .expect(204, headers={
+                "Link": [
+                    "</test/artifact/test/alsoATest>; rel=\"item\"; title=\"artifact\""
+                ]
+            }) \
+            .post({
+                "search": "artifactName=*"
+            }, headers=self.auth)
