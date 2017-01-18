@@ -46,7 +46,7 @@ class SearchParser(object):
         split_char = equality_search
 
         # Search the search_string for potential tilde and does a negative lookbehind for \
-        # If tilde exists and \ does preceede it, it is a match and thus a version search
+        # If tilde exists and \ does precede it, it is a match and thus a version search
         if re.search(version_search, search_string):
             search_criteria["search_type"] = SearchType.VERSION
             split_char = version_search
@@ -57,8 +57,22 @@ class SearchParser(object):
             else:
                 search_criteria["search_type"] = SearchType.MATCH
 
-        # Splits using re.split to ensure first occurence of non-escaped = or ~= is split on
+        # Splits using re.split to ensure first occurrence of non-escaped = or ~= is split on
         search_criteria["field"], search_criteria["value"] = re.split(split_char, search_string, 1)
+
+        # Grab the index of the end of the artifact path.
+        index = len(search_criteria["value"]) - 1
+
+        # If the search time is a version search, we need to decrement the
+        # index, as version searches end with two characters.
+        if search_criteria["search_type"] == SearchType.VERSION:
+            index = index - 1
+
+        # Add a "/" to the end of the given artifact path (but before).
+        # This makes sure that if you're searching a directory, the search
+        # won't also match an artifact with the same name as the directory.
+        search_criteria["value"] = search_criteria["value"][:index] + "/" + search_criteria["value"][index:]
+
         return search_criteria
 
     def _format_sort_criteria(self, sort_string):
