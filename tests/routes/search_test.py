@@ -222,12 +222,14 @@ class SearchTest(FunctionalTestBase):
         self.route_tester \
             .search() \
             .route_params(bucket_name="test", path=path) \
-            .expect(204,
-                    headers={
-                        "Link": [
-                            "</test/artifact/test/alsoATest>; rel=\"item\"; title=\"artifact\""
-                        ]
-                    }) \
+            .expect(
+                204,
+                headers={
+                    "Link": [
+                        "</test/artifact/test/alsoATest>; rel=\"item\"; title=\"artifact\""
+                    ]
+                }
+            ) \
             .post(
                 headers=self.auth
             )
