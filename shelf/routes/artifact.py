@@ -1,6 +1,7 @@
 from flask import request, Blueprint
 from shelf.endpoint_decorators import decorators
 import shelf.response_map as response_map
+from shelf.error_code import ErrorCode
 import requests
 
 artifact = Blueprint("artifact", __name__)
@@ -32,7 +33,7 @@ def get_path(container, bucket_name, path):
 
 
 @artifact.route("/<bucket_name>/artifact/<path:path>", methods=["POST"])
-@decorators.foundation_headers
+@decorators.foundation
 def upload_artifact(container, bucket_name, path):
     file_storage = request.files['file']
     container.artifact_manager.upload_artifact(path, file_storage)
@@ -57,7 +58,7 @@ def get_artifact_meta(container, bucket_name, path):
 
 
 @artifact.route("/<bucket_name>/artifact/<path:path>/_meta", methods=["PUT"])
-@decorators.foundation_headers
+@decorators.foundation
 @decorators.validate_request("schemas/request-metadata.json")
 def update_artifact_meta(container, bucket_name, path, data):
     manager = container.metadata.manager
@@ -85,7 +86,7 @@ def get_metadata_property(container, bucket_name, path, item):
 
 
 @artifact.route("/<bucket_name>/artifact/<path:path>/_meta/<item>", methods=["POST", "PUT"])
-@decorators.foundation_headers
+@decorators.foundation
 @decorators.validate_request("schemas/request-metadata-property.json")
 def create_metadata_property(container, bucket_name, path, item, data):
     manager = container.metadata.manager
@@ -125,8 +126,8 @@ def delete_metadata_property(container, bucket_name, path, item):
 
 @artifact.route("/<bucket_name>/artifact/_search", methods=["POST"])
 @decorators.foundation
-def root_search(container, bucket_name):
-    data = container.request.get_json(silent=True, force=True)
+@decorators.validate_request("schemas/search-request-criteria.json", {})
+def root_search(container, bucket_name, data):
     response = search(container, data)
 
     return response
@@ -134,8 +135,8 @@ def root_search(container, bucket_name):
 
 @artifact.route("/<bucket_name>/artifact/<path:path>/_search", methods=["POST"])
 @decorators.foundation
-def path_search(container, bucket_name, path):
-    data = container.request.get_json(silent=True, force=True)
+@decorators.validate_request("schemas/search-request-criteria.json", {})
+def path_search(container, bucket_name, path, data):
     response = search(container, data)
 
     return response
@@ -152,9 +153,6 @@ def search(container, criteria=None):
         Returns:
             Flask response
     """
-    if not criteria:
-        criteria = {}
-
     try:
         container.search_portal.search(criteria)
     except requests.ConnectionError as ex:
