@@ -3,10 +3,6 @@ Search
 
 Our api supports searching artifact metadata which will return a link header for each search result.
 
-Note:
-* Remember any escaped item must have two backslashes to be valid JSON.
-* The only requirement is the search portion of the criteria.
-
 
 Search criteria
 ---------------
