@@ -4,7 +4,9 @@ Search
 Our api supports searching artifact metadata which will return a link header for each search result.
 
 Note:
+* Remember any escaped item must have two backslashes to be valid JSON.
 * The only requirement is the search portion of the criteria.
+
 
 Search criteria:
 ----------------
@@ -13,7 +15,13 @@ Search criteria:
 * Equality search syntax: `"field=value"`
 * Wildcard search syntax: `"field=valu*"` where the `*` represents the 0 or more characters.
 * Version search syntax: `"field~=1.1"` where search results >= 1.1 but < 2.
-* We support escaping of \*, ~, and = for literal evaluation.
+* As you can see \*, ~, and = are special characters within search criteria. We support escaping of these characters for literal evaluation.
+    * Note: these characters must be escaped with double backslashes to be valid JSON. Here is an example:
+
+    {
+        "search": "artifactPath=myOddPath\\*"
+    }
+
 
 Sort criteria:
 --------------
@@ -32,11 +40,13 @@ Sort criteria:
     metadata property, this artifact will be returned first on an `ASC` search and last on a
     `DESC` search.
 
+
 Limit:
 ------
 
 * A limit can be set on the number of results returned back by the api.
 * Note: the method of sort effects which artifacts are contained within the limit.
+
 
 Artifact Path:
 --------------
@@ -97,3 +107,4 @@ Here is an example of a search with multiple sort criteria.
     Date: Wed, 09 Mar 2016 21:51:40 GMT
 
 For more examples see [advanced search examples](advanced-search-examples.md).
+
