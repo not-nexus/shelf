@@ -8,7 +8,7 @@ artifact = Blueprint("artifact", __name__)
 
 @artifact.route("/<bucket_name>/artifact/", methods=["GET", "HEAD"], defaults={"path": "/"})
 @artifact.route("/<bucket_name>/artifact/<path:path>", methods=["GET", "HEAD"])
-@decorators.foundation
+@decorators.foundation_headers
 def get_path(container, bucket_name, path):
     """
         Flask automatically maps HEAD requests to GET endpoint. We added it to the list of methods
@@ -32,7 +32,7 @@ def get_path(container, bucket_name, path):
 
 
 @artifact.route("/<bucket_name>/artifact/<path:path>", methods=["POST"])
-@decorators.foundation
+@decorators.foundation_headers
 def upload_artifact(container, bucket_name, path):
     file_storage = request.files['file']
     container.artifact_manager.upload_artifact(path, file_storage)
