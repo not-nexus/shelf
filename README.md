@@ -1,4 +1,4 @@
-Shelf
+![Shelf](docs/shelf-logo.png) Shelf
 =======
 
 [![Build Status](https://travis-ci.org/not-nexus/shelf.svg?branch=master)](https://travis-ci.org/not-nexus/shelf)
