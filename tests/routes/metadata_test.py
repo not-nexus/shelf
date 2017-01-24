@@ -31,6 +31,17 @@ class MetadataTest(FunctionalTestBase):
             .put(data=meta_utils.send_meta(), headers=self.auth)
         self.assert_metadata_matches("/test/artifact/dir/dir2/dir3/nest-test/_meta")
 
+    def test_put_metadata_no_data(self):
+        self.route_tester \
+            .metadata() \
+            .route_params(bucket_name="test", path="dir/dir2/dir3/nest-test") \
+            .expect(400, {
+                "code": ErrorCode.INVALID_REQUEST_DATA_FORMAT,
+                "message": "None is not of type u'object'. Failed on instance null."
+            }) \
+            .put(headers=self.auth)
+        self.assert_metadata_matches("/test/artifact/dir/dir2/dir3/nest-test/_meta")
+
     def test_put_metadata_no_write(self):
         self.route_tester \
             .metadata() \
