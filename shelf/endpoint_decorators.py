@@ -102,7 +102,8 @@ class EndpointDecorators(object):
                         separators=(',', ': ')
                     )
                 except ValueError as ex:
-                    log("Invalid JSON from request.", ex)
+                    container.logger.info("Invalid JSON from request.")
+                    container.logger.exception(ex)
 
             log("REQUEST BODY", request_data)
             response = func(container, *args, **kwargs)
@@ -214,6 +215,7 @@ class EndpointDecorators(object):
 
             Args:
                 container(shelf.container.Container)
+                default_request_body(dict)
 
             Returns:
                 object | None: decoded JSON from request. None if invalid.
@@ -225,6 +227,9 @@ class EndpointDecorators(object):
                 container.context.add_error(ErrorCode.INVALID_REQUEST_DATA_FORMAT)
                 data = None
         else:
+            # Since Python passes objects by reference, we need to do a
+            # deep copy so it won't assign "data" to the
+            # reference of "default_request_body".
             data = deepcopy(default_request_body)
 
         return data
@@ -235,6 +240,7 @@ class EndpointDecorators(object):
 
             Args:
                 schema_path(string)
+                default_request_body(dict)
 
             Returns:
                 function

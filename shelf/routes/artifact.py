@@ -1,7 +1,6 @@
 from flask import request, Blueprint
 from shelf.endpoint_decorators import decorators
 import shelf.response_map as response_map
-from shelf.error_code import ErrorCode
 import requests
 
 artifact = Blueprint("artifact", __name__)
