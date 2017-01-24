@@ -159,10 +159,6 @@ def search(container, criteria=None):
         raise ex
 
     container.app.health.elasticsearch = True
-
-    if container.context.has_error():
-        response = response_map.map_context_error(container.context)
-    else:
-        response = container.context_response_mapper.to_response(status_code=204)
+    response = container.context_response_mapper.to_response(status_code=204)
 
     return response
