@@ -236,11 +236,15 @@ class EndpointDecorators(object):
 
     def validate_request(self, schema_path, default_request_body=None):
         """
-            Validates request data against schema.
+            It decodes data as JSON, validates request data against schema,
+            and injects that data into the route.
 
             Args:
                 schema_path(string)
-                default_request_body(dict)
+                default_request_body(dict) - This argument is used to allow
+                                             an empty request body. To use it,
+                                             pass an empty dict ({}) to the
+                                             decorator.
 
             Returns:
                 function
