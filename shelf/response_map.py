@@ -180,9 +180,7 @@ def map_context_error(context):
         Returns:
             flask Response
     """
-    if ErrorCode.INVALID_SEARCH_CRITERIA in context.errors:
-        return create_400(ErrorCode.INVALID_SEARCH_CRITERIA, context.errors[ErrorCode.INVALID_SEARCH_CRITERIA])
-    elif ErrorCode.INVALID_ARTIFACT_NAME in context.errors:
+    if ErrorCode.INVALID_ARTIFACT_NAME in context.errors:
         return create_403(
             ErrorCode.INVALID_ARTIFACT_NAME,
             "Artifact and directories names that BEGIN "

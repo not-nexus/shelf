@@ -1,6 +1,6 @@
 {
     "type": "object",
-    "decsription": "Request criteria for searching artifact metadata, sorting the results, and limiting the number of results returned.",
+    "description": "Request criteria for searching artifact metadata, sorting the results, and limiting the number of results returned.",
     "properties": {
         "search": {
             "oneOf": [

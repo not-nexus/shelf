@@ -46,3 +46,6 @@ rename from pyshelf -> shelf.
 v9.1 - Redacting authorization header from the logs to allow log shipping
 without exposing secrets. This does a fuzzy match to ensure even misspelled
 header names that are close are redacted such as "auth" or "authentication".
+v9.2 - Fixed issue #63 which caused searching on a directory to find artifacts
+that had the same name as the directory. Also fixed the search api returning
+a 500 error if the JSON was invalid. It now returns a 400 error.

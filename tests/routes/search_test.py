@@ -1,4 +1,5 @@
 from tests.functional_test_base import FunctionalTestBase
+from shelf.error_code import ErrorCode
 
 
 class SearchTest(FunctionalTestBase):
@@ -193,7 +194,7 @@ class SearchTest(FunctionalTestBase):
             .search() \
             .route_params(bucket_name="test", path="") \
             .expect(400, {
-                "code": "invalid_search_criteria",
+                "code": ErrorCode.INVALID_REQUEST_DATA_FORMAT,
                 "message": msg
             }) \
             .post(data, headers=self.auth)
