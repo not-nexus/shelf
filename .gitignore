@@ -5,3 +5,4 @@ venv
 config.yaml
 *~
 tags
+covhtml/
