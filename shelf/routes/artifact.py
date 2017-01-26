@@ -8,7 +8,7 @@ artifact = Blueprint("artifact", __name__)
 
 @artifact.route("/<bucket_name>/artifact/", methods=["GET", "HEAD"], defaults={"path": "/"})
 @artifact.route("/<bucket_name>/artifact/<path:path>", methods=["GET", "HEAD"])
-@decorators.foundation
+@decorators.foundation_headers
 def get_path(container, bucket_name, path):
     """
         Flask automatically maps HEAD requests to GET endpoint. We added it to the list of methods
@@ -57,7 +57,7 @@ def get_artifact_meta(container, bucket_name, path):
 
 
 @artifact.route("/<bucket_name>/artifact/<path:path>/_meta", methods=["PUT"])
-@decorators.foundation_headers
+@decorators.foundation
 @decorators.validate_request("schemas/request-metadata.json")
 def update_artifact_meta(container, bucket_name, path, data):
     manager = container.metadata.manager
@@ -85,7 +85,7 @@ def get_metadata_property(container, bucket_name, path, item):
 
 
 @artifact.route("/<bucket_name>/artifact/<path:path>/_meta/<item>", methods=["POST", "PUT"])
-@decorators.foundation_headers
+@decorators.foundation
 @decorators.validate_request("schemas/request-metadata-property.json")
 def create_metadata_property(container, bucket_name, path, item, data):
     manager = container.metadata.manager
@@ -125,8 +125,8 @@ def delete_metadata_property(container, bucket_name, path, item):
 
 @artifact.route("/<bucket_name>/artifact/_search", methods=["POST"])
 @decorators.foundation
-def root_search(container, bucket_name):
-    data = container.request.get_json(silent=True, force=True)
+@decorators.validate_request("schemas/search-request-criteria.json", {})
+def root_search(container, bucket_name, data):
     response = search(container, data)
 
     return response
@@ -134,8 +134,8 @@ def root_search(container, bucket_name):
 
 @artifact.route("/<bucket_name>/artifact/<path:path>/_search", methods=["POST"])
 @decorators.foundation
-def path_search(container, bucket_name, path):
-    data = container.request.get_json(silent=True, force=True)
+@decorators.validate_request("schemas/search-request-criteria.json", {})
+def path_search(container, bucket_name, path, data):
     response = search(container, data)
 
     return response
@@ -152,9 +152,6 @@ def search(container, criteria=None):
         Returns:
             Flask response
     """
-    if not criteria:
-        criteria = {}
-
     try:
         container.search_portal.search(criteria)
     except requests.ConnectionError as ex:
@@ -162,10 +159,6 @@ def search(container, criteria=None):
         raise ex
 
     container.app.health.elasticsearch = True
-
-    if container.context.has_error():
-        response = response_map.map_context_error(container.context)
-    else:
-        response = container.context_response_mapper.to_response(status_code=204)
+    response = container.context_response_mapper.to_response(status_code=204)
 
     return response

@@ -5,6 +5,7 @@ from shelf.get_container import get_container
 import shelf.response_map as response_map
 from jsonschema import ValidationError
 from fuzzywuzzy import fuzz
+from copy import deepcopy
 
 """
     This module contains decorator functions that are commonly
@@ -92,13 +93,17 @@ class EndpointDecorators(object):
                 container.logger.info("{0} : \n {1}".format(message, data))
 
             if request_data:
-                request_data = json.dumps(
-                    json.loads(
-                        request_data
-                    ),
-                    indent=4,
-                    separators=(',', ': ')
-                )
+                try:
+                    request_data = json.dumps(
+                        json.loads(
+                            request_data
+                        ),
+                        indent=4,
+                        separators=(',', ': ')
+                    )
+                except ValueError as ex:
+                    container.logger.info("Invalid JSON from request.")
+                    container.logger.exception(ex)
 
             log("REQUEST BODY", request_data)
             response = func(container, *args, **kwargs)
@@ -203,32 +208,43 @@ class EndpointDecorators(object):
 
         return wrapper
 
-    def decode_request(self, container):
+    def decode_request(self, container, default_request_body=None):
         """
             Decodes data from flask request.
             Only accepts array or object as valid JSON.
 
             Args:
                 container(shelf.container.Container)
+                default_request_body(dict)
 
             Returns:
                 object | None: decoded JSON from request. None if invalid.
         """
-        data = container.request.get_json(silent=True, force=True)
+        if container.request.data:
+            data = container.request.get_json(silent=True, force=True)
 
-        if not isinstance(data, (list, dict)):
-            container.context.add_error(ErrorCode.INVALID_REQUEST_DATA_FORMAT)
-            data = None
+            if not isinstance(data, (list, dict)):
+                container.context.add_error(ErrorCode.INVALID_REQUEST_DATA_FORMAT)
+                data = None
+        else:
+            # Since Python passes objects by reference, we need to do a
+            # deep copy so it won't assign "data" to the
+            # reference of "default_request_body".
+            data = deepcopy(default_request_body)
 
         return data
 
-    def validate_request(self, schema_path):
+    def validate_request(self, schema_path, default_request_body=None):
         """
-            Decodes and validates request data against schema.
-            Is meant to be used after decode_request.
+            It decodes data as JSON, validates request data against schema,
+            and injects that data into the route.
 
             Args:
                 schema_path(string)
+                default_request_body(dict) - This argument is used to allow
+                                             an empty request body. To use it,
+                                             pass an empty dict ({}) to the
+                                             decorator.
 
             Returns:
                 function
@@ -236,7 +252,7 @@ class EndpointDecorators(object):
         def validation_decorator(func):
             @functools.wraps(func)
             def wrapper(container, *args, **kwargs):
-                data = self.decode_request(container)
+                data = self.decode_request(container, default_request_body)
 
                 if container.context.has_error():
                     return response_map.map_context_error(container.context)

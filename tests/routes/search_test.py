@@ -1,4 +1,5 @@
 from tests.functional_test_base import FunctionalTestBase
+from shelf.error_code import ErrorCode
 
 
 class SearchTest(FunctionalTestBase):
@@ -193,7 +194,7 @@ class SearchTest(FunctionalTestBase):
             .search() \
             .route_params(bucket_name="test", path="") \
             .expect(400, {
-                "code": "invalid_search_criteria",
+                "code": ErrorCode.INVALID_REQUEST_DATA_FORMAT,
                 "message": msg
             }) \
             .post(data, headers=self.auth)
@@ -206,3 +207,30 @@ class SearchTest(FunctionalTestBase):
         msg = "u'imCool\\\\=notCoolDude' is not of type u'array', "
         msg += "u'imCool\\\\=notCoolDude' does not match u'(?<!\\\\\\\\)='"
         self.search_with_bad_criteria({"search": "imCool\=notCoolDude"}, msg)
+
+    # Testing to make sure issue #63 is fixed.
+    # (https://github.com/not-nexus/shelf/issues/63)
+    def test_path_search_doesnt_match_artifact(self):
+        self.run_path_search_on_directory("/test")
+
+    def test_path_search_doesnt_match_artifact_trailing_slash(self):
+        self.run_path_search_on_directory("/test/")
+
+    def run_path_search_on_directory(self, path):
+        self.add_metadata("/test/artifact/test/alsoATest")
+        self.add_metadata("/test/artifact/test_lol")
+        self.search_wrapper.refresh_index()
+        self.route_tester \
+            .search() \
+            .route_params(bucket_name="test", path=path) \
+            .expect(
+                204,
+                headers={
+                    "Link": [
+                        "</test/artifact/test/alsoATest>; rel=\"item\"; title=\"artifact\""
+                    ]
+                }
+            ) \
+            .post(
+                headers=self.auth
+            )
