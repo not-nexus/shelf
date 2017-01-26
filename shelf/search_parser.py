@@ -46,7 +46,7 @@ class SearchParser(object):
         split_char = equality_search
 
         # Search the search_string for potential tilde and does a negative lookbehind for \
-        # If tilde exists and \ does preceede it, it is a match and thus a version search
+        # If tilde exists and \ does precede it, it is a match and thus a version search
         if re.search(version_search, search_string):
             search_criteria["search_type"] = SearchType.VERSION
             split_char = version_search
@@ -57,8 +57,9 @@ class SearchParser(object):
             else:
                 search_criteria["search_type"] = SearchType.MATCH
 
-        # Splits using re.split to ensure first occurence of non-escaped = or ~= is split on
+        # Splits using re.split to ensure first occurrence of non-escaped = or ~= is split on
         search_criteria["field"], search_criteria["value"] = re.split(split_char, search_string, 1)
+
         return search_criteria
 
     def _format_sort_criteria(self, sort_string):

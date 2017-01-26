@@ -1,8 +1,6 @@
 from shelf.metadata.keys import Keys as MetadataKeys
 from shelf.resource_identity import ResourceIdentity
 from shelf.search import utils
-from shelf.error_code import ErrorCode
-from jsonschema import ValidationError
 
 
 class SearchPortal(object):
@@ -29,14 +27,7 @@ class SearchPortal(object):
             Args:
                 criteria(schemas/search-request-criteria.json): Search and sort criteria formatted as show below.
         """
-        try:
-            self.schema_validator.validate("schemas/search-request-criteria.json", criteria)
-        except ValidationError as e:
-            msg = self.schema_validator.format_error(e)
-            self.container.context.add_error(ErrorCode.INVALID_SEARCH_CRITERIA, msg)
-            return
-
-        search_path = "{0}={1}*".format(MetadataKeys.PATH, self.resource_id.resource_path)
+        search_path = "{0}={1}/*".format(MetadataKeys.PATH, self.resource_id.resource_path)
         criteria["search"] = utils.default_to_list(criteria.get("search"))
         criteria["sort"] = utils.default_to_list(criteria.get("sort"))
         criteria["search"].append(search_path)

@@ -42,3 +42,37 @@ class EndpointDecoratorsTest(pyproctor.TestBase):
                 "Authorization: REDACTED\n"
                 "authorization: REDACTED\n"
                 "SafeStuff: This better be logged this way")
+
+    def test_logbodies_errors_on_invalid_json(self):
+        """
+            Tests the logbodies function to make sure it correctly
+            catches invalid JSON requests.
+        """
+        data = "{\"invalid\": ...}"
+        valueErrorStr = "No JSON object could be decoded"
+        logger_mock = Mock()
+        request_mock = type("FakeRequest", (), {
+            "headers": {
+                "content-type": "application/json"
+            },
+            "data": data
+        })
+        request_mock.get_data = Mock(return_value=data)
+        mock_container = type("FakeContainer", (), {
+            "logger": logger_mock,
+            "request": request_mock
+        })
+
+        @decorators.logbodies
+        def test_log_bodies(container):
+            return container.request
+
+        test_log_bodies(mock_container)
+        logger_mock.info.assert_any_call("Invalid JSON from request.")
+
+        # Get the call arguments from logger_mock.exception,
+        # and assert if the first argument is a ValueError with
+        # the correct error message.
+        callArg = logger_mock.exception.call_args[0][0]
+        self.assertEqual(ValueError, type(callArg))
+        self.assertEqual(valueErrorStr, callArg.message)
