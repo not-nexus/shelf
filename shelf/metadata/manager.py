@@ -33,6 +33,9 @@ class Manager(object):
 
         return self._metadata
 
+    def _notify_updated_hook(self):
+        self.container.hook_manager.notify_metadata_updated(self.container.resource_identity)
+
     def load(self):
         """
             Loads metadata from the cloud.
@@ -86,6 +89,7 @@ class Manager(object):
 
         # assuming success if it hasn't thrown an exception
         self.write()
+        self._notify_updated_hook()
         return Result()
 
     def try_update_property(self, key, value):
@@ -139,6 +143,7 @@ class Manager(object):
         else:
             del self.metadata[key]
             self.write()
+            self._notify_updated_hook()
 
         return result
 
@@ -148,6 +153,7 @@ class Manager(object):
             self.metadata[key] = value
             self.write()
             result.value = value
+            self._notify_updated_hook()
         else:
             result.add_error(ErrorCode.IMMUTABLE)
 

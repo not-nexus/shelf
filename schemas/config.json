@@ -49,6 +49,10 @@
             "required": [
                 "connectionString"
             ]
+        },
+        "hookCommand": {
+            "type": "string",
+            "description": "The command to run when an artifact is uploaded or metadata for that artifact has been updated. The command will be run relative to the config file. The file must have executable permissions."
         }
     },
     "required": [

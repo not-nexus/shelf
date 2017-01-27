@@ -1,11 +1,10 @@
 from jsonschema import ValidationError
-from shelf import utils
 from shelf.health import Health
+from shelf import utils
+from shelf.logger_creator import LoggerCreator
 from shelf.request_log_filter import RequestLogFilter
-import logging
 import multiprocessing
 import os
-import sys
 import yaml
 
 
@@ -32,7 +31,32 @@ def app_config(existing_config, config_path):
     if not config.get("bulkUpdateLogDirectory"):
         config["bulkUpdateLogDirectory"] = "/var/log/bucket-update"
 
+    if config.get("hookCommand"):
+        config["hookCommand"] = hook_command(config_path, config["hookCommand"])
+
     existing_config.update(config)
+
+
+def hook_command(config_path, cmd):
+    # Making the hookCommand relative to to the configuration file.
+    cmd = os.path.join(os.path.dirname(config_path), cmd)
+
+    # To make it easier to understand
+    cmd = os.path.realpath(cmd)
+
+    # Get just the path to the file without any arguments if they exist
+    # so that I can do a few checks below.
+    #
+    # Note: I just thought of a limitation where a filename or directory name
+    # cannot have a space in it. Due to this being the "tactical" solution I
+    # am not going to worry about it too much at the moment.
+    # Problem Code: NO_SPACE_IN_FILENAME
+    exe_path, _, _ = cmd.partition(" ")
+
+    if not os.path.isfile(exe_path) or not os.access(exe_path, os.X_OK):
+        raise ValueError("hookCommand's file \"{0}\" is either not a file or is not executable.".format(exe_path))
+
+    return cmd
 
 
 def app_health(app):
@@ -41,15 +65,7 @@ def app_health(app):
 
 
 def logger(logger, log_level_name):
-    log_level_name = log_level_name.upper()
-    log_level = logging.getLevelName(log_level_name)
-    handler = logging.StreamHandler(sys.stdout)
-    handler.setLevel(log_level)
-    formatter = logging.Formatter("%(asctime)s - %(levelname)s %(user)s%(request_id)s%(url)s- %(message)s")
-    handler.setFormatter(formatter)
-    handler.addFilter(RequestLogFilter())
-    logger.addHandler(handler)
-    logger.setLevel(log_level)
+    LoggerCreator(logger).request_format().level_name(log_level_name).handler.addFilter(RequestLogFilter())
 
 
 def app(app):

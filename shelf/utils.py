@@ -1,6 +1,7 @@
 import os.path
 import json
 import jsonschema
+import urlparse
 
 
 def create_path(*args):
@@ -18,6 +19,23 @@ def create_path(*args):
     full_path = os.path.join(directory_of_this_file, "../", *args)
     full_path = os.path.realpath(full_path)
     return full_path
+
+
+def get_host_from_uri(uri):
+    """
+        Gets the host (which is actually the protocol + the
+        hostname) from a full URI.
+
+        Args:
+            uri(string)
+
+        Returns:
+            string
+    """
+    parts = urlparse.urlparse(uri)
+    host = parts.scheme + "://" + parts.hostname
+
+    return host
 
 
 def validate_against_schema(schema_path, data):
