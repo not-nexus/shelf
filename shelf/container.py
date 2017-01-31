@@ -239,6 +239,7 @@ class Container(object):
         """
         if not self._hook_manager:
             hook_command = self.app.config.get("hookCommand")
+
             if hook_command:
                 host = utils.get_host_from_uri(self.request.url)
                 self._hook_manager = self.hook.create_manager(host, hook_command)

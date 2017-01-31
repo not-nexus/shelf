@@ -18,7 +18,7 @@ class Manager(object):
 
     def notify_artifact_uploaded(self, identity):
         """
-            Should be called when an artifact is uploaded.
+            Fires an event that describes an artifact being uploaded.
 
             Args:
                 identity(shelf.resource_identity)
@@ -27,7 +27,7 @@ class Manager(object):
 
     def notify_metadata_updated(self, identity):
         """
-            Should be called when an artifact's metadata is updated.
+            Fires an event that describes an artifact's metadata being updated.
             This will notify any hooks that are listening.
 
             Args:
@@ -50,6 +50,5 @@ class Manager(object):
             "meta_uri": meta_uri,
             "log_level": self.container.logger.level
         }
-
         process = self.multiprocessing.Process(target=action.execute_command, kwargs=data)
         process.start()

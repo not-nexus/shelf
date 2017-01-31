@@ -7,6 +7,7 @@ Note:
 * The bucket `referenceName` acts as an alias for referencing the bucket. If a `referenceName` is added it must be used to reference the bucket.
 * If you are using Elasticsearch via AWS the region portion of the Elasticsearch config is required and the AWS keys are only required when the Elasticsearch Domain access policy requires keys.
 * `upperSearchResultLimit` is another optional Elasticsearch config option. It defaults to 10000 if not set. It limits the number of search results returned. We currently do not support pagination.
+* It's important to note that `hookCommand` cannot have a space in the script name that gets executed. This is mostly because we support arguments being passed along.
 
         buckets:
             -

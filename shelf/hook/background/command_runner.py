@@ -29,7 +29,6 @@ class CommandRunner(object):
                 shelf.hook.command_result.CommandResult
         """
         command = command.split(" ")
-
         process = self.subprocess.Popen(
             command,
             cwd=self.cwd,
@@ -37,10 +36,8 @@ class CommandRunner(object):
             stdout=self.subprocess.PIPE,
             stderr=self.subprocess.PIPE
         )
-
         stdout, stderr = process.communicate()
         exit_code = process.returncode
-
         result = self.CommandResult(stdout, stderr, exit_code)
         self.logger.debug("Command Result: {0}".format(result))
 

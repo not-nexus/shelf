@@ -33,6 +33,13 @@ def get_host_from_uri(uri):
             string
     """
     parts = urlparse.urlparse(uri)
+
+    # I used hostname instead of netloc here because if you are
+    # behind a load balancer you would get the wrong port that
+    # and outsider should connect to use on.
+    #
+    # Note: This is seriously cutting a corner and would not work
+    # for others who want to connect on a non-standard port.
     host = parts.scheme + "://" + parts.hostname
 
     return host
