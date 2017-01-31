@@ -41,7 +41,7 @@ class ConfigureTest(pyproctor.TestBase):
     def run_app_config(self):
         configure.app_config(self.app.config, self.path)
 
-    def test_app(self):
+    def create_config(self, hook_command=None):
         config = {
             "buckets": [
                 {
@@ -59,6 +59,14 @@ class ConfigureTest(pyproctor.TestBase):
                 "secretKey": "sneakyAlphaNumericKey"
             }
         }
+
+        if hook_command:
+            config["hookCommand"] = hook_command
+
+        return config
+
+    def test_app(self):
+        config = self.create_config()
         self.write_config(config)
         # To make sure it doens't overwrite it
         self.app.config["hello"] = "hi"
@@ -67,6 +75,15 @@ class ConfigureTest(pyproctor.TestBase):
         expected["bulkUpdateLogDirectory"] = "/var/log/bucket-update"
         self.run_app_config()
         self.assertEqual(expected, self.app.config)
+
+    def test_app_with_hook_command(self):
+        # Config is in tests/data/config.yaml
+        config = self.create_config("../bin/hook-test")
+        self.write_config(config)
+        base = os.path.dirname(__file__)
+        hook_command = os.path.realpath(os.path.join(base, "bin/hook-test"))
+        self.run_app_config()
+        self.assertEqual(hook_command, self.app.config["hookCommand"])
 
     def test_app_config_invalid_yaml(self):
         contents = """
@@ -89,6 +106,7 @@ class ConfigureTest(pyproctor.TestBase):
             self.run_app_config()
 
         self.assertEqual("{0} contained invalid yaml".format(self.path), context.exception.message)
+
 
     def test_app_config_config_does_not_exist(self):
         with self.assertRaises(ValueError) as context:
@@ -164,3 +182,15 @@ class ConfigureTest(pyproctor.TestBase):
 
         self.assertEqual(True, app.health.elasticsearch)
         app.health.refNames["hello"] = False
+
+    def test_hook_command_file_doesnt_exist(self):
+        with self.assertRaises(ValueError):
+            configure.hook_command(self.path, "totally-doesnt-exist")
+
+    def test_hook_command_file_not_executable(self):
+        with self.assertRaises(ValueError):
+            configure.hook_command(self.path, "../bin/hook-test-not-executable")
+
+    def test_hook_command_works_with_args(self):
+        cmd = configure.hook_command(self.path, "../bin/hook-test a b c")
+        self.assertIsInstance(cmd, basestring)

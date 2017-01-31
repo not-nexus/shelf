@@ -1,8 +1,10 @@
+from shelf import utils
 from shelf.artifact_manager import ArtifactManager
 from shelf.artifact_path_builder import ArtifactPathBuilder
 from shelf.cloud.factory import Factory
 from shelf.context import Context
 from shelf.context_response_mapper import ContextResponseMapper
+from shelf.hook.container import Container as HookContainer
 from shelf.link_manager import LinkManager
 from shelf.link_mapper import LinkMapper
 from shelf.metadata.container import Container as MetadataContainer
@@ -21,8 +23,9 @@ import logging
 class Container(object):
     def __init__(self, app, request=None):
         """
-            param flask.Flask app
-            param flask.Request request
+            Args:
+                app(flask.Flask)
+                request(flask.Request)
         """
         self.app = app
         self.request = request
@@ -48,6 +51,8 @@ class Container(object):
         self._path_converter = None
         self._silent_logger = None
         self._silent_cloud_factory = None
+        self._hook = None
+        self._hook_manager = None
 
     @property
     def logger(self):
@@ -202,7 +207,8 @@ class Container(object):
                 self.bucket_name,
                 self.cloud_factory,
                 self.resource_identity,
-                self.search.update_manager
+                self.search.update_manager,
+                self.hook_manager
             )
 
         return self._metadata
@@ -213,3 +219,31 @@ class Container(object):
             self._path_converter = PathConverter(self.artifact_path_builder)
 
         return self._path_converter
+
+    @property
+    def hook(self):
+        """
+            Returns:
+                shelf.hook.container.Container
+        """
+        if not self._hook:
+            self._hook = HookContainer(self.logger)
+
+        return self._hook
+
+    @property
+    def hook_manager(self):
+        """
+            Returns:
+                shelf.hook.manager.Manager
+        """
+        if not self._hook_manager:
+            hook_command = self.app.config.get("hookCommand")
+
+            if hook_command:
+                host = utils.get_host_from_uri(self.request.url)
+                self._hook_manager = self.hook.create_manager(host, hook_command)
+            else:
+                self._hook_manager = self.hook.create_null_manager()
+
+        return self._hook_manager

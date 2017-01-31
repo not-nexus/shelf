@@ -1,6 +1,7 @@
 import os.path
 import json
 import jsonschema
+import urlparse
 
 
 def create_path(*args):
@@ -18,6 +19,30 @@ def create_path(*args):
     full_path = os.path.join(directory_of_this_file, "../", *args)
     full_path = os.path.realpath(full_path)
     return full_path
+
+
+def get_host_from_uri(uri):
+    """
+        Gets the host (which is actually the protocol + the
+        hostname) from a full URI.
+
+        Args:
+            uri(string)
+
+        Returns:
+            string
+    """
+    parts = urlparse.urlparse(uri)
+
+    # I used hostname instead of netloc here because if you are
+    # behind a load balancer you would get the wrong port that
+    # and outsider should connect to use on.
+    #
+    # Note: This is seriously cutting a corner and would not work
+    # for others who want to connect on a non-standard port.
+    host = parts.scheme + "://" + parts.hostname
+
+    return host
 
 
 def validate_against_schema(schema_path, data):
