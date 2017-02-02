@@ -5,6 +5,7 @@ from tests.test_base import TestBase
 import json
 import os
 import logging
+from pyproctor import MonkeyPatcher
 
 
 class ExecuteCommandTest(TestBase):
@@ -13,8 +14,7 @@ class ExecuteCommandTest(TestBase):
         super(ExecuteCommandTest, self).setUp()
         self.cwd = os.path.join(os.path.dirname(__file__), "../../..")
         self.logger = Mock()
-
-        action.create_background_logger = Mock(return_value=self.logger)
+        MonkeyPatcher.patch(action, "create_background_logger", Mock(return_value=self.logger))
 
     def create_data(self, command, event):
         data = {
