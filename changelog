@@ -52,3 +52,5 @@ a 500 error if the JSON was invalid. It now returns a 400 error.
 v10.0 - Added a notification hook, which is a configuration option that
 points to the path of a script that will be run when an artifact is uploaded
 or when artifact metadata is updated.
+v10.1 - Changed the version of gevents to 1.1.2 in order to fix gevents
+threading exiting with KeyError (https://github.com/gevent/gevent/issues/153).
