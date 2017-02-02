@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+echo "Should not have been called. I am not executable"
+exit 1

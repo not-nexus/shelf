@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+exitCode=0
+
+if [[ "$SHELF_EVENT" == "fail" ]]; then
+    exitCode=1
+fi
+
+# -n so that it is easier to test. Hate to have to add "\n" to everything.
+echo -n "SHELF_EVENT=$SHELF_EVENT, SHELF_URI=$SHELF_URI, SHELF_META_URI=$SHELF_META_URI"
+echo -n "STDERR" >&2
+
+exit "$exitCode"

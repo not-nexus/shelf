@@ -68,3 +68,4 @@ class ArtifactManager(object):
             storage.upload_artifact(path, file_storage)
             self.container.metadata.manager.write()
             self.link_manager.assign_single(path)
+            self.container.hook_manager.notify_artifact_uploaded(self.container.resource_identity)
