@@ -181,11 +181,7 @@ class EndpointDecorators(object):
         @functools.wraps(func)
         def wrapper(container, *args, **kwargs):
             with container.create_silent_bucket_storage() as storage:
-                if storage.is_accessible():
-                    # In case it was previously failing, and it now passed.
-                    container.app.health.refNames[container.bucket_name] = True
-                else:
-                    container.app.health.refNames[container.bucket_name] = False
+                if not storage.is_accessible():
                     return response_map.create_500()
 
             return func(container, *args, **kwargs)
