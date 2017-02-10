@@ -56,12 +56,7 @@ class EndpointDecoratorsTest(pyproctor.TestBase):
                     "authorization: REDACTED\n"
                     "SafeStuff: This better be logged this way"
                 ),
-                call('REQUEST METHOD: POST'),
-                call('RESPONSE STATUS CODE: 200'),
-                call(
-                    "RESPONSE HEADERS : \n"
-                    "content-type: application/json"
-                )
+                call("RESPONSE HEADERS : \nSTATUS CODE: 200\ncontent-type: application/json")
             ]
         )
 
