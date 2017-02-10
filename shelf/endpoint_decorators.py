@@ -121,13 +121,11 @@ class EndpointDecorators(object):
         def wrapper(container, *args, **kwargs):
             request = container.request
 
-            def log_headers(message, headers):
+            def redact_headers(headers):
                 """
-                    Log function specifically for logging headers.
                     Redacts any items in EndpointDecorators.REDACTED_HEADERS.
 
                     Args:
-                        message(string)
                         headers(dict) - Note this is written to handle immutable
                                         dictionary types such as
                                         Werkzueg.DataStructures.EnvironHeaders.
@@ -148,11 +146,17 @@ class EndpointDecorators(object):
 
                     redacted_headers.append("{0}: {1}".format(header_name, value))
 
-                container.logger.info("{0} : \n{1}".format(message, "\n".join(redacted_headers)))
+                return redacted_headers
 
-            log_headers("REQUEST HEADERS", request.headers)
+            request_headers = redact_headers(request.headers)
+            container.logger.info("{0} : \n{1}".format("REQUEST HEADERS", "\n".join(request_headers)))
             response = func(container, *args, **kwargs)
-            log_headers("RESPONSE HEADERS", request.headers)
+            response_headers = redact_headers(response.headers)
+            to_log = [
+                "STATUS CODE: {0}".format(str(response.status_code))
+            ]
+            to_log = to_log + response_headers
+            container.logger.info("{0} : \n{1}".format("RESPONSE HEADERS", "\n".join(to_log)))
 
             return response
 

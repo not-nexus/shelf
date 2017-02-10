@@ -1,9 +1,18 @@
 import pyproctor
 from shelf.endpoint_decorators import decorators
-from mock import Mock
+from mock import Mock, call
 
 
 class EndpointDecoratorsTest(pyproctor.TestBase):
+    def setUp(self):
+        self.response_mock = type("FakeResponse", (), {
+            "data": {},
+            "headers": {
+                "content-type": "application/json"
+            },
+            "status_code": 200
+        })
+
     def test_authorization_header_is_not_logged(self):
         """
             Very simple test. We found out the Authorization header was being
@@ -22,7 +31,8 @@ class EndpointDecoratorsTest(pyproctor.TestBase):
                 "authentication": "no",
                 "host": "yes",
                 "accept": "yes"
-            }
+            },
+            "method": "POST"
         })
         mock_container = type("FakeContainer", (), {
             "logger": logger_mock,
@@ -31,17 +41,24 @@ class EndpointDecoratorsTest(pyproctor.TestBase):
 
         @decorators.logheaders
         def test_log_headers(*args, **kwargs):
-            pass
+            return self.response_mock
 
         test_log_headers(mock_container)
-        logger_mock.info.assert_called_with("RESPONSE HEADERS : \n"
-                "authentication: REDACTED\n"
-                "accept: yes\n"
-                "host: yes\n"
-                "auThOrIzAtion: REDACTED\n"
-                "Authorization: REDACTED\n"
-                "authorization: REDACTED\n"
-                "SafeStuff: This better be logged this way")
+        logger_mock.info.assert_has_calls(
+            [
+                call(
+                    "REQUEST HEADERS : \n"
+                    "authentication: REDACTED\n"
+                    "accept: yes\n"
+                    "host: yes\n"
+                    "auThOrIzAtion: REDACTED\n"
+                    "Authorization: REDACTED\n"
+                    "authorization: REDACTED\n"
+                    "SafeStuff: This better be logged this way"
+                ),
+                call("RESPONSE HEADERS : \nSTATUS CODE: 200\ncontent-type: application/json")
+            ]
+        )
 
     def test_logbodies_errors_on_invalid_json(self):
         """
@@ -65,7 +82,7 @@ class EndpointDecoratorsTest(pyproctor.TestBase):
 
         @decorators.logbodies
         def test_log_bodies(container):
-            return container.request
+            return self.response_mock
 
         test_log_bodies(mock_container)
         logger_mock.info.assert_any_call("Invalid JSON from request.")
