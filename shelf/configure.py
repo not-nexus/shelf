@@ -1,5 +1,4 @@
 from jsonschema import ValidationError
-from shelf.health import Health
 from shelf import utils
 from shelf.logger_creator import LoggerCreator
 from shelf.request_log_filter import RequestLogFilter
@@ -59,11 +58,6 @@ def hook_command(config_path, cmd):
     return cmd
 
 
-def app_health(app):
-    manager = multiprocessing.Manager()
-    app.health = Health(app.config, manager)
-
-
 def logger(logger, log_level_name):
     LoggerCreator(logger).request_format().level_name(log_level_name).handler.addFilter(RequestLogFilter())
 
@@ -71,6 +65,5 @@ def logger(logger, log_level_name):
 def app(app):
     config_path = os.path.dirname(os.path.realpath(__file__)) + "/../config.yaml"
     app_config(app.config, config_path)
-    app_health(app)
     log_level_name = app.config.get("logLevel", "DEBUG")
     logger(app.logger, log_level_name)

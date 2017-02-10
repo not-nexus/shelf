@@ -1,3 +1,8 @@
+IMPORTANT NOTE
+==============
+
+Due to some shared memory issues we have disabled `failingStorage`, `passingStorage` and `search`. We are only leaving the documentation here for when we enable it again.
+
 Health
 ======
 

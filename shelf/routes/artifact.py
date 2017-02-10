@@ -1,7 +1,6 @@
 from flask import request, Blueprint
 from shelf.endpoint_decorators import decorators
 import shelf.response_map as response_map
-import requests
 
 artifact = Blueprint("artifact", __name__)
 
@@ -152,13 +151,7 @@ def search(container, criteria=None):
         Returns:
             Flask response
     """
-    try:
-        container.search_portal.search(criteria)
-    except requests.ConnectionError as ex:
-        container.app.health.elasticsearch = False
-        raise ex
-
-    container.app.health.elasticsearch = True
+    container.search_portal.search(criteria)
     response = container.context_response_mapper.to_response(status_code=204)
 
     return response

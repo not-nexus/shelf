@@ -4,7 +4,6 @@ from moto import mock_s3
 from pyproctor import MonkeyPatcher
 from shelf.app import app
 from shelf.error_code import ErrorCode
-from shelf.health import Health
 from shelf.metadata.initializer import Initializer
 from shelf.resource_identity import ResourceIdentity
 from shelf.search.container import Container as SearchContainer
@@ -14,7 +13,6 @@ from tests.route_tester.tester import Tester
 from tests.search.test_wrapper import TestWrapper as SearchTestWrapper
 from tests.test_base import TestBase
 import boto
-import multiprocessing
 import shelf.configure as configure
 import tests.metadata_utils as meta_utils
 import tests.permission_utils as utils
@@ -83,8 +81,6 @@ class FunctionalTestBase(TestBase):
 
     def setUp(self):
         self.app = app
-        manager = multiprocessing.Manager()
-        self.app.health = Health(self.app.config, manager)
         self.setup_elastic()
         self.setup_moto()
         self.setup_metadata()
