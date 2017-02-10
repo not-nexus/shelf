@@ -151,8 +151,10 @@ class EndpointDecorators(object):
                 container.logger.info("{0} : \n{1}".format(message, "\n".join(redacted_headers)))
 
             log_headers("REQUEST HEADERS", request.headers)
+            container.logger.info("REQUEST METHOD: {0}".format(request.method))
             response = func(container, *args, **kwargs)
-            log_headers("RESPONSE HEADERS", request.headers)
+            container.logger.info("RESPONSE STATUS CODE: {0}".format(response.status_code))
+            log_headers("RESPONSE HEADERS", response.headers)
 
             return response
 
