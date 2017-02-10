@@ -54,3 +54,6 @@ points to the path of a script that will be run when an artifact is uploaded
 or when artifact metadata is updated.
 v10.1 - Changed the version of gevents to 1.1.2 in order to fix gevents
 threading exiting with KeyError (https://github.com/gevent/gevent/issues/153).
+v10.2 - Removed shared memory part of healthcheck since it was cause issues
+and nobodoy was doing it. Now actually logging response headers. Now logging
+VERB and http status code. Changed format of logged headers.
