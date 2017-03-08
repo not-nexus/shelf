@@ -1,7 +1,7 @@
 Flask==0.10.1
 Flask-Cors==2.1.0
 gevent==1.1.2
-gunicorn==19.3.0
+gunicorn==19.7.0
 PyYAML==3.11
 boto==2.38.0
 elasticsearch-dsl<2.0.0
