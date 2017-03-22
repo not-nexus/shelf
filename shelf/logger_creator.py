@@ -10,7 +10,7 @@ class LoggerCreator(object):
         like the handler in multiple places for different reasons and I didn't want to
         pass them around every time.
     """
-    REQUEST_FORMAT = "%(asctime)s - %(levelname)s %(user)s%(request_id)s%(url)s- %(message)s"
+    REQUEST_FORMAT = "%(asctime)s - %(levelname)s %(user)s%(request_id)s%(method_and_uri)s- %(message)s"
     BACKGROUND_FORMAT = "%(asctime)s - %(levelname)s - %(message)s"
 
     def __init__(self, logger_or_name=None):

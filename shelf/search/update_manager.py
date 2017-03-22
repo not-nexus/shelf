@@ -96,8 +96,9 @@ class UpdateManager(object):
             Returns:
                 int: number of documents deleted from Elasticsearch.
         """
-        self.logger.debug("Executing the following query for removing old documents from {0}. {1}"
-                .format(self.index, query))
+        self.logger.info("Executing the following query for removing old documents from {0}. {1}".format(
+            self.index, query
+        ))
 
         # Doing a bulk operation here via the elasticsearch library.
         # With elasticsearch_dsl there is no way to do a bulk delete.
@@ -154,11 +155,11 @@ class UpdateManager(object):
                 key(string): Unique key that is associated with the metadata document to update.
                 metadata(dict): Updated metadata to store in ElasticSearch.
         """
-        self.logger.debug("Attempting update of metadata: {0} in ES".format(key))
+        self.logger.info("Attempting update of metadata: {0} in ES".format(key))
         meta_doc = self._get_metadata(key)
         meta_doc.update_all(metadata)
         meta_doc.save(using=self.connection)
-        self.logger.debug("Updated metadata document {0} in ES".format(key))
+        self.logger.info("Updated metadata document {0} in ES".format(key))
 
     def _get_metadata(self, key):
         """
