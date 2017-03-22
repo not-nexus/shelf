@@ -20,6 +20,8 @@ class ArtifactManager(object):
             with self.container.create_bucket_storage() as storage:
                 content = storage.get_artifact(path)
 
+        # For tracking purposes
+        content.request_id = self.container.request_id
         return content
 
     def assign_artifact_links(self, path):

@@ -13,11 +13,11 @@ class Storage(object):
         self.key_map = {}
 
     def connect(self):
-        self.logger.debug("Attempting to establish connection")
+        self.logger.debug("Attempting to establish connection to S3")
         self.conn = S3Connection(self.access_key, self.secret_key)
 
     def close(self):
-        self.logger.debug("Closing connection")
+        self.logger.debug("Closing connection to S3")
         self.conn.close()
 
     def get_artifact(self, artifact_name):
@@ -39,8 +39,9 @@ class Storage(object):
         """
         key = self._get_key(artifact_name)
         self.logger.debug(
-            "Creating instance of shelf.cloud.stream_iterator.StreamIterator. Artifact {0}".format(artifact_name))
-        stream = StreamIterator(key)
+            "Creating instance of shelf.cloud.stream_iterator.StreamIterator. Artifact {0}".format(artifact_name)
+        )
+        stream = StreamIterator(key, self.logger)
         return stream
 
     def artifact_exists(self, artifact_name):
@@ -59,6 +60,12 @@ class Storage(object):
         """
         self._get_key(artifact_name)
 
+    def _create_upload_callback(self, artifact_name):
+        def callback(uploaded, total):
+            self.logger.info("Upload progress for {0}: {1}/{2} bytes".format(artifact_name, uploaded, total))
+
+        return callback
+
     def upload_artifact(self, artifact_name, file_storage):
         """
             Uploads an artifact. If directory does not exist in path it will be created.
@@ -74,8 +81,10 @@ class Storage(object):
             raise DuplicateArtifactError(artifact_name)
 
         key = Key(bucket, artifact_name)
-        self.logger.debug("Commencing upload of {0}".format(artifact_name))
-        key.set_contents_from_file(file_storage)
+        callback = self._create_upload_callback(artifact_name)
+        self.logger.info("Commencing upload of {0}".format(artifact_name))
+        key.set_contents_from_file(file_storage, cb=callback, num_cb=10)
+        self.logger.info("Finished upload of {0}".format(artifact_name))
 
     def get_artifact_as_string(self, path):
         """
@@ -148,7 +157,7 @@ class Storage(object):
         self.logger.debug("Attempting to get artifact {0}".format(artifact_name))
         key = bucket.get_key(artifact_name)
         if key is None:
-            self.logger.error("Artifact {0} does not exist in bucket {0}".format(artifact_name, self.bucket_name))
+            self.logger.info("Artifact {0} does not exist in bucket {0}".format(artifact_name, self.bucket_name))
             raise ArtifactNotFoundError(artifact_name)
 
         self.key_map[artifact_name] = key
