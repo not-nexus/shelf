@@ -175,7 +175,6 @@ class Storage(object):
         return accessible
 
     def _get_bucket(self, bucket_name):
-        self.logger.debug("Attempting to get bucket {0}".format(bucket_name))
         bucket = self.conn.lookup(self.bucket_name)
         if bucket is None:
             # This scenario could be one of three things.
