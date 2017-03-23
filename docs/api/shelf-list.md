@@ -11,6 +11,7 @@ GET
 Retrieves all shelves you have access to.
 
 The following headers are required.
+
 | Name            | Type   | Description                                           |
 |-----------------|--------|-------------------------------------------------------|
 | `Authorization` | string | An authentication token which we can identify you by. |
