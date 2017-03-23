@@ -1,4 +1,5 @@
 from tests.route_tester.artifact import Artifact
+from tests.route_tester.base import Base
 from tests.route_tester.health import Health
 from tests.route_tester.metadata import Metadata
 from tests.route_tester.metadata_item import MetadataItem
@@ -24,3 +25,9 @@ class Tester(object):
 
     def health(self):
         return Health(self.test, self.test_client)
+
+    def base(self, route):
+        base = Base(self.test, self.test_client)
+        base.route = route
+
+        return base

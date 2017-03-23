@@ -7,9 +7,11 @@ from shelf.context_response_mapper import ContextResponseMapper
 from shelf.hook.container import Container as HookContainer
 from shelf.link_manager import LinkManager
 from shelf.link_mapper import LinkMapper
+from shelf.list_shelves_manager import ListShelvesManager
 from shelf.metadata.container import Container as MetadataContainer
 from shelf.null_handler import NullHandler
 from shelf.path_converter import PathConverter
+from shelf.permissions_loader import PermissionsLoader
 from shelf.permissions_validator import PermissionsValidator
 from shelf.resource_identity_factory import ResourceIdentityFactory
 from shelf.schema_validator import SchemaValidator
@@ -34,6 +36,7 @@ class Container(object):
 
         # services
         self._permissions_validator = None
+        self._permissions_loader = None
         self._cloud_factory = None
         self._artifact_manager = None
         self._search = None
@@ -53,6 +56,7 @@ class Container(object):
         self._silent_cloud_factory = None
         self._hook = None
         self._hook_manager = None
+        self._list_shelves_manager = None
 
     @property
     def logger(self):
@@ -71,6 +75,21 @@ class Container(object):
             self._silent_logger.addHandler(NullHandler())
 
         return self._silent_logger
+
+    @property
+    def list_shelves_manager(self):
+        if not self._list_shelves_manager:
+            shelf_list = [b["referenceName"] for b in self.app.config.get("buckets")]
+            self._list_shelves_manager = ListShelvesManager(shelf_list, self.permissions_loader)
+
+        return self._list_shelves_manager
+
+    @property
+    def permissions_loader(self):
+        if not self._permissions_loader:
+            self._permissions_loader = PermissionsLoader(self.logger, self.silent_cloud_factory)
+
+        return self._permissions_loader
 
     @property
     def permissions_validator(self):

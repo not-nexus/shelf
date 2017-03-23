@@ -2,6 +2,8 @@ from shelf.cloud.cloud_exceptions import CloudStorageException
 from shelf.health_status import HealthStatus
 from shelf.json_response import JsonResponse
 from shelf.routes.artifact import artifact
+from shelf.endpoint_decorators import decorators
+from shelf.link_title import LinkTitle
 import flask
 import shelf.response_map as response_map
 
@@ -50,5 +52,36 @@ def health():
         }
 
         response.set_data(body)
+
+    return response
+
+
+@app.route("/", methods=["GET"])
+@decorators.injectcontainer
+@decorators.logtraffic
+def list_shelves(container):
+    auth = container.request.headers.get("Authorization")
+
+    if auth:
+        bucket_list = container.list_shelves_manager.list(auth)
+        link_list = []
+
+        for bucket in bucket_list:
+            path = flask.url_for("artifact.get_path", bucket_name=bucket)
+            link_list.append({
+                "type": "collection",
+                "title": LinkTitle.ARTIFACT_ROOT,
+                "path": path
+            })
+
+        link_list = container.link_mapper.to_response(link_list)
+        response = JsonResponse()
+
+        for link in link_list:
+            response.headers.add("Link", link)
+
+        response.set_data(bucket_list)
+    else:
+        response = response_map.create_401()
 
     return response
