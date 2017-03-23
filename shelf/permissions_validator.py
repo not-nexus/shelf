@@ -1,6 +1,4 @@
-import yaml
 from fnmatch import fnmatch
-from shelf.cloud.cloud_exceptions import ArtifactNotFoundError
 from shelf import artifact_key_filter
 from shelf.error_code import ErrorCode
 
@@ -29,16 +27,9 @@ class PermissionsValidator(object):
             self.authorization_token = authorization
 
             if authorization:
-                with self.container.create_silent_bucket_storage() as storage:
-                    try:
-                        raw_permissions = storage.get_artifact_as_string("_keys/" + authorization)
-                    except ArtifactNotFoundError:
-                        raw_permissions = None
-                        self._permissions_loaded = True
+                self._permissions = self.container.permissions_loader.load(self.container.bucket_name, authorization)
 
-                if raw_permissions:
-                    self._permissions = yaml.load(raw_permissions)
-
+                if self._permissions:
                     if self._permissions.get("name"):
                         self.name = self._permissions["name"]
                     else:
