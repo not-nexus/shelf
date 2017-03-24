@@ -34,6 +34,7 @@ class Sorter(object):
             if value is None:
                 value = "0"
 
+            value = str(value)
             loose_version = LooseVersion(value)
 
             return loose_version

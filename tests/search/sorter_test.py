@@ -121,3 +121,53 @@ class SorterTest(UnitTestBase):
         asc_results = self.sorter.sort(data, sort)
         expected.reverse()
         self.asserts.json_equals(expected, asc_results)
+
+    def test_integer_version_sort(self):
+        sort = [
+            {
+                "field": "version",
+                "sort_type": SortType.ASC,
+                "flag_list": [
+                    SortFlag.VERSION
+                ]
+            }
+        ]
+        data = [
+            utils.get_meta("a", "/a", 3),
+            utils.get_meta("blah", "/blah", 2),
+            utils.get_meta("thing", "/thing", 1),
+            utils.get_meta("zzzz", "/zzzz", 2)
+        ]
+        results = self.sorter.sort(data, sort)
+        expected = [
+            utils.get_meta("thing", "/thing", 1),
+            utils.get_meta("blah", "/blah", 2),
+            utils.get_meta("zzzz", "/zzzz", 2),
+            utils.get_meta("a", "/a", 3)
+        ]
+        self.asserts.json_equals(expected, results)
+
+    def test_none_version_sort(self):
+        sort = [
+            {
+                "field": "version",
+                "sort_type": SortType.ASC,
+                "flag_list": [
+                    SortFlag.VERSION
+                ]
+            }
+        ]
+        data = [
+            utils.get_meta("thing", "/thing", 2),
+            utils.get_meta("blah", "/blah", "1"),
+            utils.get_meta("a", "/a", None),
+            utils.get_meta("zzzz", "/zzzz", "12.2.0")
+        ]
+        results = self.sorter.sort(data, sort)
+        expected = [
+            utils.get_meta("a", "/a", None),
+            utils.get_meta("blah", "/blah", "1"),
+            utils.get_meta("thing", "/thing", 2),
+            utils.get_meta("zzzz", "/zzzz", "12.2.0")
+        ]
+        self.asserts.json_equals(expected, results)
