@@ -20,6 +20,9 @@ class ArtifactManager(object):
             with self.container.create_bucket_storage() as storage:
                 content = storage.get_artifact(path)
 
+                # For tracking purposes
+                content.request_id = self.container.request_id
+
         return content
 
     def assign_artifact_links(self, path):
@@ -43,7 +46,7 @@ class ArtifactManager(object):
             artifact_list = storage.get_directory_contents(directory_path, recursive=False)
 
             if artifact_list:
-                self.container.logger.debug("Resource {0} is assumed to be a directory.".format(directory_path))
+                self.container.logger.info("Resource {0} is assumed to be a directory.".format(directory_path))
                 artifact_path_list = [artifact.name for artifact in artifact_list]
                 self.link_manager.assign_listing(artifact_path_list)
             else:

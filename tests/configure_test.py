@@ -164,7 +164,7 @@ class ConfigureTest(pyproctor.TestBase):
         pyproctor.MonkeyPatcher.patch(configure, "app_config", app_config_mock)
         self.app.logger = Mock()
         configure.app(self.app)
-        log_level = logging.getLevelName("DEBUG")
+        log_level = logging.getLevelName("INFO")
         calls = self.app.logger.addHandler.mock_calls
         self.assertEqual(1, len(calls))
         self.app.logger.setLevel.assert_called_with(log_level)

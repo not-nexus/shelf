@@ -29,7 +29,7 @@ class IndexPruner(object):
         for bucket in self.config["buckets"]:
             path = os.path.join("/" + bucket["referenceName"], "artifact/*")
             path_list.append(path)
-            self.logger.debug("Building path for {0}. {1}".format(bucket["referenceName"], path))
+            self.logger.info("Building path for {0}. {1}".format(bucket["referenceName"], path))
 
         response = self.update_manager.remove_unlisted_documents_wildcard(MetadataKeys.PATH, path_list)
-        self.logger.debug("Successfuly cleaned search index. {0} old documents deleted".format(response))
+        self.logger.info("Successfuly cleaned search index. {0} old documents deleted".format(response))

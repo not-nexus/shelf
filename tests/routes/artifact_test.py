@@ -1,12 +1,13 @@
 from StringIO import StringIO
+from shelf.link_title import LinkTitle
 from tests.functional_test_base import FunctionalTestBase
 
 
 class ArtifactTest(FunctionalTestBase):
     def test_artifact_get_path(self):
         link = [
-            "</test/artifact/test>; rel=\"self\"; title=\"artifact\"",
-            "</test/artifact/test/_meta>; rel=\"related\"; title=\"metadata\""
+            "</test/artifact/test>; rel=\"self\"; title=\"{0}\"".format(LinkTitle.ARTIFACT),
+            "</test/artifact/test/_meta>; rel=\"related\"; title=\"{0}\"".format(LinkTitle.METADATA)
         ]
         self.route_tester \
             .artifact() \
@@ -44,7 +45,9 @@ class ArtifactTest(FunctionalTestBase):
             .artifact() \
             .route_params(bucket_name="test", path=path) \
             .expect(204, headers={
-                "Link": "</test/artifact/dir/dir2/dir3/dir4/test5>; rel=\"item\"; title=\"artifact\""
+                "Link": "</test/artifact/dir/dir2/dir3/dir4/test5>; rel=\"item\"; title=\"{0}\"".format(
+                    LinkTitle.ARTIFACT
+                )
             }) \
             .get(headers=self.auth)
 
@@ -60,10 +63,10 @@ class ArtifactTest(FunctionalTestBase):
             .route_params(bucket_name="test", path="") \
             .expect(204, headers={
                 "Link": [
-                    "</test/artifact/empty>; rel=\"item\"; title=\"artifact\"",
-                    "</test/artifact/test>; rel=\"item\"; title=\"artifact\"",
-                    "</test/artifact/dir/>; rel=\"collection\"; title=\"a collection of artifacts\"",
-                    "</test/artifact/this/>; rel=\"collection\"; title=\"a collection of artifacts\""
+                    "</test/artifact/empty>; rel=\"item\"; title=\"{0}\"".format(LinkTitle.ARTIFACT),
+                    "</test/artifact/test>; rel=\"item\"; title=\"{0}\"".format(LinkTitle.ARTIFACT),
+                    "</test/artifact/dir/>; rel=\"collection\"; title=\"{0}\"".format(LinkTitle.ARTIFACT_LIST),
+                    "</test/artifact/this/>; rel=\"collection\"; title=\"{0}\"".format(LinkTitle.ARTIFACT_LIST)
                 ]
             }) \
             .get(headers=self.auth)
@@ -78,18 +81,18 @@ class ArtifactTest(FunctionalTestBase):
     def test_artifact_head_from_root(self):
             self.artifact_head_request("", 204, headers={
                 "Link": [
-                    "</test/artifact/empty>; rel=\"item\"; title=\"artifact\"",
-                    "</test/artifact/test>; rel=\"item\"; title=\"artifact\"",
-                    "</test/artifact/dir/>; rel=\"collection\"; title=\"a collection of artifacts\"",
-                    "</test/artifact/this/>; rel=\"collection\"; title=\"a collection of artifacts\""
+                    "</test/artifact/empty>; rel=\"item\"; title=\"{0}\"".format(LinkTitle.ARTIFACT),
+                    "</test/artifact/test>; rel=\"item\"; title=\"{0}\"".format(LinkTitle.ARTIFACT),
+                    "</test/artifact/dir/>; rel=\"collection\"; title=\"{0}\"".format(LinkTitle.ARTIFACT_LIST),
+                    "</test/artifact/this/>; rel=\"collection\"; title=\"{0}\"".format(LinkTitle.ARTIFACT_LIST)
                 ]
             })
 
     def test_head_request_on_artifact(self):
         self.artifact_head_request("/test", 204, headers={
             "Link": [
-                "</test/artifact/test>; rel=\"self\"; title=\"artifact\"",
-                "</test/artifact/test/_meta>; rel=\"related\"; title=\"metadata\""
+                "</test/artifact/test>; rel=\"self\"; title=\"{0}\"".format(LinkTitle.ARTIFACT),
+                "</test/artifact/test/_meta>; rel=\"related\"; title=\"{0}\"".format(LinkTitle.METADATA)
             ]
         })
 
@@ -104,8 +107,8 @@ class ArtifactTest(FunctionalTestBase):
             .route_params(bucket_name="test", path="test-2") \
             .expect(201, headers={
                 "Link": [
-                    "</test/artifact/test-2>; rel=\"self\"; title=\"artifact\"",
-                    "</test/artifact/test-2/_meta>; rel=\"related\"; title=\"metadata\""
+                    "</test/artifact/test-2>; rel=\"self\"; title=\"{0}\"".format(LinkTitle.ARTIFACT),
+                    "</test/artifact/test-2/_meta>; rel=\"related\"; title=\"{0}\"".format(LinkTitle.METADATA)
                 ]
             }) \
             .post(data={"file": (StringIO("file contents"), "test.txt")}, headers=self.auth)
@@ -115,8 +118,8 @@ class ArtifactTest(FunctionalTestBase):
             .route_params(bucket_name="b2", path="nick-drake") \
             .expect(201, headers={
                 "Link": [
-                    "</b2/artifact/nick-drake>; rel=\"self\"; title=\"artifact\"",
-                    "</b2/artifact/nick-drake/_meta>; rel=\"related\"; title=\"metadata\""
+                    "</b2/artifact/nick-drake>; rel=\"self\"; title=\"{0}\"".format(LinkTitle.ARTIFACT),
+                    "</b2/artifact/nick-drake/_meta>; rel=\"related\"; title=\"{0}\"".format(LinkTitle.METADATA)
                 ]
             }) \
             .post(data={"file": (StringIO("file contents"), "nick-drake.txt")}, headers=self.auth)
@@ -128,7 +131,7 @@ class ArtifactTest(FunctionalTestBase):
             .route_params(bucket_name="b2", path="") \
             .expect(204, headers={
                 "Link": [
-                    "</b2/artifact/nick-drake>; rel=\"item\"; title=\"artifact\"",
+                    "</b2/artifact/nick-drake>; rel=\"item\"; title=\"{0}\"".format(LinkTitle.ARTIFACT),
                 ]
             }) \
             .post(data={"search": "artifactPath=/b2/artifact/nick-drake"}, headers=self.auth)

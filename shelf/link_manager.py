@@ -1,3 +1,4 @@
+from shelf.link_title import LinkTitle
 import shelf.artifact_key_filter as filters
 
 
@@ -26,10 +27,10 @@ class LinkManager(object):
             resource_path = self.path_converter.from_cloud(artifact_path)
 
             rel_type = "item"
-            title = "artifact"
+            title = LinkTitle.ARTIFACT
             if resource_path[-1] == "/":
                 rel_type = "collection"
-                title = "a collection of artifacts"
+                title = LinkTitle.ARTIFACT_LIST
 
             self._add_link(resource_path, rel_type, title)
 
@@ -68,7 +69,7 @@ class LinkManager(object):
             {
                 "path": identity.metadata,
                 "type": metadata_rel_type,
-                "title": "metadata"
+                "title": LinkTitle.METADATA
             }
         ]
 

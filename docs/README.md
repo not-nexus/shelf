@@ -8,6 +8,7 @@ Resource documentation.
 * [metadata](api/metadata.md) - Create, update, delete, and request metadata and particular items in metadata.
 * [search](api/search.md) - Discover artifacts by searching its metadata.
 * [health](api/health.md) - A simple check for external dependencies.
+* [shelf-list](api/shelf-list.md) - Gets all shelves the user has access to.
 
 Other
 =====

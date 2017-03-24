@@ -2,7 +2,6 @@ from jsonschema import ValidationError
 from shelf import utils
 from shelf.logger_creator import LoggerCreator
 from shelf.request_log_filter import RequestLogFilter
-import multiprocessing
 import os
 import yaml
 
@@ -65,5 +64,5 @@ def logger(logger, log_level_name):
 def app(app):
     config_path = os.path.dirname(os.path.realpath(__file__)) + "/../config.yaml"
     app_config(app.config, config_path)
-    log_level_name = app.config.get("logLevel", "DEBUG")
+    log_level_name = app.config.get("logLevel", "INFO")
     logger(app.logger, log_level_name)
