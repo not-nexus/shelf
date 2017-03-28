@@ -58,3 +58,8 @@ v10.2 - Removed shared memory part of healthcheck since it was cause issues
 and nobodoy was doing it. Now actually logging response headers. Now logging
 VERB and http status code. Changed format of logged headers.
 v10.3 - Upgrading Gunicorn.
+10.4.0 (2017-03-29)
+    - Changing to semantic versioning.
+    - Added list buckets endpoint.
+    - Added some additional logging.
+    - Fixed bug where version sort would blow up on an integer.
