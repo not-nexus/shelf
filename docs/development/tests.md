@@ -3,7 +3,7 @@ Testing
 
 Running the functional and unit tests requires a local running instance of Elasticsearch. Our test base points to localhost:9200 for Elasticsearch.
 
-Note: We have developed towards Elasticsearch 1.5.2 as that is the version AWS utilizes.
+Note: We have developed towards Elasticsearch 5.1 as that is currently the latest version AWS utilizes.
 
 To run the tests:
 

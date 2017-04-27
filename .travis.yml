@@ -2,15 +2,22 @@ language: python
 python:
     - 2.7
     - 2.6
+addons:
+    apt:
+        packages:
+            - oracle-java8-set-default
 install:
     - source utils/init-environment
     - pip install codecov
-services:
-    - elasticsearch
-# This is required for elasticsearch
+
+# Sleep is required for elasticsearch.
 before_script:
     - sleep 10
-script: coverage run --source shelf/ -m unittest discover -p *_test.py tests -b
+    - curl -v http://localhost:9200/
+before_install:
+  - curl -O https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.1.1.deb && sudo dpkg -i --force-confnew elasticsearch-5.1.1.deb && sudo service elasticsearch restart
+script:
+    - coverage run --source shelf/ -m unittest discover -p *_test.py tests -b
 after_success:
     - codecov
 notifications:
