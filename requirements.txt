@@ -4,7 +4,7 @@ gevent==1.1.2
 gunicorn==19.7.0
 PyYAML==3.11
 boto==2.38.0
-elasticsearch-dsl<2.0.0
+elasticsearch-dsl>=5.0.0,<6.0.0
 jsonschema==2.5.1
 aws-requests-auth==0.2.5
 docopt
