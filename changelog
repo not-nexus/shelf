@@ -63,3 +63,5 @@ v10.3 - Upgrading Gunicorn.
     - Added list buckets endpoint.
     - Added some additional logging.
     - Fixed bug where version sort would blow up on an integer.
+10.5.0 (2017-05-01)
+    - Upgrade Shelf to work with Elasticsearch 5.
