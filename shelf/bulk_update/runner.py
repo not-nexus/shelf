@@ -1,5 +1,4 @@
 import multiprocessing
-from shelf.bucket_update.utils import update_search_index
 
 
 class Runner(object):
@@ -7,13 +6,14 @@ class Runner(object):
         Responsible for creating processes that will take care of
         updating the search index per bucket.
     """
-    def __init__(self, container):
+    def __init__(self, container, search_update_function):
         """
             Args:
                 container(shelf.bulk_update.container.Container)
         """
         self.container = container
         self.config = container.config
+        self.search_update_function = search_update_function
 
     def run(self, requested_bucket_list=None):
         """
@@ -44,7 +44,7 @@ class Runner(object):
         """
             This method exists mostly for mocking.
         """
-        process = multiprocessing.Process(target=update_search_index, args=(config,))
+        process = multiprocessing.Process(target=self.search_update_function, args=(config,))
         process.start()
 
     def _find_bucket_list(self, requested_bucket_list=None):

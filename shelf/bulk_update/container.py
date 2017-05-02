@@ -15,16 +15,16 @@ class Container(object):
         """
         self.config = config
         self.logger = logger
-
         self._runner = None
 
-    @property
-    def runner(self):
+    def create_runner(self, search_update_function):
         """
-            Returns:
-                shelf.bulk_update.runner.Runner
-        """
-        if not self._runner:
-            self._runner = Runner(self)
+            Args:
+                search_update_function(function):   The search update function
+                                                    to run.
 
-        return self._runner
+            Returns:
+                    shelf.bulk_update.runner.Runner
+        """
+        return Runner(self, search_update_function)
+
