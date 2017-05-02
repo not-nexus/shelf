@@ -43,7 +43,7 @@ class SearchUpdaterTest(TestBase):
         # then manually delete it in S3 and then run bucket-update
         # really really quick.
         self.search_wrapper.refresh_index()
-        
+
         # Running actual code
         runner = self.container.search_updater
         runner.run()
@@ -56,6 +56,39 @@ class SearchUpdaterTest(TestBase):
         # This should have been deleted
         should_be_deleted = self.search_wrapper.get_metadata(delete_builder.identity.search)
         self.assertEqual(None, should_be_deleted)
+
+    def test_prune(self):
+        # metadata only in the search layer should be deleted.
+        delete_builder = self.create_metadata_builder() \
+            .resource_url("/test-refname/artifact/lyle-test/delete-me")
+        self.add_search(delete_builder)
+        self.search_wrapper.refresh_index()
+
+        # Run the pruner.
+        runner = self.container.search_updater
+        runner.prune()
+
+        # This should have been deleted
+        should_be_deleted = self.search_wrapper.get_metadata(delete_builder.identity.search)
+        self.assertEqual(None, should_be_deleted)
+
+    def test_prune_no_artifacts(self):
+        bucket_name = "bucket-that-doesnt-have-artifacts"
+        self.boto_connection.create_bucket(bucket_name)
+        self.container.config["name"] = bucket_name
+
+        # metadata only in the search layer should be deleted.
+        delete_builder = self.create_metadata_builder() \
+            .resource_url("/bucket-that-doesnt-have-artifacts/artifact/lyle-test/delete-me")
+        self.add_search(delete_builder)
+
+        # Delete the bucket now that we added some search data.
+        self.boto_connection.delete_bucket(bucket_name)
+
+        logger = self.container.logger
+        logger.info = Mock()
+        updater = self.container.search_updater
+        updater.prune()
 
     def test_no_artifacts(self):
         bucket_name = "bucket-that-doesnt-have-artifacts"

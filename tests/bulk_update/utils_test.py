@@ -4,6 +4,7 @@ from mock import Mock
 from shelf.bulk_update.runner import Runner
 import os.path
 from shelf.bulk_update.utils import run
+from shelf.bulk_update.utils import run_search_prune
 import logging
 from copy import deepcopy
 
@@ -51,8 +52,19 @@ class UtilsTest(UnitTestBase):
 
         run(args)
 
-    def run_and_assert_both_buckets(self, bucket):
-        self.execute(bucket=bucket)
+    def execute_search_prune(self, bucket=None, chunk_size=20, verbose=False):
+        path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "../data/test_config.yaml")
+        args = {
+            "--chunk-size": chunk_size,
+            "--bucket": bucket,
+            "<config-path>": path,
+            "--verbose": verbose
+        }
+
+        run_search_prune(args)
+
+    def run_and_assert_both_buckets(self, search_update_function, bucket):
+        search_update_function(bucket=bucket)
         self.assertEqual(2, self.run_process_mock.call_count)
         args_list = self.run_process_mock.call_args_list
         # I do this instead of assuming order since it is a dict
@@ -66,15 +78,27 @@ class UtilsTest(UnitTestBase):
                 self.assertEqual(UtilsTest.EXPECTED_KYLE, config)
 
     def test_run(self):
-        self.run_and_assert_both_buckets(None)
+        self.run_and_assert_both_buckets(self.execute, None)
+
+    def test_run_prune(self):
+        self.run_and_assert_both_buckets(self.execute_search_prune, None)
 
     def test_with_comma_separated_bucket_list(self):
-        self.run_and_assert_both_buckets("kyle-long, ag")
+        self.run_and_assert_both_buckets(self.execute, "kyle-long, ag")
 
-    def test_single_bucket_only(self):
-        self.execute(bucket="kyle-long", verbose=True)
+    def test_with_comma_separated_bucket_list_prune(self):
+        self.run_and_assert_both_buckets(self.execute_search_prune, "kyle-long, ag")
+
+    def run_single_bucket_only(self, search_update_function):
+        search_update_function(bucket="kyle-long", verbose=True)
         self.assertEqual(1, self.run_process_mock.call_count)
         args = self.run_process_mock.call_args
         expected = deepcopy(UtilsTest.EXPECTED_KYLE)
         expected["logLevel"] = logging.DEBUG
         self.assertEqual(expected, args[0][0])
+
+    def test_single_bucket(self):
+        self.run_single_bucket_only(self.execute)
+
+    def test_single_bucket_prune(self):
+        self.run_single_bucket_only(self.execute_search_prune)
