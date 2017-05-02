@@ -3,8 +3,8 @@ from pyproctor import MonkeyPatcher
 from mock import Mock
 from shelf.bulk_update.runner import Runner
 import os.path
-from shelf.bulk_update.utils import run
-from shelf.bulk_update.utils import run_search_prune
+from shelf.bulk_update.utils import update
+from shelf.bulk_update.utils import prune
 import logging
 from copy import deepcopy
 
@@ -50,7 +50,7 @@ class UtilsTest(UnitTestBase):
             "--verbose": verbose
         }
 
-        run(args)
+        update(args)
 
     def execute_search_prune(self, bucket=None, chunk_size=20, verbose=False):
         path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "../data/test_config.yaml")
@@ -61,7 +61,7 @@ class UtilsTest(UnitTestBase):
             "--verbose": verbose
         }
 
-        run_search_prune(args)
+        prune(args)
 
     def run_and_assert_both_buckets(self, search_update_function, bucket):
         search_update_function(bucket=bucket)

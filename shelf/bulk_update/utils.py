@@ -2,39 +2,48 @@ import logging
 import sys
 import shelf.configure as configure
 from shelf.bulk_update.container import Container
-from shelf.bucket_update.utils import update_search_index
-from shelf.bucket_update.utils import prune_search_index
+from shelf.bucket_update.utils import update_search_index, prune_search_index
 
 
-def run(args):
+def update(args):
     """
-        Starts off the whole bulk-update process.
+        Kicks off updating of the search layer.
 
         Args:
             args(dict): A dictionary of arguments and
                 options provided to the update-search-index
                 script
     """
-    logger = set_up_logger("update-search-index", args)
-    config = get_config(args, logger.level)
-    bucket_list = get_bucket_list(args)
-    container = Container(config, logger)
-    runner = container.create_runner(update_search_index)
-    runner.run(bucket_list)
+    run(args, "update-search-index", update_search_index)
 
 
-def run_search_prune(args):
+def prune(args):
     """
-        Runs search pruning based on given config file.
+        Removes artifacts from the search layer that no longer exist in the
+        cloud layer.
 
         Args:
             args(dict)
+    """
+
+    run(args, "prune-search-index", prune_search_index)
+
+
+def run(args, logger_name, bucket_action):
+    """
+        The main runner of updating of the search layer.
+
+        Args:
+            args(dict)
+            logger_name(basestring)
+            bucket_action(function)
+
     """
     logger = set_up_logger("prune-search-index", args)
     config = get_config(args, logger.level)
     bucket_list = get_bucket_list(args)
     container = Container(config, logger)
-    runner = container.create_runner(prune_search_index)
+    runner = container.create_runner(bucket_action)
     runner.run(bucket_list)
 
 
@@ -47,7 +56,7 @@ def set_up_logger(task_name, args):
             args(dict)
 
         Returns:
-            RootLogger()
+            logging.Logger()
     """
     log_level = logging.INFO
 

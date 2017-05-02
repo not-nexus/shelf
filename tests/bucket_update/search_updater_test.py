@@ -46,7 +46,7 @@ class SearchUpdaterTest(TestBase):
 
         # Running actual code
         runner = self.container.search_updater
-        runner.run()
+        runner.update()
 
         # These two artifacts should have identity metadata in both
         # search and cloud
@@ -97,7 +97,7 @@ class SearchUpdaterTest(TestBase):
         logger = self.container.logger
         logger.info = Mock()
         updater = self.container.search_updater
-        updater.run()
+        updater.update()
 
     def run_chunk(self, chunk_size, path_list, expected_list):
         search_updater = self.container.search_updater

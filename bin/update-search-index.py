@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import docopt
-from shelf.bulk_update.utils import run
+from shelf.bulk_update.utils import update
 
 doc = """Usage: ./update-search-index [options] <config-path>
 
@@ -23,4 +23,4 @@ doc = """Usage: ./update-search-index [options] <config-path>
 """
 
 args = docopt.docopt(doc)
-run(args)
+update(args)

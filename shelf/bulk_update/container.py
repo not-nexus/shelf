@@ -17,14 +17,13 @@ class Container(object):
         self.logger = logger
         self._runner = None
 
-    def create_runner(self, search_update_function):
+    def create_runner(self, bucket_action):
         """
             Args:
-                search_update_function(function):   The search update function
-                                                    to run.
+                bucket_action(function):   The action to run on each bucket.
 
             Returns:
-                    shelf.bulk_update.runner.Runner
+                shelf.bulk_update.runner.Runner
         """
-        return Runner(self, search_update_function)
+        return Runner(self, bucket_action)
 
