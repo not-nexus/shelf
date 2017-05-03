@@ -16,7 +16,7 @@ def update_search_index(bucket_config):
 
 def prune_search_index(bucket_config):
     """
-        Prunes the search index for a specific bucket.
+        Removes artifacts in the "search layer" that are not in the "cloud layer".
 
         Args:
             bucket_config(schemas/search-bucket-update-config.json)
