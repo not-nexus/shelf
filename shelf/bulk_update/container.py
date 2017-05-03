@@ -15,16 +15,15 @@ class Container(object):
         """
         self.config = config
         self.logger = logger
-
         self._runner = None
 
-    @property
-    def runner(self):
+    def create_runner(self, bucket_action):
         """
+            Args:
+                bucket_action(function):   The action to run on each bucket.
+
             Returns:
                 shelf.bulk_update.runner.Runner
         """
-        if not self._runner:
-            self._runner = Runner(self)
+        return Runner(self, bucket_action)
 
-        return self._runner

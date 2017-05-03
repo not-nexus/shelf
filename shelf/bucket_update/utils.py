@@ -11,7 +11,18 @@ def update_search_index(bucket_config):
             bucket_config(schemas/search-bucket-update-config.json)
     """
     container = _create_container(bucket_config)
-    container.search_updater.run()
+    container.search_updater.update()
+
+
+def prune_search_index(bucket_config):
+    """
+        Removes artifacts in the "search layer" that are not in the "cloud layer".
+
+        Args:
+            bucket_config(schemas/search-bucket-update-config.json)
+    """
+    container = _create_container(bucket_config)
+    container.search_updater.prune()
 
 
 def _create_container(bucket_config):
@@ -20,4 +31,5 @@ def _create_container(bucket_config):
     background_utils.configure_file_logger("elasticsearch", filename, log_level)
     logger = background_utils.configure_file_logger(bucket_config["name"], filename, log_level)
     container = Container(bucket_config, logger)
+
     return container

@@ -19,7 +19,7 @@ class RunnerTest(UnitTestBase):
         self.fake_container.config = {}
         self.fake_process_constructor = Mock(return_value=self.fake_process)
         MonkeyPatcher.patch(multiprocessing, "Process", self.fake_process_constructor)
-        self.runner = Runner(self.fake_container)
+        self.runner = Runner(self.fake_container, update_search_index)
 
     def test_run_process(self):
         fake_config = {

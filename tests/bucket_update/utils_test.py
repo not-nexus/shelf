@@ -45,18 +45,30 @@ class UtilsTest(UnitTestBase):
         logger = logging.getLogger()
         configure_file_logger = Mock(return_value=logger)
         MonkeyPatcher.patch(background_utils, "configure_file_logger", configure_file_logger)
+
         return configure_file_logger
 
     def test_update_search_index(self):
         container = type("FakeContainer", (object,), {})()
         container.search_updater = type("FakeSearchUpdater", (object,), {})()
-        container.search_updater.run = Mock()
+        container.search_updater.update = Mock()
         _create_container = Mock(return_value=container)
         MonkeyPatcher.patch(utils, "_create_container", _create_container)
         fake_config = {"fake": "blah"}
         utils.update_search_index(fake_config)
         _create_container.assert_called_with(fake_config)
-        self.assertTrue(container.search_updater.run.called)
+        self.assertTrue(container.search_updater.update.called)
+
+    def test_prune_search_index(self):
+        container = type("FakeContainer", (object,), {})()
+        container.search_updater = type("FakeSearchUpdater", (object,), {})()
+        container.search_updater.prune = Mock()
+        _create_container = Mock(return_value=container)
+        MonkeyPatcher.patch(utils, "_create_container", _create_container)
+        fake_config = {"fake": "blah"}
+        utils.prune_search_index(fake_config)
+        _create_container.assert_called_with(fake_config)
+        self.assertTrue(container.search_updater.prune.called)
 
     def test_configure_logger(self):
         logger = background_utils.configure_file_logger("super-unique-name", self.directory + "/lol.log", logging.DEBUG)

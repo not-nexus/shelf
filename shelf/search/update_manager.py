@@ -52,6 +52,8 @@ class UpdateManager(object):
             nested_query &= Q(SearchType.WILDCARD, property_list__value=value)
             q = Q("nested", path="property_list", query=nested_query)
 
+            # Query will only be set to something if there's more than one
+            # iteration in this for loop.
             if not query:
                 query = q
             else:

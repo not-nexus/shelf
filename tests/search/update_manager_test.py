@@ -13,7 +13,8 @@ class UpdateManagerTest(UnitTestBase):
             utils.get_meta("delete"),
             utils.get_meta("old"),
             # In another bucket
-            utils.get_meta("other", "/other/artifact/other")
+            utils.get_meta("other", "/other/artifact/other"),
+            utils.get_meta("ricki", "/ricki/artifact/ticki/tabi")
         ]
         self.test_wrapper.setup_metadata(data)
 
@@ -23,10 +24,11 @@ class UpdateManagerTest(UnitTestBase):
     def test_remove_all_old_docs(self):
         key_list = ["test_key"]
         deleted = self.update_manager.remove_unlisted_documents(key_list)
-        self.assertEqual(3, deleted)
+        self.assertEqual(4, deleted)
         self.assertEqual(None, self.test_wrapper.get_metadata("delete"))
         self.assertEqual(None, self.test_wrapper.get_metadata("old"))
         self.assertEqual(None, self.test_wrapper.get_metadata("other"))
+        self.assertEqual(None, self.test_wrapper.get_metadata("ricki"))
 
     def test_remove_old_docs_per_bucket(self):
         key_list = ["test_key"]
@@ -37,7 +39,8 @@ class UpdateManagerTest(UnitTestBase):
 
     def test_remove_documents_wildcard(self):
         val_list = [
-            "/test/artifact/*"
+            "/test/artifact/*",
+            "/ricki/artifact/*"
         ]
         deleted = self.update_manager.remove_unlisted_documents_wildcard("artifactPath", val_list)
         self.assertEqual(1, deleted)
