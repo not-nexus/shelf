@@ -29,7 +29,7 @@ class Sorter(object):
         # `None` it returns "0" as this creates the proper sort order. Secondly, it uses
         # distutils.version.LooseVersion to facilitate the version sort.
         def version_sort(result):
-            value = str(standard_sort(result))
+            value = standard_sort(result)
 
             if value is None:
                 value = "0"
