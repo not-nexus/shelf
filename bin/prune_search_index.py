@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 import docopt
-from shelf.bulk_update.utils import update
+from shelf.bulk_update.utils import prune
 
-doc = """Usage: ./update-search-index [options] <config-path>
+doc = """Usage: ./prune_search_index [options] <config-path>
 
     Options:
         -b --bucket bucket          The name of the bucket, or buckets that you
@@ -12,10 +12,6 @@ doc = """Usage: ./update-search-index [options] <config-path>
                                     they should be comma separated.
                                     Example: -b "bucket1, bucket2, etc.."
 
-        -c --chunk-size chunk-size  How many artifacts (per bucket) should be
-                                    processed at once.
-                                    [default: 20]
-
         -v --verbose                If set, the log level will be set to DEBUG.
 
     Arguments:
@@ -23,4 +19,4 @@ doc = """Usage: ./update-search-index [options] <config-path>
 """
 
 args = docopt.docopt(doc)
-update(args)
+prune(args)
